@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Manrope:wght@200;300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
+
+:root {
+  --font-headline: 'Noto Serif', Georgia, serif;
+  --font-body: 'Manrope', system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #001524;
+  color: #cfe5fa;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: rgba(165, 204, 230, 0.25);
+  color: #cfe5fa;
+}
+
+/* Material Symbols */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Glass nav */
+.glass-nav {
+  background: rgba(0, 21, 36, 0.82);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+/* Grayscale-to-colour on hover */
+.img-hover-color {
+  filter: grayscale(100%) brightness(0.65);
+  transition: filter 0.9s ease, transform 0.9s ease;
+}
+.group:hover .img-hover-color {
+  filter: grayscale(0%) brightness(0.9);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #001524; }
+::-webkit-scrollbar-thumb { background: #42484c; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #a5cce6; }
+
+@layer utilities {
+  .font-headline { font-family: var(--font-headline); }
+  .font-body     { font-family: var(--font-body); }
+  .font-label    { font-family: var(--font-body); }
+}
