@@ -7,8 +7,11 @@ import type { LedgerEntry } from '@/lib/ledger-types'
 import type { PeriodMoney } from '@/lib/income-stats'
 import DualCurrency from '@/components/DualCurrency'
 import { formatCopFromUsd } from '@/lib/format-currency'
+import { getExpenseCategoryName } from '@/lib/expense-categories'
 
 type Stats = { today: PeriodMoney; week: PeriodMoney; month: PeriodMoney; currency: string }
+
+type ExpenseCategoryRow = { id: string; name: string }
 
 type LedgerModalState =
   | { mode: 'create'; kind: 'income' | 'expense' }
@@ -23,6 +26,13 @@ function bogotaTodayKey(): string {
   }).format(new Date())
 }
 
+function parseCopDigits(s: string): number | undefined {
+  const digits = s.replace(/\D/g, '')
+  if (!digits) return undefined
+  const n = parseInt(digits, 10)
+  return Number.isFinite(n) && n > 0 ? n : undefined
+}
+
 export default function AdminDashboardPage() {
   const router = useRouter()
   const [bookings, setBookings] = useState<BookingRecord[] | null | undefined>(undefined)
@@ -31,6 +41,10 @@ export default function AdminDashboardPage() {
   const [error, setError] = useState('')
   const [ledgerModal, setLedgerModal] = useState<LedgerModalState | null>(null)
   const [saving, setSaving] = useState(false)
+  const [expenseCategories, setExpenseCategories] = useState<ExpenseCategoryRow[]>([])
+  const [seedExpensesDone, setSeedExpensesDone] = useState(false)
+  const [seeding, setSeeding] = useState(false)
+  const [notice, setNotice] = useState('')
 
   const load = useCallback(async () => {
     setError('')
@@ -49,6 +63,8 @@ export default function AdminDashboardPage() {
     setBookings(data.bookings ?? [])
     setLedger(data.ledger ?? [])
     setStats(data.stats ?? null)
+    setExpenseCategories(data.expenseCategories ?? [])
+    setSeedExpensesDone(Boolean(data.seedExpensesDone))
   }, [router])
 
   useEffect(() => {
@@ -59,6 +75,33 @@ export default function AdminDashboardPage() {
     await fetch('/api/admin/logout', { method: 'POST', credentials: 'same-origin' })
     router.replace('/admin/login')
     router.refresh()
+  }
+
+  async function runExpenseSeed() {
+    setNotice('')
+    setError('')
+    setSeeding(true)
+    try {
+      const res = await fetch('/api/admin/seed-expenses', {
+        method: 'POST',
+        credentials: 'same-origin',
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setError(typeof data.error === 'string' ? data.error : 'No se pudo importar')
+        return
+      }
+      if (data.skipped) {
+        setNotice('Los gastos iniciales ya estaban cargados (solo se puede hacer una vez).')
+      } else {
+        setNotice(`Se agregaron ${data.inserted as number} movimientos de gastos iniciales.`)
+      }
+      await load()
+    } catch {
+      setError('Error de red')
+    } finally {
+      setSeeding(false)
+    }
   }
 
   if (bookings === undefined && !error) {
@@ -99,6 +142,19 @@ export default function AdminDashboardPage() {
           </button>
           <button
             type="button"
+            disabled={seeding || seedExpensesDone}
+            onClick={() => void runExpenseSeed()}
+            title={
+              seedExpensesDone
+                ? 'Los gastos iniciales ya se importaron'
+                : 'Cargar listado de gastos de apertura (una vez)'
+            }
+            className="bg-[#223747] border border-[#42484c]/50 text-[#cfe5fa] px-5 py-2.5 font-label font-bold tracking-[0.12em] text-[10px] uppercase hover:bg-[#2c4455] transition-colors disabled:opacity-35 disabled:cursor-not-allowed"
+          >
+            {seeding ? 'Importando…' : 'Gastos iniciales'}
+          </button>
+          <button
+            type="button"
             onClick={() => void logout()}
             className="font-label text-xs uppercase tracking-widest text-[#8a9299] hover:text-[#a5cce6] px-2"
           >
@@ -115,6 +171,11 @@ export default function AdminDashboardPage() {
         </section>
       ) : null}
 
+      {notice ? (
+        <p className="text-[#a5cce6]/90 font-body text-sm mb-4 border border-[#a5cce6]/25 bg-[#0a2438]/80 px-4 py-3">
+          {notice}
+        </p>
+      ) : null}
       {error ? <p className="text-red-400/90 font-body mb-6">{error}</p> : null}
 
       <section className="mb-14">
@@ -176,12 +237,17 @@ export default function AdminDashboardPage() {
         <h2 className="font-label text-xs uppercase tracking-[0.25em] text-[#8a9299] mb-4">
           Ingresos y gastos manuales ({ledger.length})
         </h2>
+        <p className="text-[11px] text-[#5c656d] font-body mb-3 max-w-3xl">
+          Las categorías de gasto se reutilizan al crear o editar movimientos. Use «Gastos iniciales» una vez para
+          importar el listado de apertura (COP guardado donde aplica; USD según tasa).
+        </p>
         <div className="overflow-x-auto border border-[#42484c]/40 rounded-sm">
           <table className="w-full text-left text-sm font-body">
             <thead>
               <tr className="border-b border-[#42484c]/40 text-[#8a9299] font-label text-[10px] uppercase tracking-widest">
                 <th className="py-3 px-4 font-medium">Fecha</th>
                 <th className="py-3 px-4 font-medium">Tipo</th>
+                <th className="py-3 px-4 font-medium min-w-[140px]">Categoría</th>
                 <th className="py-3 px-4 font-medium text-right">
                   Monto
                   <span className="block font-normal normal-case tracking-normal text-[9px] text-[#5c656d] mt-1">
@@ -195,7 +261,7 @@ export default function AdminDashboardPage() {
             <tbody>
               {ledger.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-10 px-4 text-center text-[#8a9299]">
+                  <td colSpan={6} className="py-10 px-4 text-center text-[#8a9299]">
                     Use «Agregar ingreso» o «Agregar gasto» para registrar movimientos fuera de las reservas.
                   </td>
                 </tr>
@@ -208,9 +274,15 @@ export default function AdminDashboardPage() {
                         {e.kind === 'income' ? 'Ingreso' : 'Gasto'}
                       </span>
                     </td>
+                    <td className="py-3 px-4 text-xs text-[#8a9299] leading-snug">
+                      {e.kind === 'expense'
+                        ? getExpenseCategoryName(e.categoryId) ?? '—'
+                        : '—'}
+                    </td>
                     <td className="py-3 px-4">
                       <DualCurrency
                         usd={e.amount}
+                        copOverride={e.amountCop}
                         tone={e.kind === 'income' ? 'income' : 'expense'}
                       />
                     </td>
@@ -235,6 +307,7 @@ export default function AdminDashboardPage() {
       {ledgerModal ? (
         <LedgerModal
           state={ledgerModal}
+          categories={expenseCategories}
           saving={saving}
           onClose={() => !saving && setLedgerModal(null)}
           onSave={async payload => {
@@ -242,26 +315,25 @@ export default function AdminDashboardPage() {
             setError('')
             try {
               const isEdit = Boolean(payload.id)
+              const base: Record<string, unknown> = {
+                kind: payload.kind,
+                amount: payload.amount,
+                dateKey: payload.dateKey,
+                note: payload.note,
+              }
+              if (payload.kind === 'expense') {
+                base.categoryId = payload.categoryId ?? ''
+                if (payload.amountCop === null) base.amountCop = null
+                else if (payload.amountCop !== undefined && payload.amountCop > 0)
+                  base.amountCop = payload.amountCop
+              }
+              if (isEdit) base.id = payload.id
+
               const res = await fetch('/api/ledger', {
                 method: isEdit ? 'PATCH' : 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'same-origin',
-                body: JSON.stringify(
-                  isEdit
-                    ? {
-                        id: payload.id,
-                        kind: payload.kind,
-                        amount: payload.amount,
-                        dateKey: payload.dateKey,
-                        note: payload.note,
-                      }
-                    : {
-                        kind: payload.kind,
-                        amount: payload.amount,
-                        dateKey: payload.dateKey,
-                        note: payload.note,
-                      }
-                ),
+                body: JSON.stringify(base),
               })
               const data = await res.json().catch(() => ({}))
               if (!res.ok) {
@@ -330,11 +402,13 @@ function PeriodCard({ title, subtitle, p }: { title: string; subtitle?: string; 
 
 function LedgerModal({
   state,
+  categories,
   saving,
   onClose,
   onSave,
 }: {
   state: LedgerModalState
+  categories: ExpenseCategoryRow[]
   saving: boolean
   onClose: () => void
   onSave: (p: {
@@ -343,12 +417,16 @@ function LedgerModal({
     amount: number
     dateKey: string
     note: string
+    categoryId?: string
+    amountCop?: number | null
   }) => Promise<void>
 }) {
   const [kind, setKind] = useState<'income' | 'expense'>('income')
   const [amount, setAmount] = useState('')
   const [dateKey, setDateKey] = useState(bogotaTodayKey())
   const [note, setNote] = useState('')
+  const [categoryId, setCategoryId] = useState('')
+  const [amountCopStr, setAmountCopStr] = useState('')
 
   useEffect(() => {
     if (state.mode === 'edit') {
@@ -357,11 +435,15 @@ function LedgerModal({
       setAmount(String(e.amount))
       setDateKey(e.dateKey)
       setNote(e.note ?? '')
+      setCategoryId(e.categoryId ?? '')
+      setAmountCopStr(e.amountCop != null ? String(e.amountCop) : '')
     } else {
       setKind(state.kind)
       setAmount('')
       setDateKey(bogotaTodayKey())
       setNote('')
+      setCategoryId('')
+      setAmountCopStr('')
     }
   }, [state])
 
@@ -381,13 +463,33 @@ function LedgerModal({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     const n = Number(String(amount).replace(',', '.'))
-    if (!Number.isFinite(n) || n <= 0) return
+    if (kind === 'income') {
+      if (!Number.isFinite(n) || n <= 0) return
+    } else {
+      if (!Number.isFinite(n) || n < 0) return
+    }
+
+    const parsedCop = parseCopDigits(amountCopStr)
+    let amountCop: number | null | undefined
+    if (kind === 'expense') {
+      if (parsedCop !== undefined) amountCop = parsedCop
+      else if (
+        state.mode === 'edit' &&
+        state.entry.amountCop != null &&
+        amountCopStr.trim() === ''
+      ) {
+        amountCop = null
+      }
+    }
+
     await onSave({
       id: state.mode === 'edit' ? state.entry.id : undefined,
       kind,
       amount: n,
       dateKey,
       note,
+      categoryId: kind === 'expense' ? categoryId : undefined,
+      amountCop: kind === 'expense' ? amountCop : undefined,
     })
   }
 

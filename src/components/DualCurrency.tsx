@@ -1,6 +1,6 @@
 'use client'
 
-import { formatCopFromUsd, formatUsd } from '@/lib/format-currency'
+import { formatCopFromUsd, formatCopValue, formatUsd } from '@/lib/format-currency'
 
 type Tone = 'default' | 'muted' | 'income' | 'expense' | 'netPositive' | 'netNegative'
 
@@ -15,15 +15,23 @@ const usdTone: Record<Tone, string> = {
 
 export default function DualCurrency({
   usd,
+  copOverride,
   align = 'right',
   tone = 'default',
   prominent = false,
 }: {
   usd: number
+  /** Si existe, la línea en pesos muestra este COP (registros con monto original en pesos). */
+  copOverride?: number
   align?: 'left' | 'right'
   tone?: Tone
   prominent?: boolean
 }) {
+  const copLine =
+    copOverride !== undefined && copOverride !== null
+      ? formatCopValue(copOverride)
+      : formatCopFromUsd(usd)
+
   return (
     <div className={`leading-snug tabular-nums ${align === 'right' ? 'text-right' : ''}`}>
       <div
@@ -32,7 +40,7 @@ export default function DualCurrency({
         {formatUsd(usd)} <span className="text-[10px] font-normal text-[#8a9299]">USD</span>
       </div>
       <div className={`text-[#8a9299] mt-0.5 ${prominent ? 'text-sm' : 'text-xs'}`}>
-        {formatCopFromUsd(usd)} <span className="text-[10px]">COP</span>
+        {copLine} <span className="text-[10px]">COP</span>
       </div>
     </div>
   )

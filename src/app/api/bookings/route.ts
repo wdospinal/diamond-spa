@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { appendBooking, readBookings } from '@/lib/bookings-store'
-import { readLedger } from '@/lib/ledger-store'
+import { readLedger, isLedgerSeedApplied } from '@/lib/ledger-store'
 import { adminCookieName, verifySessionToken } from '@/lib/admin-session'
+import { EXPENSE_CATEGORIES } from '@/lib/expense-categories'
 import { getServiceById } from '@/lib/services'
 import { parseTimeSlot } from '@/lib/parse-time-slot'
 import { computeDashboardStats } from '@/lib/income-stats'
@@ -29,7 +30,13 @@ export async function GET() {
     return b.createdAt.localeCompare(a.createdAt)
   })
   const stats = computeDashboardStats(bookings, ledger)
-  return NextResponse.json({ bookings: sorted, ledger: ledgerSorted, stats })
+  return NextResponse.json({
+    bookings: sorted,
+    ledger: ledgerSorted,
+    stats,
+    expenseCategories: EXPENSE_CATEGORIES,
+    seedExpensesDone: isLedgerSeedApplied(),
+  })
 }
 
 export async function POST(req: NextRequest) {

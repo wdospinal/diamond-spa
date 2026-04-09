@@ -1,8 +1,7 @@
-const DEFAULT_COP_PER_USD = 4100
+import { copPerUsd } from '@/lib/cop-rate'
 
 export function getCopPerUsd(): number {
-  const n = Number(process.env.NEXT_PUBLIC_COP_PER_USD)
-  return Number.isFinite(n) && n > 0 ? n : DEFAULT_COP_PER_USD
+  return copPerUsd()
 }
 
 export function usdToCop(usd: number): number {
@@ -23,4 +22,12 @@ export function formatCopFromUsd(usd: number): string {
     currency: 'COP',
     maximumFractionDigits: 0,
   }).format(usdToCop(usd))
+}
+
+export function formatCopValue(cop: number): string {
+  return new Intl.NumberFormat('es-CO', {
+    style: 'currency',
+    currency: 'COP',
+    maximumFractionDigits: 0,
+  }).format(cop)
 }
