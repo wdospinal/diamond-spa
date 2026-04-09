@@ -175,27 +175,27 @@ export default function BookPage() {
             {/* Step 2 – Date */}
             <div>
               <StepLabel n="02" label="Choose Date" />
-              <div className="mt-6 bg-surface-container p-6 max-w-sm">
+              <div className="mt-6 bg-surface-container p-4 max-w-xs">
                 {/* Month nav */}
-                <div className="flex justify-between items-center mb-6">
-                  <button type="button" onClick={prevMonth} className="text-outline hover:text-primary transition-colors p-1">
-                    <span className="material-symbols-outlined text-lg">chevron_left</span>
+                <div className="flex justify-between items-center mb-4">
+                  <button type="button" onClick={prevMonth} className="text-outline hover:text-primary transition-colors">
+                    <span className="material-symbols-outlined text-base leading-none">chevron_left</span>
                   </button>
                   <span className="font-label text-on-surface text-xs tracking-widest uppercase">
                     {MONTHS[calMonth]} {calYear}
                   </span>
-                  <button type="button" onClick={nextMonth} className="text-outline hover:text-primary transition-colors p-1">
-                    <span className="material-symbols-outlined text-lg">chevron_right</span>
+                  <button type="button" onClick={nextMonth} className="text-outline hover:text-primary transition-colors">
+                    <span className="material-symbols-outlined text-base leading-none">chevron_right</span>
                   </button>
                 </div>
                 {/* Day headers */}
-                <div className="grid grid-cols-7 mb-2">
+                <div className="grid grid-cols-7 mb-1">
                   {DAYS.map(d => (
-                    <div key={d} className="text-center font-label text-outline text-xs py-1">{d}</div>
+                    <div key={d} className="text-center font-label text-outline text-[10px] py-0.5">{d}</div>
                   ))}
                 </div>
                 {/* Cells */}
-                <div className="grid grid-cols-7 gap-y-1">
+                <div className="grid grid-cols-7">
                   {cells.map((day, i) => {
                     if (!day) return <div key={i} />
                     const past = isPast(day)
@@ -206,7 +206,7 @@ export default function BookPage() {
                         type="button"
                         disabled={past}
                         onClick={() => { setSelectedDay(day); setSelectedTime(null) }}
-                        className={`h-9 w-9 mx-auto flex items-center justify-center font-body text-xs transition-all duration-150 ${
+                        className={`h-7 w-7 mx-auto flex items-center justify-center font-body text-[11px] transition-all duration-150 ${
                           past
                             ? 'text-outline/30 cursor-not-allowed'
                             : active

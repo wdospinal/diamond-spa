@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Location — Diamond Spa',
-  description: 'Find Diamond Spa at 1221 Obsidian Heights, Level 40, Midnight District. Private entrances, absolute discretion.',
+  title: 'Ubicación — Diamond Spa Medellín | El Poblado',
+  description: 'Encuéntranos en Cra 43C #10-42, El Poblado, Medellín, Antioquia. Masajes de lujo en el corazón de El Poblado.',
 }
 
 const HOURS = [
@@ -13,9 +13,9 @@ const HOURS = [
 ]
 
 const TRANSPORT = [
-  { icon: 'directions_subway', label: 'Metro',   detail: 'Obsidian Heights Station — 2 min walk' },
-  { icon: 'local_parking',     label: 'Parking', detail: 'Private valet on Level 38, 24 hrs'      },
-  { icon: 'flight',            label: 'Airport', detail: '22 min by private transfer'              },
+  { icon: 'directions_subway', label: 'Metro',     detail: 'Estación Industriales — 8 min en taxi' },
+  { icon: 'local_parking',     label: 'Parqueadero', detail: 'Zona de parqueo disponible en el sector' },
+  { icon: 'flight',            label: 'Aeropuerto', detail: '25 min desde el Aeropuerto Olaya Herrera' },
 ]
 
 export default function LocationPage() {
@@ -38,52 +38,43 @@ export default function LocationPage() {
           {/* Large address typography */}
           <div>
             <div className="mb-12">
-              <p className="font-headline text-5xl md:text-6xl text-on-surface leading-snug mb-2">1221 Obsidian</p>
-              <p className="font-headline text-5xl md:text-6xl text-on-surface leading-snug mb-2">Heights</p>
-              <p className="font-headline text-3xl md:text-4xl text-secondary leading-snug italic mt-4">Level 40</p>
-              <p className="font-headline text-3xl md:text-4xl text-secondary leading-snug italic">Midnight District</p>
+              <p className="font-headline text-5xl md:text-6xl text-on-surface leading-snug mb-2">Cra 43C #10-42</p>
+              <p className="font-headline text-3xl md:text-4xl text-secondary leading-snug italic mt-4">El Poblado</p>
+              <p className="font-headline text-3xl md:text-4xl text-secondary leading-snug italic">Medellín, Antioquia</p>
             </div>
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 mb-8">
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-primary text-lg">phone</span>
-                <span className="font-body text-secondary text-sm tracking-widest">+1 (800) DIAMOND</span>
+                <span className="font-body text-secondary text-sm tracking-widest">+57 314 5484227</span>
               </div>
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-primary text-lg">mail</span>
-                <span className="font-body text-secondary text-sm tracking-widest">concierge@diamondspa.intl</span>
+                <span className="font-body text-secondary text-sm tracking-widest">info@diamondspa.com.co</span>
               </div>
             </div>
+            <a
+              href="https://www.google.com/maps/dir/?api=1&destination=Cra+43C+%2310-42,+El+Poblado,+Medell%C3%ADn,+Antioquia"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 bg-primary text-on-primary px-8 py-4 font-label font-bold tracking-[0.2em] text-xs uppercase hover:bg-white transition-all duration-300"
+            >
+              <span className="material-symbols-outlined text-base">directions</span>
+              Get Directions
+            </a>
           </div>
 
-          {/* Coordinates + map placeholder */}
-          <div className="bg-surface-container min-h-[460px] relative overflow-hidden flex flex-col justify-between p-10">
-            {/* Grid lines decoration */}
-            <div className="absolute inset-0 opacity-5"
-              style={{
-                backgroundImage: 'linear-gradient(#a5cce6 1px, transparent 1px), linear-gradient(90deg, #a5cce6 1px, transparent 1px)',
-                backgroundSize: '48px 48px',
-              }}
+          {/* Google Maps embed */}
+          <div className="min-h-[460px] overflow-hidden">
+            <iframe
+              src="https://maps.google.com/maps?q=Cra+43C+%2310-42,+El+Poblado,+Medell%C3%ADn,+Antioquia&output=embed&z=16"
+              width="100%"
+              height="460"
+              style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg)' }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Diamond Spa location"
             />
-            {/* Crosshair pin */}
-            <div className="absolute inset-0 flex items-center justify-center z-10">
-              <div className="relative flex items-center justify-center">
-                <div className="w-32 h-32 rounded-full border border-primary/20" />
-                <div className="absolute w-20 h-20 rounded-full border border-primary/40" />
-                <div className="absolute w-2 h-2 bg-primary rounded-full" />
-                <div className="absolute w-px h-16 bg-primary/30" />
-                <div className="absolute h-px w-16 bg-primary/30" />
-              </div>
-            </div>
-            {/* Top coords */}
-            <div className="relative z-20 flex justify-between">
-              <span className="font-label text-outline text-xs tracking-widest">40.7128° N</span>
-              <span className="font-label text-outline text-xs tracking-widest">74.0060° W</span>
-            </div>
-            {/* Bottom label */}
-            <div className="relative z-20">
-              <p className="font-label text-primary text-xs tracking-[0.3em] uppercase mb-1">Diamond Spa</p>
-              <p className="font-body text-secondary text-xs">Midnight District · Level 40</p>
-            </div>
           </div>
         </div>
       </section>
@@ -117,7 +108,7 @@ export default function LocationPage() {
               <h3 className="font-headline text-2xl text-on-surface mb-5">Private Arrival</h3>
               <p className="font-body text-secondary leading-relaxed text-sm mb-8">
                 Our concierge will provide personalised arrival instructions upon booking confirmation.
-                A private entrance on Level 39 ensures complete anonymity and a seamless transition into
+                A private entrance ensures complete anonymity and a seamless transition into
                 the sanctuary environment.
               </p>
               <p className="font-body text-secondary leading-relaxed text-sm">

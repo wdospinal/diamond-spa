@@ -6,10 +6,14 @@ import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
 export const metadata: Metadata = {
-  title: 'Diamond Spa — The Midnight Sanctuary',
+  title: 'Diamond Spa — Masajes de Lujo en El Poblado, Medellín',
   description:
-    'Precision recovery and mental clarity designed exclusively for the modern professional. Experience unparalleled discretion in the heart of the city.',
-  keywords: 'luxury spa, men spa, massage, facial, deep tissue, relaxation, diamond spa',
+    'Diamond Spa Massages, ubicado en El Poblado, Medellín, Antioquia. Recuperación y bienestar de lujo para el profesional moderno. Reserva tu sesión en Cra 43C #10-42, El Poblado.',
+  keywords: 'spa medellin, masajes medellin, masajes el poblado, spa el poblado, diamond spa, masajes de lujo, medellin antioquia',
+  icons: {
+    icon: '/favicon.png',
+    apple: '/favicon.png',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -18,6 +22,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+          rel="stylesheet"
+        />
       </head>
       <body className="bg-surface text-on-surface font-body antialiased">
         <Navigation />
