@@ -1,9 +1,15 @@
 'use client'
 
 import Link from 'next/link'
+import { Playfair_Display } from 'next/font/google'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import { getDict, type Locale } from '@/lib/i18n'
+
+const playfairDisplay = Playfair_Display({
+  subsets: ['latin', 'latin-ext'],
+  display: 'swap',
+})
 
 const WHATSAPP_NUMBER = '573145484227'
 const WHATSAPP_CONTACT = `https://wa.me/${WHATSAPP_NUMBER}?text=Hola%2C%20quisiera%20hablar%20con%20la%20recepcionista%20de%20Diamond%20Spa.`
@@ -37,9 +43,14 @@ export default function Navigation() {
       <div className="flex justify-between items-center px-6 md:px-12 py-4 w-full max-w-screen-2xl mx-auto">
 
         {/* Logo */}
-        <Link href={`/${locale}`} className="flex items-center">
+        <Link href={`/${locale}`} className="flex items-center gap-3">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="Diamond Spa" className="h-14 w-auto" />
+          <img src="/logotipo.png" alt="" className="h-14 w-auto" aria-hidden />
+          <span
+            className={`${playfairDisplay.className} text-xl md:text-2xl text-primary tracking-tight`}
+          >
+            Diamond Spa
+          </span>
         </Link>
 
         {/* Desktop links */}
