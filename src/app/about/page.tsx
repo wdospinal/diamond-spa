@@ -17,26 +17,20 @@ const LOUNGE_IMG =
 
 const THERAPISTS = [
   {
-    name: 'Dr. Elena Vance',
-    role: 'Lead Physiotherapist',
+    name: 'Daniela Salina',
+    role: 'Lead Cosmetologist',
     bio: 'Specialising in deep-tissue structural integration and neurological reset protocols.',
     img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBlYrNsIn8dZN54uDQ1X-VQW5iiO7QVjajJzNQZGbhD5nKxzeR4fJgF932bmu8AicevIWwyo4Imm5cAM0AIEOvRMBhr8mzZtG0I8_97pvmSRqtv02qMcgnH8RuBFfi2LLT4jrNNR1VlWz_mvjDzB5Xz5huGLEcHxZxGD5Q2qlgwsp_cEXvWJbUQ8jawA6NOd4hjGZASpZKBVQBzA2zYGBK4JQhlnAsDjZzUjthaV9vAgrC1K9d57MWO7oeLfIwJHUuiBt9BWoKJltoi',
   },
   {
-    name: 'Marcus Thorne',
-    role: 'Master of Kinetic Therapy',
-    bio: 'A veteran of sports medicine focused on executive recovery and postural alignment.',
-    img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDMvHwPx-ESUG-9zxkvsYIl_xui5K4jCKvSr-vcBW9OkwriH8YwgbEXCWTBcqwy8GM3ZOVHG6shCX1kXmxpqFyKXZLEGluJrRPJuxvnKIk5rMn3EWcebg6IJx0Lqjumwvc90FYxoNbjNtzOvn5tkXxwNw3sKVzqKS6DRSHOtzwljRnmiMqsInSWXzCXX5m6aA82wTJY2jX_zmV-XU093s_MmWsUpmCdGoGdnQIWG0lUufl8rlPhl1NIsGgp6RjfGqNnsQcskn0vxCwo',
-  },
-  {
-    name: 'Sarah Lin',
-    role: 'Dermal Specialist',
+    name: 'Sary Paez',
+    role: 'Lead Cosmetologist',
     bio: 'Merging traditional eastern precision with modern dermatological science for skin restoration.',
     img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA--AjeGJ5OrkedJ6XBzdoMVNZwwbv00doKpINgYwu3gySdyB83gFJg17CvXn-Ykws4T7U6YMHSScyi0d5wq4b8tTEUs5yV7ezrc-dkOthJ8S43TwL-9DDIDoOohgPJZyQoUyTuNH1jQhSiSPIlyEtuJiPo0fZ0HvWWuxemQoNAWCtErMQ7oJN8abhZcF0QK_WNSTNnskbn1sgwwqTsBjnIi5w39yyUwD3jucUWT1LXooZazdy-MGCsKRptJ5JK16koRQ-NhGaj7LpS',
   },
   {
     name: 'Julian Ross',
-    role: 'Mindfulness Consultant',
+    role: 'Massage Therapist',
     bio: 'Expert in circadian rhythm alignment and acoustic resonance therapy for cognitive rest.',
     img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAgQ0urlt0Erih0_7j4uMvAiRh0GoCvrhpnm5OppBbApO1fhYi-svnHmNCTm37opwsQxn24WpcEQLfxfjo0UwiJ_XeXhETmxcOWig5GZuLDcXvlK633HT7FGCy0Tduqb70NPD4uZwx8dAk4WQQReJLg-xQ2fQEWv_F1tkoFLU29V9tkUuiSwTDpC0VXqVsSzE-Z9fwf60QSSI-M7cn7qGNPt-tIkjxDLQP34nSMHfmYdXzwdwgehJ1E8bXFdeDhki2pECsK1eTG1Gol',
   },
