@@ -531,24 +531,63 @@ function LedgerModal({
           </div>
           <div className="flex flex-col gap-1">
             <label htmlFor="amt" className="font-label text-xs text-[#8a9299] uppercase tracking-widest">
-              Monto en dólares (USD)
+              Monto en dólares (USD){kind === 'expense' ? ' (0 si solo hay COP abajo o pendiente)' : ''}
             </label>
             <input
               id="amt"
               type="text"
               inputMode="decimal"
-              required
+              required={kind === 'income'}
               value={amount}
               onChange={e => setAmount(e.target.value)}
               className="bg-[#0a2438] border-b border-[#42484c] focus:border-[#a5cce6] outline-none py-3 px-3 font-body text-sm text-[#cfe5fa]"
               placeholder="0"
             />
-            {copPreview ? (
+            {copPreview && kind === 'income' ? (
               <p className="text-xs text-[#8a9299] mt-1">
                 Equivalente aproximado: <span className="text-[#cfe5fa]">{copPreview} COP</span>
               </p>
             ) : null}
           </div>
+          {kind === 'expense' ? (
+            <>
+              <div className="flex flex-col gap-1">
+                <label htmlFor="cat" className="font-label text-xs text-[#8a9299] uppercase tracking-widest">
+                  Categoría
+                </label>
+                <select
+                  id="cat"
+                  value={categoryId}
+                  onChange={e => setCategoryId(e.target.value)}
+                  className="bg-[#0a2438] border border-[#42484c] focus:border-[#a5cce6] outline-none py-3 px-3 font-body text-sm text-[#cfe5fa]"
+                >
+                  <option value="">— Sin categoría —</option>
+                  {categories.map(c => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col gap-1">
+                <label htmlFor="cop" className="font-label text-xs text-[#8a9299] uppercase tracking-widest">
+                  COP exacto (opcional)
+                </label>
+                <input
+                  id="cop"
+                  type="text"
+                  inputMode="numeric"
+                  value={amountCopStr}
+                  onChange={e => setAmountCopStr(e.target.value)}
+                  className="bg-[#0a2438] border-b border-[#42484c] focus:border-[#a5cce6] outline-none py-3 px-3 font-body text-sm text-[#cfe5fa]"
+                  placeholder="Ej. 3000000 o 3.000.000"
+                />
+                <p className="text-[10px] text-[#5c656d]">
+                  Si lo deja vacío, el peso se calcula desde USD. Al editar, borrar el campo quita el COP fijo.
+                </p>
+              </div>
+            </>
+          ) : null}
           <div className="flex flex-col gap-1">
             <label htmlFor="dk" className="font-label text-xs text-[#8a9299] uppercase tracking-widest">
               Fecha
