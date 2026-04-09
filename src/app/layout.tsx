@@ -6,7 +6,7 @@ import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
 export const metadata: Metadata = {
-  title: 'Diamond Spa — Spa for Men in Medellín',
+  title: 'Diamond Spa — Spa for Men and Women in Medellín',
   description:
     'Diamond Spa Massages, ubicado en El Poblado, Medellín, Antioquia. Recuperación y bienestar de lujo para el profesional moderno. Reserva tu sesión en Cra 43C #10-42, El Poblado.',
   keywords: 'spa medellin, masajes medellin, masajes el poblado, spa el poblado, diamond spa, masajes de lujo, medellin antioquia',
