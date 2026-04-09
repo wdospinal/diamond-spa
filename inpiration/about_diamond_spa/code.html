@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#ffdcbe",
+                    "tertiary": "#f0bd8d",
+                    "on-secondary-container": "#adbbc1",
+                    "secondary-fixed-dim": "#bbc9cf",
+                    "on-error-container": "#ffdad6",
+                    "on-primary-container": "#103b50",
+                    "surface": "#001524",
+                    "background": "#001524",
+                    "on-tertiary": "#482905",
+                    "on-primary-fixed-variant": "#234b61",
+                    "surface-container": "#0b2131",
+                    "surface-container-high": "#172c3c",
+                    "surface-container-lowest": "#00101c",
+                    "surface-dim": "#001524",
+                    "on-secondary": "#253237",
+                    "on-primary": "#053449",
+                    "inverse-primary": "#3d6379",
+                    "error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#3c494e",
+                    "surface-container-low": "#071d2d",
+                    "secondary-fixed": "#d7e5eb",
+                    "outline-variant": "#42484c",
+                    "tertiary-fixed-dim": "#f0bd8d",
+                    "error": "#ffb4ab",
+                    "primary-fixed-dim": "#a5cce6",
+                    "on-background": "#cfe5fa",
+                    "inverse-on-surface": "#1e3243",
+                    "on-error": "#690005",
+                    "on-tertiary-fixed": "#2d1600",
+                    "surface-variant": "#223747",
+                    "primary-container": "#7fa5be",
+                    "primary": "#a5cce6",
+                    "surface-tint": "#a5cce6",
+                    "outline": "#8c9197",
+                    "surface-bright": "#273b4c",
+                    "secondary": "#bbc9cf",
+                    "primary-fixed": "#c5e7ff",
+                    "tertiary-container": "#c6976a",
+                    "on-tertiary-fixed-variant": "#623f1a",
+                    "inverse-surface": "#cfe5fa",
+                    "on-surface-variant": "#c1c7cd",
+                    "on-tertiary-container": "#50300b",
+                    "on-primary-fixed": "#001e2d",
+                    "surface-container-highest": "#223747",
+                    "secondary-container": "#3e4b50",
+                    "on-surface": "#cfe5fa",
+                    "on-secondary-fixed": "#101d22"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Noto Serif"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-nav {
+            background: rgba(0, 21, 36, 0.8);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#001524] dark:bg-[#001524] backdrop-blur-xl bg-opacity-80">
+<div class="flex justify-between items-center px-12 py-6 w-full max-w-screen-2xl mx-auto">
+<div class="text-2xl font-headline tracking-tighter text-[#a5cce6]">Diamond Spa</div>
+<div class="hidden md:flex gap-12 items-center">
+<a class="text-slate-400 font-medium hover:text-[#a5cce6] transition-colors font-label text-sm tracking-widest uppercase" href="#">Services</a>
+<a class="text-[#a5cce6] border-b-2 border-[#a5cce6] pb-1 font-label text-sm tracking-widest uppercase" href="#">Sanctuary</a>
+<a class="text-slate-400 font-medium hover:text-[#a5cce6] transition-colors font-label text-sm tracking-widest uppercase" href="#">Gallery</a>
+<a class="text-slate-400 font-medium hover:text-[#a5cce6] transition-colors font-label text-sm tracking-widest uppercase" href="#">Location</a>
+<button class="bg-[#a5cce6] text-[#053449] px-8 py-3 font-label font-bold tracking-widest text-xs uppercase hover:bg-white transition-all duration-300">Book Now</button>
+</div>
+<div class="md:hidden">
+<span class="material-symbols-outlined text-[#a5cce6]">menu</span>
+</div>
+</div>
+</nav>
+<main class="pt-24">
+<!-- Hero: The Philosophy -->
+<section class="relative min-h-[921px] flex items-center px-6 md:px-12 overflow-hidden bg-surface">
+<div class="max-w-screen-2xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<div class="lg:col-span-7 z-10">
+<span class="font-label text-primary tracking-[0.3em] uppercase text-xs mb-6 block">The Midnight Sanctuary</span>
+<h1 class="font-headline text-5xl md:text-8xl text-on-surface leading-tight mb-8">
+                        The <span class="italic text-primary">Philosophy</span>
+</h1>
+<p class="font-body text-xl md:text-2xl text-secondary max-w-xl leading-relaxed font-light">
+                        Where the modern world's noise fades into obsidian silence. We curate an atmosphere of deep restoration designed specifically for those who carry the weight of leadership.
+                    </p>
+</div>
+<div class="lg:col-span-5 relative">
+<div class="aspect-[4/5] bg-surface-container-low overflow-hidden">
+<img alt="Luxury spa interior" class="w-full h-full object-cover opacity-80" data-alt="Deep blue luxury spa interior with moody ambient lighting, dark marble surfaces, and a minimalist sculptural water feature" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMJt6gVTVOcc0SLCddvP7863h-3G97XDjh63aBjalz_oTlp8ClqkDtehoFnE47a2wt_n0r5LV4MuWsS483zQ0ZaeeIjUuH1IKmb_9q7MF_GUK3ONCFOjNKdonpAAY5Kgha5XDqKSoh1Hcf7qYeUraZVrSJRQtt1acSfjO7vh2cbe1jBwIs48ju40Zl0JXuHfISXPTkBu4v4TJupflDrpH7VdphBKpeYBsZDPssMRc_0oO5Ayuwe3k5iayBAJjqFLdB9Aur39XbUZDK"/>
+</div>
+<div class="absolute -bottom-12 -left-12 w-64 h-80 bg-surface-container-high hidden lg:block p-8 border border-outline-variant/10">
+<p class="font-headline text-primary text-3xl mb-4 italic">Quiet Confidence</p>
+<p class="font-body text-sm text-secondary leading-relaxed">
+                            A sanctuary defined not by what it adds, but by what it removes: distraction, urgency, and noise.
+                        </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Our Heritage -->
+<section class="py-32 px-6 md:px-12 bg-surface-container-low">
+<div class="max-w-screen-2xl mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-24 items-center">
+<div class="order-2 md:order-1">
+<div class="grid grid-cols-2 gap-4">
+<div class="aspect-square bg-surface">
+<img alt="Stone massage" class="w-full h-full object-cover opacity-60" data-alt="Close up of dark basalt massage stones on a textured navy linen cloth with soft candlelight reflections" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBs3haFtBW8DAugh_D6Bb6qT_cFNTjpvGP0LKKs5eeBeV-4jgNh3VDaFM-zJYOC3-weUhoTSRXJSLFoQi65MlMiKmUVVLTEW-E5_NgaVNJaCZ5vM3fNDLA0jVi54ViIwjLlzc2I8j_JIiMBft3RF9WHTF6PVfIRppcvj2U1drHqDRAMCzEU76UiVW_8kHob8AUxwEbeqCCXm8PuzX3DrIDhTgrtGRiu8luULgBpUJi8IJOrJabDZA2xKIe-pY7oTrCwoF6LSjKv_rTz"/>
+</div>
+<div class="aspect-square translate-y-8 bg-surface-container-high">
+<img alt="Spa lounge" class="w-full h-full object-cover opacity-60" data-alt="Ultra-modern luxury spa relaxation lounge with velvet navy chairs and floor to ceiling windows overlooking a night city skyline" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBu7nA58in7biCj0013W2NJFHpMPUSX9srE_U6hc_uPTXg6kgHw9uwqj7pIAfqqZQynbSw05TioMo3Sguz2hawhGyDciZoFqC_h_7_TGww21-LZyrDPl1wDFOCUyIGHFmIh_h0uevJ2AQlHZZsdKs4klIh0JA3jIFSas6EssHhXhmjLJSWvqC_2fjkzsepld29rHXlWme-XNGQLBcj2OnkvEHyx6aO5Y9e7RziAvlphzuIVOKEAwO-mKxJRtcUVqCBZEsisOp2I04Ms"/>
+</div>
+</div>
+</div>
+<div class="order-1 md:order-2">
+<span class="font-label text-primary tracking-[0.3em] uppercase text-xs mb-6 block">Established Heritage</span>
+<h2 class="font-headline text-4xl md:text-5xl text-on-surface mb-8">A Boutique Haven for the Modern <span class="italic">Professional</span></h2>
+<p class="font-body text-secondary mb-8 leading-relaxed text-lg">
+                            Founded on the principle that recovery is as critical as performance. Diamond Spa was conceived as a private club for those whose time is their most valuable asset. We have evolved from a private boutique into a global benchmark for precision wellness.
+                        </p>
+<p class="font-body text-secondary leading-relaxed text-lg">
+                            Every corner of our sanctuary reflects the architectural rigor and refined taste of our clientele. We don't just offer treatments; we offer a return to the self.
+                        </p>
+</div>
+</div>
+</div>
+</section>
+<!-- The International Standard -->
+<section class="py-32 px-6 md:px-12 bg-surface">
+<div class="max-w-screen-2xl mx-auto text-center mb-24">
+<h2 class="font-headline text-4xl md:text-6xl text-on-surface mb-6">The International Standard</h2>
+<div class="h-px w-24 bg-primary mx-auto"></div>
+</div>
+<div class="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-1px bg-outline-variant/10">
+<!-- Discretion -->
+<div class="bg-surface p-12 hover:bg-surface-container-low transition-colors duration-500 group">
+<span class="material-symbols-outlined text-4xl text-primary mb-8" data-icon="lock">lock</span>
+<h3 class="font-headline text-2xl text-on-surface mb-6">Absolute Discretion</h3>
+<p class="font-body text-secondary leading-relaxed">
+                        Our protocols are modeled after Swiss banking standards. Privacy is not a feature; it is our foundation. Private entrances and staggered arrivals ensure total anonymity.
+                    </p>
+</div>
+<!-- Multilingual -->
+<div class="bg-surface p-12 hover:bg-surface-container-low transition-colors duration-500 group">
+<span class="material-symbols-outlined text-4xl text-primary mb-8" data-icon="language">language</span>
+<h3 class="font-headline text-2xl text-on-surface mb-6">Global Proficiency</h3>
+<p class="font-body text-secondary leading-relaxed">
+                        A truly international staff fluent in six major world languages, trained to anticipate cultural nuances and specific professional expectations with effortless grace.
+                    </p>
+</div>
+<!-- Rigor -->
+<div class="bg-surface p-12 hover:bg-surface-container-low transition-colors duration-500 group">
+<span class="material-symbols-outlined text-4xl text-primary mb-8" data-icon="architecture">architecture</span>
+<h3 class="font-headline text-2xl text-on-surface mb-6">Professional Rigor</h3>
+<p class="font-body text-secondary leading-relaxed">
+                        Our practitioners are not just therapists; they are clinical specialists in stress management and biomechanics, operating with the precision of a master watchmaker.
+                    </p>
+</div>
+</div>
+</section>
+<!-- Meet the Therapists -->
+<section class="py-32 px-6 md:px-12 bg-surface-container-lowest">
+<div class="max-w-screen-2xl mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
+<div class="max-w-2xl">
+<span class="font-label text-primary tracking-[0.3em] uppercase text-xs mb-6 block">Our Practitioners</span>
+<h2 class="font-headline text-4xl md:text-5xl text-on-surface">Precise. Professional. <span class="italic">Elite.</span></h2>
+</div>
+<p class="font-body text-secondary max-w-sm">
+                        Curated from the world's most prestigious training institutes, our team represents the pinnacle of therapeutic excellence.
+                    </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+<!-- Therapist 1 -->
+<div class="group">
+<div class="aspect-[3/4] bg-surface-container overflow-hidden mb-6">
+<img alt="Therapist Elena" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-70 group-hover:opacity-100" data-alt="Professional headshot of a female spa therapist in a sharp dark uniform, calm and confident expression, minimal luxury background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlYrNsIn8dZN54uDQ1X-VQW5iiO7QVjajJzNQZGbhD5nKxzeR4fJgF932bmu8AicevIWwyo4Imm5cAM0AIEOvRMBhr8mzZtG0I8_97pvmSRqtv02qMcgnH8RuBFfi2LLT4jrNNR1VlWz_mvjDzB5Xz5huGLEcHxZxGD5Q2qlgwsp_cEXvWJbUQ8jawA6NOd4hjGZASpZKBVQBzA2zYGBK4JQhlnAsDjZzUjthaV9vAgrC1K9d57MWO7oeLfIwJHUuiBt9BWoKJltoi"/>
+</div>
+<h4 class="font-headline text-xl text-on-surface mb-1">Dr. Elena Vance</h4>
+<p class="font-label text-primary text-xs tracking-widest uppercase mb-4">Lead Physiotherapist</p>
+<p class="font-body text-sm text-secondary leading-relaxed">
+                            Specializing in deep-tissue structural integration and neurological reset protocols.
+                        </p>
+</div>
+<!-- Therapist 2 -->
+<div class="group">
+<div class="aspect-[3/4] bg-surface-container overflow-hidden mb-6">
+<img alt="Therapist Marcus" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-70 group-hover:opacity-100" data-alt="Professional headshot of a male therapist with a groomed beard, wearing a dark navy scrub, focused and professional demeanor" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMvHwPx-ESUG-9zxkvsYIl_xui5K4jCKvSr-vcBW9OkwriH8YwgbEXCWTBcqwy8GM3ZOVHG6shCX1kXmxpqFyKXZLEGluJrRPJuxvnKIk5rMn3EWcebg6IJx0Lqjumwvc90FYxoNbjNtzOvn5tkXxwNw3sKVzqKS6DRSHOtzwljRnmiMqsInSWXzCXX5m6aA82wTJY2jX_zmV-XU093s_MmWsUpmCdGoGdnQIWG0lUufl8rlPhl1NIsGgp6RjfGqNnsQcskn0vxCwo"/>
+</div>
+<h4 class="font-headline text-xl text-on-surface mb-1">Marcus Thorne</h4>
+<p class="font-label text-primary text-xs tracking-widest uppercase mb-4">Master of Kinetic Therapy</p>
+<p class="font-body text-sm text-secondary leading-relaxed">
+                            A veteran of sports medicine focused on executive recovery and postural alignment.
+                        </p>
+</div>
+<!-- Therapist 3 -->
+<div class="group">
+<div class="aspect-[3/4] bg-surface-container overflow-hidden mb-6">
+<img alt="Therapist Sarah" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-70 group-hover:opacity-100" data-alt="Sophisticated female aesthetician in medical-grade professional attire, soft lighting, elegant posture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA--AjeGJ5OrkedJ6XBzdoMVNZwwbv00doKpINgYwu3gySdyB83gFJg17CvXn-Ykws4T7U6YMHSScyi0d5wq4b8tTEUs5yV7ezrc-dkOthJ8S43TwL-9DDIDoOohgPJZyQoUyTuNH1jQhSiSPIlyEtuJiPo0fZ0HvWWuxemQoNAWCtErMQ7oJN8abhZcF0QK_WNSTNnskbn1sgwwqTsBjnIi5w39yyUwD3jucUWT1LXooZazdy-MGCsKRptJ5JK16koRQ-NhGaj7LpS"/>
+</div>
+<h4 class="font-headline text-xl text-on-surface mb-1">Sarah Lin</h4>
+<p class="font-label text-primary text-xs tracking-widest uppercase mb-4">Dermal Specialist</p>
+<p class="font-body text-sm text-secondary leading-relaxed">
+                            Merging traditional eastern precision with modern dermatological science for skin restoration.
+                        </p>
+</div>
+<!-- Therapist 4 -->
+<div class="group">
+<div class="aspect-[3/4] bg-surface-container overflow-hidden mb-6">
+<img alt="Therapist Julian" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-70 group-hover:opacity-100" data-alt="Calm male wellness practitioner in a dark minimalist studio environment, soft side lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgQ0urlt0Erih0_7j4uMvAiRh0GoCvrhpnm5OppBbApO1fhYi-svnHmNCTm37opwsQxn24WpcEQLfxfjo0UwiJ_XeXhETmxcOWig5GZuLDcXvlK633HT7FGCy0Tduqb70NPD4uZwx8dAk4WQQReJLg-xQ2fQEWv_F1tkoFLU29V9tkUuiSwTDpC0VXqVsSzE-Z9fwf60QSSI-M7cn7qGNPt-tIkjxDLQP34nSMHfmYdXzwdwgehJ1E8bXFdeDhki2pECsK1eTG1Gol"/>
+</div>
+<h4 class="font-headline text-xl text-on-surface mb-1">Julian Ross</h4>
+<p class="font-label text-primary text-xs tracking-widest uppercase mb-4">Mindfulness Consultant</p>
+<p class="font-body text-sm text-secondary leading-relaxed">
+                            Expert in circadian rhythm alignment and acoustic resonance therapy for cognitive rest.
+                        </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Final CTA -->
+<section class="py-40 px-6 md:px-12 bg-surface text-center">
+<div class="max-w-4xl mx-auto">
+<span class="font-label text-primary tracking-[0.3em] uppercase text-xs mb-8 block">Exclusive Access</span>
+<h2 class="font-headline text-4xl md:text-7xl text-on-surface mb-12">Return to your <span class="italic text-primary">Primal Calm</span>.</h2>
+<div class="flex flex-col md:flex-row gap-6 justify-center">
+<button class="bg-[#a5cce6] text-[#053449] px-12 py-5 font-label font-bold tracking-[0.2em] text-sm uppercase hover:bg-white transition-all duration-300">Request Membership</button>
+<button class="border border-outline-variant/30 text-on-surface px-12 py-5 font-label font-bold tracking-[0.2em] text-sm uppercase hover:bg-surface-container-high transition-all duration-300">Explore Services</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-[#071d2d] py-20 px-12">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 max-w-screen-2xl mx-auto">
+<div class="md:col-span-1">
+<div class="text-lg font-headline text-[#a5cce6] mb-8">Diamond Spa</div>
+<p class="text-slate-500 font-body text-sm leading-relaxed">
+                    The intersection of high-performance recovery and quiet luxury.
+                </p>
+</div>
+<div class="flex flex-col gap-4">
+<h5 class="text-white font-label text-xs tracking-widest uppercase mb-4">Sanctuary</h5>
+<a class="text-slate-500 hover:text-[#a5cce6] font-body text-sm transition-colors duration-200" href="#">The Philosophy</a>
+<a class="text-slate-500 hover:text-[#a5cce6] font-body text-sm transition-colors duration-200" href="#">Our Heritage</a>
+<a class="text-slate-500 hover:text-[#a5cce6] font-body text-sm transition-colors duration-200" href="#">Press Inquiries</a>
+</div>
+<div class="flex flex-col gap-4">
+<h5 class="text-white font-label text-xs tracking-widest uppercase mb-4">Legal</h5>
+<a class="text-slate-500 hover:text-[#a5cce6] font-body text-sm transition-colors duration-200" href="#">Privacy Policy</a>
+<a class="text-slate-500 hover:text-[#a5cce6] font-body text-sm transition-colors duration-200" href="#">Terms of Service</a>
+<a class="text-slate-500 hover:text-[#a5cce6] font-body text-sm transition-colors duration-200" href="#">Contact</a>
+</div>
+<div class="flex flex-col gap-6">
+<h5 class="text-white font-label text-xs tracking-widest uppercase mb-4">Inquiry</h5>
+<p class="text-slate-500 font-body text-sm">concierge@diamondspa.intl</p>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-slate-500 text-xl hover:text-primary cursor-pointer" data-icon="share">share</span>
+<span class="material-symbols-outlined text-slate-500 text-xl hover:text-primary cursor-pointer" data-icon="public">public</span>
+</div>
+</div>
+</div>
+<div class="max-w-screen-2xl mx-auto mt-20 pt-8 border-t border-outline-variant/10">
+<p class="text-slate-400 font-light text-xs font-body uppercase tracking-widest">© 2024 Diamond Spa Sanctuary. International Standards of Excellence.</p>
+</div>
+</footer>
+</body></html>

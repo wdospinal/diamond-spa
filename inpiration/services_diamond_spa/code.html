@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Manrope:wght@200;300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#ffdcbe",
+                    "tertiary": "#f0bd8d",
+                    "on-secondary-container": "#adbbc1",
+                    "secondary-fixed-dim": "#bbc9cf",
+                    "on-error-container": "#ffdad6",
+                    "on-primary-container": "#103b50",
+                    "surface": "#001524",
+                    "background": "#001524",
+                    "on-tertiary": "#482905",
+                    "on-primary-fixed-variant": "#234b61",
+                    "surface-container": "#0b2131",
+                    "surface-container-high": "#172c3c",
+                    "surface-container-lowest": "#00101c",
+                    "surface-dim": "#001524",
+                    "on-secondary": "#253237",
+                    "on-primary": "#053449",
+                    "inverse-primary": "#3d6379",
+                    "error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#3c494e",
+                    "surface-container-low": "#071d2d",
+                    "secondary-fixed": "#d7e5eb",
+                    "outline-variant": "#42484c",
+                    "tertiary-fixed-dim": "#f0bd8d",
+                    "error": "#ffb4ab",
+                    "primary-fixed-dim": "#a5cce6",
+                    "on-background": "#cfe5fa",
+                    "inverse-on-surface": "#1e3243",
+                    "on-error": "#690005",
+                    "on-tertiary-fixed": "#2d1600",
+                    "surface-variant": "#223747",
+                    "primary-container": "#7fa5be",
+                    "primary": "#a5cce6",
+                    "surface-tint": "#a5cce6",
+                    "outline": "#8c9197",
+                    "surface-bright": "#273b4c",
+                    "secondary": "#bbc9cf",
+                    "primary-fixed": "#c5e7ff",
+                    "tertiary-container": "#c6976a",
+                    "on-tertiary-fixed-variant": "#623f1a",
+                    "inverse-surface": "#cfe5fa",
+                    "on-surface-variant": "#c1c7cd",
+                    "on-tertiary-container": "#50300b",
+                    "on-primary-fixed": "#001e2d",
+                    "surface-container-highest": "#223747",
+                    "secondary-container": "#3e4b50",
+                    "on-surface": "#cfe5fa",
+                    "on-secondary-fixed": "#101d22"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Noto Serif"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #001524;
+        }
+        .font-serif { font-family: 'Noto Serif', serif; }
+        .font-sans { font-family: 'Manrope', sans-serif; }
+        .glass-nav {
+            backdrop-filter: blur(20px);
+            background-color: rgba(0, 21, 36, 0.8);
+        }
+    </style>
+</head>
+<body class="text-on-surface selection:bg-primary/30">
+<!-- Top Navigation -->
+<nav class="fixed top-0 w-full z-50 glass-nav border-none">
+<div class="flex justify-between items-center px-12 py-6 w-full max-w-screen-2xl mx-auto">
+<div class="text-2xl font-serif tracking-tighter text-[#a5cce6]">Diamond Spa</div>
+<div class="hidden md:flex items-center gap-10">
+<a class="text-[#a5cce6] border-b-2 border-[#a5cce6] pb-1 font-label text-sm uppercase tracking-widest" href="#">Services</a>
+<a class="text-slate-400 font-medium hover:text-[#a5cce6] transition-colors font-label text-sm uppercase tracking-widest" href="#">Sanctuary</a>
+<a class="text-slate-400 font-medium hover:text-[#a5cce6] transition-colors font-label text-sm uppercase tracking-widest" href="#">Gallery</a>
+<a class="text-slate-400 font-medium hover:text-[#a5cce6] transition-colors font-label text-sm uppercase tracking-widest" href="#">Location</a>
+</div>
+<button class="bg-[#a5cce6] text-[#053449] px-6 py-2.5 rounded-none font-label text-xs font-bold uppercase tracking-widest hover:bg-white transition-all duration-300">
+                Book Now
+            </button>
+</div>
+</nav>
+<main class="pt-32">
+<!-- Hero Header -->
+<header class="px-12 max-w-screen-2xl mx-auto mb-24">
+<div class="max-w-4xl">
+<span class="label-sm uppercase tracking-[0.3em] text-primary mb-4 block">The Selection</span>
+<h1 class="text-6xl md:text-8xl font-serif font-light leading-tight text-on-surface">The Services</h1>
+<p class="mt-8 text-on-surface-variant text-lg max-w-xl font-light leading-relaxed">
+                    Meticulously engineered treatments for the modern man. A fusion of therapeutic precision and absolute stillness.
+                </p>
+</div>
+</header>
+<!-- Services Grid -->
+<div class="space-y-32 mb-40">
+<!-- Service 1: Deep Tissue -->
+<section class="max-w-screen-2xl mx-auto px-12">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<div class="lg:col-span-7 order-2 lg:order-1">
+<div class="relative group overflow-hidden">
+<div class="absolute inset-0 bg-surface-container/20 group-hover:bg-transparent transition-all duration-700 z-10"></div>
+<img alt="Deep Tissue Massage" class="w-full aspect-[16/9] object-cover grayscale brightness-75 hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100" data-alt="Monochrome close-up of a muscular man's back receiving a professional deep tissue massage in a dim, moody spa setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4TLgQEAJhMmHRcBiuKsxNpSZmN3_4KIid1fDSZbEr_X_qUEklAvU71y95lrzrua7R9eMETC3MxquRHr5uaMHs2ruFpONqsDW9stQ0I2NrQ0KGhRWNW6WZsVjLB80sqxl4x6nH55tDQni_sqla9RNdXaC7Zy0CvU2BayQTQfZondAPM9-9_eW6nJuhgjjE70qM4DlrUpct4QqC5-XaKMxgPrJIEageTO_hFE7CoTdnvrX-DXGgHKHTJEL8QPvuwNVYgNZH7rOCP1A4"/>
+</div>
+</div>
+<div class="lg:col-span-5 order-1 lg:order-2 lg:pl-12">
+<span class="text-tertiary font-label text-xs uppercase tracking-[0.4em] mb-4 block">Strength &amp; Recovery</span>
+<h2 class="text-4xl md:text-5xl font-serif mb-6 text-on-surface">Deep Tissue Massage</h2>
+<div class="flex items-center gap-4 mb-8">
+<span class="text-2xl font-light text-primary">$180</span>
+<span class="w-1.5 h-1.5 bg-outline-variant rounded-full"></span>
+<span class="text-sm font-label uppercase tracking-widest text-on-surface-variant">90 Minutes</span>
+</div>
+<p class="text-on-surface-variant mb-10 leading-relaxed font-light">
+                            Targeted release for deep-seated muscle tension. Using slow, firm strokes and focused pressure, this treatment addresses chronic aches, postural imbalances, and athletic recovery. Engineered for high-intensity lifestyles.
+                        </p>
+<div class="flex flex-col gap-6">
+<button class="w-fit bg-primary text-on-primary px-10 py-4 font-label text-xs font-bold uppercase tracking-[0.2em] transition-all hover:bg-white">
+                                Book Session
+                            </button>
+<div class="flex items-center gap-2 text-outline text-xs uppercase tracking-widest">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+                                Includes complimentary hydro-thermal access
+                            </div>
+</div>
+</div>
+</div>
+</section>
+<!-- Service 2: Relaxation (Asymmetric Swap) -->
+<section class="bg-surface-container-low py-32">
+<div class="max-w-screen-2xl mx-auto px-12">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<div class="lg:col-span-5 pr-12">
+<span class="text-tertiary font-label text-xs uppercase tracking-[0.4em] mb-4 block">Neurological Reset</span>
+<h2 class="text-4xl md:text-5xl font-serif mb-6 text-on-surface">Relaxation Massage</h2>
+<div class="flex items-center gap-4 mb-8">
+<span class="text-2xl font-light text-primary">$150</span>
+<span class="w-1.5 h-1.5 bg-outline-variant rounded-full"></span>
+<span class="text-sm font-label uppercase tracking-widest text-on-surface-variant">60 Minutes</span>
+</div>
+<p class="text-on-surface-variant mb-10 leading-relaxed font-light">
+                                A total mental reset designed for cortisol reduction. Utilizing long, rhythmic strokes, this therapy calms the central nervous system and facilitates profound mental clarity. The ultimate antidote to decision fatigue.
+                            </p>
+<button class="w-fit bg-transparent border border-outline-variant text-on-surface px-10 py-4 font-label text-xs font-bold uppercase tracking-[0.2em] transition-all hover:bg-surface-bright">
+                                Book Session
+                            </button>
+</div>
+<div class="lg:col-span-7">
+<div class="relative group overflow-hidden">
+<div class="absolute inset-0 bg-surface-container/20 group-hover:bg-transparent transition-all duration-700 z-10"></div>
+<img alt="Relaxation Session" class="w-full aspect-[16/9] object-cover grayscale brightness-75 hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100" data-alt="A man's profile in soft shadow, eyes closed in peace, with steam rising in a minimalist, luxury dark stone spa environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbS-K-jnnLmzmUa6oia4LgPSOU9ymOYsO5sGsiCBFyWAwcA_WMyqzZYLSoQXl0aSQWrJbGE_piHfbwK6I0FzjUXVmffmhQw1dy3kMqWuR0ZXffAmVkGB25McjAZ-o5O-RueQwwfSZ4NcQ55nusS4MTxcdQ9tVU6X0mPrs2CJOnLNZhO6VqTQ3zhiBz99204KWeXI9fYdRDFFPIqnPLo2jjJO-WlpLSfPGWE2VDl2fqOGDiFJu0uUYXKGJQoHaMbr7BkmzAnKmRpV-w"/>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Service 3: Facial Treatments -->
+<section class="max-w-screen-2xl mx-auto px-12">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<div class="lg:col-span-7">
+<div class="grid grid-cols-2 gap-4">
+<img alt="Skincare Details" class="w-full h-80 object-cover grayscale brightness-50" data-alt="Close up of high-end skincare products on a dark granite surface with sharp directional lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBR-nsOvHmHpT_Qg3ZFMuCBnmhHWOxLkBTwm7zQfb7_y0_DmwPabW2NqBVv1419NE-rjb8n8TFEyWCoi-Dhh2_R9RG6BHxkRiSxOPPDEDAjmTssalykJHil_jl2XvR-TZBATL6ECGA_DwyLeA1bCC1AtgnDSFYL_eRmtlUdOtlRm11BtzDaDn2CTMzspp3JRblnSVCABPYeG0uVp2PV5E1MZ9FoL9dr3c1Uq-CfT0jQojp2gbbKrIRCS1t0Vn7w5fE-TM51T-wJji5R"/>
+<img alt="Facial Treatment" class="w-full h-80 object-cover grayscale mt-12 brightness-75" data-alt="A male model having a precise facial treatment applied in a dark, clinical yet luxury setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7VHiRlBlZil1gotLZ9v49B1bjjg-_FCTYNxKj85Hx7Z0fezD2vu9rKd_yHep8VzZ9oa2ayB6XqNzjF78HC2RfCHVqwrxCJPBwCE-DTVQ-CDYLcJT62gef7EMJRprKYi9eo2hZ0qv3HvhhSwLallM5IN_BCcNUJ12wDuK4hmpSsGNDVhuZshxoBuJIPVvetDvhq7cqBPi97YGWQiCLVZlJg5Gb0su4kATn1wczDuB6EsyTXFGC1M9ZwRrFLwu5z7D-0_v7V2CvZ8oz"/>
+</div>
+</div>
+<div class="lg:col-span-5 lg:pl-12">
+<span class="text-tertiary font-label text-xs uppercase tracking-[0.4em] mb-4 block">Precision Grooming</span>
+<h2 class="text-4xl md:text-5xl font-serif mb-6 text-on-surface">Facial Rejuvenation</h2>
+<div class="flex items-center gap-4 mb-8">
+<span class="text-2xl font-light text-primary">$165</span>
+<span class="w-1.5 h-1.5 bg-outline-variant rounded-full"></span>
+<span class="text-sm font-label uppercase tracking-widest text-on-surface-variant">45 Minutes</span>
+</div>
+<p class="text-on-surface-variant mb-10 leading-relaxed font-light">
+                            High-performance skin rejuvenation utilizing medical-grade actives and cold-press therapy. Specifically formulated for thicker male skin to combat fatigue, environmental damage, and signs of aging.
+                        </p>
+<ul class="mb-10 space-y-3">
+<li class="flex items-center gap-3 text-sm text-on-surface-variant">
+<span class="w-1 h-1 bg-primary"></span> Deep Pore Extraction
+                            </li>
+<li class="flex items-center gap-3 text-sm text-on-surface-variant">
+<span class="w-1 h-1 bg-primary"></span> Cryo-Therapeutic Sculpting
+                            </li>
+<li class="flex items-center gap-3 text-sm text-on-surface-variant">
+<span class="w-1 h-1 bg-primary"></span> Peptide Infusion
+                            </li>
+</ul>
+<button class="w-full bg-primary text-on-primary px-10 py-5 font-label text-xs font-bold uppercase tracking-[0.2em] transition-all hover:bg-white">
+                            Book Session
+                        </button>
+</div>
+</div>
+</section>
+</div>
+<!-- Call to Action -->
+<section class="py-40 bg-surface-container-lowest border-y border-outline-variant/10 text-center">
+<div class="max-w-2xl mx-auto px-6">
+<h2 class="text-4xl font-serif mb-8 italic">Silence is the ultimate luxury.</h2>
+<p class="text-outline mb-12 uppercase tracking-widest text-xs">Secure your place in the sanctuary.</p>
+<div class="flex flex-col md:flex-row justify-center gap-6">
+<button class="bg-primary text-on-primary px-12 py-5 font-label text-xs font-bold uppercase tracking-[0.2em]">Reserve Now</button>
+<button class="bg-transparent border border-outline-variant text-on-surface px-12 py-5 font-label text-xs font-bold uppercase tracking-[0.2em]">Inquire for Memberships</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-[#071d2d] py-20 px-12">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 max-w-screen-2xl mx-auto">
+<div class="col-span-1 md:col-span-1">
+<div class="text-lg font-serif text-[#a5cce6] mb-6 uppercase tracking-tighter">Diamond Spa</div>
+<p class="text-slate-500 font-light text-sm leading-relaxed">
+                    The intersection of tradition and modern therapeutic excellence. Curated for the discerning man.
+                </p>
+</div>
+<div class="flex flex-col gap-4">
+<span class="text-on-surface text-xs font-bold uppercase tracking-widest mb-2">Sanctuary</span>
+<a class="text-slate-500 hover:text-[#a5cce6] text-sm transition-colors" href="#">Private Suites</a>
+<a class="text-slate-500 hover:text-[#a5cce6] text-sm transition-colors" href="#">Hydro-Lounge</a>
+<a class="text-slate-500 hover:text-[#a5cce6] text-sm transition-colors" href="#">Grooming Parlor</a>
+</div>
+<div class="flex flex-col gap-4">
+<span class="text-on-surface text-xs font-bold uppercase tracking-widest mb-2">Information</span>
+<a class="text-slate-500 hover:text-[#a5cce6] text-sm transition-colors" href="#">Privacy Policy</a>
+<a class="text-slate-500 hover:text-[#a5cce6] text-sm transition-colors" href="#">Terms of Service</a>
+<a class="text-slate-500 hover:text-[#a5cce6] text-sm transition-colors" href="#">Contact</a>
+</div>
+<div class="flex flex-col gap-4">
+<span class="text-on-surface text-xs font-bold uppercase tracking-widest mb-2">Location</span>
+<p class="text-slate-500 text-sm leading-relaxed">
+                    1221 Obsidian Heights,<br/>
+                    Level 40, Midnight District<br/>
+                    +1 (800) DIAMOND
+                </p>
+</div>
+</div>
+<div class="max-w-screen-2xl mx-auto mt-20 pt-8 border-t border-outline-variant/10 flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="text-slate-400 font-light text-xs tracking-wide">
+                © 2024 Diamond Spa Sanctuary. International Standards of Excellence.
+            </div>
+<div class="flex gap-8">
+<span class="material-symbols-outlined text-slate-500 cursor-pointer hover:text-primary transition-colors">share_reviews</span>
+<span class="material-symbols-outlined text-slate-500 cursor-pointer hover:text-primary transition-colors">person</span>
+<span class="material-symbols-outlined text-slate-500 cursor-pointer hover:text-primary transition-colors">mail</span>
+</div>
+</div>
+</footer>
+</body></html>
