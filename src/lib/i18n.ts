@@ -154,8 +154,8 @@ const dict = {
       reserveDirections: 'Reserve & Receive Directions',
       transportLabel: 'Getting Here',
       transport: [
-        { icon: 'directions_subway', label: 'Metro', detail: 'Industriales Station — 8 min by taxi' },
-        { icon: 'local_parking', label: 'Parking', detail: 'Parking available in the area' },
+        { icon: 'directions_car', label: 'Driving', detail: '5 min drive from Parque El Poblado' },
+        { icon: 'local_parking', label: 'Parking', detail: 'Parking is available in front of the premises' },
         { icon: 'flight', label: 'Airport', detail: '25 min from Olaya Herrera Airport' },
       ],
       ctaLabel: 'Your Journey Begins',
@@ -360,8 +360,8 @@ const dict = {
       reserveDirections: 'Reservar y Recibir Indicaciones',
       transportLabel: 'Cómo Llegar',
       transport: [
-        { icon: 'directions_subway', label: 'Metro', detail: 'Estación Industriales — 8 min en taxi' },
-        { icon: 'local_parking', label: 'Parqueadero', detail: 'Zona de parqueo disponible en el sector' },
+        { icon: 'directions_car', label: 'Manejando', detail: '5 min en carro desde el Parque El Poblado' },
+        { icon: 'local_parking', label: 'Parqueadero', detail: 'Zona de parqueo disponible frente al local' },
         { icon: 'flight', label: 'Aeropuerto', detail: '25 min desde el Aeropuerto Olaya Herrera' },
       ],
       ctaLabel: 'Tu Viaje Comienza',
