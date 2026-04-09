@@ -16,7 +16,7 @@ export type InitialExpenseLine = {
 export const INITIAL_EXPENSE_LINES: InitialExpenseLine[] = [
   {
     categoryId: 'infra',
-    title: 'Construcción drywall',
+    title: 'Construcción drywall spa',
     amountCop: 3_000_000,
     detail: 'Nota en hojas: restamos 2.000.000',
   },
