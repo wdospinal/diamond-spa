@@ -1,12 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 
 const WHATSAPP_NUMBER = '573145484227'
-const WHATSAPP_BOOK = `https://wa.me/${WHATSAPP_NUMBER}?text=Hola%2C%20me%20gustar%C3%ADa%20reservar%20una%20sesi%C3%B3n%20en%20Diamond%20Spa.`
 const WHATSAPP_CONTACT = `https://wa.me/${WHATSAPP_NUMBER}?text=Hola%2C%20quisiera%20hablar%20con%20la%20recepcionista%20de%20Diamond%20Spa.`
 
 const links = [
@@ -24,9 +22,8 @@ export default function Navigation() {
       <div className="flex justify-between items-center px-6 md:px-12 py-5 w-full max-w-screen-2xl mx-auto">
 
         {/* Logo */}
-        <Link href="/" className="flex items-center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="Diamond Spa" className="h-14 w-auto" />
+        <Link href="/" className="text-xl md:text-2xl font-headline tracking-tighter text-primary">
+          Diamond Spa
         </Link>
 
         {/* Desktop links */}
@@ -60,15 +57,12 @@ export default function Navigation() {
             <span className="material-symbols-outlined text-sm">support_agent</span>
             Contact Receptionist
           </a>
-          <a
-            href={WHATSAPP_BOOK}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/book"
             className="hidden md:flex items-center gap-2 bg-primary text-on-primary px-7 py-2.5 font-label font-bold tracking-widest text-xs uppercase hover:bg-white transition-all duration-300"
           >
-            <span className="material-symbols-outlined text-sm">chat</span>
             Book Now
-          </a>
+          </Link>
 
           {/* Mobile hamburger */}
           <button
@@ -103,15 +97,13 @@ export default function Navigation() {
           >
             Contact Receptionist
           </a>
-          <a
-            href={WHATSAPP_BOOK}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/book"
             onClick={() => setMenuOpen(false)}
             className="w-fit bg-primary text-on-primary px-8 py-3 font-label font-bold tracking-widest text-xs uppercase"
           >
             Book Now
-          </a>
+          </Link>
         </div>
       )}
     </nav>

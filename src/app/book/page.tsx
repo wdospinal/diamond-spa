@@ -89,9 +89,45 @@ export default function BookPage() {
     setSelectedTime(null)
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!selectedService || !selectedDay || !selectedTime) return
+
+    const service = SERVICES.find(s => s.id === selectedService)
+    const dateStr = `${MONTHS[calMonth]} ${selectedDay}, ${calYear}`
+
+    const waText =
+      `Hola Diamond Spa! Me gustaría reservar una sesión:\n\n` +
+      `📋 Servicio: ${service?.name}\n` +
+      `📅 Fecha: ${dateStr}\n` +
+      `⏰ Hora: ${selectedTime}\n` +
+      `⏱ Duración: ${service?.duration}\n\n` +
+      `👤 Nombre: ${form.firstName} ${form.lastName}\n` +
+      `📧 Email: ${form.email}\n` +
+      `📱 Teléfono: ${form.phone}\n` +
+      (form.requests ? `💬 Solicitudes especiales: ${form.requests}\n` : '') +
+      `\n💰 Total: $${service?.price}`
+
+    window.open(`https://wa.me/573145484227?text=${encodeURIComponent(waText)}`, '_blank')
+
+    const smsBody =
+      `[Diamond Spa] Nueva reserva\n` +
+      `Servicio: ${service?.name} (${service?.duration})\n` +
+      `Fecha: ${dateStr} a las ${selectedTime}\n` +
+      `Cliente: ${form.firstName} ${form.lastName}\n` +
+      `Tel: ${form.phone} | Email: ${form.email}` +
+      (form.requests ? `\nNotas: ${form.requests}` : '')
+
+    try {
+      await fetch('/api/send-sms', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: smsBody }),
+      })
+    } catch {
+      // SMS failure is non-blocking — WhatsApp is the primary channel
+    }
+
     setConfirmed(true)
   }
 
