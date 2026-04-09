@@ -45,6 +45,7 @@ export default function AdminDashboardPage() {
   const [seedExpensesDone, setSeedExpensesDone] = useState(false)
   const [seeding, setSeeding] = useState(false)
   const [notice, setNotice] = useState('')
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   const load = useCallback(async () => {
     setError('')
@@ -255,7 +256,7 @@ export default function AdminDashboardPage() {
                   </span>
                 </th>
                 <th className="py-3 px-4 font-medium">Nota</th>
-                <th className="py-3 px-4 font-medium text-right w-28">Acciones</th>
+                <th className="py-3 px-4 font-medium text-right min-w-[9rem]">Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -288,13 +289,58 @@ export default function AdminDashboardPage() {
                     </td>
                     <td className="py-3 px-4 text-[#8a9299] text-xs max-w-xs">{e.note ?? '—'}</td>
                     <td className="py-3 px-4 text-right">
-                      <button
-                        type="button"
-                        onClick={() => setLedgerModal({ mode: 'edit', entry: e })}
-                        className="font-label text-[10px] uppercase tracking-widest text-[#a5cce6] border border-[#a5cce6]/35 px-3 py-1.5 hover:bg-[#1a3d52] transition-colors"
-                      >
-                        Editar
-                      </button>
+                      <div className="flex flex-wrap justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setLedgerModal({ mode: 'edit', entry: e })}
+                          className="font-label text-[10px] uppercase tracking-widest text-[#a5cce6] border border-[#a5cce6]/35 px-3 py-1.5 hover:bg-[#1a3d52] transition-colors"
+                        >
+                          Editar
+                        </button>
+                        <button
+                          type="button"
+                          disabled={deletingId === e.id}
+                          onClick={() => {
+                            if (
+                              !window.confirm(
+                                '¿Eliminar este movimiento? Esta acción no se puede deshacer.'
+                              )
+                            ) {
+                              return
+                            }
+                            void (async () => {
+                              setDeletingId(e.id)
+                              setError('')
+                              try {
+                                const res = await fetch(
+                                  `/api/ledger?id=${encodeURIComponent(e.id)}`,
+                                  { method: 'DELETE', credentials: 'same-origin' }
+                                )
+                                const data = await res.json().catch(() => ({}))
+                                if (!res.ok) {
+                                  setError(
+                                    typeof data.error === 'string'
+                                      ? data.error
+                                      : 'No se pudo eliminar'
+                                  )
+                                  return
+                                }
+                                if (ledgerModal?.mode === 'edit' && ledgerModal.entry.id === e.id) {
+                                  setLedgerModal(null)
+                                }
+                                await load()
+                              } catch {
+                                setError('Error de red')
+                              } finally {
+                                setDeletingId(null)
+                              }
+                            })()
+                          }}
+                          className="font-label text-[10px] uppercase tracking-widest text-[#ffb4ab] border border-[#ffb4ab]/35 px-3 py-1.5 hover:bg-[#3d1818] transition-colors disabled:opacity-40"
+                        >
+                          {deletingId === e.id ? '…' : 'Eliminar'}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))

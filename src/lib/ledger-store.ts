@@ -123,3 +123,12 @@ export async function updateLedgerEntry(
   await writeFile(FILE, JSON.stringify(list, null, 2), 'utf8')
   return row
 }
+
+export async function deleteLedgerEntry(id: string): Promise<boolean> {
+  const list = await readLedger()
+  const next = list.filter(x => x.id !== id)
+  if (next.length === list.length) return false
+  await ensureDir()
+  await writeFile(FILE, JSON.stringify(next, null, 2), 'utf8')
+  return true
+}

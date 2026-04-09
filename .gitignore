@@ -36,3 +36,4 @@ next-env.d.ts
 # persisted bookings (local / self-hosted)
 /data/bookings.json
 /data/ledger.json
+/data/.seed-expenses-v1

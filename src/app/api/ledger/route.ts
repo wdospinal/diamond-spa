@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { appendLedgerEntry, updateLedgerEntry } from '@/lib/ledger-store'
+import { appendLedgerEntry, deleteLedgerEntry, updateLedgerEntry } from '@/lib/ledger-store'
 import { adminCookieName, verifySessionToken } from '@/lib/admin-session'
 import { EXPENSE_CATEGORIES } from '@/lib/expense-categories'
 
@@ -139,6 +139,34 @@ export async function PATCH(req: NextRequest) {
     console.error('ledger update failed', e)
     return NextResponse.json(
       { error: 'No se pudo actualizar. En hosting sin disco persistente configure almacenamiento.' },
+      { status: 503 }
+    )
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  const auth = requireAuth()
+  if (auth) return auth
+
+  let id = req.nextUrl.searchParams.get('id')?.trim() ?? ''
+  if (!id) {
+    try {
+      const body = (await req.json()) as { id?: string }
+      if (typeof body.id === 'string') id = body.id.trim()
+    } catch {
+      /* query only */
+    }
+  }
+  if (!id) return bad('Falta el id del movimiento')
+
+  try {
+    const ok = await deleteLedgerEntry(id)
+    if (!ok) return NextResponse.json({ error: 'Movimiento no encontrado' }, { status: 404 })
+    return NextResponse.json({ ok: true })
+  } catch (e) {
+    console.error('ledger delete failed', e)
+    return NextResponse.json(
+      { error: 'No se pudo eliminar. En hosting sin disco persistente configure almacenamiento.' },
       { status: 503 }
     )
   }
