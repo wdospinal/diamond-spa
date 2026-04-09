@@ -59,7 +59,7 @@ export default function BookClient({ locale }: { locale: string }) {
     const dateStr = `${t.months[calMonth]} ${selectedDay}, ${calYear}`
 
     const waText =
-      `Hola Diamond Spa! Me gustaría reservar una sesión:\n\n` +
+      `Hola Diamond Spa! Me gustaría reservar una cita:\n\n` +
       `📋 ${t.serviceLabel}: ${service?.name}\n` +
       `📅 ${t.dateLabel}: ${dateStr}\n` +
       `⏰ ${t.timeLabel}: ${selectedTime}\n` +
