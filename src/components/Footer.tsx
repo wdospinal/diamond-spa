@@ -8,6 +8,7 @@ export default function Footer() {
   const pathname = usePathname()
   const locale: Locale = pathname?.startsWith('/en') ? 'en' : 'es'
   const t = getDict(locale).footer
+  const legal = (slug: 'privacy' | 'terms' | 'press') => `/${locale}/${slug}`
 
   const IGSvg = (
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -31,21 +32,21 @@ export default function Footer() {
           <p className="text-slate-500 font-body text-sm leading-relaxed">{t.tagline}</p>
         </div>
 
-        {/* Sanctuary */}
+        {/* About us */}
         <div className="flex flex-col gap-3">
-          <h5 className="text-on-surface font-label text-xs tracking-widest uppercase mb-2">{t.sanctuaryLabel}</h5>
+          <h5 className="text-on-surface font-label text-xs tracking-widest uppercase mb-2">{t.aboutUsLabel}</h5>
           <Link href={`/${locale}/services`} className="text-slate-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.services}</Link>
           <Link href={`/${locale}/about`}    className="text-slate-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.philosophy}</Link>
-          <Link href={`/${locale}/about`}    className="text-slate-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.heritage}</Link>
+          <Link href={`/${locale}/history`}  className="text-slate-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.heritage}</Link>
           <Link href={`/${locale}/location`} className="text-slate-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.location}</Link>
         </div>
 
         {/* Legal */}
         <div className="flex flex-col gap-3">
           <h5 className="text-on-surface font-label text-xs tracking-widest uppercase mb-2">{t.legalLabel}</h5>
-          <Link href="#" className="text-slate-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.privacy}</Link>
-          <Link href="#" className="text-slate-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.terms}</Link>
-          <Link href="#" className="text-slate-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.press}</Link>
+          <Link href={legal('privacy')} className="text-slate-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.privacy}</Link>
+          <Link href={legal('terms')} className="text-slate-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.terms}</Link>
+          <Link href={legal('press')} className="text-slate-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.press}</Link>
           <Link href="#" className="text-slate-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.contact}</Link>
         </div>
 
@@ -66,11 +67,11 @@ export default function Footer() {
 
       <div className="max-w-screen-2xl mx-auto mt-16 pt-8 border-t border-outline-variant/10 flex flex-col md:flex-row justify-between items-center gap-4">
         <p className="text-slate-500 font-body text-xs tracking-widest uppercase">{t.copyright}</p>
-        <div className="flex gap-6">
-          <Link href="#" className="text-slate-500 hover:text-primary font-body text-xs tracking-widest uppercase transition-colors">{t.privacy}</Link>
-          <Link href="#" className="text-slate-500 hover:text-primary font-body text-xs tracking-widest uppercase transition-colors">{t.terms}</Link>
-          <Link href="#" className="text-slate-500 hover:text-primary font-body text-xs tracking-widest uppercase transition-colors">{t.press}</Link>
-        </div>
+        <nav className="flex flex-wrap justify-center gap-6 md:gap-8" aria-label={t.legalLabel}>
+          <Link href={legal('privacy')} className="text-slate-500 hover:text-on-surface font-body text-xs tracking-widest uppercase transition-colors">{t.privacy}</Link>
+          <Link href={legal('terms')} className="text-slate-500 hover:text-on-surface font-body text-xs tracking-widest uppercase transition-colors">{t.terms}</Link>
+          <Link href={legal('press')} className="text-slate-500 hover:text-on-surface font-body text-xs tracking-widest uppercase transition-colors">{t.press}</Link>
+        </nav>
       </div>
     </footer>
   )
