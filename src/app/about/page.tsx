@@ -41,7 +41,7 @@ export default function AboutPage() {
     <>
       {/* ── HERO ─────────────────────────────────────────────── */}
       <section className="relative min-h-[90vh] flex items-center px-6 md:px-12 overflow-hidden bg-surface">
-        <div className="max-w-screen-2xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center pt-24">
+        <div className="max-w-screen-2xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center pt-10 md:pt-14">
 
           {/* Text */}
           <div className="lg:col-span-7 z-10">

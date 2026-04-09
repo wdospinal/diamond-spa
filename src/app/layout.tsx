@@ -1,9 +1,23 @@
 import type { Metadata } from 'next'
+import { Manrope, Noto_Serif } from 'next/font/google'
 import './globals.css'
-import Navigation from '@/components/Navigation'
-import Footer from '@/components/Footer'
+import SiteShell from '@/components/SiteShell'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
+
+const notoSerif = Noto_Serif({
+  subsets: ['latin', 'latin-ext'],
+  weight: ['300', '400', '700'],
+  style: ['normal', 'italic'],
+  variable: '--font-noto-serif',
+  display: 'swap',
+})
+
+const manrope = Manrope({
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-manrope',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'Diamond Spa — Spa for Men and Women in Medellín',
@@ -18,19 +32,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className={`dark ${notoSerif.variable} ${manrope.variable}`}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
           rel="stylesheet"
         />
       </head>
       <body className="bg-surface text-on-surface font-body antialiased">
-        <Navigation />
-        <main>{children}</main>
-        <Footer />
+        <SiteShell>{children}</SiteShell>
         <Analytics />
         <SpeedInsights />
       </body>

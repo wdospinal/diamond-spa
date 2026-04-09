@@ -31,7 +31,7 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-r from-surface via-surface/80 to-surface/20" />
         </div>
 
-        <div className="relative z-10 max-w-screen-2xl mx-auto w-full px-6 md:px-12 pt-32 pb-24">
+        <div className="relative z-10 max-w-screen-2xl mx-auto w-full px-6 md:px-12 pt-10 md:pt-14 pb-24">
           <span className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-6 block">
             The Midnight Sanctuary
           </span>

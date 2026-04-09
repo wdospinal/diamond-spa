@@ -1,30 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-
-const SERVICES = [
-  {
-    id: 'deep-tissue',
-    name: 'Deep Tissue Massage',
-    category: 'Strength & Recovery',
-    price: 180,
-    duration: '90 min',
-  },
-  {
-    id: 'relaxation',
-    name: 'Relaxation Massage',
-    category: 'Neurological Reset',
-    price: 150,
-    duration: '60 min',
-  },
-  {
-    id: 'facial',
-    name: 'Facial Rejuvenation',
-    category: 'Precision Grooming',
-    price: 165,
-    duration: '45 min',
-  },
-]
+import { SERVICES } from '@/lib/services'
 
 const TIME_SLOTS = [
   '7:00 AM', '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM',
@@ -128,6 +105,27 @@ export default function BookPage() {
       // SMS failure is non-blocking — WhatsApp is the primary channel
     }
 
+    try {
+      await fetch('/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          serviceId: selectedService,
+          year: calYear,
+          monthIndex: calMonth,
+          day: selectedDay,
+          timeSlot: selectedTime,
+          firstName: form.firstName,
+          lastName: form.lastName,
+          email: form.email,
+          phone: form.phone,
+          requests: form.requests,
+        }),
+      })
+    } catch {
+      // Persistence failure is non-blocking for the guest flow
+    }
+
     setConfirmed(true)
   }
 
@@ -169,7 +167,7 @@ export default function BookPage() {
   return (
     <>
       {/* ── HERO ─────────────────────────────────────────────── */}
-      <header className="pt-40 pb-16 px-6 md:px-12 bg-surface">
+      <header className="pt-12 md:pt-16 pb-16 px-6 md:px-12 bg-surface">
         <div className="max-w-screen-2xl mx-auto">
           <span className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-5 block">Secure Your Session</span>
           <h1 className="font-headline text-6xl md:text-8xl text-on-surface font-light leading-tight">Reserve</h1>

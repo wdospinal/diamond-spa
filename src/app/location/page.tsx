@@ -22,7 +22,7 @@ export default function LocationPage() {
   return (
     <>
       {/* ── HERO ─────────────────────────────────────────────── */}
-      <header className="pt-40 pb-20 px-6 md:px-12 bg-surface">
+      <header className="pt-12 md:pt-16 pb-20 px-6 md:px-12 bg-surface">
         <div className="max-w-screen-2xl mx-auto">
           <span className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-6 block">Find Us</span>
           <h1 className="font-headline text-6xl md:text-8xl text-on-surface font-light leading-tight">

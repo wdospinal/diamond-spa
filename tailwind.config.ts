@@ -2,11 +2,7 @@ import type { Config } from 'tailwindcss'
 
 const config: Config = {
   darkMode: 'class',
-  content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
-  ],
+  content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     extend: {
       colors: {
@@ -59,9 +55,9 @@ const config: Config = {
         'on-error-container':         '#ffdad6',
       },
       fontFamily: {
-        headline: ['Noto Serif', 'Georgia', 'serif'],
-        body:     ['Manrope', 'system-ui', 'sans-serif'],
-        label:    ['Manrope', 'system-ui', 'sans-serif'],
+        headline: ['var(--font-noto-serif)', 'Noto Serif', 'Georgia', 'serif'],
+        body:     ['var(--font-manrope)', 'Manrope', 'system-ui', 'sans-serif'],
+        label:    ['var(--font-manrope)', 'Manrope', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         DEFAULT: '0.125rem',

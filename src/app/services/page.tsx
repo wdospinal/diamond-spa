@@ -22,7 +22,7 @@ export default function ServicesPage() {
   return (
     <>
       {/* ── HERO ─────────────────────────────────────────────── */}
-      <header className="pt-40 pb-24 px-6 md:px-12 bg-surface">
+      <header className="pt-12 md:pt-16 pb-24 px-6 md:px-12 bg-surface">
         <div className="max-w-screen-2xl mx-auto max-w-4xl">
           <span className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-5 block">The Selection</span>
           <h1 className="font-headline text-6xl md:text-8xl text-on-surface font-light leading-tight">The Services</h1>
