@@ -3,7 +3,12 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { getDict, type Locale } from '@/lib/i18n'
-import { SERVICES, formatCop, type DurationMinutes } from '@/lib/services'
+import { SERVICES, formatCop, type DurationMinutes, type ServiceDef } from '@/lib/services'
+
+type DurationService = ServiceDef & { pricingModel: 'duration'; prices: Record<DurationMinutes, number> }
+const MASSAGE_SERVICES = (SERVICES as unknown as ServiceDef[]).filter(
+  (s): s is DurationService => s.pricingModel === 'duration'
+)
 
 function buildCalendar(year: number, month: number) {
   const firstDay = new Date(year, month, 1).getDay()
@@ -38,17 +43,17 @@ export default function BookClient({ locale }: { locale: string }) {
   const [confirmed, setConfirmed] = useState(false)
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', requests: '' })
 
-  // Pre-select service from ?service= query param
+  // Pre-select service from ?service= query param (massages only)
   useEffect(() => {
     const svcParam = searchParams?.get('service')
-    if (svcParam && SERVICES.find(s => s.id === svcParam)) {
+    if (svcParam && MASSAGE_SERVICES.find(s => s.id === svcParam)) {
       setSelectedService(svcParam)
     }
   }, [searchParams])
 
   const cells = buildCalendar(calYear, calMonth)
 
-  const selectedServiceObj = SERVICES.find(s => s.id === selectedService)
+  const selectedServiceObj = MASSAGE_SERVICES.find(s => s.id === selectedService)
   const selectedPriceCop = selectedServiceObj && selectedDuration
     ? selectedServiceObj.prices[selectedDuration]
     : null
@@ -70,7 +75,7 @@ export default function BookClient({ locale }: { locale: string }) {
     setSelectedDay(null); setSelectedTime(null)
   }
 
-  function serviceName(s: typeof SERVICES[number]) {
+  function serviceName(s: ServiceDef) {
     return lang === 'en' ? s.name.en : s.name.es
   }
 
@@ -126,7 +131,7 @@ export default function BookClient({ locale }: { locale: string }) {
   }
 
   if (confirmed) {
-    const sName = selectedServiceObj ? serviceName(selectedServiceObj) : ''
+    const sName = selectedServiceObj ? serviceName(selectedServiceObj as ServiceDef) : ''
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center px-6 pt-24">
         <div className="max-w-lg w-full text-center">
@@ -186,7 +191,7 @@ export default function BookClient({ locale }: { locale: string }) {
             <div>
               <StepLabel n="01" label={t.step1} />
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-6">
-                {SERVICES.map(s => {
+                {MASSAGE_SERVICES.map(s => {
                   const isSelected = selectedService === s.id
                   const fromPrice = s.prices[30]
                   return (
@@ -222,7 +227,7 @@ export default function BookClient({ locale }: { locale: string }) {
                 <StepLabel n="02" label={t.step1b} />
                 <div className="grid grid-cols-3 gap-3 mt-6 max-w-sm">
                   {DURATIONS.map(min => {
-                    const svc = SERVICES.find(s => s.id === selectedService)!
+                    const svc = MASSAGE_SERVICES.find(s => s.id === selectedService)!
                     const price = svc.prices[min]
                     const isActive = selectedDuration === min
                     return (

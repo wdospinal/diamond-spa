@@ -66,14 +66,19 @@ const dict = {
 
     services: {
       metaTitle: 'Services — Diamond Spa Medellín',
-      metaDesc: '7 massage services in El Poblado, Medellín — 30, 60, and 90 min sessions with transparent COP pricing.',
+      metaDesc: 'Exclusive massages, facials, skin care and hair removal in El Poblado, Medellín — transparent COP pricing.',
       label: 'The Selection',
       title: 'The Services',
-      subtitle: 'Seven treatments, three durations. Transparent pricing, no surprises.',
+      subtitle: 'Exclusive massages, facials & skin care, and hair removal. Transparent pricing, no surprises.',
       pricingNote: 'All prices in Colombian pesos (COP).',
+      sectionMassages: 'Exclusive Massages',
+      sectionFacials: 'Facials & Skin Care',
+      sectionHairRemoval: 'Hair Removal',
       tableCol30: '30 min',
       tableCol60: '60 min',
       tableCol90: '90 min',
+      tableColWax: 'Wax',
+      tableColMachine: 'Machine',
       learnMore: 'Learn more',
       backToServices: '← Back to services',
       bookSession: 'Book Session',
@@ -83,6 +88,8 @@ const dict = {
       reserveNow: 'Reserve Now',
       inquireMembership: 'Inquire for Memberships',
       detailPricingLabel: 'Session pricing',
+      detailPricingWax: 'Wax',
+      detailPricingMachine: 'Machine',
     },
 
     about: {
@@ -331,14 +338,19 @@ const dict = {
 
     services: {
       metaTitle: 'Servicios — Diamond Spa Medellín',
-      metaDesc: '7 servicios de masajes en El Poblado, Medellín — sesiones de 30, 60 y 90 min con precios claros en COP.',
+      metaDesc: 'Masajes exclusivos, faciales, cuidado de la piel y depilación en El Poblado, Medellín — precios claros en COP.',
       label: 'La Selección',
       title: 'Los Servicios',
-      subtitle: 'Siete tratamientos, tres duraciones. Precios transparentes, sin sorpresas.',
+      subtitle: 'Masajes exclusivos, faciales y cuidado de la piel, y depilación. Precios transparentes, sin sorpresas.',
       pricingNote: 'Todos los precios en pesos colombianos (COP).',
+      sectionMassages: 'Masajes Exclusivos',
+      sectionFacials: 'Faciales y Cuidado de la Piel',
+      sectionHairRemoval: 'Depilación',
       tableCol30: '30 min',
       tableCol60: '60 min',
       tableCol90: '90 min',
+      tableColWax: 'Cera',
+      tableColMachine: 'Máquina',
       learnMore: 'Ver más',
       backToServices: '← Volver a servicios',
       bookSession: 'Reservar',
@@ -348,6 +360,8 @@ const dict = {
       reserveNow: 'Reservar Ahora',
       inquireMembership: 'Consultar Membresías',
       detailPricingLabel: 'Precio por sesión',
+      detailPricingWax: 'Cera',
+      detailPricingMachine: 'Máquina',
     },
 
     about: {
