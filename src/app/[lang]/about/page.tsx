@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import Image from 'next/image'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
@@ -37,10 +38,16 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
             </h1>
             <p className="font-body text-xl md:text-2xl text-secondary max-w-xl leading-relaxed font-light">{t.heroBody}</p>
           </div>
-          <div className="lg:col-span-5 relative">
-            <div className="aspect-[4/5] overflow-hidden">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={HERO_IMG} alt="Luxury spa interior" className="w-full h-full object-cover opacity-80" />
+          <div className="relative lg:col-span-5">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-sm ring-1 ring-outline-variant/10">
+              <Image
+                src={HERO_IMG}
+                alt="Luxury spa interior"
+                fill
+                sizes="(max-width: 1024px) 100vw, 42vw"
+                className="object-cover opacity-80"
+                priority
+              />
             </div>
             <div className="absolute -bottom-8 -left-8 w-56 h-72 bg-surface-container-high hidden lg:flex flex-col justify-end p-7">
               <p className="font-headline text-primary text-2xl mb-3 italic">{t.quietTitle}</p>
@@ -55,13 +62,23 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
         <div className="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-24 items-center">
           <div className="order-2 md:order-1">
             <div className="grid grid-cols-2 gap-4">
-              <div className="aspect-square overflow-hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={STONE_IMG} alt="Stone massage" className="w-full h-full object-cover opacity-60 hover:opacity-90 transition-opacity duration-700" />
+              <div className="relative aspect-square overflow-hidden rounded-sm ring-1 ring-outline-variant/10">
+                <Image
+                  src={STONE_IMG}
+                  alt="Stone massage"
+                  fill
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                  className="object-cover opacity-60 transition-opacity duration-700 hover:opacity-90"
+                />
               </div>
-              <div className="aspect-square translate-y-8 overflow-hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={LOUNGE_IMG} alt="Spa lounge" className="w-full h-full object-cover opacity-60 hover:opacity-90 transition-opacity duration-700" />
+              <div className="relative aspect-square translate-y-8 overflow-hidden rounded-sm ring-1 ring-outline-variant/10">
+                <Image
+                  src={LOUNGE_IMG}
+                  alt="Spa lounge"
+                  fill
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                  className="object-cover opacity-60 transition-opacity duration-700 hover:opacity-90"
+                />
               </div>
             </div>
           </div>
@@ -108,9 +125,14 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {t.therapists.map(({ role, bio }, i) => (
               <div key={i} className="group">
-                <div className="aspect-[3/4] overflow-hidden mb-6 bg-surface-container">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={THERAPISTS_IMGS[i]} alt={THERAPISTS_NAMES[i]} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-70 group-hover:opacity-100" />
+                <div className="relative mb-6 aspect-[3/4] overflow-hidden rounded-sm bg-surface-container ring-1 ring-outline-variant/10">
+                  <Image
+                    src={THERAPISTS_IMGS[i]}
+                    alt={THERAPISTS_NAMES[i]}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover opacity-70 grayscale transition-all duration-700 group-hover:opacity-100 group-hover:grayscale-0"
+                  />
                 </div>
                 <h4 className="font-headline text-xl text-on-surface mb-1">{THERAPISTS_NAMES[i]}</h4>
                 <p className="font-label text-primary text-xs tracking-widest uppercase mb-4">{role}</p>

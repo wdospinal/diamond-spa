@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
-import { SERVICES, formatCop, getServiceById, type DurationMinutes } from '@/lib/services'
+import { SERVICES, formatCop, getServiceById, type DurationMinutes, type ServiceDef } from '@/lib/services'
 
 const DURATIONS: DurationMinutes[] = [30, 60, 90]
 
@@ -75,18 +75,78 @@ export default function ServiceDetailPage({
           <span className="font-label text-outline tracking-widest uppercase text-xs mb-8 block">
             {t.detailPricingLabel}
           </span>
-          <div className="grid grid-cols-3 gap-4 md:gap-8">
-            {DURATIONS.map(min => (
-              <div key={min} className="bg-surface p-6 md:p-8 flex flex-col gap-3">
-                <span className="font-label text-outline text-[10px] uppercase tracking-widest">
-                  {min === 30 ? t.tableCol30 : min === 60 ? t.tableCol60 : t.tableCol90}
-                </span>
-                <span className="font-headline text-primary text-2xl md:text-3xl tabular-nums">
-                  {formatCop(service.prices[min])}
-                </span>
+
+          {service.pricingModel === 'duration' && (
+            <>
+              {/* Mobile: list */}
+              <div className="flex flex-col divide-y divide-outline-variant/20 md:hidden">
+                {DURATIONS.map(min => (
+                  <div key={min} className="flex items-center justify-between py-4">
+                    <span className="font-label text-outline text-xs uppercase tracking-widest">
+                      {min === 30 ? t.tableCol30 : min === 60 ? t.tableCol60 : t.tableCol90}
+                    </span>
+                    <span className="font-headline text-primary text-xl tabular-nums">
+                      {formatCop((service as ServiceDef & { pricingModel: 'duration'; prices: Record<DurationMinutes, number> }).prices[min])}
+                    </span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+              {/* Desktop: cards */}
+              <div className="hidden md:grid grid-cols-3 gap-8">
+                {DURATIONS.map(min => (
+                  <div key={min} className="bg-surface p-8 flex flex-col gap-3">
+                    <span className="font-label text-outline text-[10px] uppercase tracking-widest">
+                      {min === 30 ? t.tableCol30 : min === 60 ? t.tableCol60 : t.tableCol90}
+                    </span>
+                    <span className="font-headline text-primary text-3xl tabular-nums">
+                      {formatCop((service as ServiceDef & { pricingModel: 'duration'; prices: Record<DurationMinutes, number> }).prices[min])}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          {service.pricingModel === 'flat' && (
+            <div className="bg-surface p-6 md:p-8 flex flex-col gap-3 w-full">
+              <span className="font-label text-outline text-[10px] uppercase tracking-widest">
+                {locale === 'en' ? 'Price' : 'Precio'}
+              </span>
+              <span className="font-headline text-primary text-2xl md:text-3xl tabular-nums">
+                {formatCop((service as ServiceDef & { pricingModel: 'flat'; price: number }).price)}
+              </span>
+            </div>
+          )}
+
+          {service.pricingModel === 'wax-machine' && (() => {
+            const wm = service as ServiceDef & { pricingModel: 'wax-machine'; waxPrice: number; machinePrice: number }
+            const rows = [
+              { label: t.detailPricingWax, value: wm.waxPrice },
+              { label: t.detailPricingMachine, value: wm.machinePrice },
+            ]
+            return (
+              <>
+                {/* Mobile: list */}
+                <div className="flex flex-col divide-y divide-outline-variant/20 md:hidden">
+                  {rows.map(({ label, value }) => (
+                    <div key={label} className="flex items-center justify-between py-4">
+                      <span className="font-label text-outline text-xs uppercase tracking-widest">{label}</span>
+                      <span className="font-headline text-primary text-xl tabular-nums">{formatCop(value)}</span>
+                    </div>
+                  ))}
+                </div>
+                {/* Desktop: cards */}
+                <div className="hidden md:grid grid-cols-2 gap-8">
+                  {rows.map(({ label, value }) => (
+                    <div key={label} className="bg-surface p-8 flex flex-col gap-3">
+                      <span className="font-label text-outline text-[10px] uppercase tracking-widest">{label}</span>
+                      <span className="font-headline text-primary text-3xl tabular-nums">{formatCop(value)}</span>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )
+          })()}
         </div>
       </section>
 
@@ -94,7 +154,7 @@ export default function ServiceDetailPage({
       <section className="py-24 px-6 md:px-12 bg-surface">
         <div className="max-w-3xl mx-auto flex flex-col sm:flex-row gap-5 items-start">
           <Link
-            href={`/${locale}/book?service=${service.id}`}
+            href={service.pricingModel === 'duration' ? `/${locale}/book?service=${service.id}` : `/${locale}/book`}
             className="bg-primary text-on-primary px-10 py-5 font-label text-xs font-bold uppercase tracking-[0.2em] hover:bg-white transition-all"
           >
             {t.bookThisService}

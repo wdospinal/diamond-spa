@@ -1,9 +1,8 @@
 import { notFound } from 'next/navigation'
+import Image from 'next/image'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
-
-const HERO_IMG = 'diamond-wallpaper.jpeg'
 const DEEP_TISSUE_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuBf6M3MTJY3a0VyeDXLX3bGIUrp3dUzZ72q0Mwsq2DSjh5TFK7S_w3ZQfi13HzKYpS82VRnve5FDPFxBrM5bHjR_9An8OykQbgQkSqwLcIFOH_e3uBMgeQcutLox_ARI9SUC7MEJ3IuTiegApD9kpAhhJSiiO0xm9TpPFEMuwcyXPSzdabrM1NLD9vfcIZuDbXc8OjO1fRjeFesfZSOoT81xltXvbGp-0gXh211u_ibO8r9EjmbbUxztiNDuxbEo87fRCNeA-CBgr8Y'
 const FACIAL_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuAZsfM0QI0GE0BCNgFlTZHmGNftgnas-PXevE9015gW7bzQvQIVWQOTcdU5jYfhdRj5-Lqet2Kbzxoyry1JM8YvamU8Uhxawrd5GA5qL_dp-Q1PaYTgWE6dAWWxPaw4S3ts2q-SPF3cCmOzP2qHW0Yw586Nvheje2jixR2RsXX0BDGLEjgwd-YdJMhbOshStYX07s9n8Yrg08RnjiCE2OFRObikltW3dI3PuyHgi2ocEIq7zAx2BjzJOmqP4sMEwAgdjGd_t7jy1-QO'
 const RELAX_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuAT0RW6uduw7sUyBSEesFWEN7RiwIAIzyZ7evCOe38BuXx9qpJveoSj5F0K8h-3mUWeQNlvmHU4cV2hz9ANgwGNdrcQzQjY7GDwt_U0ByilcyE6zT4nAd9lI5xqDwdfCMKf594okejP_rYMw2V7_NBcJbtxvX2Br69pUi8kPrWfmHHW7Yqo2VWCLCV5-eqY74K29QCQpPFnVQAz_2-QdTitbvR3sCaoqurA0gmR_qheugd8WTHveMn82CyIeCREzb1x1VfVZBQZxZ2i'
@@ -32,8 +31,14 @@ export default function HomePage({ params }: { params: { lang: string } }) {
       {/* HERO */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={HERO_IMG} alt="Diamond Spa luxury interior" className="w-full h-full object-cover opacity-30" />
+          <Image
+            src="/diamond-wallpaper.jpeg"
+            alt="Diamond Spa luxury interior"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover opacity-30"
+          />
           <div className="absolute inset-0 bg-gradient-to-r from-surface via-surface/80 to-surface/20" />
         </div>
         <div className="relative z-10 max-w-screen-2xl mx-auto w-full px-6 md:px-12 pt-10 md:pt-14 pb-24">
@@ -66,9 +71,14 @@ export default function HomePage({ params }: { params: { lang: string } }) {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
             {/* Deep Tissue */}
-            <div className="md:col-span-8 relative group overflow-hidden bg-surface-container min-h-[480px]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={DEEP_TISSUE_IMG} alt="Deep Tissue Massage" className="w-full h-full object-cover absolute inset-0 img-hover-color" />
+            <div className="md:col-span-8 relative group min-h-[480px] overflow-hidden rounded-sm bg-surface-container ring-1 ring-outline-variant/10">
+              <Image
+                src={DEEP_TISSUE_IMG}
+                alt="Deep Tissue Massage"
+                fill
+                sizes="(max-width: 768px) 100vw, 66vw"
+                className="object-cover img-hover-color"
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface/40 to-transparent" />
               <div className="absolute bottom-0 left-0 p-8 z-10">
                 <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-3 block">{h.recovery}</span>
@@ -80,21 +90,31 @@ export default function HomePage({ params }: { params: { lang: string } }) {
               </div>
             </div>
             {/* Facial */}
-            <div className="md:col-span-4 bg-surface-container-high p-8 flex flex-col justify-between min-h-[480px] group overflow-hidden relative">
+            <div className="md:col-span-4 relative flex min-h-[480px] flex-col justify-between overflow-hidden rounded-sm bg-surface-container-high p-8 ring-1 ring-outline-variant/10 group">
               <div>
                 <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-3 block">{h.grooming}</span>
                 <h3 className="font-headline text-2xl text-on-surface mb-4">{h.facialTitle}</h3>
                 <p className="font-body text-secondary text-sm leading-relaxed">{h.facialBody}</p>
               </div>
-              <div className="mt-8 overflow-hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={FACIAL_IMG} alt="Facial Treatment" className="w-full h-48 object-cover object-top img-hover-color" />
+              <div className="relative mt-8 h-48 w-full overflow-hidden rounded-sm">
+                <Image
+                  src={FACIAL_IMG}
+                  alt="Facial Treatment"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover object-top img-hover-color"
+                />
               </div>
             </div>
             {/* Relaxation */}
-            <div className="md:col-span-12 bg-surface-container relative group overflow-hidden min-h-[280px] flex items-center">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={RELAX_IMG} alt="Relaxation Massage" className="absolute inset-0 w-full h-full object-cover img-hover-color" />
+            <div className="md:col-span-12 relative flex min-h-[280px] items-center overflow-hidden rounded-sm bg-surface-container ring-1 ring-outline-variant/10 group">
+              <Image
+                src={RELAX_IMG}
+                alt="Relaxation Massage"
+                fill
+                sizes="100vw"
+                className="object-cover img-hover-color"
+              />
               <div className="absolute inset-0 bg-gradient-to-r from-surface-container-lowest/95 via-surface-container/70 to-transparent" />
               <div className="relative z-10 px-10 py-10 max-w-2xl">
                 <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-3 block">{h.clarity}</span>
@@ -124,11 +144,16 @@ export default function HomePage({ params }: { params: { lang: string } }) {
             </div>
           </div>
           <div className="relative">
-            <div className="overflow-hidden">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={BOUTIQUE_IMG} alt="Diamond Spa boutique interior" className="w-full aspect-[4/5] object-cover opacity-80 hover:opacity-100 transition-opacity duration-700" />
+            <div className="relative aspect-[4/5] overflow-hidden rounded-sm ring-1 ring-outline-variant/10">
+              <Image
+                src={BOUTIQUE_IMG}
+                alt="Diamond Spa boutique interior"
+                fill
+                sizes="(max-width: 1024px) 100vw, 45vw"
+                className="object-cover opacity-80 transition-opacity duration-700 hover:opacity-100"
+              />
             </div>
-            <div className="absolute bottom-0 left-0 right-0 bg-surface-container-high/90 backdrop-blur-sm p-6">
+            <div className="absolute bottom-0 left-0 right-0 bg-surface-container-high/90 p-6 backdrop-blur-sm">
               <p className="font-headline italic text-on-surface text-sm leading-relaxed mb-2">&ldquo;{h.quote}&rdquo;</p>
               <span className="font-label text-tertiary text-xs tracking-widest uppercase">{h.quoteSource}</span>
             </div>

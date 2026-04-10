@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import Image from 'next/image'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
@@ -23,8 +24,15 @@ export default function HistoryPage({ params }: { params: { lang: string } }) {
       <section className="relative min-h-[85vh] flex items-end px-6 md:px-12 overflow-hidden bg-surface">
         {/* Background image */}
         <div className="absolute inset-0 z-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={HERO_IMG} alt="" aria-hidden className="w-full h-full object-cover opacity-20" />
+          <Image
+            src={HERO_IMG}
+            alt=""
+            fill
+            sizes="100vw"
+            className="object-cover opacity-20"
+            aria-hidden
+            priority
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/60 to-transparent" />
         </div>
         <div className="max-w-screen-2xl mx-auto w-full z-10 pb-24 pt-40">
@@ -62,9 +70,14 @@ export default function HistoryPage({ params }: { params: { lang: string } }) {
             <p className="font-body text-secondary text-lg leading-relaxed">{t.foundedBody}</p>
           </div>
           <div className="relative">
-            <div className="aspect-[4/5] overflow-hidden">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={INTERIOR_IMG} alt="Diamond Spa interior" className="w-full h-full object-cover opacity-70" />
+            <div className="relative aspect-[4/5] overflow-hidden rounded-sm ring-1 ring-outline-variant/10">
+              <Image
+                src={INTERIOR_IMG}
+                alt="Diamond Spa interior"
+                fill
+                sizes="(max-width: 1024px) 100vw, 45vw"
+                className="object-cover opacity-70"
+              />
             </div>
             <div className="absolute -bottom-6 -left-6 w-40 h-40 border border-primary/30 hidden md:block" />
           </div>
