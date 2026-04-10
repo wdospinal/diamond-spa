@@ -1,7 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        pathname: '/**',
+      },
+    ],
   },
   // Avoid PackFileCacheStrategy ENOENT on vendor-chunks like @vercel.js after rebuilds / stale .next
   webpack: (config, { dev }) => {

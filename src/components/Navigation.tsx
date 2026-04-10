@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { Playfair_Display } from 'next/font/google'
 import { usePathname } from 'next/navigation'
@@ -44,8 +45,15 @@ export default function Navigation() {
 
         {/* Logo */}
         <Link href={`/${locale}`} className="flex items-center gap-3">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logotipo.png" alt="" width={59} height={56} className="h-14 w-auto" aria-hidden />
+          <Image
+            src="/logotipo.png"
+            alt=""
+            width={59}
+            height={56}
+            className="h-14 w-auto"
+            priority
+            aria-hidden
+          />
           <span
             className={`${playfairDisplay.className} text-xl md:text-2xl text-primary tracking-tight`}
           >

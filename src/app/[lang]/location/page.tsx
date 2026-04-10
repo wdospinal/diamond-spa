@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import Image from 'next/image'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
@@ -143,12 +144,14 @@ export default async function LocationPage({ params }: { params: { lang: string 
               {place.reviews.map((review, i) => (
                 <div key={i} className="bg-surface-container-low p-8 flex flex-col gap-4">
                   <div className="flex items-center gap-4">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <Image
                       src={review.profile_photo_url}
                       alt=""
+                      width={40}
+                      height={40}
+                      unoptimized
+                      className="h-10 w-10 rounded-full object-cover"
                       aria-hidden
-                      className="w-10 h-10 rounded-full object-cover"
                     />
                     <div className="flex flex-col gap-0.5">
                       <span className="font-label text-on-surface text-xs tracking-widest">{review.author_name}</span>
