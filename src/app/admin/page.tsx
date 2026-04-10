@@ -224,7 +224,7 @@ export default function AdminDashboardPage() {
                       <span className="text-[#8a9299]">{b.email}</span>
                     </td>
                     <td className="py-3 px-4">
-                      <DualCurrency usd={b.price} tone="income" />
+                      <DualCurrency usd={b.price} copOverride={b.priceCop} tone="income" />
                     </td>
                   </tr>
                 ))

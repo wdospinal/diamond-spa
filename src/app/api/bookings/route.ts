@@ -4,9 +4,10 @@ import { appendBooking, readBookings } from '@/lib/bookings-store'
 import { readLedger, isLedgerSeedApplied } from '@/lib/ledger-store'
 import { adminCookieName, verifySessionToken } from '@/lib/admin-session'
 import { EXPENSE_CATEGORIES } from '@/lib/expense-categories'
-import { getServiceById } from '@/lib/services'
+import { getServiceById, getServicePrice, serviceDisplayName } from '@/lib/services'
 import { parseTimeSlot } from '@/lib/parse-time-slot'
 import { computeDashboardStats } from '@/lib/income-stats'
+import { copPerUsd } from '@/lib/cop-rate'
 
 function bad(msg: string, status = 400) {
   return NextResponse.json({ error: msg }, { status })
@@ -48,6 +49,9 @@ export async function POST(req: NextRequest) {
   }
 
   const serviceId = typeof body.serviceId === 'string' ? body.serviceId : ''
+  const durationMinutes = typeof body.durationMinutes === 'number'
+    ? body.durationMinutes
+    : Number(body.durationMinutes)
   const year = typeof body.year === 'number' ? body.year : Number(body.year)
   const monthIndex = typeof body.monthIndex === 'number' ? body.monthIndex : Number(body.monthIndex)
   const day = typeof body.day === 'number' ? body.day : Number(body.day)
@@ -57,15 +61,23 @@ export async function POST(req: NextRequest) {
   const email = typeof body.email === 'string' ? body.email.trim() : ''
   const phone = typeof body.phone === 'string' ? body.phone.trim() : ''
   const requests = typeof body.requests === 'string' ? body.requests.trim() : ''
+  const bookingLocale = body.locale === 'en' ? 'en' : 'es'
 
-  if (!getServiceById(serviceId)) return bad('Invalid service')
+  const service = getServiceById(serviceId)
+  if (!service) return bad('Invalid service')
+  if (![30, 60, 90].includes(durationMinutes)) return bad('Invalid duration — must be 30, 60, or 90')
+  const priceCop = getServicePrice(serviceId, durationMinutes)
+  if (priceCop == null) return bad('Invalid service/duration combination')
+
   if (!Number.isInteger(year) || year < 2020 || year > 2100) return bad('Invalid year')
   if (!Number.isInteger(monthIndex) || monthIndex < 0 || monthIndex > 11) return bad('Invalid month')
   if (!Number.isInteger(day) || day < 1 || day > 31) return bad('Invalid day')
   if (!parseTimeSlot(timeSlot)) return bad('Invalid time')
   if (!firstName || !lastName || !email || !phone) return bad('Missing contact fields')
 
-  const service = getServiceById(serviceId)!
+  const rate = copPerUsd()
+  const priceUsd = priceCop / rate
+
   const dateKey = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
   const { h, m } = parseTimeSlot(timeSlot)!
   const scheduledAt = new Date(
@@ -78,9 +90,11 @@ export async function POST(req: NextRequest) {
       timeSlot,
       scheduledAt,
       serviceId: service.id,
-      serviceName: service.name,
-      price: service.price,
-      duration: service.duration,
+      serviceName: serviceDisplayName(service, bookingLocale),
+      durationMinutes,
+      priceCop,
+      price: priceUsd,
+      duration: `${durationMinutes} min`,
       firstName,
       lastName,
       email,

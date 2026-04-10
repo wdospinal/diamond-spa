@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { getDict, type Locale } from '@/lib/i18n'
-import { SERVICES } from '@/lib/services'
+import { SERVICES, formatCop, type DurationMinutes } from '@/lib/services'
 
 function buildCalendar(year: number, month: number) {
   const firstDay = new Date(year, month, 1).getDay()
@@ -19,12 +20,17 @@ const TIME_SLOTS = [
   '5:00 PM', '6:00 PM', '7:00 PM', '8:00 PM',
 ]
 
+const DURATIONS: DurationMinutes[] = [30, 60, 90]
+
 export default function BookClient({ locale }: { locale: string }) {
   const lang = (locale === 'en' ? 'en' : 'es') as Locale
   const t = getDict(lang).book
+  const tSvc = getDict(lang).services
+  const searchParams = useSearchParams()
 
   const today = new Date()
   const [selectedService, setSelectedService] = useState<string | null>(null)
+  const [selectedDuration, setSelectedDuration] = useState<DurationMinutes | null>(null)
   const [calYear, setCalYear] = useState(today.getFullYear())
   const [calMonth, setCalMonth] = useState(today.getMonth())
   const [selectedDay, setSelectedDay] = useState<number | null>(null)
@@ -32,7 +38,20 @@ export default function BookClient({ locale }: { locale: string }) {
   const [confirmed, setConfirmed] = useState(false)
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', requests: '' })
 
+  // Pre-select service from ?service= query param
+  useEffect(() => {
+    const svcParam = searchParams?.get('service')
+    if (svcParam && SERVICES.find(s => s.id === svcParam)) {
+      setSelectedService(svcParam)
+    }
+  }, [searchParams])
+
   const cells = buildCalendar(calYear, calMonth)
+
+  const selectedServiceObj = SERVICES.find(s => s.id === selectedService)
+  const selectedPriceCop = selectedServiceObj && selectedDuration
+    ? selectedServiceObj.prices[selectedDuration]
+    : null
 
   function isPast(day: number) {
     const d = new Date(calYear, calMonth, day)
@@ -51,30 +70,35 @@ export default function BookClient({ locale }: { locale: string }) {
     setSelectedDay(null); setSelectedTime(null)
   }
 
+  function serviceName(s: typeof SERVICES[number]) {
+    return lang === 'en' ? s.name.en : s.name.es
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!selectedService || !selectedDay || !selectedTime) return
+    if (!selectedService || !selectedDuration || !selectedDay || !selectedTime) return
 
-    const service = SERVICES.find(s => s.id === selectedService)
+    const service = selectedServiceObj!
     const dateStr = `${t.months[calMonth]} ${selectedDay}, ${calYear}`
+    const sName = serviceName(service)
+    const priceCop = selectedPriceCop ?? 0
 
     const waText =
       `Hola Diamond Spa! Me gustaría reservar una cita:\n\n` +
-      `📋 ${t.serviceLabel}: ${service?.name}\n` +
+      `📋 ${t.serviceLabel}: ${sName} (${selectedDuration} min)\n` +
       `📅 ${t.dateLabel}: ${dateStr}\n` +
       `⏰ ${t.timeLabel}: ${selectedTime}\n` +
-      `⏱ ${t.durationLabel}: ${service?.duration}\n\n` +
       `👤 Nombre: ${form.firstName} ${form.lastName}\n` +
       `📧 Email: ${form.email}\n` +
       `📱 Tel: ${form.phone}\n` +
       (form.requests ? `💬 Notas: ${form.requests}\n` : '') +
-      `\n💰 ${t.totalLabel}: $${service?.price}`
+      `\n💰 ${t.totalLabel}: ${formatCop(priceCop)}`
 
     window.open(`https://wa.me/573145484227?text=${encodeURIComponent(waText)}`, '_blank')
 
     const smsBody =
       `[Diamond Spa] Nueva reserva\n` +
-      `Servicio: ${service?.name} (${service?.duration})\n` +
+      `Servicio: ${sName} (${selectedDuration} min)\n` +
       `Fecha: ${dateStr} a las ${selectedTime}\n` +
       `Cliente: ${form.firstName} ${form.lastName}\n` +
       `Tel: ${form.phone} | Email: ${form.email}` +
@@ -83,17 +107,26 @@ export default function BookClient({ locale }: { locale: string }) {
     try { await fetch('/api/send-sms', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: smsBody }) }) } catch { /* non-blocking */ }
     try {
       await fetch('/api/bookings', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ serviceId: selectedService, year: calYear, monthIndex: calMonth, day: selectedDay, timeSlot: selectedTime, ...form }),
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          serviceId: selectedService,
+          durationMinutes: selectedDuration,
+          year: calYear,
+          monthIndex: calMonth,
+          day: selectedDay,
+          timeSlot: selectedTime,
+          locale: lang,
+          ...form,
+        }),
       })
     } catch { /* non-blocking */ }
 
     setConfirmed(true)
   }
 
-  const selectedServiceObj = SERVICES.find(s => s.id === selectedService)
-
   if (confirmed) {
+    const sName = selectedServiceObj ? serviceName(selectedServiceObj) : ''
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center px-6 pt-24">
         <div className="max-w-lg w-full text-center">
@@ -105,21 +138,27 @@ export default function BookClient({ locale }: { locale: string }) {
           </p>
           <div className="bg-surface-container-high p-8 my-10 text-left flex flex-col gap-3">
             {[
-              [t.serviceLabel, selectedServiceObj?.name ?? ''],
+              [t.serviceLabel, `${sName} (${selectedDuration} min)`],
               [t.dateLabel, `${t.months[calMonth]} ${selectedDay}, ${calYear}`],
               [t.timeLabel, selectedTime ?? ''],
-              [t.durationLabel, selectedServiceObj?.duration ?? ''],
-              [t.totalLabel, `$${selectedServiceObj?.price}`],
+              [t.totalLabel, selectedPriceCop ? formatCop(selectedPriceCop) : '—'],
             ].map(([label, value]) => (
-              <div key={label} className="flex justify-between items-center">
-                <span className="font-label text-outline text-xs uppercase tracking-widest">{label}</span>
-                <span className="font-body text-on-surface text-sm">{value}</span>
+              <div key={label} className="flex justify-between items-center gap-4">
+                <span className="font-label text-outline text-xs uppercase tracking-widest shrink-0">{label}</span>
+                <span className="font-body text-on-surface text-sm text-right">{value}</span>
               </div>
             ))}
           </div>
           <p className="font-body text-xs text-outline leading-relaxed mb-10">{t.confirmedConcierge}</p>
           <button
-            onClick={() => { setConfirmed(false); setSelectedService(null); setSelectedDay(null); setSelectedTime(null); setForm({ firstName: '', lastName: '', email: '', phone: '', requests: '' }) }}
+            onClick={() => {
+              setConfirmed(false)
+              setSelectedService(null)
+              setSelectedDuration(null)
+              setSelectedDay(null)
+              setSelectedTime(null)
+              setForm({ firstName: '', lastName: '', email: '', phone: '', requests: '' })
+            }}
             className="bg-primary text-on-primary px-10 py-4 font-label font-bold tracking-[0.2em] text-xs uppercase hover:bg-white transition-all"
           >
             {t.bookAnother}
@@ -143,27 +182,74 @@ export default function BookClient({ locale }: { locale: string }) {
 
           <div className="xl:col-span-2 flex flex-col gap-16">
 
-            {/* Step 1 */}
+            {/* Step 01 — Select service */}
             <div>
               <StepLabel n="01" label={t.step1} />
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                {SERVICES.map(s => (
-                  <button key={s.id} type="button" onClick={() => setSelectedService(s.id)}
-                    className={`text-left p-7 transition-all duration-200 ${selectedService === s.id ? 'bg-surface-container-high border border-primary/40' : 'bg-surface-container hover:bg-surface-container-high border border-transparent'}`}>
-                    <span className="font-label text-tertiary text-xs tracking-[0.3em] uppercase block mb-3">{s.category}</span>
-                    <span className="font-headline text-on-surface text-lg block mb-4">{s.name}</span>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-primary font-light text-xl">${s.price}</span>
-                      <span className="text-outline text-xs font-label uppercase tracking-widest">{s.duration}</span>
-                    </div>
-                  </button>
-                ))}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-6">
+                {SERVICES.map(s => {
+                  const isSelected = selectedService === s.id
+                  const fromPrice = s.prices[30]
+                  return (
+                    <button
+                      key={s.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedService(s.id)
+                        setSelectedDuration(null)
+                      }}
+                      className={`text-left p-5 transition-all duration-200 ${
+                        isSelected
+                          ? 'bg-surface-container-high border border-primary/40'
+                          : 'bg-surface-container hover:bg-surface-container-high border border-transparent'
+                      }`}
+                    >
+                      <span className="font-headline text-on-surface text-base block mb-3 leading-tight">
+                        {serviceName(s)}
+                      </span>
+                      <span className="font-body text-outline text-xs">
+                        {lang === 'en' ? 'from ' : 'desde '}
+                        <span className="text-primary font-medium">{formatCop(fromPrice)}</span>
+                      </span>
+                    </button>
+                  )
+                })}
               </div>
             </div>
 
-            {/* Step 2 */}
+            {/* Step 02 — Select duration (visible only after service picked) */}
+            {selectedService && (
+              <div>
+                <StepLabel n="02" label={t.step1b} />
+                <div className="grid grid-cols-3 gap-3 mt-6 max-w-sm">
+                  {DURATIONS.map(min => {
+                    const svc = SERVICES.find(s => s.id === selectedService)!
+                    const price = svc.prices[min]
+                    const isActive = selectedDuration === min
+                    return (
+                      <button
+                        key={min}
+                        type="button"
+                        onClick={() => setSelectedDuration(min)}
+                        className={`p-5 text-left transition-all duration-200 ${
+                          isActive
+                            ? 'bg-surface-container-high border border-primary/40'
+                            : 'bg-surface-container hover:bg-surface-container-high border border-transparent'
+                        }`}
+                      >
+                        <span className="font-label text-on-surface text-sm font-bold block mb-1">
+                          {min} {lang === 'en' ? 'min' : 'min'}
+                        </span>
+                        <span className="font-body text-primary text-sm tabular-nums">{formatCop(price)}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Step 03 — Choose date */}
             <div>
-              <StepLabel n="02" label={t.step2} />
+              <StepLabel n="03" label={t.step2} />
               <div className="mt-6 bg-surface-container p-4 max-w-xs">
                 <div className="flex justify-between items-center mb-4">
                   <button type="button" onClick={prevMonth} className="text-outline hover:text-primary transition-colors">
@@ -193,9 +279,9 @@ export default function BookClient({ locale }: { locale: string }) {
               </div>
             </div>
 
-            {/* Step 3 */}
+            {/* Step 04 — Select time */}
             <div>
-              <StepLabel n="03" label={t.step3} />
+              <StepLabel n="04" label={t.step3} />
               <div className="mt-6 grid grid-cols-4 sm:grid-cols-7 gap-2 max-w-lg">
                 {TIME_SLOTS.map(slot => (
                   <button key={slot} type="button" disabled={!selectedDay} onClick={() => setSelectedTime(slot)}
@@ -206,9 +292,9 @@ export default function BookClient({ locale }: { locale: string }) {
               </div>
             </div>
 
-            {/* Step 4 */}
+            {/* Step 05 — Personal details */}
             <div>
-              <StepLabel n="04" label={t.step4} />
+              <StepLabel n="05" label={t.step4} />
               <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-xl">
                 {([
                   { id: 'firstName', label: t.firstName, type: 'text' },
@@ -231,16 +317,32 @@ export default function BookClient({ locale }: { locale: string }) {
             </div>
           </div>
 
-          {/* Summary */}
+          {/* Summary panel */}
           <div className="xl:col-span-1">
             <div className="sticky top-28 bg-surface-container-low p-8 flex flex-col gap-6">
               <h3 className="font-headline text-xl text-on-surface">{t.summaryTitle}</h3>
               <div className="flex flex-col gap-4">
                 {[
-                  { label: t.serviceLabel, value: selectedServiceObj?.name ?? '—', empty: !selectedService },
-                  { label: t.dateLabel, value: selectedDay ? `${t.months[calMonth]} ${selectedDay}, ${calYear}` : '—', empty: !selectedDay },
-                  { label: t.timeLabel, value: selectedTime ?? '—', empty: !selectedTime },
-                  { label: t.durationLabel, value: selectedServiceObj?.duration ?? '—', empty: !selectedService },
+                  {
+                    label: t.serviceLabel,
+                    value: selectedServiceObj ? serviceName(selectedServiceObj) : '—',
+                    empty: !selectedService,
+                  },
+                  {
+                    label: t.durationLabel,
+                    value: selectedDuration ? `${selectedDuration} min` : '—',
+                    empty: !selectedDuration,
+                  },
+                  {
+                    label: t.dateLabel,
+                    value: selectedDay ? `${t.months[calMonth]} ${selectedDay}, ${calYear}` : '—',
+                    empty: !selectedDay,
+                  },
+                  {
+                    label: t.timeLabel,
+                    value: selectedTime ?? '—',
+                    empty: !selectedTime,
+                  },
                 ].map(({ label, value, empty }) => (
                   <div key={label} className="flex justify-between items-start gap-4">
                     <span className="font-label text-outline text-xs uppercase tracking-widest shrink-0">{label}</span>
@@ -250,10 +352,20 @@ export default function BookClient({ locale }: { locale: string }) {
               </div>
               <div className="border-t border-outline-variant/10 pt-6 flex justify-between items-baseline">
                 <span className="font-label text-outline text-xs uppercase tracking-widest">{t.totalLabel}</span>
-                <span className="font-headline text-2xl text-primary">{selectedServiceObj ? `$${selectedServiceObj.price}` : '—'}</span>
+                <div className="text-right">
+                  <span className="font-headline text-2xl text-primary block">
+                    {selectedPriceCop ? formatCop(selectedPriceCop) : '—'}
+                  </span>
+                  {selectedPriceCop && (
+                    <span className="font-label text-outline text-[10px] tracking-widest">{t.totalCopHint}</span>
+                  )}
+                </div>
               </div>
-              <button type="submit" disabled={!selectedService || !selectedDay || !selectedTime}
-                className="w-full bg-primary text-on-primary py-5 font-label font-bold tracking-[0.2em] text-xs uppercase hover:bg-white transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-primary">
+              <button
+                type="submit"
+                disabled={!selectedService || !selectedDuration || !selectedDay || !selectedTime}
+                className="w-full bg-primary text-on-primary py-5 font-label font-bold tracking-[0.2em] text-xs uppercase hover:bg-white transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-primary"
+              >
                 {t.confirm}
               </button>
               <p className="font-body text-xs text-outline leading-relaxed text-center">{t.privacy}</p>
