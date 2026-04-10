@@ -144,9 +144,8 @@ const dict = {
       hoursLabel: 'Operating Hours',
       hoursNote: 'Last bookings accepted 90 minutes before closing. Extended hours available for members.',
       hours: [
-        { day: 'Monday – Friday', time: '7:00 AM – 11:00 PM' },
-        { day: 'Saturday', time: '8:00 AM – 11:00 PM' },
-        { day: 'Sunday', time: '9:00 AM – 9:00 PM' },
+        { day: 'Monday – Saturday', time: '10:00 AM – 10:00 PM' },
+        { day: 'Sunday', time: '10:00 AM – 6:00 PM' },
       ],
       privateTitle: 'Private Arrival',
       privateBody1: 'Our concierge will provide personalised arrival instructions upon booking confirmation. A private entrance ensures complete anonymity and a seamless transition into a calm, private environment.',
@@ -414,9 +413,8 @@ const dict = {
       hoursLabel: 'Horario de Atención',
       hoursNote: 'Últimas reservas aceptadas 90 minutos antes del cierre. Horarios extendidos disponibles para miembros.',
       hours: [
-        { day: 'Lunes – Viernes', time: '7:00 AM – 11:00 PM' },
-        { day: 'Sábado', time: '8:00 AM – 11:00 PM' },
-        { day: 'Domingo', time: '9:00 AM – 9:00 PM' },
+        { day: 'Lunes – Sábado', time: '10:00 AM – 10:00 PM' },
+        { day: 'Domingo', time: '10:00 AM – 6:00 PM' },
       ],
       privateTitle: 'Llegada Privada',
       privateBody1: 'Nuestro concierge proporcionará instrucciones de llegada personalizadas tras la confirmación de la reserva. Una entrada privada garantiza total anonimato y una transición perfecta a un entorno privado y sereno.',

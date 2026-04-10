@@ -3,7 +3,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 
-const HERO_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuARewKYdLJs5kfLjfNo15Y-Bvcc5MYt_OWgbc-2jwqTpu1GtJUy7M56ebUX8jYdld_LWLt91r3URrz6fwYMN0y-IOJKEVXEj2rVUBiP1FDTpB27NkxYGsoz_yPj-7MAfnY9gSBRAy7HMYy6rfQhKgaGShNSaOhxJLpMnyDnV7Sr5nWohja_HikCD8haFT6_jpmzigAFmn_wJDjM-va9Ev_aSE6Tjz8Hq8LTrJyk3-yL5MCGR_uJHTRQS_VMtcNvJ_yHWmYpV-CcqZY2'
+const HERO_IMG = 'diamond-wallpaper.jpeg'
 const DEEP_TISSUE_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuBf6M3MTJY3a0VyeDXLX3bGIUrp3dUzZ72q0Mwsq2DSjh5TFK7S_w3ZQfi13HzKYpS82VRnve5FDPFxBrM5bHjR_9An8OykQbgQkSqwLcIFOH_e3uBMgeQcutLox_ARI9SUC7MEJ3IuTiegApD9kpAhhJSiiO0xm9TpPFEMuwcyXPSzdabrM1NLD9vfcIZuDbXc8OjO1fRjeFesfZSOoT81xltXvbGp-0gXh211u_ibO8r9EjmbbUxztiNDuxbEo87fRCNeA-CBgr8Y'
 const FACIAL_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuAZsfM0QI0GE0BCNgFlTZHmGNftgnas-PXevE9015gW7bzQvQIVWQOTcdU5jYfhdRj5-Lqet2Kbzxoyry1JM8YvamU8Uhxawrd5GA5qL_dp-Q1PaYTgWE6dAWWxPaw4S3ts2q-SPF3cCmOzP2qHW0Yw586Nvheje2jixR2RsXX0BDGLEjgwd-YdJMhbOshStYX07s9n8Yrg08RnjiCE2OFRObikltW3dI3PuyHgi2ocEIq7zAx2BjzJOmqP4sMEwAgdjGd_t7jy1-QO'
 const RELAX_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuAT0RW6uduw7sUyBSEesFWEN7RiwIAIzyZ7evCOe38BuXx9qpJveoSj5F0K8h-3mUWeQNlvmHU4cV2hz9ANgwGNdrcQzQjY7GDwt_U0ByilcyE6zT4nAd9lI5xqDwdfCMKf594okejP_rYMw2V7_NBcJbtxvX2Br69pUi8kPrWfmHHW7Yqo2VWCLCV5-eqY74K29QCQpPFnVQAz_2-QdTitbvR3sCaoqurA0gmR_qheugd8WTHveMn82CyIeCREzb1x1VfVZBQZxZ2i'
@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: { lang: string } })
       : 'Diamond Spa — Spa para Hombres y Mujeres en Medellín',
     description: locale === 'en'
       ? 'Luxury massages and spa treatments in El Poblado, Medellín. Book your session today.'
-      : 'Masajes de lujo y tratamientos spa en El Poblado, Medellín. Reserva tu sesión hoy.',
+      : 'Masajes de lujo y tratamientos spa en El Poblado, Medellín. Reserva tu Cita hoy.',
   }
 }
 

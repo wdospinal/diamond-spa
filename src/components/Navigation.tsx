@@ -27,7 +27,7 @@ export default function Navigation() {
 
   const links = [
     { label: t.services,  href: `/${locale}/services`  },
-    { label: t.sanctuary, href: `/${locale}/about`     },
+    { label: t.aboutUs, href: `/${locale}/about`     },
     { label: t.location,  href: `/${locale}/location`  },
   ]
 
