@@ -113,8 +113,11 @@ export const SERVICES = [
 
 export type ServiceId = (typeof SERVICES)[number]['id']
 
+/** e.g. 120_000 → `$ 120.000 COP` (Colombian-style grouping). */
 export function formatCop(amount: number): string {
-  return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(amount)
+  const n = Math.round(amount)
+  const grouped = n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+  return `$ ${grouped} COP`
 }
 
 export function getServiceById(id: string): ServiceDef | undefined {

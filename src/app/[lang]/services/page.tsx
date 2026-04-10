@@ -44,7 +44,6 @@ export default function ServicesPage({ params }: { params: { lang: string } }) {
             {SERVICES.map((service, idx) => {
               const name = serviceDisplayName(service, locale)
               const shortDesc = serviceShortDesc(service, locale)
-              const startPrice = service.prices[30]
               const isEven = idx % 2 === 0
 
               return (
@@ -80,17 +79,17 @@ export default function ServicesPage({ params }: { params: { lang: string } }) {
                     ))}
                   </div>
 
-                  {/* Actions */}
-                  <div className="md:col-span-3 flex flex-col sm:flex-row md:flex-col gap-3 md:items-end">
+                  {/* Actions — identical width & height */}
+                  <div className="md:col-span-3 flex w-full flex-col gap-3 sm:flex-row md:flex-col">
                     <Link
                       href={`/${locale}/book?service=${service.id}`}
-                      className="bg-primary text-on-primary px-6 py-3 font-label text-xs font-bold uppercase tracking-[0.15em] hover:bg-white transition-all text-center"
+                      className="inline-flex min-h-[3rem] w-full flex-1 items-center justify-center border border-transparent bg-primary px-6 py-3 font-label text-xs font-bold uppercase tracking-[0.15em] text-on-primary transition-all hover:bg-white sm:min-w-0 md:w-full md:flex-none"
                     >
                       {t.bookSession}
                     </Link>
                     <Link
                       href={`/${locale}/services/${service.id}`}
-                      className="border border-outline-variant/50 text-secondary px-6 py-3 font-label text-xs uppercase tracking-[0.15em] hover:border-primary hover:text-on-surface transition-all text-center"
+                      className="inline-flex min-h-[3rem] w-full flex-1 items-center justify-center border border-outline-variant/50 px-6 py-3 font-label text-xs font-bold uppercase tracking-[0.15em] text-secondary transition-all hover:border-primary hover:text-on-surface sm:min-w-0 md:w-full md:flex-none"
                     >
                       {t.learnMore}
                     </Link>
