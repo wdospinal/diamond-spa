@@ -10,13 +10,13 @@ const notoSerif = Noto_Serif({
   weight: ['300', '400', '700'],
   style: ['normal', 'italic'],
   variable: '--font-noto-serif',
-  display: 'swap',
+  display: 'optional',
 })
 
 const manrope = Manrope({
   subsets: ['latin', 'latin-ext'],
   variable: '--font-manrope',
-  display: 'swap',
+  display: 'optional',
 })
 
 export const metadata: Metadata = {
@@ -34,9 +34,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`dark ${notoSerif.variable} ${manrope.variable}`}>
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+          rel="preload"
+          as="style"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
+        />
+        <link
           rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
         />
       </head>
       <body className="bg-surface text-on-surface font-body antialiased">
