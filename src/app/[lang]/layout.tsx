@@ -1,4 +1,6 @@
-import { isLocale } from '@/lib/i18n'
+import { isLocale, type Locale } from '@/lib/i18n'
+import Navigation from '@/components/Navigation'
+import Footer from '@/components/Footer'
 
 export default function LangLayout({
   children,
@@ -7,6 +9,12 @@ export default function LangLayout({
   children: React.ReactNode
   params: { lang: string }
 }) {
-  const lang = isLocale(params.lang) ? params.lang : 'es'
-  return <div lang={lang}>{children}</div>
+  const locale: Locale = isLocale(params.lang) ? params.lang : 'es'
+  return (
+    <div lang={locale}>
+      <Navigation locale={locale} />
+      <main className="pt-24 md:pt-28">{children}</main>
+      <Footer locale={locale} />
+    </div>
+  )
 }
