@@ -26,7 +26,7 @@ body {
   color: #cfe5fa;
 }
 
-/* Material Symbols — loaded async via MaterialSymbolsLoader.tsx */
+/* Material Symbols — loaded in <head> of layout.tsx via SSR stylesheet link */
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined';
   font-weight: normal;
@@ -39,11 +39,12 @@ body {
   white-space: nowrap;
   word-wrap: normal;
   direction: ltr;
-  font-display: optional;
   font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
-  /* Prevent CLS: reserve space before the icon font loads */
-  min-width: 1em;
-  min-height: 1em;
+  /* Reserve exact 1em × 1em — prevents layout shift when icon font swaps in */
+  width: 1em;
+  height: 1em;
+  overflow: hidden;
+  vertical-align: middle;
 }
 
 /* Glass nav */
