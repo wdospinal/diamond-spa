@@ -5,6 +5,8 @@ import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { SERVICES, formatCop, type DurationMinutes, type ServiceDef } from '@/lib/services'
 import { buildAlternates, buildOpenGraph } from '@/lib/seo'
 
+export const dynamic = 'force-static'
+
 const DURATIONS: DurationMinutes[] = [30, 60, 90]
 
 function serviceDisplayName(s: ServiceDef, locale: Locale) {
