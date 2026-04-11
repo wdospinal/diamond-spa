@@ -39,8 +39,8 @@ export const SERVICES = [
     categoryId: 'massages' as const,
     pricingModel: 'duration' as const,
     shortDesc: {
-      en: 'High-pressure technique for chronic muscle tension and recovery.',
-      es: 'Técnica de alta presión para tensión muscular crónica y recuperación.',
+      en: 'For those seeking real therapeutic relief, especially with high physical activity or work-related stress.',
+      es: 'Es para quienes buscan un alivio terapéutico real, especialmente en una zona con mucha actividad física o estres laboral.',
     },
     description: {
       en: 'A targeted technique using slow, firm strokes and focused pressure to release deep-seated muscle tension, chronic knots, and postural imbalances. Particularly effective for people with demanding physical routines, desk-based posture issues, or after intense athletic activity.',
@@ -87,8 +87,8 @@ export const SERVICES = [
     categoryId: 'massages' as const,
     pricingModel: 'duration' as const,
     shortDesc: {
-      en: 'Volcanic stones that penetrate heat deep into muscle tissue.',
-      es: 'Piedras volcánicas que penetran el calor profundamente en el tejido muscular.',
+      en: 'Feel the healing power of the earth — combines manual massage with volcanic stones heated and placed on key energy points.',
+      es: 'Siente el poder curativo de la tierra combina un masaje manual con piedras volcánicas que se calientan y se colocan sobre puntos energéticos clave.',
     },
     description: {
       en: 'Smooth volcanic basalt stones are heated and placed along key energy points while the therapist uses them as an extension of the hand to deliver a deeper-than-usual massage. The radiant heat penetrates muscle tissue, improves circulation, and relieves chronic tension with a profoundly soothing effect unlike any other treatment.',
@@ -103,8 +103,8 @@ export const SERVICES = [
     categoryId: 'massages' as const,
     pricingModel: 'duration' as const,
     shortDesc: {
-      en: 'Recovery-focused technique combining deep pressure and stretching.',
-      es: 'Técnica enfocada en recuperación con presión profunda y estiramientos.',
+      en: 'A perfect combination of strong manual therapy and percussion technology to reach deep muscles and release tension.',
+      es: 'Es una combinación perfecta de terapia manual fuerte y tecnologia de percusion, para llegar a los músculos profundos y relajarlos.',
     },
     description: {
       en: 'Designed for those who push their bodies — whether through professional sport, intense training, or demanding physical work. Combines deep-tissue pressure, assisted stretching, and targeted lymphatic drainage to flush metabolic waste, restore range of motion, and reduce injury risk. Best taken regularly as part of a recovery programme.',
@@ -119,8 +119,8 @@ export const SERVICES = [
     categoryId: 'massages' as const,
     pricingModel: 'duration' as const,
     shortDesc: {
-      en: 'Gentle care for sensitive skin or nervous systems.',
-      es: 'Cuidado delicado para piel o sistemas nerviosos sensibles.',
+      en: 'Combines the softness of hands and the sensation of feathers to awaken nerve endings, calm the mind, reduce anxiety, and reconnect the body.',
+      es: 'Esta experiencia combina la suavidad de las manos y la sensación de las plumas para despertar las terminaciones nerviosas, calma la mente reduce la ansiedad y reconecta el cuerpo.',
     },
     description: {
       en: 'A carefully adapted massage for clients with sensitive skin, heightened nervous system reactivity, or conditions that require a gentler approach. Uses hypoallergenic oils, very light pressure, and slow deliberate movements to provide genuine therapeutic relief without overstimulation. Equally suitable as an introduction for first-time massage clients.',
