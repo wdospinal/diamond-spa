@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
+import { buildAlternates, buildOpenGraph, localBusinessJsonLd } from '@/lib/seo'
 const DEEP_TISSUE_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuBf6M3MTJY3a0VyeDXLX3bGIUrp3dUzZ72q0Mwsq2DSjh5TFK7S_w3ZQfi13HzKYpS82VRnve5FDPFxBrM5bHjR_9An8OykQbgQkSqwLcIFOH_e3uBMgeQcutLox_ARI9SUC7MEJ3IuTiegApD9kpAhhJSiiO0xm9TpPFEMuwcyXPSzdabrM1NLD9vfcIZuDbXc8OjO1fRjeFesfZSOoT81xltXvbGp-0gXh211u_ibO8r9EjmbbUxztiNDuxbEo87fRCNeA-CBgr8Y'
 const FACIAL_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuAZsfM0QI0GE0BCNgFlTZHmGNftgnas-PXevE9015gW7bzQvQIVWQOTcdU5jYfhdRj5-Lqet2Kbzxoyry1JM8YvamU8Uhxawrd5GA5qL_dp-Q1PaYTgWE6dAWWxPaw4S3ts2q-SPF3cCmOzP2qHW0Yw586Nvheje2jixR2RsXX0BDGLEjgwd-YdJMhbOshStYX07s9n8Yrg08RnjiCE2OFRObikltW3dI3PuyHgi2ocEIq7zAx2BjzJOmqP4sMEwAgdjGd_t7jy1-QO'
 const RELAX_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuAT0RW6uduw7sUyBSEesFWEN7RiwIAIzyZ7evCOe38BuXx9qpJveoSj5F0K8h-3mUWeQNlvmHU4cV2hz9ANgwGNdrcQzQjY7GDwt_U0ByilcyE6zT4nAd9lI5xqDwdfCMKf594okejP_rYMw2V7_NBcJbtxvX2Br69pUi8kPrWfmHHW7Yqo2VWCLCV5-eqY74K29QCQpPFnVQAz_2-QdTitbvR3sCaoqurA0gmR_qheugd8WTHveMn82CyIeCREzb1x1VfVZBQZxZ2i'
@@ -10,13 +11,17 @@ const BOUTIQUE_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuDeGR8F
 
 export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
   const locale = isLocale(params.lang) ? params.lang : 'es'
+  const title = locale === 'en'
+    ? 'Diamond Spa — Spa for Men and Women in Medellín'
+    : 'Diamond Spa — Spa para Hombres y Mujeres en Medellín'
+  const description = locale === 'en'
+    ? 'Luxury massages and spa treatments in El Poblado, Medellín. Book your session today.'
+    : 'Masajes de lujo y tratamientos spa en El Poblado, Medellín. Reserva tu Cita hoy.'
   return {
-    title: locale === 'en'
-      ? 'Diamond Spa — Spa for Men and Women in Medellín'
-      : 'Diamond Spa — Spa para Hombres y Mujeres en Medellín',
-    description: locale === 'en'
-      ? 'Luxury massages and spa treatments in El Poblado, Medellín. Book your session today.'
-      : 'Masajes de lujo y tratamientos spa en El Poblado, Medellín. Reserva tu Cita hoy.',
+    title,
+    description,
+    alternates: buildAlternates(''),
+    openGraph: buildOpenGraph({ title, description, path: '', locale, imageAlt: 'Diamond Spa — El Poblado, Medellín' }),
   }
 }
 
@@ -28,6 +33,10 @@ export default function HomePage({ params }: { params: { lang: string } }) {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd()) }}
+      />
       {/* HERO */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
@@ -42,7 +51,14 @@ export default function HomePage({ params }: { params: { lang: string } }) {
           <div className="absolute inset-0 bg-gradient-to-r from-surface via-surface/80 to-surface/20" />
         </div>
         <div className="relative z-10 max-w-screen-2xl mx-auto w-full px-6 md:px-12 pt-10 md:pt-14 pb-24">
-          <span className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-6 block">{h.tagline}</span>
+          <div className="flex items-center gap-4 mb-6">
+            <span className="font-label text-primary tracking-[0.3em] uppercase text-xs">{h.tagline}</span>
+            <span className="w-px h-3 bg-outline-variant/40" />
+            <span className="inline-flex items-center gap-1 font-label text-outline text-xs uppercase tracking-widest">
+              <span className="material-symbols-outlined text-sm leading-none">location_on</span>
+              Medellín, El Poblado
+            </span>
+          </div>
           <h1 className="font-headline text-5xl md:text-7xl lg:text-8xl text-on-surface leading-tight mb-8 max-w-3xl">
             {h.h1[0]}<br />{h.h1[1]}
           </h1>

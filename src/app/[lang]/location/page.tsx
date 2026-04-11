@@ -3,11 +3,18 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
+import { buildAlternates, buildOpenGraph, localBusinessJsonLd } from '@/lib/seo'
 
 export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
   const locale = isLocale(params.lang) ? params.lang : 'es'
   const t = getDict(locale)
-  return { title: t.location.metaTitle, description: t.location.metaDesc }
+  const { metaTitle: title, metaDesc: description } = t.location
+  return {
+    title,
+    description,
+    alternates: buildAlternates('/location'),
+    openGraph: buildOpenGraph({ title, description, path: '/location', locale, imageAlt: 'Diamond Spa — Cra 43C #10-42, El Poblado, Medellín' }),
+  }
 }
 
 interface PlaceReview {
@@ -66,6 +73,10 @@ export default async function LocationPage({ params }: { params: { lang: string 
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd()) }}
+      />
       {/* HERO */}
       <header className="pt-12 md:pt-16 pb-20 px-6 md:px-12 bg-surface">
         <div className="max-w-screen-2xl mx-auto">

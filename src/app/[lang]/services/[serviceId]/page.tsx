@@ -3,6 +3,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { SERVICES, formatCop, getServiceById, type DurationMinutes, type ServiceDef } from '@/lib/services'
+import { buildAlternates, buildOpenGraph, BASE_URL, BUSINESS } from '@/lib/seo'
 
 const DURATIONS: DurationMinutes[] = [30, 60, 90]
 
@@ -19,10 +20,14 @@ export async function generateMetadata({
   const service = getServiceById(params.serviceId)
   if (!service) return {}
   const name = locale === 'en' ? service.name.en : service.name.es
-  const desc = locale === 'en' ? service.shortDesc.en : service.shortDesc.es
+  const description = locale === 'en' ? service.shortDesc.en : service.shortDesc.es
+  const title = `${name} — Diamond Spa Medellín`
+  const path = `/services/${params.serviceId}`
   return {
-    title: `${name} — Diamond Spa Medellín`,
-    description: desc,
+    title,
+    description,
+    alternates: buildAlternates(path),
+    openGraph: buildOpenGraph({ title, description, path, locale, imageAlt: `${name} — Diamond Spa` }),
   }
 }
 
@@ -40,8 +45,49 @@ export default function ServiceDetailPage({
   const name = locale === 'en' ? service.name.en : service.name.es
   const description = locale === 'en' ? service.description.en : service.description.es
 
+  // Build Service price for JSON-LD
+  const servicePrice: number =
+    service.pricingModel === 'flat' ? (service as ServiceDef & { pricingModel: 'flat'; price: number }).price
+    : service.pricingModel === 'wax-machine' ? (service as ServiceDef & { pricingModel: 'wax-machine'; waxPrice: number; machinePrice: number }).waxPrice
+    : (service as ServiceDef & { pricingModel: 'duration'; prices: Record<DurationMinutes, number> }).prices[60]
+
+  const serviceJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name,
+    description,
+    provider: {
+      '@type': 'HealthAndBeautyBusiness',
+      name: BUSINESS.name,
+      url: BUSINESS.url,
+    },
+    areaServed: {
+      '@type': 'City',
+      name: 'Medellín',
+      addressCountry: 'CO',
+    },
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'COP',
+      price: servicePrice,
+      availability: 'https://schema.org/InStock',
+    },
+  }
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: locale === 'en' ? 'Home' : 'Inicio', item: `${BASE_URL}/${locale}` },
+      { '@type': 'ListItem', position: 2, name: locale === 'en' ? 'Services' : 'Servicios', item: `${BASE_URL}/${locale}/services` },
+      { '@type': 'ListItem', position: 3, name },
+    ],
+  }
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       {/* Back link */}
       <div className="pt-32 pb-0 px-6 md:px-12">
         <div className="max-w-screen-2xl mx-auto">

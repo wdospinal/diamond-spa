@@ -3,6 +3,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { SERVICES, formatCop, type DurationMinutes, type ServiceDef } from '@/lib/services'
+import { buildAlternates, buildOpenGraph } from '@/lib/seo'
 
 const DURATIONS: DurationMinutes[] = [30, 60, 90]
 
@@ -16,7 +17,13 @@ function serviceShortDesc(s: ServiceDef, locale: Locale) {
 export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
   const locale = isLocale(params.lang) ? params.lang : 'es'
   const t = getDict(locale)
-  return { title: t.services.metaTitle, description: t.services.metaDesc }
+  const { metaTitle: title, metaDesc: description } = t.services
+  return {
+    title,
+    description,
+    alternates: buildAlternates('/services'),
+    openGraph: buildOpenGraph({ title, description, path: '/services', locale }),
+  }
 }
 
 export default function ServicesPage({ params }: { params: { lang: string } }) {
