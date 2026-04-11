@@ -5,6 +5,8 @@ import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { SERVICES, formatCop, getServiceById, type DurationMinutes, type ServiceDef } from '@/lib/services'
 import { buildAlternates, buildOpenGraph, BASE_URL, BUSINESS } from '@/lib/seo'
 
+export const dynamic = 'force-static'
+
 const DURATIONS: DurationMinutes[] = [30, 60, 90]
 
 export async function generateStaticParams() {

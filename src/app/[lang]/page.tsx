@@ -4,6 +4,9 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd } from '@/lib/seo'
+
+export const dynamic = 'force-static'
+
 const DEEP_TISSUE_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuBf6M3MTJY3a0VyeDXLX3bGIUrp3dUzZ72q0Mwsq2DSjh5TFK7S_w3ZQfi13HzKYpS82VRnve5FDPFxBrM5bHjR_9An8OykQbgQkSqwLcIFOH_e3uBMgeQcutLox_ARI9SUC7MEJ3IuTiegApD9kpAhhJSiiO0xm9TpPFEMuwcyXPSzdabrM1NLD9vfcIZuDbXc8OjO1fRjeFesfZSOoT81xltXvbGp-0gXh211u_ibO8r9EjmbbUxztiNDuxbEo87fRCNeA-CBgr8Y'
 const FACIAL_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuAZsfM0QI0GE0BCNgFlTZHmGNftgnas-PXevE9015gW7bzQvQIVWQOTcdU5jYfhdRj5-Lqet2Kbzxoyry1JM8YvamU8Uhxawrd5GA5qL_dp-Q1PaYTgWE6dAWWxPaw4S3ts2q-SPF3cCmOzP2qHW0Yw586Nvheje2jixR2RsXX0BDGLEjgwd-YdJMhbOshStYX07s9n8Yrg08RnjiCE2OFRObikltW3dI3PuyHgi2ocEIq7zAx2BjzJOmqP4sMEwAgdjGd_t7jy1-QO'
 const RELAX_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuAT0RW6uduw7sUyBSEesFWEN7RiwIAIzyZ7evCOe38BuXx9qpJveoSj5F0K8h-3mUWeQNlvmHU4cV2hz9ANgwGNdrcQzQjY7GDwt_U0ByilcyE6zT4nAd9lI5xqDwdfCMKf594okejP_rYMw2V7_NBcJbtxvX2Br69pUi8kPrWfmHHW7Yqo2VWCLCV5-eqY74K29QCQpPFnVQAz_2-QdTitbvR3sCaoqurA0gmR_qheugd8WTHveMn82CyIeCREzb1x1VfVZBQZxZ2i'
@@ -51,6 +54,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
           <div className="absolute inset-0 bg-gradient-to-r from-surface via-surface/80 to-surface/20" />
         </div>
         <div className="relative z-10 max-w-screen-2xl mx-auto w-full px-6 md:px-12 pt-10 md:pt-14 pb-24">
+          <div className="lg:w-2/3 flex flex-col">
           <div className="flex items-center gap-4 mb-6">
             <span className="font-label text-primary tracking-[0.3em] uppercase text-xs">{h.tagline}</span>
             <span className="w-px h-3 bg-outline-variant/40" />
@@ -59,18 +63,19 @@ export default function HomePage({ params }: { params: { lang: string } }) {
               Medellín, El Poblado
             </span>
           </div>
-          <h1 className="font-headline text-5xl md:text-7xl lg:text-8xl text-on-surface leading-tight mb-8 max-w-3xl">
+          <h1 className="font-headline text-5xl md:text-7xl lg:text-8xl text-on-surface leading-tight mb-8 w-full">
             {h.h1[0]}<br />{h.h1[1]}
           </h1>
-          <p className="font-body text-secondary text-lg max-w-md leading-relaxed font-light mb-12">{h.body}</p>
+          <p className="font-body text-secondary text-lg w-full leading-relaxed font-light mb-12">{h.body}</p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <Link href={`/${locale}/book`} className="inline-flex items-center gap-3 bg-primary text-on-primary px-8 py-4 font-label font-bold tracking-[0.2em] text-xs uppercase hover:bg-white transition-all duration-300">
+            <Link href={`/${locale}/book`} className="inline-flex items-center gap-3 bg-primary text-on-primary px-10 py-5 font-label font-bold tracking-[0.2em] text-sm uppercase hover:bg-white transition-all duration-300">
               {h.bookSession}
               <span className="material-symbols-outlined text-base">arrow_forward</span>
             </Link>
-            <Link href={`/${locale}/services`} className="inline-flex items-center gap-2 border border-outline-variant/30 text-on-surface px-8 py-4 font-label font-bold tracking-[0.2em] text-xs uppercase hover:bg-surface-container-high transition-all duration-300">
+            <Link href={`/${locale}/services`} className="inline-flex items-center gap-2 border border-outline-variant/30 text-on-surface px-10 py-5 font-label font-bold tracking-[0.2em] text-sm uppercase hover:bg-surface-container-high transition-all duration-300">
               {h.exploreServices}
             </Link>
+          </div>
           </div>
         </div>
       </section>

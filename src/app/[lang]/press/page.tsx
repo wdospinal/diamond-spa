@@ -1,4 +1,6 @@
 import { notFound } from 'next/navigation'
+
+export const dynamic = 'force-static'
 import type { Metadata } from 'next'
 import LegalArticle from '@/components/LegalArticle'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
