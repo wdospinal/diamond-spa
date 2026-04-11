@@ -2,11 +2,17 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import LegalArticle from '@/components/LegalArticle'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
+import { buildAlternates, buildOpenGraph } from '@/lib/seo'
 
 export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
   const locale = isLocale(params.lang) ? params.lang : 'es'
-  const t = getDict(locale).legal.privacy
-  return { title: t.metaTitle, description: t.metaDesc }
+  const { metaTitle: title, metaDesc: description } = getDict(locale).legal.privacy
+  return {
+    title,
+    description,
+    alternates: buildAlternates('/privacy'),
+    openGraph: buildOpenGraph({ title, description, path: '/privacy', locale }),
+  }
 }
 
 export default function PrivacyPage({ params }: { params: { lang: string } }) {

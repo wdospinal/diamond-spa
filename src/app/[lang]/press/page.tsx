@@ -2,11 +2,17 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import LegalArticle from '@/components/LegalArticle'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
+import { buildAlternates, buildOpenGraph } from '@/lib/seo'
 
 export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
   const locale = isLocale(params.lang) ? params.lang : 'es'
-  const t = getDict(locale).legal.press
-  return { title: t.metaTitle, description: t.metaDesc }
+  const { metaTitle: title, metaDesc: description } = getDict(locale).legal.press
+  return {
+    title,
+    description,
+    alternates: buildAlternates('/press'),
+    openGraph: buildOpenGraph({ title, description, path: '/press', locale }),
+  }
 }
 
 export default function PressPage({ params }: { params: { lang: string } }) {

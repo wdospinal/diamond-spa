@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
+import { buildAlternates, buildOpenGraph } from '@/lib/seo'
 
 const HERO_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuDMJt6gVTVOcc0SLCddvP7863h-3G97XDjh63aBjalz_oTlp8ClqkDtehoFnE47a2wt_n0r5LV4MuWsS483zQ0ZaeeIjUuH1IKmb_9q7MF_GUK3ONCFOjNKdonpAAY5Kgha5XDqKSoh1Hcf7qYeUraZVrSJRQtt1acSfjO7vh2cbe1jBwIs48ju40Zl0JXuHfISXPTkBu4v4TJupflDrpH7VdphBKpeYBsZDPssMRc_0oO5Ayuwe3k5iayBAJjqFLdB9Aur39XbUZDK'
 const STONE_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuBs3haFtBW8DAugh_D6Bb6qT_cFNTjpvGP0LKKs5eeBeV-4jgNh3VDaFM-zJYOC3-weUhoTSRXJSLFoQi65MlMiKmUVVLTEW-E5_NgaVNJaCZ5vM3fNDLA0jVi54ViIwjLlzc2I8j_JIiMBft3RF9WHTF6PVfIRppcvj2U1drHqDRAMCzEU76UiVW_8kHob8AUxwEbeqCCXm8PuzX3DrIDhTgrtGRiu8luULgBpUJi8IJOrJabDZA2xKIe-pY7oTrCwoF6LSjKv_rTz'
@@ -18,7 +19,13 @@ const THERAPISTS_NAMES = ['Daniela Salina', 'Sary Paez', 'Julian Ross']
 export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
   const locale = isLocale(params.lang) ? params.lang : 'es'
   const t = getDict(locale)
-  return { title: t.about.metaTitle, description: t.about.metaDesc }
+  const { metaTitle: title, metaDesc: description } = t.about
+  return {
+    title,
+    description,
+    alternates: buildAlternates('/about'),
+    openGraph: buildOpenGraph({ title, description, path: '/about', locale }),
+  }
 }
 
 export default function AboutPage({ params }: { params: { lang: string } }) {

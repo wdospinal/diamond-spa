@@ -114,7 +114,7 @@ export const SERVICES = [
   },
   {
     id: 'sensitive',
-    name: { en: 'Sensitive massage', es: 'Sensitive' },
+    name: { en: 'Sensitive massage', es: 'Masaje Sensitivo' },
     category: { en: 'Exclusive Massages', es: 'Masajes Exclusivos' },
     categoryId: 'massages' as const,
     pricingModel: 'duration' as const,
@@ -328,7 +328,7 @@ export const SERVICES = [
       en: 'Professional perianal area hair removal performed with maximum discretion and care by our trained therapists. Available with warm wax or electric machine, using only the highest-hygiene standards and gentle technique for this sensitive zone.',
       es: 'Depilación profesional de la zona perianal realizada con máxima discreción y cuidado por nuestras terapeutas capacitadas. Disponible con cera caliente o máquina eléctrica, utilizando los más altos estándares de higiene y técnica suave para esta zona sensible.',
     },
-    waxPrice: 60_000,
+    waxPrice: 65_000,
     machinePrice: 45_000,
   },
   {
