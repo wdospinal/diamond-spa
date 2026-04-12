@@ -101,6 +101,40 @@ export async function POST(req: NextRequest) {
       phone,
       requests: requests || undefined,
     })
+
+    // Fire-and-forget email notification via Resend
+    const resendKey = process.env.RESEND_API_KEY
+    if (resendKey) {
+      const priceFmt = new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        maximumFractionDigits: 0,
+      }).format(priceCop)
+      fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${resendKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: 'Diamond Spa <reserva@zanacode.com>',
+          to: ['mialedasate1@gmail.com'],
+          subject: `[Diamond Spa] Nueva reserva — ${firstName} ${lastName}`,
+          html: `<h2 style="color:#1a1a1a">Nueva Reserva — Diamond Spa</h2>
+<table style="border-collapse:collapse;font-family:sans-serif;font-size:14px;color:#333">
+  <tr><td style="padding:6px 12px;font-weight:bold">Servicio</td><td style="padding:6px 12px">${serviceDisplayName(service, bookingLocale)} (${durationMinutes} min)</td></tr>
+  <tr style="background:#f5f5f5"><td style="padding:6px 12px;font-weight:bold">Fecha</td><td style="padding:6px 12px">${dateKey} a las ${timeSlot}</td></tr>
+  <tr><td style="padding:6px 12px;font-weight:bold">Cliente</td><td style="padding:6px 12px">${firstName} ${lastName}</td></tr>
+  <tr style="background:#f5f5f5"><td style="padding:6px 12px;font-weight:bold">Email</td><td style="padding:6px 12px">${email}</td></tr>
+  <tr><td style="padding:6px 12px;font-weight:bold">Teléfono</td><td style="padding:6px 12px">${phone}</td></tr>
+  <tr style="background:#f5f5f5"><td style="padding:6px 12px;font-weight:bold">Precio</td><td style="padding:6px 12px">${priceFmt}</td></tr>
+  ${requests ? `<tr><td style="padding:6px 12px;font-weight:bold">Notas</td><td style="padding:6px 12px">${requests}</td></tr>` : ''}
+</table>
+<p style="color:#888;font-size:11px;margin-top:16px">ID: ${row.id}</p>`,
+        }),
+      }).catch(err => console.error('Resend email error:', err))
+    }
+
     return NextResponse.json({ ok: true, id: row.id })
   } catch (e) {
     console.error('bookings write failed', e)
