@@ -4,13 +4,14 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { type Locale } from '@/lib/i18n'
+import { randomWhatsAppUrl } from '@/lib/phones'
 
 interface NavLink {
   label: string
   href: string
 }
 
-const WHATSAPP_CONTACT = `https://wa.me/573145484227?text=Hola%2C%20quisiera%20hablar%20con%20la%20recepcionista%20de%20Diamond%20Spa.`
+const WA_TEXT = 'Hola, quisiera hablar con la recepcionista de Diamond Spa.'
 
 export default function MobileMenuClient({
   locale,
@@ -73,10 +74,8 @@ export default function MobileMenuClient({
             ))}
           </div>
           <a
-            href={WHATSAPP_CONTACT}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => setMenuOpen(false)}
+            href="#"
+            onClick={(e) => { e.preventDefault(); setMenuOpen(false); window.open(randomWhatsAppUrl(WA_TEXT), '_blank', 'noopener,noreferrer') }}
             className="w-fit border border-primary/40 text-primary px-8 py-3 font-label font-bold tracking-widest text-xs uppercase"
           >
             {contactLabel}

@@ -5,6 +5,7 @@ import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd } from '@/lib/seo'
 import { ReviewsSection } from '@/components/ReviewsSection'
+import { PHONES } from '@/lib/phones'
 
 export const revalidate = 3600
 
@@ -51,13 +52,15 @@ export default function LocationPage({ params }: { params: { lang: string } }) {
               <p className="font-headline text-3xl md:text-4xl text-secondary leading-snug italic">Medellín, Antioquia</p>
             </div>
             <div className="flex flex-col gap-4 mb-8">
-              <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-primary text-lg">phone</span>
-                <span className="font-body text-secondary text-sm tracking-widest">+57 314 5484227</span>
-              </div>
+              {PHONES.map(({ display, wa }) => (
+                <div key={wa} className="flex items-center gap-3">
+                  <span className="material-symbols-outlined text-primary text-lg">phone</span>
+                  <span className="font-body text-secondary text-sm tracking-widest">{display}</span>
+                </div>
+              ))}
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-primary text-lg">mail</span>
-                <span className="font-body text-secondary text-sm tracking-widest">mialedasate1@gmail.com</span>
+                <span className="font-body text-secondary text-sm tracking-widest">book@diamondspa.com.co</span>
               </div>
             </div>
             <a

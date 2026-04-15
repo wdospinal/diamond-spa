@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { getDict, type Locale } from '@/lib/i18n'
 import { SERVICES, formatCop, type DurationMinutes, type ServiceDef } from '@/lib/services'
+import { randomWhatsAppUrl } from '@/lib/phones'
 
 type DurationService = ServiceDef & { pricingModel: 'duration'; prices: Record<DurationMinutes, number> }
 const MASSAGE_SERVICES = (SERVICES as unknown as ServiceDef[]).filter(
@@ -99,7 +100,7 @@ export default function BookClient({ locale }: { locale: string }) {
       (form.requests ? `💬 Notas: ${form.requests}\n` : '') +
       `\n💰 ${t.totalLabel}: ${formatCop(priceCop)}`
 
-    window.open(`https://wa.me/573145484227?text=${encodeURIComponent(waText)}`, '_blank')
+    window.open(randomWhatsAppUrl(waText), '_blank')
 
     const smsBody =
       `[Diamond Spa] Nueva reserva\n` +

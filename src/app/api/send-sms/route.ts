@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
   const accountSid = process.env.TWILIO_ACCOUNT_SID
   const authToken  = process.env.TWILIO_AUTH_TOKEN
   const fromNumber = process.env.TWILIO_PHONE_NUMBER
-  const toNumber   = process.env.BUSINESS_PHONE ?? '+573145484227'
+  const toNumber   = process.env.BUSINESS_PHONE ?? '+573054541635'
 
   if (!accountSid || !authToken || !fromNumber) {
     console.warn('SMS service not configured — missing Twilio env vars')

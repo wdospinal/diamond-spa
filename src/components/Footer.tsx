@@ -1,5 +1,7 @@
 import Link from 'next/link'
 import { getDict, type Locale } from '@/lib/i18n'
+import { PHONES } from '@/lib/phones'
+import WhatsAppLink from '@/components/WhatsAppLink'
 
 const IGSvg = (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -48,14 +50,16 @@ export default function Footer({ locale }: { locale: Locale }) {
         {/* Contact */}
         <div className="flex flex-col gap-4">
           <h5 className="text-on-surface font-label text-xs tracking-widest uppercase mb-2">{t.contactLabel}</h5>
-          <a href="mailto:mialedasate1@gmail.com" className="text-slate-500 hover:text-primary font-body text-sm transition-colors duration-200">mialedasate1@gmail.com</a>
-          <a href="tel:+573145484227" className="text-slate-500 hover:text-primary font-body text-sm transition-colors duration-200">+57 314 5484227</a>
+          <a href="mailto:book@diamondspa.com.co" className="text-slate-500 hover:text-primary font-body text-sm transition-colors duration-200">book@diamondspa.com.co</a>
+          {PHONES.map(({ display, wa }) => (
+            <a key={wa} href={`tel:+${wa}`} className="text-slate-500 hover:text-primary font-body text-sm transition-colors duration-200">{display}</a>
+          ))}
           <div className="flex gap-4 mt-2">
             <a href="https://www.instagram.com/diamondmassagesmed/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-slate-500 hover:text-primary transition-colors duration-200">{IGSvg}</a>
-            <a href="mailto:mialedasate1@gmail.com" className="text-slate-500 hover:text-primary transition-colors duration-200" aria-label="Email">
+            <a href="mailto:book@diamondspa.com.co" className="text-slate-500 hover:text-primary transition-colors duration-200" aria-label="Email">
               <span className="material-symbols-outlined text-xl">mail</span>
             </a>
-            <a href="https://wa.me/573145484227" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-primary transition-colors duration-200" aria-label="WhatsApp">{WASvg}</a>
+            <WhatsAppLink text="Hola, quisiera hablar con la recepcionista de Diamond Spa." className="text-slate-500 hover:text-primary transition-colors duration-200" aria-label="WhatsApp">{WASvg}</WhatsAppLink>
           </div>
         </div>
       </div>

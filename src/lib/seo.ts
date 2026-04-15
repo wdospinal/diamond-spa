@@ -63,8 +63,8 @@ export function buildOpenGraph(opts: OGOptions): Metadata['openGraph'] {
 
 export const BUSINESS = {
   name: 'Diamond Spa',
-  telephone: '+573145484227',
-  email: 'mialedasate1@gmail.com',
+  telephone: '+573054541635',
+  email: 'book@diamondspa.com.co',
   url: BASE_URL,
   logo: `${BASE_URL}/logo.png`,
   image: DEFAULT_OG_IMAGE,

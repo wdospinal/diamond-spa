@@ -118,7 +118,7 @@ export async function POST(req: NextRequest) {
         },
         body: JSON.stringify({
           from: 'Diamond Spa <reserva@zanacode.com>',
-          to: ['mialedasate1@gmail.com'],
+          to: ['book@diamondspa.com.co'],
           subject: `[Diamond Spa] Nueva reserva — ${firstName} ${lastName}`,
           html: `<h2 style="color:#1a1a1a">Nueva Reserva — Diamond Spa</h2>
 <table style="border-collapse:collapse;font-family:sans-serif;font-size:14px;color:#333">
