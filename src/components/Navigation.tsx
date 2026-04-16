@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Playfair_Display } from 'next/font/google'
 import { getDict, type Locale } from '@/lib/i18n'
 import MobileMenuClient from '@/components/MobileMenuClient'
+import NavLinksClient from '@/components/NavLinksClient'
 import WhatsAppLink from '@/components/WhatsAppLink'
 
 const playfairDisplay = Playfair_Display({
@@ -20,8 +21,6 @@ export default function Navigation({ locale }: { locale: Locale }) {
     { label: t.aboutUs,  href: `/${locale}/about`    },
     { label: t.location, href: `/${locale}/location` },
   ]
-
-  const otherLocale: Locale = locale === 'es' ? 'en' : 'es'
 
   return (
     <nav className="fixed top-0 w-full z-50 glass-nav">
@@ -43,35 +42,11 @@ export default function Navigation({ locale }: { locale: Locale }) {
           </span>
         </Link>
 
-        {/* Desktop links */}
-        <div className="hidden md:flex gap-10 items-center">
-          {links.map(({ label, href }) => (
-            <Link
-              key={href}
-              href={href}
-              className="text-slate-400 hover:text-primary font-label text-xs tracking-widest uppercase transition-colors duration-200"
-            >
-              {label}
-            </Link>
-          ))}
-        </div>
+        {/* Desktop links + locale switcher (client — needs usePathname for active state) */}
+        <NavLinksClient links={links} locale={locale} />
 
-        {/* Desktop CTAs + locale switcher */}
+        {/* Desktop CTAs */}
         <div className="hidden md:flex items-center gap-3">
-          {/* Locale switcher */}
-          <div className="flex items-center border border-outline-variant/20">
-            {(['es', 'en'] as Locale[]).map(l => (
-              <Link
-                key={l}
-                href={`/${l}`}
-                className={`px-2.5 py-1.5 font-label text-[10px] uppercase tracking-widest transition-all ${
-                  locale === l ? 'bg-primary text-on-primary' : 'text-outline hover:text-primary'
-                }`}
-              >
-                {l}
-              </Link>
-            ))}
-          </div>
 
           <WhatsAppLink
             text={WA_TEXT}

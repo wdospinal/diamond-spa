@@ -48,16 +48,21 @@ export default function MobileMenuClient({
       {/* Mobile dropdown */}
       {menuOpen && (
         <div className="md:hidden fixed top-[72px] left-0 right-0 z-40 bg-surface-container-low px-6 pb-8 pt-4 flex flex-col gap-6">
-          {links.map(({ label, href }) => (
-            <Link
-              key={href}
-              href={href}
-              onClick={() => setMenuOpen(false)}
-              className="text-on-surface font-label text-sm tracking-widest uppercase"
-            >
-              {label}
-            </Link>
-          ))}
+          {links.map(({ label, href }) => {
+            const active = pathname === href || pathname.startsWith(href + '/')
+            return (
+              <Link
+                key={href}
+                href={href}
+                onClick={() => setMenuOpen(false)}
+                className={`font-label text-sm tracking-widest uppercase transition-colors ${
+                  active ? 'text-primary border-l-2 border-primary pl-3' : 'text-on-surface'
+                }`}
+              >
+                {label}
+              </Link>
+            )
+          })}
           {/* Locale switcher */}
           <div className="flex gap-2">
             {(['es', 'en'] as Locale[]).map(l => (
