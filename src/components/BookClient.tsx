@@ -4,12 +4,40 @@ import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { getDict, type Locale } from '@/lib/i18n'
 import { SERVICES, formatCop, type DurationMinutes, type ServiceDef } from '@/lib/services'
-import { randomWhatsAppUrl } from '@/lib/phones'
+import { randomWhatsAppUrl, SPA_HOURS } from '@/lib/spa'
 
 type DurationService = ServiceDef & { pricingModel: 'duration'; prices: Record<DurationMinutes, number> }
 const MASSAGE_SERVICES = (SERVICES as unknown as ServiceDef[]).filter(
   (s): s is DurationService => s.pricingModel === 'duration'
 )
+
+const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as const
+
+function getTimeSlots(year: number, month: number, day: number, durationMin: number): string[] {
+  const dayName = DAY_NAMES[new Date(year, month, day).getDay()]
+  const schedule = SPA_HOURS.find(h => (h.dayOfWeek as readonly string[]).includes(dayName))
+  if (!schedule) return []
+
+  const [openH, openM] = schedule.opens.split(':').map(Number)
+  const [closeH, closeM] = schedule.closes.split(':').map(Number)
+  const openMinutes = openH * 60 + openM
+  const lastSlot = closeH * 60 + closeM - durationMin
+
+  const now = new Date()
+  const isToday = year === now.getFullYear() && month === now.getMonth() && day === now.getDate()
+  const nowMinutes = isToday ? now.getHours() * 60 + now.getMinutes() + 30 : -1
+
+  const slots: string[] = []
+  for (let m = openMinutes; m <= lastSlot; m += 30) {
+    if (m <= nowMinutes) continue
+    const h = Math.floor(m / 60)
+    const min = m % 60
+    const ampm = h < 12 ? 'AM' : 'PM'
+    const displayH = h === 0 ? 12 : h > 12 ? h - 12 : h
+    slots.push(`${displayH}:${min.toString().padStart(2, '0')} ${ampm}`)
+  }
+  return slots
+}
 
 function buildCalendar(year: number, month: number) {
   const firstDay = new Date(year, month, 1).getDay()
@@ -35,7 +63,8 @@ export default function BookClient({ locale }: { locale: string }) {
   const [calYear, setCalYear] = useState(today.getFullYear())
   const [calMonth, setCalMonth] = useState(today.getMonth())
   const [selectedDay, setSelectedDay] = useState<number | null>(null)
-const [confirmed, setConfirmed] = useState(false)
+  const [selectedTime, setSelectedTime] = useState<string | null>(null)
+  const [confirmed, setConfirmed] = useState(false)
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', requests: '' })
 
   // Pre-select service from ?service= query param (massages only)
@@ -63,11 +92,11 @@ const [confirmed, setConfirmed] = useState(false)
 
   function prevMonth() {
     if (calMonth === 0) { setCalYear(y => y - 1); setCalMonth(11) } else setCalMonth(m => m - 1)
-    setSelectedDay(null)
+    setSelectedDay(null); setSelectedTime(null)
   }
   function nextMonth() {
     if (calMonth === 11) { setCalYear(y => y + 1); setCalMonth(0) } else setCalMonth(m => m + 1)
-    setSelectedDay(null)
+    setSelectedDay(null); setSelectedTime(null)
   }
 
   function serviceName(s: ServiceDef) {
@@ -76,7 +105,7 @@ const [confirmed, setConfirmed] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!selectedService || !selectedDuration || !selectedDay) return
+    if (!selectedService || !selectedDuration || !selectedDay || !selectedTime) return
 
     const service = selectedServiceObj!
     const dateStr = `${t.months[calMonth]} ${selectedDay}, ${calYear}`
@@ -87,7 +116,7 @@ const [confirmed, setConfirmed] = useState(false)
       `Hola Diamond Spa! Me gustaría reservar una cita:\n\n` +
       `📋 ${t.serviceLabel}: ${sName} (${selectedDuration} min)\n` +
       `📅 ${t.dateLabel}: ${dateStr}\n` +
-      `⏰ ${t.timeLabel}: ${t.seeScheduleLabel ?? 'Ver horario de atención'}\n` +
+      `⏰ ${t.timeLabel}: ${selectedTime}\n` +
       `👤 Nombre: ${form.firstName} ${form.lastName}\n` +
       `📧 Email: ${form.email}\n` +
       `📱 Tel: ${form.phone}\n` +
@@ -115,7 +144,7 @@ const [confirmed, setConfirmed] = useState(false)
           year: calYear,
           monthIndex: calMonth,
           day: selectedDay,
-          timeSlot: null,
+          timeSlot: selectedTime,
           locale: lang,
           ...form,
         }),
@@ -155,6 +184,7 @@ const [confirmed, setConfirmed] = useState(false)
               setSelectedService(null)
               setSelectedDuration(null)
               setSelectedDay(null)
+              setSelectedTime(null)
               setForm({ firstName: '', lastName: '', email: '', phone: '', requests: '' })
             }}
             className="bg-primary text-on-primary px-10 py-4 font-label font-bold tracking-[0.2em] text-xs uppercase hover:bg-white transition-all"
@@ -267,7 +297,7 @@ const [confirmed, setConfirmed] = useState(false)
                     const past = isPast(day)
                     const active = selectedDay === day
                     return (
-                      <button key={i} type="button" disabled={past} onClick={() => setSelectedDay(day)}
+                      <button key={i} type="button" disabled={past} onClick={() => { setSelectedDay(day); setSelectedTime(null) }}
                         className={`h-7 w-7 mx-auto flex items-center justify-center font-body text-[11px] transition-all duration-150 ${past ? 'text-outline/30 cursor-not-allowed' : active ? 'bg-primary text-on-primary' : 'text-on-surface hover:bg-surface-container-high'}`}>
                         {day}
                       </button>
@@ -277,19 +307,43 @@ const [confirmed, setConfirmed] = useState(false)
               </div>
             </div>
 
-            {/* Step 04 — Schedule link */}
+            {/* Step 04 — Select time slot */}
             <div>
               <StepLabel n="04" label={t.step3} />
               <div className="mt-6">
-                <a
-                  href={`/${lang}/location`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 font-label text-xs tracking-widest uppercase text-primary hover:text-on-surface transition-colors duration-200"
-                >
-                  <span className="material-symbols-outlined text-base">schedule</span>
-                  {lang === 'es' ? 'Ver horario de atención' : 'View business hours'}
-                </a>
+                {!selectedDay ? (
+                  <p className="font-body text-outline text-xs">
+                    {lang === 'es' ? 'Selecciona una fecha primero.' : 'Select a date first.'}
+                  </p>
+                ) : !selectedDuration ? (
+                  <p className="font-body text-outline text-xs">
+                    {lang === 'es' ? 'Selecciona una duración primero.' : 'Select a duration first.'}
+                  </p>
+                ) : (() => {
+                  const slots = getTimeSlots(calYear, calMonth, selectedDay, selectedDuration)
+                  return slots.length === 0 ? (
+                    <p className="font-body text-outline text-xs">
+                      {lang === 'es' ? 'No hay horarios disponibles para este día.' : 'No available times for this day.'}
+                    </p>
+                  ) : (
+                    <div className="flex flex-wrap gap-2 max-w-lg">
+                      {slots.map(slot => (
+                        <button
+                          key={slot}
+                          type="button"
+                          onClick={() => setSelectedTime(slot)}
+                          className={`px-4 py-2 font-label text-xs tracking-widest uppercase transition-all duration-150 ${
+                            selectedTime === slot
+                              ? 'bg-primary text-on-primary'
+                              : 'bg-surface-container hover:bg-surface-container-high text-on-surface border border-transparent'
+                          }`}
+                        >
+                          {slot}
+                        </button>
+                      ))}
+                    </div>
+                  )
+                })()}
               </div>
             </div>
 
@@ -339,6 +393,11 @@ const [confirmed, setConfirmed] = useState(false)
                     value: selectedDay ? `${t.months[calMonth]} ${selectedDay}, ${calYear}` : '—',
                     empty: !selectedDay,
                   },
+                  {
+                    label: t.timeLabel,
+                    value: selectedTime ?? '—',
+                    empty: !selectedTime,
+                  },
                 ].map(({ label, value, empty }) => (
                   <div key={label} className="flex justify-between items-start gap-4">
                     <span className="font-label text-outline text-xs uppercase tracking-widest shrink-0">{label}</span>
@@ -359,7 +418,7 @@ const [confirmed, setConfirmed] = useState(false)
               </div>
               <button
                 type="submit"
-                disabled={!selectedService || !selectedDuration || !selectedDay}
+                disabled={!selectedService || !selectedDuration || !selectedDay || !selectedTime}
                 className="w-full bg-primary text-on-primary py-5 font-label font-bold tracking-[0.2em] text-xs uppercase hover:bg-white transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-primary"
               >
                 {t.confirm}

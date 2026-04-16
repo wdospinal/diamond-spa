@@ -1,3 +1,12 @@
+import {
+  SPA_TAGLINE,
+  SPA_DESCRIPTION,
+  SPA_HOURS,
+  SPA_DIRECTIONS,
+  SPA_FOUNDED,
+  SPA_ADDRESS,
+} from './spa'
+
 export type Locale = 'en' | 'es'
 export const LOCALES: Locale[] = ['en', 'es']
 export const DEFAULT_LOCALE: Locale = 'es'
@@ -21,9 +30,9 @@ const dict = {
     },
 
     home: {
-      tagline: 'Quiet luxury, deep recovery.',
+      tagline: SPA_TAGLINE.en,
       h1: ['Relax and feel', 'better today.'],
-      body: 'Precision recovery and mental clarity designed exclusively for the modern professional. Experience unparalleled discretion in the heart of the city.',
+      body: SPA_DESCRIPTION.en,
       bookSession: 'Book Your Session',
       exploreServices: 'Explore Services',
       section2Title: 'Curated Restoration',
@@ -95,7 +104,7 @@ const dict = {
     about: {
       metaTitle: 'About us — Diamond Spa Medellín',
       metaDesc: 'The philosophy and heritage behind Diamond Spa — precision wellness in El Poblado, Medellín.',
-      tagline: 'Quiet luxury, deep recovery.',
+      tagline: SPA_TAGLINE.en,
       titleParts: ['The', 'Philosophy'],
       heroBody: "Where the modern world's noise fades into obsidian silence. We curate an atmosphere of deep restoration designed specifically for those who carry the weight of leadership.",
       quietTitle: 'Quiet Confidence',
@@ -138,15 +147,15 @@ const dict = {
 
     location: {
       metaTitle: 'Location — Diamond Spa El Poblado, Medellín',
-      metaDesc: 'Find Diamond Spa at Cra 43C #10-42, El Poblado, Medellín, Antioquia.',
+      metaDesc: `Find Diamond Spa at ${SPA_ADDRESS.full}.`,
       label: 'Find Us',
       titleParts: ['Our', 'Address'],
       getDirections: 'Get Directions',
       hoursLabel: 'Operating Hours',
       hoursNote: 'Last bookings accepted 90 minutes before closing. Extended hours available for members.',
       hours: [
-        { day: 'Monday – Saturday', time: '10:00 AM – 10:00 PM' },
-        { day: 'Sunday', time: '10:00 AM – 6:00 PM' },
+        { day: SPA_HOURS[0].days.en, time: SPA_HOURS[0].display },
+        { day: SPA_HOURS[1].days.en, time: SPA_HOURS[1].display },
       ],
       privateTitle: 'Private Arrival',
       privateBody1: 'Our concierge will provide personalised arrival instructions upon booking confirmation. A private entrance ensures complete anonymity and a seamless transition into a calm, private environment.',
@@ -154,9 +163,9 @@ const dict = {
       reserveDirections: 'Reserve & Receive Directions',
       transportLabel: 'Getting Here',
       transport: [
-        { icon: 'directions_car', label: 'Driving', detail: '5 min drive from Parque El Poblado' },
-        { icon: 'local_parking', label: 'Parking', detail: 'Parking is available in front of the premises' },
-        { icon: 'flight', label: 'Airport', detail: '25 min from Olaya Herrera Airport' },
+        { icon: 'directions_car', label: 'Driving', detail: SPA_DIRECTIONS.driving.en },
+        { icon: 'local_parking', label: 'Parking', detail: SPA_DIRECTIONS.parking.en },
+        { icon: 'flight', label: 'Airport', detail: SPA_DIRECTIONS.airport.en },
       ],
       ctaLabel: 'Your Journey Begins',
       ctaTitle: 'The destination is the experience.',
@@ -208,7 +217,7 @@ const dict = {
         metaDesc: 'How Diamond Spa collects, uses, and protects your personal information.',
         title: 'Privacy Policy',
         body: [
-          'Diamond Spa (“we”, “us”) respects your privacy. This policy describes how we handle information when you visit our website, make a reservation, or contact us.',
+          'Diamond Spa ("we", "us") respects your privacy. This policy describes how we handle information when you visit our website, make a reservation, or contact us.',
           'We may collect information you provide directly, such as name, email, phone number, and booking preferences, solely to confirm appointments, communicate about your visit, and improve our service.',
           'We do not sell your personal data. We may share limited information with service providers who assist us (for example, hosting or messaging) under strict confidentiality obligations.',
           'You may request access, correction, or deletion of your personal data where applicable by contacting us at the email shown in the footer.',
@@ -241,20 +250,20 @@ const dict = {
 
     history: {
       metaTitle: 'Our Heritage — Diamond Spa Medellín',
-      metaDesc: 'The founding story behind Diamond Spa — born in El Poblado, Medellín in 2026.',
+      metaDesc: `The founding story behind Diamond Spa — born in El Poblado, Medellín in ${SPA_FOUNDED}.`,
       label: 'Our Heritage',
       titleParts: ['The', 'Story'],
-      foundedLabel: 'Founded 2026',
+      foundedLabel: `Founded ${SPA_FOUNDED}`,
       foundedTitle: 'Three Partners. One Vision.',
-      foundedBody: 'Diamond Spa was founded in 2026 by three partners — two specialist cosmetologists and a shared conviction: that personal care and therapeutic services could be something far greater than the ordinary. Born from years of professional practice and a quiet frustration with the superficial, the spa was conceived as a space where certified expertise and genuine human touch converge into something rare.',
+      foundedBody: `Diamond Spa was founded in ${SPA_FOUNDED} by three partners — two specialist cosmetologists and a shared conviction: that personal care and therapeutic services could be something far greater than the ordinary. Born from years of professional practice and a quiet frustration with the superficial, the spa was conceived as a space where certified expertise and genuine human touch converge into something rare.`,
       visionLabel: 'Our Purpose',
       visionTitle: ['A Gap Worth', 'Filling'],
       visionBody1: "Medellín's wellness scene is vibrant — yet something essential was missing. We found a city full of spas and a scarcity of truly specialised therapeutic care: deep tissue work, sports recovery, relaxation protocols, and stimulating treatments delivered by professional cosmetologists who understand the body not just aesthetically, but structurally.",
       visionBody2: 'Our mission was clear: to bring professional-grade therapeutic and cosmetic services to both men and women, in an environment worthy of the experience — no compromise, no shortcuts.',
       milestoneLabel: 'A Premier Address',
       milestoneTitle: 'At the Heart of El Poblado',
-      milestoneBody: 'From the very beginning, we chose to be in El Poblado — steps from Parque El Poblado, in one of the most accessible and culturally vibrant zones of Medellín. Our address is not incidental; it reflects our commitment to being genuinely reachable, genuinely present, and genuinely part of this city\'s story.',
-      stat1Number: '2026',
+      milestoneBody: "From the very beginning, we chose to be in El Poblado — steps from Parque El Poblado, in one of the most accessible and culturally vibrant zones of Medellín. Our address is not incidental; it reflects our commitment to being genuinely reachable, genuinely present, and genuinely part of this city's story.",
+      stat1Number: `${SPA_FOUNDED}`,
       stat1Label: 'Year Founded',
       stat2Number: '3',
       stat2Label: 'Founding Partners',
@@ -279,7 +288,7 @@ const dict = {
       press: 'Press Inquiries',
       contact: 'Contact',
       contactLabel: 'Contact',
-      copyright: '© 2026 Diamond Spa. El Poblado, Medellín.',
+      copyright: `© ${SPA_FOUNDED} Diamond Spa. El Poblado, Medellín.`,
     },
   },
 
@@ -293,9 +302,9 @@ const dict = {
     },
 
     home: {
-      tagline: 'Lujo silencioso, recuperación profunda.',
+      tagline: SPA_TAGLINE.es,
       h1: ['Relájate y siéntete', 'mejor hoy.'],
-      body: 'Recuperación de precisión y claridad mental diseñada para el profesional moderno. Experimenta una discreción incomparable en el corazón de la ciudad.',
+      body: SPA_DESCRIPTION.es,
       bookSession: 'Reserva tu Cita',
       exploreServices: 'Explorar Servicios',
       section2Title: 'Restauración Curada',
@@ -367,7 +376,7 @@ const dict = {
     about: {
       metaTitle: 'Sobre nosotros — Diamond Spa Medellín',
       metaDesc: 'La filosofía y herencia de Diamond Spa — bienestar de precisión en El Poblado, Medellín.',
-      tagline: 'Lujo silencioso, recuperación profunda.',
+      tagline: SPA_TAGLINE.es,
       titleParts: ['La', 'Filosofía'],
       heroBody: 'Donde el ruido del mundo moderno se desvanece en silencio obsidiano. Curamos una atmósfera de restauración profunda diseñada para quienes llevan el peso del liderazgo.',
       quietTitle: 'Confianza Serena',
@@ -410,15 +419,15 @@ const dict = {
 
     location: {
       metaTitle: 'Ubicación — Diamond Spa El Poblado, Medellín',
-      metaDesc: 'Encuéntranos en Cra 43C #10-42, El Poblado, Medellín, Antioquia.',
+      metaDesc: `Encuéntranos en ${SPA_ADDRESS.full}.`,
       label: 'Encuéntranos',
       titleParts: ['Nuestra', 'Dirección'],
       getDirections: 'Cómo Llegar',
       hoursLabel: 'Horario de Atención',
       hoursNote: 'Últimas reservas aceptadas 90 minutos antes del cierre. Horarios extendidos disponibles para miembros.',
       hours: [
-        { day: 'Lunes – Sábado', time: '10:00 AM – 10:00 PM' },
-        { day: 'Domingo', time: '10:00 AM – 6:00 PM' },
+        { day: SPA_HOURS[0].days.es, time: SPA_HOURS[0].display },
+        { day: SPA_HOURS[1].days.es, time: SPA_HOURS[1].display },
       ],
       privateTitle: 'Llegada Privada',
       privateBody1: 'Nuestro concierge proporcionará instrucciones de llegada personalizadas tras la confirmación de la reserva. Una entrada privada garantiza total anonimato y una transición perfecta a un entorno privado y sereno.',
@@ -426,9 +435,9 @@ const dict = {
       reserveDirections: 'Reservar y Recibir Indicaciones',
       transportLabel: 'Cómo Llegar',
       transport: [
-        { icon: 'directions_car', label: 'Manejando', detail: '5 min en carro desde el Parque El Poblado' },
-        { icon: 'local_parking', label: 'Parqueadero', detail: 'Zona de parqueo disponible frente al local' },
-        { icon: 'flight', label: 'Aeropuerto', detail: '25 min desde el Aeropuerto Olaya Herrera' },
+        { icon: 'directions_car', label: 'Manejando', detail: SPA_DIRECTIONS.driving.es },
+        { icon: 'local_parking', label: 'Parqueadero', detail: SPA_DIRECTIONS.parking.es },
+        { icon: 'flight', label: 'Aeropuerto', detail: SPA_DIRECTIONS.airport.es },
       ],
       ctaLabel: 'Tu Viaje Comienza',
       ctaTitle: 'El destino es la experiencia.',
@@ -513,12 +522,12 @@ const dict = {
 
     history: {
       metaTitle: 'Nuestra Historia — Diamond Spa Medellín',
-      metaDesc: 'La historia detrás de Diamond Spa — nacido en El Poblado, Medellín en 2026.',
+      metaDesc: `La historia detrás de Diamond Spa — nacido en El Poblado, Medellín en ${SPA_FOUNDED}.`,
       label: 'Nuestra Historia',
       titleParts: ['La', 'Historia'],
-      foundedLabel: 'Fundada en 2026',
+      foundedLabel: `Fundada en ${SPA_FOUNDED}`,
       foundedTitle: 'Tres Socios. Una Visión.',
-      foundedBody: 'Diamond Spa fue fundado en 2026 por tres socios — dos especialistas en cosmetología y una convicción compartida: que el cuidado personal y los servicios terapéuticos podían ser algo mucho mayor que lo ordinario. Nacido de años de práctica profesional y una insatisfacción silenciosa con lo superficial, el spa fue concebido como un espacio donde la experiencia certificada y el trato humano genuino convergen en algo verdaderamente especial.',
+      foundedBody: `Diamond Spa fue fundado en ${SPA_FOUNDED} por tres socios — dos especialistas en cosmetología y una convicción compartida: que el cuidado personal y los servicios terapéuticos podían ser algo mucho mayor que lo ordinario. Nacido de años de práctica profesional y una insatisfacción silenciosa con lo superficial, el spa fue concebido como un espacio donde la experiencia certificada y el trato humano genuino convergen en algo verdaderamente especial.`,
       visionLabel: 'Nuestra Razón',
       visionTitle: ['Una Necesidad', 'Real'],
       visionBody1: 'En Medellín hay muchos spas, pero encontramos que faltaba un lugar con verdadera especialización en servicios terapéuticos, relajantes, deportivos y estimulantes, impartidos por cosmetólogas profesionales que entienden el cuerpo no solo estéticamente, sino de manera estructural.',
@@ -526,7 +535,7 @@ const dict = {
       milestoneLabel: 'Una Dirección de Primer Nivel',
       milestoneTitle: 'En el Corazón de El Poblado',
       milestoneBody: 'Desde el principio elegimos estar en El Poblado — a pocos pasos del Parque El Poblado, en una de las zonas más accesibles y vibrantes de Medellín. Nuestra ubicación no es casual; refleja nuestro compromiso de ser genuinamente accesibles, genuinamente presentes y genuinamente parte de la historia de esta ciudad.',
-      stat1Number: '2026',
+      stat1Number: `${SPA_FOUNDED}`,
       stat1Label: 'Año de Fundación',
       stat2Number: '3',
       stat2Label: 'Socios Fundadores',
@@ -551,10 +560,10 @@ const dict = {
       press: 'Prensa',
       contact: 'Contacto',
       contactLabel: 'Contacto',
-      copyright: '© 2026 Diamond Spa. El Poblado, Medellín.',
+      copyright: `© ${SPA_FOUNDED} Diamond Spa. El Poblado, Medellín.`,
     },
   },
-} as const
+}
 
 export type Dict = (typeof dict)['en']
 export function getDict(locale: Locale): Dict {
