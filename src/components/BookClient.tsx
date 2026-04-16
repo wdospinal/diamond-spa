@@ -20,11 +20,6 @@ function buildCalendar(year: number, month: number) {
   return cells
 }
 
-const TIME_SLOTS = [
-  '7:00 AM', '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM',
-  '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM',
-  '5:00 PM', '6:00 PM', '7:00 PM', '8:00 PM',
-]
 
 const DURATIONS: DurationMinutes[] = [30, 60, 90]
 
@@ -40,8 +35,7 @@ export default function BookClient({ locale }: { locale: string }) {
   const [calYear, setCalYear] = useState(today.getFullYear())
   const [calMonth, setCalMonth] = useState(today.getMonth())
   const [selectedDay, setSelectedDay] = useState<number | null>(null)
-  const [selectedTime, setSelectedTime] = useState<string | null>(null)
-  const [confirmed, setConfirmed] = useState(false)
+const [confirmed, setConfirmed] = useState(false)
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', requests: '' })
 
   // Pre-select service from ?service= query param (massages only)
@@ -69,11 +63,11 @@ export default function BookClient({ locale }: { locale: string }) {
 
   function prevMonth() {
     if (calMonth === 0) { setCalYear(y => y - 1); setCalMonth(11) } else setCalMonth(m => m - 1)
-    setSelectedDay(null); setSelectedTime(null)
+    setSelectedDay(null)
   }
   function nextMonth() {
     if (calMonth === 11) { setCalYear(y => y + 1); setCalMonth(0) } else setCalMonth(m => m + 1)
-    setSelectedDay(null); setSelectedTime(null)
+    setSelectedDay(null)
   }
 
   function serviceName(s: ServiceDef) {
@@ -82,7 +76,7 @@ export default function BookClient({ locale }: { locale: string }) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!selectedService || !selectedDuration || !selectedDay || !selectedTime) return
+    if (!selectedService || !selectedDuration || !selectedDay) return
 
     const service = selectedServiceObj!
     const dateStr = `${t.months[calMonth]} ${selectedDay}, ${calYear}`
@@ -93,7 +87,7 @@ export default function BookClient({ locale }: { locale: string }) {
       `Hola Diamond Spa! Me gustaría reservar una cita:\n\n` +
       `📋 ${t.serviceLabel}: ${sName} (${selectedDuration} min)\n` +
       `📅 ${t.dateLabel}: ${dateStr}\n` +
-      `⏰ ${t.timeLabel}: ${selectedTime}\n` +
+      `⏰ ${t.timeLabel}: ${t.seeScheduleLabel ?? 'Ver horario de atención'}\n` +
       `👤 Nombre: ${form.firstName} ${form.lastName}\n` +
       `📧 Email: ${form.email}\n` +
       `📱 Tel: ${form.phone}\n` +
@@ -105,7 +99,7 @@ export default function BookClient({ locale }: { locale: string }) {
     const smsBody =
       `[Diamond Spa] Nueva reserva\n` +
       `Servicio: ${sName} (${selectedDuration} min)\n` +
-      `Fecha: ${dateStr} a las ${selectedTime}\n` +
+      `Fecha: ${dateStr}\n` +
       `Cliente: ${form.firstName} ${form.lastName}\n` +
       `Tel: ${form.phone} | Email: ${form.email}` +
       (form.requests ? `\nNotas: ${form.requests}` : '')
@@ -121,7 +115,7 @@ export default function BookClient({ locale }: { locale: string }) {
           year: calYear,
           monthIndex: calMonth,
           day: selectedDay,
-          timeSlot: selectedTime,
+          timeSlot: null,
           locale: lang,
           ...form,
         }),
@@ -146,7 +140,6 @@ export default function BookClient({ locale }: { locale: string }) {
             {[
               [t.serviceLabel, `${sName} (${selectedDuration} min)`],
               [t.dateLabel, `${t.months[calMonth]} ${selectedDay}, ${calYear}`],
-              [t.timeLabel, selectedTime ?? ''],
               [t.totalLabel, selectedPriceCop ? formatCop(selectedPriceCop) : '—'],
             ].map(([label, value]) => (
               <div key={label} className="flex justify-between items-center gap-4">
@@ -162,7 +155,6 @@ export default function BookClient({ locale }: { locale: string }) {
               setSelectedService(null)
               setSelectedDuration(null)
               setSelectedDay(null)
-              setSelectedTime(null)
               setForm({ firstName: '', lastName: '', email: '', phone: '', requests: '' })
             }}
             className="bg-primary text-on-primary px-10 py-4 font-label font-bold tracking-[0.2em] text-xs uppercase hover:bg-white transition-all"
@@ -275,7 +267,7 @@ export default function BookClient({ locale }: { locale: string }) {
                     const past = isPast(day)
                     const active = selectedDay === day
                     return (
-                      <button key={i} type="button" disabled={past} onClick={() => { setSelectedDay(day); setSelectedTime(null) }}
+                      <button key={i} type="button" disabled={past} onClick={() => setSelectedDay(day)}
                         className={`h-7 w-7 mx-auto flex items-center justify-center font-body text-[11px] transition-all duration-150 ${past ? 'text-outline/30 cursor-not-allowed' : active ? 'bg-primary text-on-primary' : 'text-on-surface hover:bg-surface-container-high'}`}>
                         {day}
                       </button>
@@ -285,16 +277,19 @@ export default function BookClient({ locale }: { locale: string }) {
               </div>
             </div>
 
-            {/* Step 04 — Select time */}
+            {/* Step 04 — Schedule link */}
             <div>
               <StepLabel n="04" label={t.step3} />
-              <div className="mt-6 grid grid-cols-4 sm:grid-cols-7 gap-2 max-w-lg">
-                {TIME_SLOTS.map(slot => (
-                  <button key={slot} type="button" disabled={!selectedDay} onClick={() => setSelectedTime(slot)}
-                    className={`py-2.5 px-1 font-label text-xs tracking-wide transition-all duration-150 ${!selectedDay ? 'text-outline/30 bg-surface-container/40 cursor-not-allowed' : selectedTime === slot ? 'bg-primary text-on-primary' : 'bg-surface-container text-on-surface hover:bg-surface-container-high'}`}>
-                    {slot}
-                  </button>
-                ))}
+              <div className="mt-6">
+                <a
+                  href={`/${lang}/location`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 font-label text-xs tracking-widest uppercase text-primary hover:text-on-surface transition-colors duration-200"
+                >
+                  <span className="material-symbols-outlined text-base">schedule</span>
+                  {lang === 'es' ? 'Ver horario de atención' : 'View business hours'}
+                </a>
               </div>
             </div>
 
@@ -344,11 +339,6 @@ export default function BookClient({ locale }: { locale: string }) {
                     value: selectedDay ? `${t.months[calMonth]} ${selectedDay}, ${calYear}` : '—',
                     empty: !selectedDay,
                   },
-                  {
-                    label: t.timeLabel,
-                    value: selectedTime ?? '—',
-                    empty: !selectedTime,
-                  },
                 ].map(({ label, value, empty }) => (
                   <div key={label} className="flex justify-between items-start gap-4">
                     <span className="font-label text-outline text-xs uppercase tracking-widest shrink-0">{label}</span>
@@ -369,7 +359,7 @@ export default function BookClient({ locale }: { locale: string }) {
               </div>
               <button
                 type="submit"
-                disabled={!selectedService || !selectedDuration || !selectedDay || !selectedTime}
+                disabled={!selectedService || !selectedDuration || !selectedDay}
                 className="w-full bg-primary text-on-primary py-5 font-label font-bold tracking-[0.2em] text-xs uppercase hover:bg-white transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-primary"
               >
                 {t.confirm}

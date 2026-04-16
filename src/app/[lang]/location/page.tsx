@@ -6,6 +6,7 @@ import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd } from '@/lib/seo'
 import { ReviewsSection } from '@/components/ReviewsSection'
 import { PHONES } from '@/lib/phones'
+import { SPA_ADDRESS, SPA_EMAIL } from '@/lib/spa'
 
 export const revalidate = 3600
 
@@ -47,9 +48,9 @@ export default function LocationPage({ params }: { params: { lang: string } }) {
         <div className="max-w-screen-2xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
           <div>
             <div className="mb-12">
-              <p className="font-headline text-5xl md:text-6xl text-on-surface leading-snug mb-2">Cra 43C #10-42</p>
-              <p className="font-headline text-3xl md:text-4xl text-secondary leading-snug italic mt-4">El Poblado</p>
-              <p className="font-headline text-3xl md:text-4xl text-secondary leading-snug italic">Medellín, Antioquia</p>
+              <p className="font-headline text-5xl md:text-6xl text-on-surface leading-snug mb-2">{SPA_ADDRESS.street}</p>
+              <p className="font-headline text-3xl md:text-4xl text-secondary leading-snug italic mt-4">{SPA_ADDRESS.neighborhood}</p>
+              <p className="font-headline text-3xl md:text-4xl text-secondary leading-snug italic">{SPA_ADDRESS.city}, {SPA_ADDRESS.region}</p>
             </div>
             <div className="flex flex-col gap-4 mb-8">
               {PHONES.map(({ display, wa }) => (
@@ -60,7 +61,7 @@ export default function LocationPage({ params }: { params: { lang: string } }) {
               ))}
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-primary text-lg">mail</span>
-                <span className="font-body text-secondary text-sm tracking-widest">book@diamondspa.com.co</span>
+                <span className="font-body text-secondary text-sm tracking-widest">{SPA_EMAIL}</span>
               </div>
             </div>
             <a

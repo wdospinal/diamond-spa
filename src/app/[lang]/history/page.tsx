@@ -6,6 +6,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph } from '@/lib/seo'
+import { SPA_ADDRESS } from '@/lib/spa'
 
 export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
   const locale = isLocale(params.lang) ? params.lang : 'es'
@@ -137,7 +138,7 @@ export default function HistoryPage({ params }: { params: { lang: string } }) {
             <p className="font-body text-secondary text-lg leading-relaxed mb-10">{t.milestoneBody}</p>
             <div className="flex items-start gap-3 text-secondary">
               <span className="material-symbols-outlined text-primary text-lg mt-0.5">location_on</span>
-              <span className="font-body text-sm">Cra 43C #10-42, El Poblado, Medellín</span>
+              <span className="font-body text-sm">{SPA_ADDRESS.street}, {SPA_ADDRESS.neighborhood}, {SPA_ADDRESS.city}</span>
             </div>
           </div>
         </div>

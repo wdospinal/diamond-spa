@@ -1,21 +1,23 @@
 import type { Metadata } from 'next'
+import {
+  SPA_NAME,
+  SPA_NAME_FULL,
+  SPA_BASE_URL,
+  SPA_OG_IMAGE,
+  SPA_LOGO,
+  SPA_EMAIL,
+  SPA_PHONES,
+  SPA_ADDRESS,
+  SPA_GEO,
+  SPA_HOURS,
+} from './spa'
 
-export const BASE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ?? 'https://diamondspa.com.co'
-
-/** Public path to the default OG share image (1200×630). */
-export const DEFAULT_OG_IMAGE = `${BASE_URL}/og-image.jpg`
-
-export const SITE_NAME = 'Diamond Spa Medellín'
+export const BASE_URL = SPA_BASE_URL
+export const DEFAULT_OG_IMAGE = SPA_OG_IMAGE
+export const SITE_NAME = SPA_NAME_FULL
 
 // ─── hreflang + canonical ─────────────────────────────────────────────────────
 
-/**
- * Builds the `alternates` block for Next.js Metadata.
- * Canonical always points to the Spanish (default) version.
- *
- * @param path  The path after the locale segment, e.g. '/services' or ''
- */
 export function buildAlternates(path: string): Metadata['alternates'] {
   const base = path === '' ? '' : path
   return {
@@ -33,7 +35,6 @@ export function buildAlternates(path: string): Metadata['alternates'] {
 interface OGOptions {
   title: string
   description: string
-  /** The path after the locale segment, e.g. '/services' */
   path: string
   locale: 'en' | 'es'
   imageAlt?: string
@@ -62,40 +63,32 @@ export function buildOpenGraph(opts: OGOptions): Metadata['openGraph'] {
 // ─── Business constants (used in JSON-LD) ─────────────────────────────────────
 
 export const BUSINESS = {
-  name: 'Diamond Spa',
-  telephone: '+573054541635',
-  email: 'book@diamondspa.com.co',
+  name: SPA_NAME,
+  telephone: SPA_PHONES[0].display,
+  email: SPA_EMAIL,
   url: BASE_URL,
-  logo: `${BASE_URL}/logo.png`,
+  logo: SPA_LOGO,
   image: DEFAULT_OG_IMAGE,
   address: {
-    streetAddress: 'Cra 43C #10-42',
-    addressLocality: 'El Poblado',
-    addressRegion: 'Antioquia',
-    postalCode: '050021',
-    addressCountry: 'CO',
+    streetAddress: SPA_ADDRESS.street,
+    addressLocality: SPA_ADDRESS.neighborhood,
+    addressRegion: SPA_ADDRESS.region,
+    postalCode: SPA_ADDRESS.postalCode,
+    addressCountry: SPA_ADDRESS.country,
   },
   geo: {
-    latitude: 6.2072,
-    longitude: -75.5680,
+    latitude: SPA_GEO.latitude,
+    longitude: SPA_GEO.longitude,
   },
-  hours: [
-    {
-      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-      opens: '10:00',
-      closes: '22:00',
-    },
-    {
-      dayOfWeek: ['Sunday'],
-      opens: '10:00',
-      closes: '18:00',
-    },
-  ],
+  hours: SPA_HOURS.map(h => ({
+    dayOfWeek: h.dayOfWeek,
+    opens: h.opens,
+    closes: h.closes,
+  })),
 } as const
 
 // ─── JSON-LD helpers ──────────────────────────────────────────────────────────
 
-/** LocalBusiness / HealthAndBeautyBusiness schema */
 export function localBusinessJsonLd() {
   return {
     '@context': 'https://schema.org',
