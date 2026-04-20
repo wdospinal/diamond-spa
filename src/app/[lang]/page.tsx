@@ -41,7 +41,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd()) }}
       />
       {/* HERO */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
+      <section className="relative min-h-dvh flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
             src="/diamond-wallpaper.jpeg"
@@ -66,7 +66,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
           <h1 className="font-headline text-5xl md:text-7xl lg:text-8xl text-on-surface leading-tight mb-8 w-full">
             {h.h1[0]}<br />{h.h1[1]}
           </h1>
-          <p className="font-body text-secondary text-lg w-full leading-relaxed font-light mb-12">{h.body}</p>
+          <p className="font-body text-secondary text-lg max-w-xl leading-relaxed font-light mb-12">{h.body}</p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link href={`/${locale}/book`} className="inline-flex items-center gap-3 bg-primary text-on-primary px-10 py-5 font-label font-bold tracking-[0.2em] text-sm uppercase hover:bg-white transition-all duration-300">
               {h.bookSession}
@@ -140,7 +140,10 @@ export default function HomePage({ params }: { params: { lang: string } }) {
               <div className="relative z-10 px-10 py-10 max-w-2xl">
                 <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-3 block">{h.clarity}</span>
                 <h3 className="font-headline text-3xl text-on-surface mb-3">{h.relaxTitle}</h3>
-                <p className="font-body text-secondary text-sm leading-relaxed">{h.relaxBody}</p>
+                <p className="font-body text-secondary text-sm leading-relaxed mb-5">{h.relaxBody}</p>
+                <Link href={`/${locale}/services`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
+                  {h.viewDetails} <span className="material-symbols-outlined text-sm">chevron_right</span>
+                </Link>
               </div>
             </div>
           </div>
