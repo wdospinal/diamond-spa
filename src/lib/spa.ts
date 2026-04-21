@@ -25,8 +25,8 @@ export const SPA_TAGLINE = {
 } as const
 
 export const SPA_DESCRIPTION = {
-  en: 'Precision recovery and mental clarity designed exclusively for the modern professional. Experience unparalleled discretion in the heart of the city.',
-  es: 'Recuperación de precisión y claridad mental diseñada para el profesional moderno. Experimenta una discreción incomparable en el corazón de la ciudad.',
+  en: 'Discover a sanctuary of relaxation where comfort, elegance and well-being unite in perfect harmony',
+  es: 'Descubre una joya de relajación donde el confort, la elegancia y el bienestar se unen en perfecta armonía',
 } as const
 
 export const SPA_FOUNDED = 2026
