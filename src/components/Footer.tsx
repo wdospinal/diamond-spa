@@ -34,6 +34,7 @@ export default function Footer({ locale }: { locale: Locale }) {
         <div className="flex flex-col gap-3">
           <h5 className="text-on-surface font-label text-xs tracking-widest uppercase mb-2">{t.aboutUsLabel}</h5>
           <Link href={`/${locale}/services`} className="text-slate-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.services}</Link>
+          <Link href={`/${locale}/masajes-para-hombres`} className="text-slate-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.massagesForMen}</Link>
           <Link href={`/${locale}/about`}    className="text-slate-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.philosophy}</Link>
           <Link href={`/${locale}/history`}  className="text-slate-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.heritage}</Link>
           <Link href={`/${locale}/location`} className="text-slate-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.location}</Link>

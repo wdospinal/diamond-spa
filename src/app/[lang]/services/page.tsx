@@ -53,6 +53,19 @@ export default function ServicesPage({ params }: { params: { lang: string } }) {
         <div className="max-w-screen-2xl mx-auto">
           <p className="text-on-surface-variant text-xs font-label uppercase tracking-widest mb-16">{t.pricingNote}</p>
 
+          {/* ── MEN'S CALLOUT ───────────────────────────────────────────── */}
+          <div className="mb-12 p-6 bg-surface-container-low border border-outline-variant/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <p className="font-body text-sm text-secondary">
+              {locale === 'es' ? '¿Buscas masajes para hombres en Medellín?' : 'Looking for massages for men in Medellín?'}
+            </p>
+            <Link
+              href={`/${locale}/masajes-para-hombres`}
+              className="font-label text-primary text-xs tracking-widest uppercase inline-flex items-center gap-1 whitespace-nowrap hover:gap-2 transition-all shrink-0"
+            >
+              {locale === 'es' ? 'Ver página para hombres' : 'View men\'s page'} <span className="material-symbols-outlined text-sm">chevron_right</span>
+            </Link>
+          </div>
+
           {/* ── SECTION 1: EXCLUSIVE MASSAGES ─────────────────────────────── */}
           <div className="mb-20">
             <h2 className="font-headline text-3xl md:text-4xl text-on-surface font-light mb-2">{t.sectionMassages}</h2>

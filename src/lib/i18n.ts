@@ -31,7 +31,7 @@ const dict = {
 
     home: {
       tagline: SPA_TAGLINE.en,
-      h1: ['Relax and feel', 'better today.'],
+      h1: ['Massage & Spa in Medellín', 'for Men and Women.'],
       body: SPA_DESCRIPTION.en,
       bookSession: 'Book Your Session',
       exploreServices: 'Explore Services',
@@ -74,11 +74,11 @@ const dict = {
     },
 
     services: {
-      metaTitle: 'Services — Diamond Spa Medellín',
-      metaDesc: 'Exclusive massages, facials, skin care and hair removal in El Poblado, Medellín — transparent COP pricing.',
+      metaTitle: 'Massages & Services for Men and Women — Diamond Spa Medellín',
+      metaDesc: 'Massages for men and women in El Poblado, Medellín: relaxing, deep tissue, sports, 4-hands and more. Facials and hair removal. From $120,000 COP.',
       label: 'The Selection',
-      title: 'The Services',
-      subtitle: 'Exclusive massages, facials & skin care, and hair removal. Transparent pricing, no surprises.',
+      title: 'Massages & Services in Medellín',
+      subtitle: 'Massages for men and women in El Poblado: relaxing, sports, deep tissue and more. Facials and hair removal. Transparent COP pricing.',
       pricingNote: 'All prices in Colombian pesos (COP).',
       sectionMassages: 'Exclusive Massages',
       sectionFacials: 'Facials & Skin Care',
@@ -279,6 +279,7 @@ const dict = {
       tagline: 'The intersection of high-performance recovery and quiet luxury. Curated for the modern professional.',
       aboutUsLabel: 'About us',
       services: 'Services',
+      massagesForMen: 'Massages for Men',
       philosophy: 'Philosophy',
       heritage: 'Our Heritage',
       location: 'Location',
@@ -303,7 +304,7 @@ const dict = {
 
     home: {
       tagline: SPA_TAGLINE.es,
-      h1: ['Relájate y siéntete', 'mejor hoy.'],
+      h1: ['Masajes y Spa en Medellín', 'para Hombres y Mujeres.'],
       body: SPA_DESCRIPTION.es,
       bookSession: 'Reserva tu Cita',
       exploreServices: 'Explorar Servicios',
@@ -346,11 +347,11 @@ const dict = {
     },
 
     services: {
-      metaTitle: 'Servicios — Diamond Spa Medellín',
-      metaDesc: 'Masajes exclusivos, faciales, cuidado de la piel y depilación en El Poblado, Medellín — precios claros en COP.',
+      metaTitle: 'Masajes y Servicios para Hombres y Mujeres — Diamond Spa Medellín',
+      metaDesc: 'Masajes para hombres y mujeres en El Poblado, Medellín: relajante, deep tissue, deportivo, 4 manos y más. Faciales y depilación. Desde $120.000 COP.',
       label: 'La Selección',
-      title: 'Los Servicios',
-      subtitle: 'Masajes exclusivos, faciales y cuidado de la piel, y depilación. Precios transparentes, sin sorpresas.',
+      title: 'Masajes y Servicios en Medellín',
+      subtitle: 'Masajes para hombres y mujeres en El Poblado: relajantes, deportivos, deep tissue y más. Faciales y depilación. Precios transparentes en COP.',
       pricingNote: 'Todos los precios en pesos colombianos (COP).',
       sectionMassages: 'Masajes Exclusivos',
       sectionFacials: 'Faciales y Cuidado de la Piel',
@@ -551,6 +552,7 @@ const dict = {
       tagline: 'La intersección entre la recuperación de alto rendimiento y el lujo silencioso. Diseñado para el profesional moderno.',
       aboutUsLabel: 'Sobre nosotros',
       services: 'Servicios',
+      massagesForMen: 'Masajes para Hombres',
       philosophy: 'Filosofía',
       heritage: 'Nuestra Historia',
       location: 'Ubicación',

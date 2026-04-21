@@ -18,8 +18,8 @@ export async function generateMetadata({ params }: { params: { lang: string } })
     ? 'Diamond Spa — Spa for Men and Women in Medellín'
     : 'Diamond Spa — Spa para Hombres y Mujeres en Medellín'
   const description = locale === 'en'
-    ? 'Luxury massages and spa treatments in El Poblado, Medellín. Book your session today.'
-    : 'Masajes de lujo y tratamientos spa en El Poblado, Medellín. Reserva tu Cita hoy.'
+    ? 'Massages for men and women in El Poblado, Medellín: relaxing, deep tissue, sports, facials and hair removal. From $120,000 COP — book online.'
+    : 'Masajes relajantes, deportivos, deep tissue y faciales para hombres y mujeres en El Poblado, Medellín. Desde $120.000 COP — reserva online.'
   return {
     title,
     description,
@@ -87,6 +87,9 @@ export default function HomePage({ params }: { params: { lang: string } }) {
             <div>
               <h2 className="font-headline text-4xl md:text-5xl text-on-surface">{h.section2Title}</h2>
               <p className="mt-4 font-body text-secondary max-w-lg leading-relaxed font-light">{h.section2Body}</p>
+              <Link href={`/${locale}/masajes-para-hombres`} className="mt-4 inline-flex items-center gap-1 font-label text-primary text-xs tracking-widest uppercase hover:gap-2 transition-all">
+                {locale === 'es' ? 'Masajes para hombres en Medellín' : 'Massages for men in Medellín'} <span className="material-symbols-outlined text-sm">chevron_right</span>
+              </Link>
             </div>
             <span className="font-label text-primary tracking-[0.3em] uppercase text-xs whitespace-nowrap">{h.section2Badge}</span>
           </div>
