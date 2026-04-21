@@ -4,13 +4,14 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd } from '@/lib/seo'
+import { IMG_HERO_HOME, IMG_DEEP_TISSUE, IMG_FACIAL, IMG_RELAXATION, IMG_BOUTIQUE } from '@/lib/images'
 
 export const dynamic = 'force-static'
 
-const DEEP_TISSUE_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuBf6M3MTJY3a0VyeDXLX3bGIUrp3dUzZ72q0Mwsq2DSjh5TFK7S_w3ZQfi13HzKYpS82VRnve5FDPFxBrM5bHjR_9An8OykQbgQkSqwLcIFOH_e3uBMgeQcutLox_ARI9SUC7MEJ3IuTiegApD9kpAhhJSiiO0xm9TpPFEMuwcyXPSzdabrM1NLD9vfcIZuDbXc8OjO1fRjeFesfZSOoT81xltXvbGp-0gXh211u_ibO8r9EjmbbUxztiNDuxbEo87fRCNeA-CBgr8Y'
-const FACIAL_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuAZsfM0QI0GE0BCNgFlTZHmGNftgnas-PXevE9015gW7bzQvQIVWQOTcdU5jYfhdRj5-Lqet2Kbzxoyry1JM8YvamU8Uhxawrd5GA5qL_dp-Q1PaYTgWE6dAWWxPaw4S3ts2q-SPF3cCmOzP2qHW0Yw586Nvheje2jixR2RsXX0BDGLEjgwd-YdJMhbOshStYX07s9n8Yrg08RnjiCE2OFRObikltW3dI3PuyHgi2ocEIq7zAx2BjzJOmqP4sMEwAgdjGd_t7jy1-QO'
-const RELAX_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuAT0RW6uduw7sUyBSEesFWEN7RiwIAIzyZ7evCOe38BuXx9qpJveoSj5F0K8h-3mUWeQNlvmHU4cV2hz9ANgwGNdrcQzQjY7GDwt_U0ByilcyE6zT4nAd9lI5xqDwdfCMKf594okejP_rYMw2V7_NBcJbtxvX2Br69pUi8kPrWfmHHW7Yqo2VWCLCV5-eqY74K29QCQpPFnVQAz_2-QdTitbvR3sCaoqurA0gmR_qheugd8WTHveMn82CyIeCREzb1x1VfVZBQZxZ2i'
-const BOUTIQUE_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuDeGR8FHRHdKwBQH-XHXL66xsvphiainpt1lr0JS29n5HIiZDFhmdrhb4WOYalkRGilFAPnBbq5AUoqFEzQCm-RNWQXJbNArkvJTAKSp-47m2ScLWrutdw1H_GNN1O1yQzM-j5zT91RzunQehYHUZQhApdXRTtx8M-DpBaNXL_1J5_ECl8z0zEntw6h5MNFxXW_NatIsHMbIcMn6b9gPlySuZWS6mlLTPLTKvQwR5PdSlc4nno8n6By_oyg0x602FS3LJFtNMBna-AU'
+const DEEP_TISSUE_IMG = IMG_DEEP_TISSUE
+const FACIAL_IMG = IMG_FACIAL
+const RELAX_IMG = IMG_RELAXATION
+const BOUTIQUE_IMG = IMG_BOUTIQUE
 
 export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
   const locale = isLocale(params.lang) ? params.lang : 'es'
@@ -44,7 +45,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
       <section className="relative min-h-dvh flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/diamond-wallpaper.jpeg"
+            src={IMG_HERO_HOME}
             alt="Diamond Spa luxury interior"
             fill
             priority

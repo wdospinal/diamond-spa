@@ -6,16 +6,13 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph } from '@/lib/seo'
+import { IMG_ABOUT_HERO, IMG_STONE, IMG_LOUNGE, IMG_THERAPISTS } from '@/lib/images'
 
-const HERO_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuDMJt6gVTVOcc0SLCddvP7863h-3G97XDjh63aBjalz_oTlp8ClqkDtehoFnE47a2wt_n0r5LV4MuWsS483zQ0ZaeeIjUuH1IKmb_9q7MF_GUK3ONCFOjNKdonpAAY5Kgha5XDqKSoh1Hcf7qYeUraZVrSJRQtt1acSfjO7vh2cbe1jBwIs48ju40Zl0JXuHfISXPTkBu4v4TJupflDrpH7VdphBKpeYBsZDPssMRc_0oO5Ayuwe3k5iayBAJjqFLdB9Aur39XbUZDK'
-const STONE_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuBs3haFtBW8DAugh_D6Bb6qT_cFNTjpvGP0LKKs5eeBeV-4jgNh3VDaFM-zJYOC3-weUhoTSRXJSLFoQi65MlMiKmUVVLTEW-E5_NgaVNJaCZ5vM3fNDLA0jVi54ViIwjLlzc2I8j_JIiMBft3RF9WHTF6PVfIRppcvj2U1drHqDRAMCzEU76UiVW_8kHob8AUxwEbeqCCXm8PuzX3DrIDhTgrtGRiu8luULgBpUJi8IJOrJabDZA2xKIe-pY7oTrCwoF6LSjKv_rTz'
-const LOUNGE_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuBu7nA58in7biCj0013W2NJFHpMPUSX9srE_U6hc_uPTXg6kgHw9uwqj7pIAfqqZQynbSw05TioMo3Sguz2hawhGyDciZoFqC_h_7_TGww21-LZyrDPl1wDFOCUyIGHFmIh_h0uevJ2AQlHZZsdKs4klIh0JA3jIFSas6EssHhXhmjLJSWvqC_2fjkzsepld29rHXlWme-XNGQLBcj2OnkvEHyx6aO5Y9e7RziAvlphzuIVOKEAwO-mKxJRtcUVqCBZEsisOp2I04Ms'
+const HERO_IMG = IMG_ABOUT_HERO
+const STONE_IMG = IMG_STONE
+const LOUNGE_IMG = IMG_LOUNGE
 
-const THERAPISTS_IMGS = [
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuBlYrNsIn8dZN54uDQ1X-VQW5iiO7QVjajJzNQZGbhD5nKxzeR4fJgF932bmu8AicevIWwyo4Imm5cAM0AIEOvRMBhr8mzZtG0I8_97pvmSRqtv02qMcgnH8RuBFfi2LLT4jrNNR1VlWz_mvjDzB5Xz5huGLEcHxZxGD5Q2qlgwsp_cEXvWJbUQ8jawA6NOd4hjGZASpZKBVQBzA2zYGBK4JQhlnAsDjZzUjthaV9vAgrC1K9d57MWO7oeLfIwJHUuiBt9BWoKJltoi',
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuA--AjeGJ5OrkedJ6XBzdoMVNZwwbv00doKpINgYwu3gySdyB83gFJg17CvXn-Ykws4T7U6YMHSScyi0d5wq4b8tTEUs5yV7ezrc-dkOthJ8S43TwL-9DDIDoOohgPJZyQoUyTuNH1jQhSiSPIlyEtuJiPo0fZ0HvWWuxemQoNAWCtErMQ7oJN8abhZcF0QK_WNSTNnskbn1sgwwqTsBjnIi5w39yyUwD3jucUWT1LXooZazdy-MGCsKRptJ5JK16koRQ-NhGaj7LpS',
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuAgQ0urlt0Erih0_7j4uMvAiRh0GoCvrhpnm5OppBbApO1fhYi-svnHmNCTm37opwsQxn24WpcEQLfxfjo0UwiJ_XeXhETmxcOWig5GZuLDcXvlK633HT7FGCy0Tduqb70NPD4uZwx8dAk4WQQReJLg-xQ2fQEWv_F1tkoFLU29V9tkUuiSwTDpC0VXqVsSzE-Z9fwf60QSSI-M7cn7qGNPt-tIkjxDLQP34nSMHfmYdXzwdwgehJ1E8bXFdeDhki2pECsK1eTG1Gol',
-]
+const THERAPISTS_IMGS = IMG_THERAPISTS
 const THERAPISTS_NAMES = ['Daniela Salina', 'Sary Paez', 'Julian Ross']
 
 export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {

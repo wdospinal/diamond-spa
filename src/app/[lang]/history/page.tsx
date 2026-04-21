@@ -7,6 +7,7 @@ import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph } from '@/lib/seo'
 import { SPA_ADDRESS } from '@/lib/spa'
+import { IMG_HISTORY_HERO, IMG_HISTORY_INTERIOR } from '@/lib/images'
 
 export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
   const locale = isLocale(params.lang) ? params.lang : 'es'
@@ -20,8 +21,8 @@ export async function generateMetadata({ params }: { params: { lang: string } })
   }
 }
 
-const HERO_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuDMJt6gVTVOcc0SLCddvP7863h-3G97XDjh63aBjalz_oTlp8ClqkDtehoFnE47a2wt_n0r5LV4MuWsS483zQ0ZaeeIjUuH1IKmb_9q7MF_GUK3ONCFOjNKdonpAAY5Kgha5XDqKSoh1Hcf7qYeUraZVrSJRQtt1acSfjO7vh2cbe1jBwIs48ju40Zl0JXuHfISXPTkBu4v4TJupflDrpH7VdphBKpeYBsZDPssMRc_0oO5Ayuwe3k5iayBAJjqFLdB9Aur39XbUZDK'
-const INTERIOR_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuBu7nA58in7biCj0013W2NJFHpMPUSX9srE_U6hc_uPTXg6kgHw9uwqj7pIAfqqZQynbSw05TioMo3Sguz2hawhGyDciZoFqC_h_7_TGww21-LZyrDPl1wDFOCUyIGHFmIh_h0uevJ2AQlHZZsdKs4klIh0JA3jIFSas6EssHhXhmjLJSWvqC_2fjkzsepld29rHXlWme-XNGQLBcj2OnkvEHyx6aO5Y9e7RziAvlphzuIVOKEAwO-mKxJRtcUVqCBZEsisOp2I04Ms'
+const HERO_IMG = IMG_HISTORY_HERO
+const INTERIOR_IMG = IMG_HISTORY_INTERIOR
 
 export default function HistoryPage({ params }: { params: { lang: string } }) {
   if (!isLocale(params.lang)) notFound()
