@@ -37,7 +37,6 @@ const dict = {
       exploreServices: 'Explore Services',
       section2Title: 'Curated Restoration',
       section2Body: 'Every treatment is calibrated to the physiological and psychological needs of men and women. No floral scents, no clutter — just pure architectural calm.',
-      section2Badge: 'Premium Standards ——',
       recovery: 'Recovery',
       grooming: 'Grooming',
       clarity: 'Clarity',
@@ -275,6 +274,94 @@ const dict = {
       exploreServices: 'Explore Services',
     },
 
+    masajesParaHombres: {
+      metaTitle: 'Massages for Men in Medellín — Diamond Spa El Poblado',
+      metaDesc:
+        'Relaxing, deep tissue, sports and 4-hands massages for men in El Poblado, Medellín. Private and professional environment. From $120,000 COP.',
+      ogImageAlt: 'Massages for Men in Medellín — Diamond Spa',
+      heroLabel: 'El Poblado, Medellín',
+      heroTitle: 'Massages for Men in Medellín',
+      heroBody:
+        'Diamond Spa offers therapeutic and relaxation massages for men in El Poblado, Medellín. Our team of specialists combines clinical techniques with a private luxury environment — no floral scents, no noise. Just deep recovery. Bilingual staff, private entrance, and staggered appointments for complete anonymity.',
+      bookMassage: 'Book a Massage',
+      featuredTitle: 'Our Massages for Men',
+      featuredMassages: [
+        {
+          id: 'relaxing',
+          title: 'Relaxing Massage',
+          description:
+            'Reduces cortisol and induces deep relaxation. Ideal for decompressing after demanding days.',
+        },
+        {
+          id: 'deep-tissue',
+          title: 'Deep Tissue Massage',
+          description:
+            'Targeted release for chronic muscle tension and athletic recovery. High-pressure techniques.',
+        },
+        {
+          id: 'sports',
+          title: 'Sports Massage',
+          description: 'Designed for athletes and active people. Improves performance and speeds recovery.',
+        },
+        {
+          id: 'four-hands',
+          title: '4-Hands Massage',
+          description: 'Two therapists working in sync. An unparalleled relaxation experience.',
+        },
+      ],
+      viewDetails: 'View details',
+      book: 'Book',
+      viewAllServices: 'View all services →',
+      whyTitle: 'Why Diamond Spa?',
+      pillars: [
+        {
+          icon: 'lock',
+          title: 'Absolute Discretion',
+          body: 'Private entrance and staggered appointments. You will never encounter another client.',
+        },
+        {
+          icon: 'verified_user',
+          title: 'Professional Staff',
+          body: 'Certified specialists in high-level therapeutic and cosmetic techniques.',
+        },
+        {
+          icon: 'language',
+          title: 'Bilingual',
+          body: 'English-speaking staff. We serve with the same excellence in any language.',
+        },
+      ],
+      faqTitle: 'Frequently Asked Questions',
+      faqs: [
+        {
+          question: 'Do you offer massages for men in Medellín?',
+          answer:
+            'Yes, Diamond Spa offers exclusive massages for men in El Poblado, Medellín: relaxing, deep tissue, sports, 4-hands and more. Our environment is private and discreet, with a private entrance and staggered appointments.',
+        },
+        {
+          question: 'How much does a massage for men cost in Medellín?',
+          answer:
+            'Massages for men at Diamond Spa start from $120,000 COP for 30 minutes. 60 and 90-minute sessions are priced from $200,000 and $260,000 COP respectively.',
+        },
+        {
+          question: 'Where are you located?',
+          answer: `We are at ${SPA_ADDRESS.full} — 5 minutes from Parque El Poblado. Parking is available in front of the premises.`,
+        },
+        {
+          question: 'Do I need to book in advance?',
+          answer:
+            'Yes, we recommend booking online in advance to guarantee availability. Private arrival instructions are sent 24 hours before your appointment.',
+        },
+        {
+          question: 'Are massages only for men?',
+          answer:
+            'Diamond Spa is a spa for men and women in Medellín. All our services are available to both genders in a professional and discreet environment.',
+        },
+      ],
+      ctaLabel: 'Exclusive Access',
+      ctaTitle: 'Book Your Massage Today',
+      ctaBody: 'Private arrival instructions sent 24 hours before your session.',
+    },
+
     footer: {
       tagline: 'The intersection of high-performance recovery and quiet luxury. Curated for the modern professional.',
       aboutUsLabel: 'About us',
@@ -308,9 +395,8 @@ const dict = {
       body: SPA_DESCRIPTION.es,
       bookSession: 'Reserva tu Cita',
       exploreServices: 'Explorar Servicios',
-      section2Title: 'Restauración Curada',
-      section2Body: 'Cada tratamiento está calibrado para las necesidades fisiológicas y psicológicas de hombres y mujeres. Sin aromas florales, sin desorden — solo calma arquitectónica pura.',
-      section2Badge: 'Estándares Premium ——',
+      section2Title: 'Un Oasis de Relajación',
+      section2Body: 'Descube un oasis de relajación pensado para el descanso real. Un espacio impecable donde la simplicidad y el equilibrio se unen para renovar tu cuerpo y mente.',
       recovery: 'Recuperación',
       grooming: 'Cuidado',
       clarity: 'Claridad',
@@ -546,6 +632,95 @@ const dict = {
       ctaBody: 'Cada sesión en Diamond Spa es un testimonio de por qué comenzamos — precisión, cuidado y la convicción de que mereces más.',
       bookSession: 'Reservar tu Sesión',
       exploreServices: 'Explorar Servicios',
+    },
+
+    masajesParaHombres: {
+      metaTitle: 'Masajes para Hombres en Medellín — Diamond Spa El Poblado',
+      metaDesc:
+        'Masajes relajantes, deep tissue, deportivos y de 4 manos para hombres en El Poblado, Medellín. Ambiente privado y profesional. Desde $120.000 COP.',
+      ogImageAlt: 'Masajes para Hombres en Medellín — Diamond Spa',
+      heroLabel: 'El Poblado, Medellín',
+      heroTitle: 'Masajes para Hombres en Medellín',
+      heroBody:
+        'Diamond Spa ofrece diversos masajes de acuerdo a tus necesidades. ',
+      bookMassage: 'Reservar Masaje',
+      featuredTitle: 'Nuestros Masajes para Hombres',
+      featuredMassages: [
+        {
+          id: 'relaxing',
+          title: 'Masaje Relajante',
+          description:
+            'Reduce el cortisol e induce relajación profunda. Ideal para descomprimir después de jornadas exigentes.',
+        },
+        {
+          id: 'deep-tissue',
+          title: 'Masaje Deep Tissue',
+          description:
+            'Liberación dirigida para tensión muscular crónica y recuperación atlética. Técnicas de alta presión.',
+        },
+        {
+          id: 'sports',
+          title: 'Masaje Deportivo',
+          description:
+            'Diseñado para deportistas y personas activas. Mejora el rendimiento y acelera la recuperación.',
+        },
+        {
+          id: 'four-hands',
+          title: 'Masaje 4 Manos',
+          description: 'Dos terapeutas trabajando en sincronía. Una experiencia de relajación sin comparación.',
+        },
+      ],
+      viewDetails: 'Ver detalles',
+      book: 'Reservar',
+      viewAllServices: 'Ver todos los servicios →',
+      whyTitle: '¿Por qué Diamond Spa?',
+      pillars: [
+        {
+          icon: 'lock',
+          title: 'Discreción Absoluta',
+          body: 'Entrada privada y citas escalonadas. Nunca te encontrarás con otro cliente.',
+        },
+        {
+          icon: 'verified_user',
+          title: 'Personal Profesional',
+          body: 'Especialistas certificados en técnicas terapéuticas y cosméticas de alto nivel.',
+        },
+        {
+          icon: 'language',
+          title: 'Bilingüe',
+          body: 'Personal de habla inglesa. Atendemos con la misma excelencia en cualquier idioma.',
+        },
+      ],
+      faqTitle: 'Preguntas Frecuentes',
+      faqs: [
+        {
+          question: '¿Hacen masajes para hombres en Medellín?',
+          answer:
+            'Sí, en Diamond Spa ofrecemos masajes exclusivos para hombres en El Poblado, Medellín: relajante, deep tissue, deportivo, 4 manos y más. Nuestro ambiente es privado y discreto, con entrada independiente y citas escalonadas.',
+        },
+        {
+          question: '¿Cuánto cuesta un masaje para hombres en Medellín?',
+          answer:
+            'Los masajes para hombres en Diamond Spa comienzan desde $120.000 COP por 30 minutos. Las sesiones de 60 y 90 minutos tienen precios desde $200.000 y $260.000 COP respectivamente.',
+        },
+        {
+          question: '¿Dónde están ubicados?',
+          answer: `Estamos en ${SPA_ADDRESS.full} — a 5 minutos del Parque El Poblado. Contamos con zona de parqueo frente al local.`,
+        },
+        {
+          question: '¿Necesito reservar con anticipación?',
+          answer:
+            'Sí, recomendamos reservar online con anticipación para garantizar disponibilidad. Las instrucciones de llegada privadas se envían 24 horas antes de tu cita.',
+        },
+        {
+          question: '¿Los masajes son solo para hombres?',
+          answer:
+            'Diamond Spa es un spa para hombres y mujeres en Medellín. Todos nuestros servicios están disponibles para ambos géneros en un entorno profesional y discreto.',
+        },
+      ],
+      ctaLabel: 'Acceso Exclusivo',
+      ctaTitle: 'Reserva tu Masaje Hoy',
+      ctaBody: 'Instrucciones de llegada privadas enviadas 24 horas antes de tu cita.',
     },
 
     footer: {

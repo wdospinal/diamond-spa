@@ -92,7 +92,6 @@ export default function HomePage({ params }: { params: { lang: string } }) {
                 {locale === 'es' ? 'Masajes para hombres en Medellín' : 'Massages for men in Medellín'} <span className="material-symbols-outlined text-sm">chevron_right</span>
               </Link>
             </div>
-            <span className="font-label text-primary tracking-[0.3em] uppercase text-xs whitespace-nowrap">{h.section2Badge}</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
             {/* Deep Tissue */}
