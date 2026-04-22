@@ -13,7 +13,7 @@ const STONE_IMG = IMG_STONE
 const LOUNGE_IMG = IMG_LOUNGE
 
 const THERAPISTS_IMGS = IMG_THERAPISTS
-const THERAPISTS_NAMES = ['Daniela Salina', 'Sary Paez', 'Julian Ross']
+const THERAPISTS_NAMES = ['Daniela Salina', 'Sary Paez', 'Camila Mazo']
 
 export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
   const locale = isLocale(params.lang) ? params.lang : 'es'
@@ -129,7 +129,7 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
             <p className="font-body text-secondary max-w-sm text-sm leading-relaxed">{t.teamBody}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {t.therapists.map(({ role, bio }, i) => (
+            {t.therapists.map(({ role }, i) => (
               <div key={i} className="group">
                 <div className="relative mb-6 aspect-[3/4] overflow-hidden rounded-sm bg-surface-container ring-1 ring-outline-variant/10">
                   <Image
@@ -141,8 +141,7 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
                   />
                 </div>
                 <h4 className="font-headline text-xl text-on-surface mb-1">{THERAPISTS_NAMES[i]}</h4>
-                <p className="font-label text-primary text-xs tracking-widest uppercase mb-4">{role}</p>
-                <p className="font-body text-sm text-secondary leading-relaxed">{bio}</p>
+                <p className="font-label text-primary text-xs tracking-widest uppercase">{role}</p>
               </div>
             ))}
           </div>

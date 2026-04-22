@@ -69,12 +69,12 @@ export const SPA_GOOGLE_PLACES_ID = 'ChIJK8Mybqkp4o4RjIhsXLsM2K8'
 
 export const SPA_DIRECTIONS = {
   driving: {
-    en: '5 min drive from Parque El Poblado',
-    es: '5 min en carro desde el Parque El Poblado',
+    en: 'Few minutes drive from Parque El Poblado',
+    es: 'A pocos minutos en carro desde el Parque El Poblado',
   },
   parking: {
-    en: 'Parking is available in front of the premises',
-    es: 'Zona de parqueo disponible frente al local',
+    en: 'Parking is available in front of the premises and in the same block',
+    es: 'Zona de parqueo disponible frente al local y en la misma cuadra parqueadero',
   },
   airport: {
     en: '25 min from Olaya Herrera Airport',

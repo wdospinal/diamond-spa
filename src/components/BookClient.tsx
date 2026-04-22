@@ -177,7 +177,6 @@ export default function BookClient({ locale }: { locale: string }) {
               </div>
             ))}
           </div>
-          <p className="font-body text-xs text-outline leading-relaxed mb-10">{t.confirmedConcierge}</p>
           <button
             onClick={() => {
               setConfirmed(false)
