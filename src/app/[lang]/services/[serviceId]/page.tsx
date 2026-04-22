@@ -1,6 +1,8 @@
+import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { ServiceDetailBackLink } from '@/components/ServiceDetailBackLink'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { SERVICES, formatCop, getServiceById, type DurationMinutes, type ServiceDef } from '@/lib/services'
 import { buildAlternates, buildOpenGraph, BASE_URL, BUSINESS } from '@/lib/seo'
@@ -44,6 +46,10 @@ export default function ServiceDetailPage({
   if (!service) notFound()
 
   const t = getDict(locale).services
+  const backFallbackClass =
+    'font-label text-xs uppercase tracking-widest text-outline hover:text-primary transition-colors'
+  const backCtaClass =
+    'border border-outline-variant text-on-surface px-10 py-5 font-label text-xs uppercase tracking-[0.2em] hover:bg-surface-container-high transition-all'
   const name = locale === 'en' ? service.name.en : service.name.es
   const description = locale === 'en' ? service.description.en : service.description.es
 
@@ -93,12 +99,20 @@ export default function ServiceDetailPage({
       {/* Back link */}
       <div className="pt-32 pb-0 px-6 md:px-12">
         <div className="max-w-screen-2xl mx-auto">
-          <Link
-            href={`/${locale}/services`}
-            className="font-label text-xs uppercase tracking-widest text-outline hover:text-primary transition-colors"
+          <Suspense
+            fallback={
+              <Link href={`/${locale}/services`} className={backFallbackClass}>
+                {t.backToServices}
+              </Link>
+            }
           >
-            {t.backToServices}
-          </Link>
+            <ServiceDetailBackLink
+              locale={locale}
+              backToServices={t.backToServices}
+              backToMenMassages={t.backToMenMassages}
+              className={backFallbackClass}
+            />
+          </Suspense>
         </div>
       </div>
 
@@ -207,12 +221,20 @@ export default function ServiceDetailPage({
           >
             {t.bookThisService}
           </Link>
-          <Link
-            href={`/${locale}/services`}
-            className="border border-outline-variant text-on-surface px-10 py-5 font-label text-xs uppercase tracking-[0.2em] hover:bg-surface-container-high transition-all"
+          <Suspense
+            fallback={
+              <Link href={`/${locale}/services`} className={backCtaClass}>
+                {t.backToServices}
+              </Link>
+            }
           >
-            {t.backToServices}
-          </Link>
+            <ServiceDetailBackLink
+              locale={locale}
+              backToServices={t.backToServices}
+              backToMenMassages={t.backToMenMassages}
+              className={backCtaClass}
+            />
+          </Suspense>
         </div>
       </section>
     </>

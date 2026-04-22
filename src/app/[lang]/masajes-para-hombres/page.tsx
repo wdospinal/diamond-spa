@@ -2,6 +2,8 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
+import { getMassageServices, serviceDisplayName, serviceShortDesc } from '@/lib/services'
+import { SERVICE_DETAIL_FROM_MASAJES, SERVICE_DETAIL_FROM_QUERY } from '@/lib/service-detail-nav'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
 
 export const dynamic = 'force-static'
@@ -21,6 +23,7 @@ export default function MasajesParaHombresPage({ params }: { params: { lang: str
   if (!isLocale(params.lang)) notFound()
   const locale = params.lang as Locale
   const p = getDict(locale).masajesParaHombres
+  const massageServices = getMassageServices()
 
   return (
     <>
@@ -60,17 +63,17 @@ export default function MasajesParaHombresPage({ params }: { params: { lang: str
             {p.featuredTitle}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {p.featuredMassages.map((m) => (
+            {massageServices.map((m) => (
               <div key={m.id} className="bg-surface-container p-8 flex flex-col gap-4">
                 <h3 className="font-headline text-xl text-on-surface tracking-tighter">
-                  {m.title}
+                  {serviceDisplayName(m, locale)}
                 </h3>
                 <p className="text-slate-400 font-body text-sm leading-relaxed flex-1">
-                  {m.description}
+                  {serviceShortDesc(m, locale)}
                 </p>
                 <div className="flex gap-4 mt-2">
                   <Link
-                    href={`/${locale}/services/${m.id}`}
+                    href={`/${locale}/services/${m.id}?${SERVICE_DETAIL_FROM_QUERY}=${SERVICE_DETAIL_FROM_MASAJES}`}
                     className="text-primary font-label text-xs tracking-widest uppercase hover:opacity-80 transition-opacity"
                   >
                     {p.viewDetails}

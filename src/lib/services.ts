@@ -359,8 +359,15 @@ export function formatCop(amount: number): string {
   return `$ ${grouped} COP`
 }
 
+const servicesList = SERVICES as unknown as ServiceDef[]
+
+/** Exclusive massages section — same ordering as `SERVICES`. */
+export function getMassageServices(): ServiceDef[] {
+  return servicesList.filter(s => s.categoryId === 'massages')
+}
+
 export function getServiceById(id: string): ServiceDef | undefined {
-  return (SERVICES as unknown as ServiceDef[]).find(s => s.id === id)
+  return servicesList.find(s => s.id === id)
 }
 
 export function getServicePrice(serviceId: string, minutes: number): number | undefined {
@@ -372,4 +379,8 @@ export function getServicePrice(serviceId: string, minutes: number): number | un
 
 export function serviceDisplayName(s: ServiceDef, locale: 'en' | 'es'): string {
   return locale === 'en' ? s.name.en : s.name.es
+}
+
+export function serviceShortDesc(s: ServiceDef, locale: 'en' | 'es'): string {
+  return locale === 'en' ? s.shortDesc.en : s.shortDesc.es
 }

@@ -89,6 +89,7 @@ const dict = {
       tableColMachine: 'Machine',
       learnMore: 'Learn more',
       backToServices: '← Back to services',
+      backToMenMassages: '← Back to Massages for Men',
       bookSession: 'Book Session',
       bookThisService: 'Book this service',
       ctaTitle: 'Silence is the ultimate luxury.',
@@ -285,30 +286,6 @@ const dict = {
         'Diamond Spa offers therapeutic and relaxation massages for men in El Poblado, Medellín. Our team of specialists combines clinical techniques with a private luxury environment — no floral scents, no noise. Just deep recovery. Bilingual staff, private entrance, and staggered appointments for complete anonymity.',
       bookMassage: 'Book a Massage',
       featuredTitle: 'Our Massages for Men',
-      featuredMassages: [
-        {
-          id: 'relaxing',
-          title: 'Relaxing Massage',
-          description:
-            'Reduces cortisol and induces deep relaxation. Ideal for decompressing after demanding days.',
-        },
-        {
-          id: 'deep-tissue',
-          title: 'Deep Tissue Massage',
-          description:
-            'Targeted release for chronic muscle tension and athletic recovery. High-pressure techniques.',
-        },
-        {
-          id: 'sports',
-          title: 'Sports Massage',
-          description: 'Designed for athletes and active people. Improves performance and speeds recovery.',
-        },
-        {
-          id: 'four-hands',
-          title: '4-Hands Massage',
-          description: 'Two therapists working in sync. An unparalleled relaxation experience.',
-        },
-      ],
       viewDetails: 'View details',
       book: 'Book',
       viewAllServices: 'View all services →',
@@ -449,6 +426,7 @@ const dict = {
       tableColMachine: 'Máquina',
       learnMore: 'Ver más',
       backToServices: '← Volver a servicios',
+      backToMenMassages: '← Volver a Masajes para Hombres',
       bookSession: 'Reservar',
       bookThisService: 'Reservar este servicio',
       ctaTitle: 'El silencio es el lujo definitivo.',
@@ -642,34 +620,9 @@ const dict = {
       heroLabel: 'El Poblado, Medellín',
       heroTitle: 'Masajes para Hombres en Medellín',
       heroBody:
-        'Diamond Spa ofrece diversos masajes de acuerdo a tus necesidades. ',
+        'El bienestar masculino encuentra su oasis de relajación en Diamond. Profesionales capacitadas y un entorno privado en El Poblado, pensado para que te sientas bien atendido de principio a fin. ',
       bookMassage: 'Reservar Masaje',
       featuredTitle: 'Nuestros Masajes para Hombres',
-      featuredMassages: [
-        {
-          id: 'relaxing',
-          title: 'Masaje Relajante',
-          description:
-            'Reduce el cortisol e induce relajación profunda. Ideal para descomprimir después de jornadas exigentes.',
-        },
-        {
-          id: 'deep-tissue',
-          title: 'Masaje Deep Tissue',
-          description:
-            'Liberación dirigida para tensión muscular crónica y recuperación atlética. Técnicas de alta presión.',
-        },
-        {
-          id: 'sports',
-          title: 'Masaje Deportivo',
-          description:
-            'Diseñado para deportistas y personas activas. Mejora el rendimiento y acelera la recuperación.',
-        },
-        {
-          id: 'four-hands',
-          title: 'Masaje 4 Manos',
-          description: 'Dos terapeutas trabajando en sincronía. Una experiencia de relajación sin comparación.',
-        },
-      ],
       viewDetails: 'Ver detalles',
       book: 'Reservar',
       viewAllServices: 'Ver todos los servicios →',
