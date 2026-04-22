@@ -11,9 +11,9 @@ const u = (id: string, w = 1200) =>
 export const IMG_HERO_HOME        = '/diamond-wallpaper.jpeg'
 export const IMG_LOGO             = '/logo.png'
 export const IMG_LOGOTIPO         = '/logotipo.png'
-export const IMG_DEEP_TISSUE         = '/deep-tissue.jpeg'
+export const IMG_DEEP_TISSUE         = '/depilacion.jpeg'
 export const IMG_RELAXATION         = '/relaxation.png'
-export const IMG_FACIAL         = '/skin.jpeg'
+export const IMG_FACIAL         = '/skin.png'
 
 // ─── Home page ────────────────────────────────────────────────────────────────
 

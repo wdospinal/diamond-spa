@@ -16,7 +16,7 @@ const RELAX_IMG = IMG_RELAXATION
 const BOUTIQUE_IMG = IMG_BOUTIQUE
 
 const FEATURED_SERVICES = {
-  deepTissue: getServiceById('deep-tissue')!,
+  deepTissue: getServiceById('depilacion-cuerpo-completo')!,
   facial: getServiceById('hidrafacial')!,
   sensitive: getServiceById('sensitive')!,
 }
@@ -73,7 +73,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
             <span className="font-label text-primary tracking-[0.3em] uppercase text-xs">{h.tagline}</span>
             <span className="w-px h-3 bg-outline-variant/40" />
             <span className="inline-flex items-center gap-1 font-label text-outline text-xs uppercase tracking-widest">
-              <span className="material-symbols-outlined text-sm leading-none">location_on</span>
+              <span className="material-symbols-outlined shrink-0 overflow-visible" style={{ fontSize: '16px', lineHeight: '1' }}>location_on</span>
               Medellín, El Poblado
             </span>
           </div>
@@ -118,8 +118,8 @@ export default function HomePage({ params }: { params: { lang: string } }) {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface/40 to-transparent" />
               <div className="absolute bottom-0 left-0 p-8 z-10">
-                <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-3 block">{h.recovery}</span>
-                <h3 className="font-headline text-3xl text-on-surface mb-3">{h.deepTissueTitle}</h3>
+                <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-3 block">{h.care}</span>
+                <h3 className="font-headline text-3xl text-on-surface mb-3">{h.hairRemovalTitle}</h3>
                 <p className="font-body text-secondary text-sm max-w-md leading-relaxed mb-5">{deepTissueDesc}</p>
                 <Link href={`/${locale}/services/${FEATURED_SERVICES.deepTissue.id}${fromParam}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
                   {h.viewDetails} <span className="material-symbols-outlined text-sm">chevron_right</span>
@@ -137,7 +137,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface/40 to-transparent" />
               <div className="absolute bottom-0 left-0 p-8 z-10">
-                <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-3 block">{h.grooming}</span>
+                <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-3 block">{h.treatments}</span>
                 <h3 className="font-headline text-3xl text-on-surface mb-3">{h.facialTitle}</h3>
                 <p className="font-body text-secondary text-sm max-w-md leading-relaxed mb-5">{facialDesc}</p>
                 <Link href={`/${locale}/services/${FEATURED_SERVICES.facial.id}${fromParam}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
@@ -156,7 +156,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
               />
               <div className="absolute inset-0 bg-gradient-to-r from-surface-container-lowest/95 via-surface-container/70 to-transparent" />
               <div className="relative z-10 px-10 py-10 max-w-2xl">
-                <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-3 block">{h.clarity}</span>
+                <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-3 block">{h.relaxLabel}</span>
                 <h3 className="font-headline text-3xl text-on-surface mb-3">{h.relaxTitle}</h3>
                 <p className="font-body text-secondary text-sm leading-relaxed mb-5">{relaxDesc}</p>
                 <Link href={`/${locale}/services/${FEATURED_SERVICES.sensitive.id}${fromParam}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
