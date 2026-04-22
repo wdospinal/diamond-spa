@@ -14,6 +14,7 @@ export const IMG_LOGOTIPO         = '/logotipo.png'
 export const IMG_DEEP_TISSUE         = '/depilacion.jpeg'
 export const IMG_RELAXATION         = '/relaxation.png'
 export const IMG_FACIAL         = '/skin.png'
+export const IMG_ABOUT_HERO       = '/filo.png'
 
 // ─── Home page ────────────────────────────────────────────────────────────────
 
@@ -23,7 +24,6 @@ export const IMG_BOUTIQUE         = u('1571896349842-33c89424de2d')
 // ─── About / Philosophy page ──────────────────────────────────────────────────
 
 /** Serene private treatment room */
-export const IMG_ABOUT_HERO       = u('1540555700478-4be289fbecef')
 /** Therapist placing hot volcanic stones on back */
 export const IMG_STONE            = u('1515377905703-c4788e51af15')
 /** Candlelit spa lounge — ambient light */
