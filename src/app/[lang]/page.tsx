@@ -5,6 +5,8 @@ import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd } from '@/lib/seo'
 import { IMG_HERO_HOME, IMG_DEEP_TISSUE, IMG_FACIAL, IMG_RELAXATION, IMG_BOUTIQUE } from '@/lib/images'
+import { getServiceById } from '@/lib/services'
+import { SERVICE_DETAIL_FROM_HOME, SERVICE_DETAIL_FROM_QUERY } from '@/lib/service-detail-nav'
 
 export const dynamic = 'force-static'
 
@@ -12,6 +14,12 @@ const DEEP_TISSUE_IMG = IMG_DEEP_TISSUE
 const FACIAL_IMG = IMG_FACIAL
 const RELAX_IMG = IMG_RELAXATION
 const BOUTIQUE_IMG = IMG_BOUTIQUE
+
+const FEATURED_SERVICES = {
+  deepTissue: getServiceById('deep-tissue')!,
+  facial: getServiceById('hidrafacial')!,
+  sensitive: getServiceById('sensitive')!,
+}
 
 export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
   const locale = isLocale(params.lang) ? params.lang : 'es'
@@ -34,6 +42,11 @@ export default function HomePage({ params }: { params: { lang: string } }) {
   const locale = params.lang as Locale
   const t = getDict(locale)
   const h = t.home
+
+  const fromParam = `?${SERVICE_DETAIL_FROM_QUERY}=${SERVICE_DETAIL_FROM_HOME}`
+  const deepTissueDesc = locale === 'en' ? FEATURED_SERVICES.deepTissue.shortDesc.en : FEATURED_SERVICES.deepTissue.shortDesc.es
+  const facialDesc = locale === 'en' ? FEATURED_SERVICES.facial.shortDesc.en : FEATURED_SERVICES.facial.shortDesc.es
+  const relaxDesc = locale === 'en' ? FEATURED_SERVICES.sensitive.shortDesc.en : FEATURED_SERVICES.sensitive.shortDesc.es
 
   return (
     <>
@@ -107,8 +120,8 @@ export default function HomePage({ params }: { params: { lang: string } }) {
               <div className="absolute bottom-0 left-0 p-8 z-10">
                 <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-3 block">{h.recovery}</span>
                 <h3 className="font-headline text-3xl text-on-surface mb-3">{h.deepTissueTitle}</h3>
-                <p className="font-body text-secondary text-sm max-w-md leading-relaxed mb-5">{h.deepTissueBody}</p>
-                <Link href={`/${locale}/services`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
+                <p className="font-body text-secondary text-sm max-w-md leading-relaxed mb-5">{deepTissueDesc}</p>
+                <Link href={`/${locale}/services/${FEATURED_SERVICES.deepTissue.id}${fromParam}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
                   {h.viewDetails} <span className="material-symbols-outlined text-sm">chevron_right</span>
                 </Link>
               </div>
@@ -126,8 +139,8 @@ export default function HomePage({ params }: { params: { lang: string } }) {
               <div className="absolute bottom-0 left-0 p-8 z-10">
                 <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-3 block">{h.grooming}</span>
                 <h3 className="font-headline text-3xl text-on-surface mb-3">{h.facialTitle}</h3>
-                <p className="font-body text-secondary text-sm max-w-md leading-relaxed mb-5">{h.facialBody}</p>
-                <Link href={`/${locale}/services`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
+                <p className="font-body text-secondary text-sm max-w-md leading-relaxed mb-5">{facialDesc}</p>
+                <Link href={`/${locale}/services/${FEATURED_SERVICES.facial.id}${fromParam}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
                   {h.viewDetails} <span className="material-symbols-outlined text-sm">chevron_right</span>
                 </Link>
               </div>
@@ -145,8 +158,8 @@ export default function HomePage({ params }: { params: { lang: string } }) {
               <div className="relative z-10 px-10 py-10 max-w-2xl">
                 <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-3 block">{h.clarity}</span>
                 <h3 className="font-headline text-3xl text-on-surface mb-3">{h.relaxTitle}</h3>
-                <p className="font-body text-secondary text-sm leading-relaxed mb-5">{h.relaxBody}</p>
-                <Link href={`/${locale}/services`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
+                <p className="font-body text-secondary text-sm leading-relaxed mb-5">{relaxDesc}</p>
+                <Link href={`/${locale}/services/${FEATURED_SERVICES.sensitive.id}${fromParam}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
                   {h.viewDetails} <span className="material-symbols-outlined text-sm">chevron_right</span>
                 </Link>
               </div>

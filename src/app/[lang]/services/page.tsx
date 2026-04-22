@@ -80,7 +80,7 @@ export default function ServicesPage({ params }: { params: { lang: string } }) {
                 return (
                   <div
                     key={service.id}
-                    className={`grid grid-cols-1 md:grid-cols-12 gap-6 py-10 items-center ${isEven ? 'bg-surface' : 'bg-surface-container-low/40'}`}
+                    className={`-mx-6 px-6 md:mx-0 md:px-0 grid grid-cols-1 md:grid-cols-12 gap-6 py-10 items-center ${isEven ? 'bg-surface' : 'bg-surface-container-low/40'}`}
                   >
                     <div className="md:col-span-4 flex items-start gap-4">
                       <span className="font-headline text-outline/25 text-3xl leading-none mt-0.5 shrink-0 tabular-nums">
@@ -88,7 +88,7 @@ export default function ServicesPage({ params }: { params: { lang: string } }) {
                       </span>
                       <div>
                         <h3 className="font-headline text-xl md:text-2xl text-on-surface leading-tight">{name}</h3>
-                        <p className="hidden md:block mt-2 font-body text-sm text-secondary leading-relaxed max-w-xs">
+                        <p className="mt-2 font-body text-sm text-secondary leading-relaxed max-w-xs">
                           {shortDesc}
                         </p>
                       </div>
@@ -141,7 +141,7 @@ export default function ServicesPage({ params }: { params: { lang: string } }) {
                 return (
                   <div
                     key={service.id}
-                    className={`grid grid-cols-1 md:grid-cols-12 gap-6 py-10 items-center ${isEven ? 'bg-surface' : 'bg-surface-container-low/40'}`}
+                    className={`-mx-6 px-6 md:mx-0 md:px-0 grid grid-cols-1 md:grid-cols-12 gap-6 py-10 items-center ${isEven ? 'bg-surface' : 'bg-surface-container-low/40'}`}
                   >
                     <div className="md:col-span-4 flex items-start gap-4">
                       <span className="font-headline text-outline/25 text-3xl leading-none mt-0.5 shrink-0 tabular-nums">
@@ -149,7 +149,7 @@ export default function ServicesPage({ params }: { params: { lang: string } }) {
                       </span>
                       <div>
                         <h3 className="font-headline text-xl md:text-2xl text-on-surface leading-tight">{name}</h3>
-                        <p className="hidden md:block mt-2 font-body text-sm text-secondary leading-relaxed max-w-xs">
+                        <p className="mt-2 font-body text-sm text-secondary leading-relaxed max-w-xs">
                           {shortDesc}
                         </p>
                       </div>
@@ -200,7 +200,7 @@ export default function ServicesPage({ params }: { params: { lang: string } }) {
                 return (
                   <div
                     key={service.id}
-                    className={`grid grid-cols-1 md:grid-cols-12 gap-6 py-10 items-center ${isEven ? 'bg-surface' : 'bg-surface-container-low/40'}`}
+                    className={`-mx-6 px-6 md:mx-0 md:px-0 grid grid-cols-1 md:grid-cols-12 gap-6 py-10 items-center ${isEven ? 'bg-surface' : 'bg-surface-container-low/40'}`}
                   >
                     <div className="md:col-span-4 flex items-start gap-4">
                       <span className="font-headline text-outline/25 text-3xl leading-none mt-0.5 shrink-0 tabular-nums">
@@ -208,7 +208,7 @@ export default function ServicesPage({ params }: { params: { lang: string } }) {
                       </span>
                       <div>
                         <h3 className="font-headline text-xl md:text-2xl text-on-surface leading-tight">{name}</h3>
-                        <p className="hidden md:block mt-2 font-body text-sm text-secondary leading-relaxed max-w-xs">
+                        <p className="mt-2 font-body text-sm text-secondary leading-relaxed max-w-xs">
                           {shortDesc}
                         </p>
                       </div>

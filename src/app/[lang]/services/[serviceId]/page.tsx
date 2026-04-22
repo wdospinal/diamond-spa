@@ -110,6 +110,7 @@ export default function ServiceDetailPage({
               locale={locale}
               backToServices={t.backToServices}
               backToMenMassages={t.backToMenMassages}
+              backToHome={t.backToHome}
               className={backFallbackClass}
             />
           </Suspense>
@@ -232,6 +233,7 @@ export default function ServiceDetailPage({
               locale={locale}
               backToServices={t.backToServices}
               backToMenMassages={t.backToMenMassages}
+              backToHome={t.backToHome}
               className={backCtaClass}
             />
           </Suspense>
