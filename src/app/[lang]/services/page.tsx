@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { SERVICES, formatCop, type DurationMinutes, type ServiceDef } from '@/lib/services'
 import { buildAlternates, buildOpenGraph } from '@/lib/seo'
+import { SPA_WHATSAPP_GREETING, randomWhatsAppUrl } from '@/lib/spa'
 
 export const dynamic = 'force-static'
 
@@ -264,9 +265,14 @@ export default function ServicesPage({ params }: { params: { lang: string } }) {
             <Link href={`/${locale}/book`} className="bg-primary text-on-primary px-12 py-5 font-label text-xs font-bold uppercase tracking-[0.2em] hover:bg-white transition-all">
               {t.reserveNow}
             </Link>
-            <Link href={`/${locale}/book`} className="border border-outline-variant text-on-surface px-12 py-5 font-label text-xs font-bold uppercase tracking-[0.2em] hover:bg-surface-container-high transition-all">
-              {t.inquireMembership}
-            </Link>
+            <a
+              href={randomWhatsAppUrl(SPA_WHATSAPP_GREETING[locale])}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="border border-outline-variant text-on-surface px-12 py-5 font-label text-xs font-bold uppercase tracking-[0.2em] hover:bg-surface-container-high transition-all"
+            >
+              {t.contactReceptionist}
+            </a>
           </div>
         </div>
       </section>
