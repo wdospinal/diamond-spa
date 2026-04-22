@@ -125,7 +125,6 @@ export default function LocationPage({ params }: { params: { lang: string } }) {
               <span className="material-symbols-outlined text-primary text-3xl mb-6 block">lock</span>
               <h3 className="font-headline text-2xl text-on-surface mb-5">{t.privateTitle}</h3>
               <p className="font-body text-secondary leading-relaxed text-sm mb-8">{t.privateBody1}</p>
-              <p className="font-body text-secondary leading-relaxed text-sm">{t.privateBody2}</p>
             </div>
             <Link href={`/${locale}/book`} className="mt-10 w-fit bg-primary text-on-primary px-8 py-4 font-label font-bold tracking-[0.2em] text-xs uppercase hover:bg-white transition-all duration-300">
               {t.reserveDirections}
