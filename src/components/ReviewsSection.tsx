@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { getDict, type Locale } from '@/lib/i18n'
+import { SPA_GOOGLE_PLACES_ID } from '@/lib/spa'
 
 interface PlaceReview {
   author_name: string
@@ -20,7 +21,7 @@ async function fetchPlaceDetails(): Promise<PlaceDetails> {
   if (!key) return {}
   try {
     const res = await fetch(
-      `https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJK8Mybqkp4o4RjIhsXLsM2K8&fields=rating,user_ratings_total,reviews&key=${key}&language=es`,
+      `https://maps.googleapis.com/maps/api/place/details/json?place_id=${SPA_GOOGLE_PLACES_ID}&fields=rating,user_ratings_total,reviews&key=${key}&language=es`,
       { next: { revalidate: 3600 } }
     )
     if (!res.ok) return {}

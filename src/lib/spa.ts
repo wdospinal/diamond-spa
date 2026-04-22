@@ -65,7 +65,7 @@ export const SPA_GEO = {
   longitude: -75.5680,
 } as const
 
-export const SPA_GOOGLE_PLACES_ID = 'ChIJK8Mybqkp4o4RjIhsXLsM2K8'
+export const SPA_GOOGLE_PLACES_ID = 'ChIJKzwytpApRI4RjIhtXLsMvK8'
 
 export const SPA_DIRECTIONS = {
   driving: {
