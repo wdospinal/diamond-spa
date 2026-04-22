@@ -138,9 +138,6 @@ export default function MasajesParaHombresPage({ params }: { params: { lang: str
 
         {/* CTA */}
         <section className="bg-surface-container p-12 text-center">
-          <p className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-4">
-            {p.ctaLabel}
-          </p>
           <h2 className="font-headline text-3xl md:text-4xl text-on-surface tracking-tighter mb-6">
             {p.ctaTitle}
           </h2>

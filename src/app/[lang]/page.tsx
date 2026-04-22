@@ -191,7 +191,6 @@ export default function HomePage({ params }: { params: { lang: string } }) {
       {/* CTA */}
       <section className="py-40 px-6 md:px-12 bg-surface-container-lowest text-center">
         <div className="max-w-3xl mx-auto">
-          <span className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-8 block">{h.ctaLabel}</span>
           <h2 className="font-headline text-4xl md:text-6xl text-on-surface mb-12">
             {h.ctaTitle[0]} <span className="italic text-primary">{h.ctaTitle[1]}</span>
           </h2>

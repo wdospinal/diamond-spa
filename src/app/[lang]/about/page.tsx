@@ -151,7 +151,6 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
       {/* CTA */}
       <section className="py-40 px-6 md:px-12 bg-surface text-center">
         <div className="max-w-4xl mx-auto">
-          <span className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-8 block">{t.ctaLabel}</span>
           <h2 className="font-headline text-4xl md:text-7xl text-on-surface mb-12">
             {t.ctaTitle[0]} <span className="italic text-primary">{t.ctaTitle[1]}</span>
           </h2>
