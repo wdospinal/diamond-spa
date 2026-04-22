@@ -107,8 +107,8 @@ export const SERVICES = [
       es: 'Es una combinación perfecta de terapia manual fuerte y tecnologia de percusion, para llegar a los músculos profundos y relajarlos.',
     },
     description: {
-      en: 'Designed for those who push their bodies — whether through professional sport, intense training, or demanding physical work. Combines deep-tissue pressure, assisted stretching, and targeted lymphatic drainage to flush metabolic waste, restore range of motion, and reduce injury risk. Best taken regularly as part of a recovery programme.',
-      es: 'Diseñado para quienes exigen mucho a su cuerpo — ya sea mediante deporte profesional, entrenamiento intenso o trabajo físico exigente. Combina presión de tejido profundo, estiramientos asistidos y drenaje linfático dirigido para eliminar residuos metabólicos, restaurar el rango de movimiento y reducir el riesgo de lesiones. Recomendado de forma regular como parte de un programa de recuperación.',
+      en: 'Take your recovery to the next level. We combine deep tissue therapy with percussion gun and assisted stretching to eliminate fatigue and prevent injuries. The essential maintenance in El Poblado.',
+      es: 'Lleva tu recuperación al siguiente nivel. Fusionamos terapia de tejido profundo con pistola de percusión y estiramientos asistidos para eliminar la fatiga y prevenir lesiones. El mantenimiento esencial en El Poblado."',
     },
     prices: { 30: 140_000, 60: 240_000, 90: 300_000 },
   },
@@ -119,8 +119,8 @@ export const SERVICES = [
     categoryId: 'massages' as const,
     pricingModel: 'duration' as const,
     shortDesc: {
-      en: 'Combines the softness of hands and the sensation of feathers to awaken nerve endings, calm the mind, reduce anxiety, and reconnect the body.',
-      es: 'Esta experiencia combina la suavidad de las manos y la sensación de las plumas para despertar las terminaciones nerviosas, calma la mente reduce la ansiedad y reconecta el cuerpo.',
+      en: 'Where delicacy becomes pleasure. Enjoy slow movements and a sensory caress with feathers designed to awaken your senses without haste. Ideal for your first time at Diamond or to let yourself be carried away by a deeply seductive calm.',
+      es: 'Donde la delicadeza se vuelve placer. Disfruta de movimientos lentos y una caricia sensorial con plumas diseñada para despertar tus sentidos sin prisas. Ideal para tu primera vez en Diamond o para dejarte llevar por una calma profundamente seductora.',
     },
     description: {
       en: 'A carefully adapted massage for clients with sensitive skin, heightened nervous system reactivity, or conditions that require a gentler approach. Uses hypoallergenic oils, very light pressure, and slow deliberate movements to provide genuine therapeutic relief without overstimulation. Equally suitable as an introduction for first-time massage clients.',
@@ -141,8 +141,8 @@ export const SERVICES = [
       es: 'Limpieza profunda, extracción e hidratación intensiva en un solo tratamiento.',
     },
     description: {
-      en: 'The HydraFacial is a multi-step treatment that deeply cleanses, exfoliates, extracts impurities and infuses skin with intensive serums. Suitable for all skin types, it delivers immediate visible results — cleaner pores, smoother texture, and lasting luminosity — with no downtime required.',
-      es: 'El Hidrafacial es un tratamiento de múltiples pasos que limpia profundamente, exfolia, extrae impurezas e infunde la piel con sueros intensivos. Apto para todo tipo de piel, ofrece resultados visibles desde la primera sesión — poros más limpios, textura más suave y luminosidad duradera — sin tiempo de recuperación.',
+      en: 'The ultimate luxury experience for your face. Our HydraFacial is the most complete: cleanses, extracts, and infuses a vitamin cocktail that transforms your skin instantly. Luxury results and a Diamond shine from the first session.',
+      es: 'La experiencia de lujo definitiva para tu rostro. Nuestro Hidrafacial es el más completo: limpia, extrae e infunde un cóctel de vitaminas que transforma tu piel al instante. Resultados luxury y un brillo Diamond desde la primera sesión',
     },
     price: 350_000,
   },

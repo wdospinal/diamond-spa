@@ -16,6 +16,36 @@ export function isLocale(v: unknown): v is Locale {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Shared bilingual pillar / feature blocks — defined once, spread into the dict
+// ─────────────────────────────────────────────────────────────────────────────
+
+type Pillar = { icon: string; title: string; body: string }
+type BilingualPillar = { icon: string; en: { title: string; body: string }; es: { title: string; body: string } }
+
+function mapPillars(items: BilingualPillar[], locale: 'en' | 'es'): Pillar[] {
+  return items.map(({ icon, en, es }) => ({ icon, ...(locale === 'en' ? en : es) }))
+}
+
+/** Trust highlights on the Home page ("The International Standard" section). */
+const FEATURES: BilingualPillar[] = [
+  {
+    icon: 'language',
+    en: { title: 'Universal Service', body: 'At Diamond, we make every effort to communicate with respect and clarity so that your rest is perfect.' },
+    es: { title: 'Servicio Universal', body: 'En Diamond, la amabilidad es nuestro lenguaje universal. Hacemos todo lo posible por comunicarnos con respeto y claridad para que tu descanso sea perfecto.' },
+  },
+  {
+    icon: 'privacy_tip',
+    en: { title: 'Exclusivity', body: 'Your well-being deserves our undivided attention. At Diamond, enjoy VIP treatment with direct attention and an organised schedule to ensure you receive total priority and calm in the heart of El Poblado.' },
+    es: { title: 'Exclusividad', body: 'Nuestro entorno boutique garantiza privacidad. Entradas privadas y citas escalonadas para total anonimato.' },
+  },
+  {
+    icon: 'verified_user',
+    en: { title: 'Professional Rigor', body: 'Each therapist is trained in high-end hospitality and precision bodywork protocols.' },
+    es: { title: 'Rigor Profesional', body: 'En Diamond, tu bienestar está en manos de cosmetólogas certificadas y masoterapeutas expertas. Disfruta de una atención de alto nivel y resultados garantizados en el mejor sector de El Poblado."' },
+  },
+]
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Translation dictionary
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -48,23 +78,7 @@ const dict = {
       relaxTitle: 'Relaxation Massage',
       relaxBody: 'A mental reset designed to lower cortisol levels and induce profound relaxation. Perfect for decompressing after high-stakes environments.',
       standardTitle: 'The International Standard',
-      features: [
-        {
-          icon: 'language',
-          title: 'Multilingual Excellence',
-          body: 'Full English-speaking staff dedicated to providing a seamless experience for our international guests.',
-        },
-        {
-          icon: 'privacy_tip',
-          title: 'Absolute Discretion',
-          body: 'Our boutique setting ensures privacy. Private entrances and staggered appointments for complete anonymity.',
-        },
-        {
-          icon: 'verified_user',
-          title: 'Professional Rigor',
-          body: 'Each therapist is trained in high-end hospitality and precision bodywork protocols.',
-        },
-      ],
+      features: mapPillars(FEATURES, 'en'),
       quote: 'The ultimate haven for the traveling executive.',
       quoteSource: 'Forbes Luxury Travel Guide',
       ctaLabel: 'Exclusive Access',
@@ -114,23 +128,7 @@ const dict = {
       heritageBody1: 'Founded on the principle that recovery is as critical as performance. Diamond Spa was conceived as a private club for those whose time is their most valuable asset. We have evolved from a private boutique into a benchmark for precision wellness.',
       heritageBody2: "Every corner of our space reflects the architectural rigour and refined taste of our clientele. We don't just offer treatments; we offer a return to the self.",
       standardTitle: 'The International Standard',
-      pillars: [
-        {
-          icon: 'lock',
-          title: 'Absolute Discretion',
-          body: 'Our protocols are modelled after Swiss banking standards. Privacy is not a feature; it is our foundation. Private entrances and staggered arrivals ensure total anonymity.',
-        },
-        {
-          icon: 'language',
-          title: 'Global Proficiency',
-          body: 'A truly international staff fluent in multiple world languages, trained to anticipate cultural nuances and professional expectations with effortless grace.',
-        },
-        {
-          icon: 'architecture',
-          title: 'Professional Rigour',
-          body: 'Our practitioners are not just therapists; they are clinical specialists in stress management and biomechanics, operating with the precision of a master watchmaker.',
-        },
-      ],
+      pillars: mapPillars(FEATURES, 'en'),
       teamLabel: 'Our Practitioners',
       teamTitle: ['Precise. Professional.', 'Elite.'],
       teamBody: "Curated from the world's most prestigious training institutes, our team represents the pinnacle of therapeutic excellence.",
@@ -290,23 +288,7 @@ const dict = {
       book: 'Book',
       viewAllServices: 'View all services →',
       whyTitle: 'Why Diamond Spa?',
-      pillars: [
-        {
-          icon: 'lock',
-          title: 'Absolute Discretion',
-          body: 'Private entrance and staggered appointments. You will never encounter another client.',
-        },
-        {
-          icon: 'verified_user',
-          title: 'Professional Staff',
-          body: 'Certified specialists in high-level therapeutic and cosmetic techniques.',
-        },
-        {
-          icon: 'language',
-          title: 'Bilingual',
-          body: 'English-speaking staff. We serve with the same excellence in any language.',
-        },
-      ],
+      pillars: mapPillars(FEATURES, 'en'),
       faqTitle: 'Frequently Asked Questions',
       faqs: [
         {
@@ -385,23 +367,7 @@ const dict = {
       relaxTitle: 'Masaje de Relajación',
       relaxBody: 'Un reinicio mental diseñado para reducir los niveles de cortisol e inducir una relajación profunda. Perfecto para descomprimirse después de entornos de alta exigencia.',
       standardTitle: 'El Estándar Internacional',
-      features: [
-        {
-          icon: 'language',
-          title: 'Excelencia Multilingüe',
-          body: 'Personal completo de habla inglesa dedicado a brindar una experiencia perfecta a nuestros huéspedes internacionales.',
-        },
-        {
-          icon: 'privacy_tip',
-          title: 'Discreción Absoluta',
-          body: 'Nuestro entorno boutique garantiza privacidad. Entradas privadas y citas escalonadas para total anonimato.',
-        },
-        {
-          icon: 'verified_user',
-          title: 'Rigor Profesional',
-          body: 'Cada terapeuta está capacitado en hospitalidad de alto nivel y protocolos de trabajo corporal de precisión.',
-        },
-      ],
+      features: mapPillars(FEATURES, 'es'),
       quote: 'El refugio definitivo para el ejecutivo viajero.',
       quoteSource: 'Forbes Luxury Travel Guide',
       ctaLabel: 'Acceso Exclusivo',
@@ -451,23 +417,7 @@ const dict = {
       heritageBody1: 'Fundados en el principio de que la recuperación es tan crítica como el rendimiento. Diamond Spa fue concebido como un club privado para aquellos cuyo tiempo es su activo más valioso.',
       heritageBody2: 'Cada rincón de nuestro espacio refleja el rigor arquitectónico y el gusto refinado de nuestra clientela. No solo ofrecemos tratamientos; ofrecemos un regreso al ser.',
       standardTitle: 'El Estándar Internacional',
-      pillars: [
-        {
-          icon: 'lock',
-          title: 'Discreción Absoluta',
-          body: 'Nuestros protocolos están modelados según los estándares de la banca suiza. La privacidad no es una característica; es nuestra base. Entradas privadas y llegadas escalonadas garantizan total anonimato.',
-        },
-        {
-          icon: 'language',
-          title: 'Competencia Global',
-          body: 'Personal verdaderamente internacional capacitado para anticipar matices culturales y expectativas profesionales específicas con gracia.',
-        },
-        {
-          icon: 'architecture',
-          title: 'Rigor Profesional',
-          body: 'Nuestros profesionales son especialistas clínicos en manejo del estrés y biomecánica, operando con la precisión de un relojero maestro.',
-        },
-      ],
+      pillars: mapPillars(FEATURES, 'es'),
       teamLabel: 'Nuestros Practicantes',
       teamTitle: ['Precisos. Profesionales.', 'Elite.'],
       teamBody: 'Seleccionados de los institutos de formación más prestigiosos, nuestro equipo representa la cima de la excelencia terapéutica.',
@@ -627,23 +577,7 @@ const dict = {
       book: 'Reservar',
       viewAllServices: 'Ver todos los servicios →',
       whyTitle: '¿Por qué Diamond Spa?',
-      pillars: [
-        {
-          icon: 'lock',
-          title: 'Discreción Absoluta',
-          body: 'Entrada privada y citas escalonadas. Nunca te encontrarás con otro cliente.',
-        },
-        {
-          icon: 'verified_user',
-          title: 'Personal Profesional',
-          body: 'Especialistas certificados en técnicas terapéuticas y cosméticas de alto nivel.',
-        },
-        {
-          icon: 'language',
-          title: 'Bilingüe',
-          body: 'Personal de habla inglesa. Atendemos con la misma excelencia en cualquier idioma.',
-        },
-      ],
+      pillars: mapPillars(FEATURES, 'es'),
       faqTitle: 'Preguntas Frecuentes',
       faqs: [
         {
