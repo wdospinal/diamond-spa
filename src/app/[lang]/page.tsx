@@ -95,12 +95,12 @@ export default function HomePage({ params }: { params: { lang: string } }) {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
             {/* Deep Tissue */}
-            <div className="md:col-span-8 relative group min-h-[480px] overflow-hidden rounded-sm bg-surface-container ring-1 ring-outline-variant/10">
+            <div className="md:col-span-6 relative group min-h-[480px] overflow-hidden rounded-sm bg-surface-container ring-1 ring-outline-variant/10">
               <Image
                 src={DEEP_TISSUE_IMG}
                 alt="Deep Tissue Massage"
                 fill
-                sizes="(max-width: 768px) 100vw, 66vw"
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover img-hover-color"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface/40 to-transparent" />
@@ -114,24 +114,26 @@ export default function HomePage({ params }: { params: { lang: string } }) {
               </div>
             </div>
             {/* Facial */}
-            <div className="md:col-span-4 relative flex min-h-[480px] flex-col justify-between overflow-hidden rounded-sm bg-surface-container-high p-8 ring-1 ring-outline-variant/10 group">
-              <div>
+            <div className="md:col-span-6 relative group min-h-[480px] overflow-hidden rounded-sm bg-surface-container ring-1 ring-outline-variant/10">
+              <Image
+                src={FACIAL_IMG}
+                alt="Facial Treatment"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover object-top img-hover-color"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface/40 to-transparent" />
+              <div className="absolute bottom-0 left-0 p-8 z-10">
                 <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-3 block">{h.grooming}</span>
-                <h3 className="font-headline text-2xl text-on-surface mb-4">{h.facialTitle}</h3>
-                <p className="font-body text-secondary text-sm leading-relaxed">{h.facialBody}</p>
-              </div>
-              <div className="relative mt-8 h-48 w-full overflow-hidden rounded-sm">
-                <Image
-                  src={FACIAL_IMG}
-                  alt="Facial Treatment"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover object-top img-hover-color"
-                />
+                <h3 className="font-headline text-3xl text-on-surface mb-3">{h.facialTitle}</h3>
+                <p className="font-body text-secondary text-sm max-w-md leading-relaxed mb-5">{h.facialBody}</p>
+                <Link href={`/${locale}/services`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
+                  {h.viewDetails} <span className="material-symbols-outlined text-sm">chevron_right</span>
+                </Link>
               </div>
             </div>
             {/* Relaxation */}
-            <div className="md:col-span-12 relative flex min-h-[280px] items-center overflow-hidden rounded-sm bg-surface-container ring-1 ring-outline-variant/10 group">
+            <div className="md:col-span-12 relative flex min-h-[480px] items-center overflow-hidden rounded-sm bg-surface-container ring-1 ring-outline-variant/10 group">
               <Image
                 src={RELAX_IMG}
                 alt="Relaxation Massage"

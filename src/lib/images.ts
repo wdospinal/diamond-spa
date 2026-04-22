@@ -11,15 +11,12 @@ const u = (id: string, w = 1200) =>
 export const IMG_HERO_HOME        = '/diamond-wallpaper.jpeg'
 export const IMG_LOGO             = '/logo.png'
 export const IMG_LOGOTIPO         = '/logotipo.png'
+export const IMG_DEEP_TISSUE         = '/deep-tissue.jpeg'
+export const IMG_RELAXATION         = '/relaxation.png'
+export const IMG_FACIAL         = '/skin.jpeg'
 
 // ─── Home page ────────────────────────────────────────────────────────────────
 
-/** Man receiving deep tissue back massage */
-export const IMG_DEEP_TISSUE      = u('1544161515-4ab6ce6db874')
-/** Close-up facial skincare treatment */
-export const IMG_FACIAL           = u('1570172619644-dfd03ed5d881')
-/** Full-body relaxation massage on table */
-export const IMG_RELAXATION       = u('1600334089648-b0d9d3028eb2')
 /** Luxury boutique spa interior — warm, dim light */
 export const IMG_BOUTIQUE         = u('1571896349842-33c89424de2d')
 

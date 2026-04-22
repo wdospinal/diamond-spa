@@ -359,7 +359,7 @@ const dict = {
       viewDetails: 'Ver Detalles',
       facialTitle: 'Tratamientos Faciales',
       facialBody: 'Rejuvenecimiento de piel de alto rendimiento. Trata la irritación, contaminantes urbanos y fatiga mediante fórmulas de grado médico.',
-      relaxTitle: 'Masaje de Relajación',
+      relaxTitle: 'Masaje Sensitivo',
       relaxBody: 'Un reinicio mental diseñado para reducir los niveles de cortisol e inducir una relajación profunda. Perfecto para descomprimirse después de entornos de alta exigencia.',
       standardTitle: 'El Estándar Internacional',
       features: mapPillars(FEATURES, 'es'),
