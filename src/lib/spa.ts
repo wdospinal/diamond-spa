@@ -67,6 +67,8 @@ export const SPA_GEO = {
 
 export const SPA_GOOGLE_PLACES_ID = 'ChIJKzwytpApRI4RjIhtXLsMvK8'
 
+export const SPA_GOOGLE_REVIEW_URL = 'https://g.page/r/CYyIbVy7DLyvEAE/review'
+
 export const SPA_DIRECTIONS = {
   driving: {
     en: 'Few minutes drive from Parque El Poblado',

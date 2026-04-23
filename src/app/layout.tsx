@@ -24,8 +24,8 @@ export const metadata: Metadata = {
     'Masajes para hombres y mujeres en El Poblado, Medellín. Deep tissue, relajante, deportivo, faciales y depilación. Desde $120.000 COP.',
   keywords: 'spa medellin, masajes medellin, masajes para hombres en medellin, masajes medellin para hombres, spa para hombres medellin, masajes el poblado, spa el poblado, diamond spa, masajes de lujo, medellin antioquia, masaje relajante medellin, masaje deportivo medellin, deep tissue medellin, depilacion masculina medellin, spa para mujeres medellin',
   icons: {
-    icon: '/favicon.png',
-    apple: '/favicon.png',
+    icon: '/logotipo.png',
+    apple: '/logotipo.png',
   },
 }
 

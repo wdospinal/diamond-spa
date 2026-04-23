@@ -23,11 +23,8 @@ export const IMG_BOUTIQUE         = u('1571896349842-33c89424de2d')
 
 // ─── About / Philosophy page ──────────────────────────────────────────────────
 
-/** Serene private treatment room */
-/** Therapist placing hot volcanic stones on back */
-export const IMG_STONE            = u('1515377905703-c4788e51af15')
-/** Candlelit spa lounge — ambient light */
-export const IMG_LOUNGE           = u('1519823551278-64ac92734fb1')
+export const IMG_STONE            = '/maquina.jpeg'
+export const IMG_LOUNGE           = '/masaje.jpeg'
 
 // ─── History / Story page ─────────────────────────────────────────────────────
 

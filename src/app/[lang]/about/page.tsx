@@ -67,8 +67,8 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
       <section className="py-32 px-6 md:px-12 bg-surface-container-low">
         <div className="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-24 items-center">
           <div className="order-2 md:order-1">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="relative aspect-square overflow-hidden rounded-sm ring-1 ring-outline-variant/10">
+            <div className="grid grid-cols-2 gap-2">
+              <div className="relative aspect-[2/3] overflow-hidden rounded-sm ring-1 ring-outline-variant/10">
                 <Image
                   src={STONE_IMG}
                   alt="Stone massage"

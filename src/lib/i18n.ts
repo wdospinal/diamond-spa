@@ -172,6 +172,12 @@ const dict = {
       basedOn: 'Based on',
       googleReviews: 'Google Reviews',
       noReviews: 'No reviews available at this time.',
+      beFirstTitle: 'Be the first to review us',
+      beFirstBody: "We just opened our doors. If you've visited Diamond Spa, share your experience on Google.",
+      leaveReview: 'Leave a Google review',
+      viewOnMaps: 'View on Google Maps',
+      addressLabel: 'Address',
+      phoneLabel: 'Phone',
     },
 
     book: {
@@ -456,6 +462,12 @@ const dict = {
       basedOn: 'Basado en',
       googleReviews: 'Reseñas de Google',
       noReviews: 'No hay reseñas disponibles en este momento.',
+      beFirstTitle: 'Sé el primero en dejarnos una reseña',
+      beFirstBody: 'Acabamos de abrir nuestras puertas. Si has visitado Diamond Spa, comparte tu experiencia en Google.',
+      leaveReview: 'Dejar una reseña en Google',
+      viewOnMaps: 'Ver en Google Maps',
+      addressLabel: 'Dirección',
+      phoneLabel: 'Teléfono',
     },
 
     book: {
