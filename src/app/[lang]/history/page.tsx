@@ -84,7 +84,9 @@ export default function HistoryPage({ params }: { params: { lang: string } }) {
             <div className="relative aspect-[4/5] overflow-hidden rounded-sm ring-1 ring-outline-variant/10">
               <Image
                 src={INTERIOR_IMG}
-                alt="Diamond Spa interior"
+                alt={locale === 'es'
+                  ? 'Interior original de Diamond Spa en El Poblado, Medellín, donde comenzó la historia del spa'
+                  : 'Original interior of Diamond Spa in El Poblado, Medellín, where the spa\'s story began'}
                 fill
                 sizes="(max-width: 1024px) 100vw, 45vw"
                 className="object-cover opacity-70"

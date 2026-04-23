@@ -48,7 +48,9 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
             <div className="relative aspect-[4/5] overflow-hidden rounded-sm ring-1 ring-outline-variant/10">
               <Image
                 src={HERO_IMG}
-                alt="Luxury spa interior"
+                alt={locale === 'es'
+                  ? 'Vista interior de Diamond Spa: ambiente sereno con detalles de lujo, plantas y luz natural'
+                  : 'Interior view of Diamond Spa: serene atmosphere with luxury details, plants and natural light'}
                 fill
                 sizes="(max-width: 1024px) 100vw, 42vw"
                 className="object-cover opacity-80"
@@ -71,7 +73,9 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
               <div className="relative aspect-[2/3] overflow-hidden rounded-sm ring-1 ring-outline-variant/10">
                 <Image
                   src={STONE_IMG}
-                  alt="Stone massage"
+                  alt={locale === 'es'
+                    ? 'Equipo profesional de Diamond Spa utilizado en tratamientos corporales y estéticos avanzados'
+                    : 'Professional Diamond Spa equipment used in advanced body and aesthetic treatments'}
                   fill
                   sizes="(max-width: 768px) 50vw, 25vw"
                   className="object-cover opacity-60 transition-opacity duration-700 hover:opacity-90"
@@ -80,7 +84,9 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
               <div className="relative aspect-square translate-y-8 overflow-hidden rounded-sm ring-1 ring-outline-variant/10">
                 <Image
                   src={LOUNGE_IMG}
-                  alt="Spa lounge"
+                  alt={locale === 'es'
+                    ? 'Cabina privada de masajes en Diamond Spa con camilla preparada y ambiente acogedor'
+                    : 'Private massage cabin at Diamond Spa with a prepared treatment table and a welcoming atmosphere'}
                   fill
                   sizes="(max-width: 768px) 50vw, 25vw"
                   className="object-cover opacity-60 transition-opacity duration-700 hover:opacity-90"
@@ -134,7 +140,9 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
                 <div className="relative mb-6 aspect-[3/4] overflow-hidden rounded-sm bg-surface-container ring-1 ring-outline-variant/10">
                   <Image
                     src={THERAPISTS_IMGS[i]}
-                    alt={THERAPISTS_NAMES[i]}
+                    alt={locale === 'es'
+                      ? `Retrato de ${THERAPISTS_NAMES[i]}, ${role.toLowerCase()} certificada del equipo de Diamond Spa`
+                      : `Portrait of ${THERAPISTS_NAMES[i]}, certified ${role.toLowerCase()} from the Diamond Spa team`}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover opacity-70 grayscale transition-all duration-700 group-hover:opacity-100 group-hover:grayscale-0"

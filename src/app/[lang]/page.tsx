@@ -59,7 +59,9 @@ export default function HomePage({ params }: { params: { lang: string } }) {
         <div className="absolute inset-0 z-0">
           <Image
             src={IMG_HERO_HOME}
-            alt="Diamond Spa luxury interior"
+            alt={locale === 'es'
+              ? 'Interior boutique de Diamond Spa en El Poblado, Medellín, con iluminación cálida y ambiente relajante'
+              : 'Boutique interior of Diamond Spa in El Poblado, Medellín, with warm lighting and a relaxing atmosphere'}
             fill
             priority
             sizes="100vw"
@@ -111,7 +113,9 @@ export default function HomePage({ params }: { params: { lang: string } }) {
             <div className="md:col-span-6 relative group min-h-[480px] overflow-hidden rounded-sm bg-surface-container ring-1 ring-outline-variant/10">
               <Image
                 src={DEEP_TISSUE_IMG}
-                alt="Deep Tissue Massage"
+                alt={locale === 'es'
+                  ? 'Sesión de depilación profesional de cuerpo completo en cabina privada de Diamond Spa'
+                  : 'Professional full-body hair removal session in a private cabin at Diamond Spa'}
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover img-hover-color"
@@ -130,7 +134,9 @@ export default function HomePage({ params }: { params: { lang: string } }) {
             <div className="md:col-span-6 relative group min-h-[480px] overflow-hidden rounded-sm bg-surface-container ring-1 ring-outline-variant/10">
               <Image
                 src={FACIAL_IMG}
-                alt="Facial Treatment"
+                alt={locale === 'es'
+                  ? 'Mujer recibiendo un tratamiento facial Hidrafacial para una piel limpia, hidratada y radiante'
+                  : 'Woman receiving a Hidrafacial treatment for clean, hydrated and radiant skin'}
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover object-top img-hover-color"
@@ -149,7 +155,9 @@ export default function HomePage({ params }: { params: { lang: string } }) {
             <div className="md:col-span-12 relative flex min-h-[480px] items-center overflow-hidden rounded-sm bg-surface-container ring-1 ring-outline-variant/10 group">
               <Image
                 src={RELAX_IMG}
-                alt="Relaxation Massage"
+                alt={locale === 'es'
+                  ? 'Persona disfrutando de un masaje relajante de aceites esenciales en una camilla de Diamond Spa'
+                  : 'Person enjoying a relaxing essential-oil massage on a treatment table at Diamond Spa'}
                 fill
                 sizes="100vw"
                 className="object-cover img-hover-color"
@@ -189,7 +197,9 @@ export default function HomePage({ params }: { params: { lang: string } }) {
             <div className="relative aspect-[4/5] overflow-hidden rounded-sm ring-1 ring-outline-variant/10">
               <Image
                 src={BOUTIQUE_IMG}
-                alt="Diamond Spa boutique interior"
+                alt={locale === 'es'
+                  ? 'Espacio boutique de Diamond Spa con decoración minimalista, luz tenue y mobiliario de madera natural'
+                  : 'Diamond Spa boutique space with minimalist decor, soft lighting and natural wood furnishings'}
                 fill
                 sizes="(max-width: 1024px) 100vw, 45vw"
                 className="object-cover opacity-80 transition-opacity duration-700 hover:opacity-100"
