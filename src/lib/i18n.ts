@@ -80,8 +80,8 @@ const dict = {
       relaxBody: 'A mental reset designed to lower cortisol levels and induce profound relaxation. Perfect for decompressing after high-stakes environments.',
       standardTitle: 'The International Standard',
       features: mapPillars(FEATURES, 'en'),
-      quote: 'The ultimate haven for the traveling executive.',
-      quoteSource: 'Forbes Luxury Travel Guide',
+      quote: 'Regular therapeutic care is one of the most powerful things you can do for your body and mind.',
+      quoteSource: 'Diamond Spa Guest',
       ctaTitle: ['Return to your', 'Primal Calm.'],
       reserveSession: 'Reserve Your Session',
     },
@@ -134,13 +134,20 @@ const dict = {
       teamTitle: ['Talent ', 'Diamond.'],
       teamBody: 'Professional dedicated to your balance. A united team by excellence and respect, creating the peaceful environment you deserve in El Poblado.',
       therapists: [
-        { role: 'Cosmetologist & Massage Therapist' },
-        { role: 'Cosmetologist & Massage Therapist' },
-        { role: 'Cosmetologist & Massage Therapist' },
+        { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience' },
+        { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience' },
+        { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience' },
       ],
       ctaTitle: ['Return to your', 'Primal Calm.'],
       requestMembership: 'Request Appointment',
       exploreServices: 'Explore Services',
+      hygieneLabel: 'Standards',
+      hygieneTitle: 'Professional Grade. Every Session.',
+      hygieneItems: [
+        { icon: 'science', title: 'Medical-Grade Products', body: 'All facial and skin treatments use professional-grade certified formulas — the same standard as medical aesthetics clinics.' },
+        { icon: 'verified', title: 'Certified Specialists', body: 'Our team holds professional cosmetology and massage therapy credentials, continuously updated through specialist training.' },
+        { icon: 'lock', title: 'Private Treatment Rooms', body: 'Every client receives a dedicated private room, prepared exclusively for each session.' },
+      ],
     },
 
     location: {
@@ -223,6 +230,7 @@ const dict = {
           'We do not sell your personal data. We may share limited information with service providers who assist us (for example, hosting or messaging) under strict confidentiality obligations.',
           'You may request access, correction, or deletion of your personal data where applicable by contacting us at the email shown in the footer.',
           'We may update this policy from time to time. Continued use of our services after changes constitutes acceptance of the revised policy.',
+          'We retain your personal data for up to 24 months after your last interaction with us, after which it is securely deleted unless a longer retention period is required by applicable law.',
         ],
       },
       terms: {
@@ -231,6 +239,7 @@ const dict = {
         title: 'Terms of Service',
         body: [
           'By booking a session or using our website, you agree to these terms. Services are offered subject to availability and our confirmation.',
+          'Our services are intended for adults aged 18 and over. Clients under 18 may only receive services with a parent or legal guardian present and their prior written consent.',
           'Arrival and cancellation policies apply as communicated at booking. Late arrivals may shorten session length so the next guest is not delayed.',
           'Payment terms, pricing, and any deposits are confirmed when you reserve. We reserve the right to refuse service where necessary for safety or conduct.',
           'Our website and materials are provided for information. We are not liable for indirect damages arising from use of the site except where prohibited by law.',
@@ -370,8 +379,8 @@ const dict = {
       relaxBody: 'Un reinicio mental diseñado para reducir los niveles de cortisol e inducir una relajación profunda. Perfecto para descomprimirse después de entornos de alta exigencia.',
       standardTitle: 'El Estándar Internacional',
       features: mapPillars(FEATURES, 'es'),
-      quote: 'El refugio definitivo para el ejecutivo viajero.',
-      quoteSource: 'Forbes Luxury Travel Guide',
+      quote: 'El cuidado terapéutico regular es una de las mejores cosas que puedes hacer por tu cuerpo y mente.',
+      quoteSource: 'Huésped Diamond Spa',
       ctaTitle: ['Regresa a tu', 'Calma Primordial.'],
       reserveSession: 'Reservar tu Cita',
     },
@@ -424,13 +433,20 @@ const dict = {
       teamTitle: ['Talento ', 'Diamond.'],
       teamBody: 'Profesionales dedicadas a tu equilibrio. Un equipo unido por la excelencia y el respeto, creando el ambiente de paz que mereces en El Poblado.',
       therapists: [
-        { role: 'Cosmetóloga & Masajista' },
-        { role: 'Cosmetóloga & Masajista' },
-        { role: 'Cosmetóloga & Masajista' },
+        { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia' },
+        { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia' },
+        { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia' },
       ],
       ctaTitle: ['Regresa a tu', 'Calma Primordial.'],
       requestMembership: 'Solicitar Cita',
       exploreServices: 'Explorar Servicios',
+      hygieneLabel: 'Estándares',
+      hygieneTitle: 'Grado Profesional. En Cada Sesión.',
+      hygieneItems: [
+        { icon: 'science', title: 'Productos de Grado Médico', body: 'Todos los tratamientos faciales y de piel utilizan fórmulas certificadas de grado profesional — el mismo estándar que las clínicas de estética médica.' },
+        { icon: 'verified', title: 'Especialistas Certificadas', body: 'Nuestro equipo cuenta con credenciales profesionales en cosmetología y masoterapia, actualizadas continuamente mediante formación especializada.' },
+        { icon: 'lock', title: 'Cabinas Privadas', body: 'Cada cliente recibe una cabina privada y dedicada, preparada exclusivamente para su sesión.' },
+      ],
     },
 
     location: {
@@ -513,6 +529,7 @@ const dict = {
           'No vendemos tus datos personales. Podemos compartir información limitada con proveedores que nos apoyan (por ejemplo, alojamiento o mensajería) bajo obligaciones estrictas de confidencialidad.',
           'Puedes solicitar acceso, rectificación o eliminación de tus datos cuando corresponda, escribiéndonos al correo indicado en el pie de página.',
           'Podemos actualizar esta política ocasionalmente. El uso continuado de nuestros servicios tras los cambios implica la aceptación de la política revisada.',
+          'Conservamos tus datos personales por hasta 24 meses desde tu última interacción, tras lo cual son eliminados de forma segura, salvo que la ley aplicable exija un período mayor.',
         ],
       },
       terms: {
@@ -521,6 +538,7 @@ const dict = {
         title: 'Términos de Servicio',
         body: [
           'Al reservar una sesión o usar nuestro sitio aceptas estos términos. Los servicios se ofrecen sujeto a disponibilidad y a nuestra confirmación.',
+          'Nuestros servicios están destinados a mayores de 18 años. Los menores de 18 años solo podrán recibir servicios con la presencia de un padre, madre o tutor legal y su consentimiento previo por escrito.',
           'Aplican políticas de llegada y cancelación según se indique al reservar. Las llegadas tardías pueden reducir la duración de la sesión para no afectar al siguiente cliente.',
           'Formas de pago, precios y depósitos se confirman al reservar. Nos reservamos el derecho de negar el servicio cuando sea necesario por seguridad o conducta.',
           'El sitio y los materiales se ofrecen con fines informativos. No nos hacemos responsables por daños indirectos derivados del uso del sitio salvo donde la ley lo prohíba.',

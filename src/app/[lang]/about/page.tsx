@@ -129,7 +129,7 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
             <p className="font-body text-secondary max-w-sm text-sm leading-relaxed">{t.teamBody}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {t.therapists.map(({ role }, i) => (
+            {t.therapists.map(({ role, years }, i) => (
               <div key={i} className="group">
                 <div className="relative mb-6 aspect-[3/4] overflow-hidden rounded-sm bg-surface-container ring-1 ring-outline-variant/10">
                   <Image
@@ -142,6 +142,26 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
                 </div>
                 <h4 className="font-headline text-xl text-on-surface mb-1">{THERAPISTS_NAMES[i]}</h4>
                 <p className="font-label text-primary text-xs tracking-widest uppercase">{role}</p>
+                <p className="font-body text-secondary text-xs mt-1">{years}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* HYGIENE & STANDARDS */}
+      <section className="py-32 px-6 md:px-12 bg-surface-container-low">
+        <div className="max-w-screen-2xl mx-auto">
+          <div className="mb-20 text-center">
+            <span className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-6 block">{t.hygieneLabel}</span>
+            <h2 className="font-headline text-4xl md:text-5xl text-on-surface">{t.hygieneTitle}</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
+            {t.hygieneItems.map(({ icon, title, body }) => (
+              <div key={title} className="p-12 hover:bg-surface-container transition-colors duration-500">
+                <span className="material-symbols-outlined text-4xl text-primary mb-8 block">{icon}</span>
+                <h3 className="font-headline text-2xl text-on-surface mb-4">{title}</h3>
+                <p className="font-body text-secondary leading-relaxed text-sm">{body}</p>
               </div>
             ))}
           </div>
