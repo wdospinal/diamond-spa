@@ -81,7 +81,7 @@ const dict = {
       standardTitle: 'The International Standard',
       features: mapPillars(FEATURES, 'en'),
       quote: 'Regular therapeutic care is one of the most powerful things you can do for your body and mind.',
-      quoteSource: 'Diamond Spa Guest',
+      quoteSource: 'Diamond Spa Guests',
       ctaTitle: ['Return to your', 'Primal Calm.'],
       reserveSession: 'Reserve Your Session',
     },
