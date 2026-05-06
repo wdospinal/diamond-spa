@@ -71,7 +71,7 @@ const dict = {
       care: 'Cuidado',
       treatments: 'Tratamientos',
       relaxLabel: 'Claridad',
-      hairRemovalTitle: 'Depilacion',
+      hairRemovalTitle: 'Depilación Profesional',
       deepTissueBody: 'Targeted release for chronic muscle tension and athletic recovery. We utilise high-pressure techniques to reset the muscular system and improve mobility.',
       viewDetails: 'View Details',
       facialTitle: 'Facial Treatments',
