@@ -11,6 +11,9 @@ export function middleware(request: NextRequest) {
   const hostname = host.split(':')[0]
 
   if (!adminAppHostname(hostname)) {
+    if (request.nextUrl.pathname === '/') {
+      return NextResponse.redirect(new URL('/es', request.url), { status: 301 })
+    }
     return NextResponse.next()
   }
 
