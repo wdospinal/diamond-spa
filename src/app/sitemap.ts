@@ -5,13 +5,17 @@ import { SERVICES } from '@/lib/services'
 const LOCALES = ['es', 'en'] as const
 
 const STATIC_PATHS: { path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency'] }[] = [
-  { path: '',           priority: 1.0, changeFrequency: 'weekly'  },
-  { path: '/services',              priority: 0.9, changeFrequency: 'weekly'  },
-  { path: '/masajes-para-hombres', priority: 0.9, changeFrequency: 'monthly' },
-  { path: '/about',     priority: 0.7, changeFrequency: 'monthly' },
-  { path: '/location',  priority: 0.8, changeFrequency: 'monthly' },
-  { path: '/history',   priority: 0.6, changeFrequency: 'monthly' },
-  { path: '/press',     priority: 0.4, changeFrequency: 'monthly' },
+  { path: '',                          priority: 1.0, changeFrequency: 'weekly'  },
+  { path: '/services',                 priority: 0.9, changeFrequency: 'weekly'  },
+  { path: '/masajes-para-hombres',     priority: 0.9, changeFrequency: 'monthly' },
+  { path: '/dia-de-spa',               priority: 0.9, changeFrequency: 'weekly'  },
+  { path: '/spa-el-poblado',           priority: 0.9, changeFrequency: 'weekly'  },
+  { path: '/limpieza-facial-medellin', priority: 0.9, changeFrequency: 'weekly'  },
+  { path: '/massage-medellin',         priority: 0.9, changeFrequency: 'weekly'  },
+  { path: '/about',                    priority: 0.7, changeFrequency: 'monthly' },
+  { path: '/location',                 priority: 0.8, changeFrequency: 'monthly' },
+  { path: '/history',                  priority: 0.6, changeFrequency: 'monthly' },
+  { path: '/press',                    priority: 0.4, changeFrequency: 'monthly' },
 ]
 
 export default function sitemap(): MetadataRoute.Sitemap {

@@ -118,6 +118,13 @@ export function localBusinessJsonLd() {
       opens: h.opens,
       closes: h.closes,
     })),
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '5.0',
+      bestRating: '5',
+      worstRating: '1',
+      reviewCount: '31',
+    },
     priceRange: '$$',
     servesCuisine: undefined,
     sameAs: [BUSINESS.url],

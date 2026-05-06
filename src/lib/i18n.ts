@@ -88,7 +88,7 @@ const dict = {
 
     services: {
       metaTitle: 'Massages & Services for Men and Women — Diamond Spa Medellín',
-      metaDesc: 'Massages for men and women in El Poblado, Medellín: relaxing, deep tissue, sports, 4-hands and more. Facials and hair removal. From $120,000 COP.',
+      metaDesc: 'Massages & spa in El Poblado, Medellín. ⭐ 5.0 · 31 Google reviews. Relaxing, deep tissue, sports, 4-hands, facials & hair removal. From $120,000 COP — book now.',
       label: 'The Selection',
       title: 'Massages & Services in Medellín',
       subtitle: 'Massages for men and women in El Poblado: relaxing, sports, deep tissue and more. Facials and hair removal. Transparent COP pricing.',
@@ -288,7 +288,7 @@ const dict = {
     masajesParaHombres: {
       metaTitle: 'Massages for Men in Medellín — Diamond Spa El Poblado',
       metaDesc:
-        'Relaxing, deep tissue, sports and 4-hands massages for men in El Poblado, Medellín. Private and professional environment. From $120,000 COP.',
+        'Massages for men in El Poblado, Medellín. ⭐ 5.0 · 31 Google reviews. Relaxing, deep tissue, sports & 4-hands. Private rooms, bilingual staff. From $120,000 COP — book now.',
       ogImageAlt: 'Massages for Men in Medellín — Diamond Spa',
       heroLabel: 'El Poblado, Medellín',
       heroTitle: 'Massages for Men in Medellín',
@@ -387,7 +387,7 @@ const dict = {
 
     services: {
       metaTitle: 'Masajes y Servicios para Hombres y Mujeres — Diamond Spa Medellín',
-      metaDesc: 'Masajes para hombres y mujeres en El Poblado, Medellín: relajante, deep tissue, deportivo, 4 manos y más. Faciales y depilación. Desde $120.000 COP.',
+      metaDesc: 'Masajes y spa en El Poblado, Medellín. ⭐ 5.0 · 31 reseñas en Google. Relajante, deep tissue, deportivo, 4 manos, faciales y depilación. Desde $120.000 COP — agenda hoy.',
       label: 'La Selección',
       title: 'Masajes y Servicios en Medellín',
       subtitle: 'Masajes para hombres y mujeres en El Poblado: relajantes, deportivos, deep tissue y más. Faciales y depilación. Precios transparentes en COP.',
@@ -587,7 +587,7 @@ const dict = {
     masajesParaHombres: {
       metaTitle: 'Masajes para Hombres en Medellín — Diamond Spa El Poblado',
       metaDesc:
-        'Masajes relajantes, deep tissue, deportivos y de 4 manos para hombres en El Poblado, Medellín. Ambiente privado y profesional. Desde $120.000 COP.',
+        'Masajes para hombres en El Poblado, Medellín. ⭐ 5.0 · 31 reseñas en Google. Relajante, deep tissue, deportivo y 4 manos. Cabinas privadas, personal bilingüe. Desde $120.000 COP — agenda hoy.',
       ogImageAlt: 'Masajes para Hombres en Medellín — Diamond Spa',
       heroLabel: 'El Poblado, Medellín',
       heroTitle: 'Masajes para Hombres en Medellín',

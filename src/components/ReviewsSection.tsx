@@ -8,6 +8,7 @@ import {
   SPA_NAME_FULL,
   SPA_PHONES,
 } from '@/lib/spa'
+import { ReviewsGrid } from './ReviewsGrid'
 
 interface PlaceReview {
   relativePublishTimeDescription: string
@@ -137,41 +138,12 @@ export async function ReviewsSection({ locale }: { locale: Locale }) {
         </div>
 
         {hasReviews ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {place.reviews!.map((review, i) => (
-              <div key={i} className="bg-surface-container-low p-8 flex flex-col gap-4 relative">
-                <a
-                  href={SPA_GOOGLE_REVIEW_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="View on Google"
-                  title="Review from Google"
-                  className="absolute top-4 right-4 opacity-80 hover:opacity-100 transition-opacity"
-                >
-                  <GoogleLogo className="h-5 w-5" />
-                </a>
-                <div className="flex items-center gap-4 pr-8">
-                  <Image
-                    src={review.authorAttribution.photoUri}
-                    alt=""
-                    width={40}
-                    height={40}
-                    unoptimized
-                    className="h-10 w-10 rounded-full object-cover"
-                    aria-hidden
-                  />
-                  <div className="flex flex-col gap-0.5">
-                    <span className="font-label text-on-surface text-xs tracking-widest">{review.authorAttribution.displayName}</span>
-                    <span className="font-body text-outline text-xs">{review.relativePublishTimeDescription}</span>
-                  </div>
-                </div>
-                <StarRating rating={review.rating} />
-                {review.text?.text && (
-                  <p className="font-body text-secondary text-sm leading-relaxed line-clamp-5">{review.text.text}</p>
-                )}
-              </div>
-            ))}
-          </div>
+          <ReviewsGrid
+            reviews={place.reviews!}
+            reviewUrl={SPA_GOOGLE_REVIEW_URL}
+            leaveReviewLabel={t.leaveReview}
+            locale={locale}
+          />
         ) : (
           <div className="bg-surface-container-low p-8 md:p-12 flex flex-col gap-6">
             <div className="flex items-start gap-4">
@@ -220,19 +192,6 @@ export async function ReviewsSection({ locale }: { locale: Locale }) {
           </div>
         )}
 
-        {hasReviews && (
-          <div className="mt-12 flex justify-center">
-            <a
-              href={SPA_GOOGLE_REVIEW_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-on-primary font-label tracking-widest text-xs uppercase hover:bg-primary/90 transition-colors"
-            >
-              <span className="material-symbols-outlined text-base">rate_review</span>
-              {t.leaveReview}
-            </a>
-          </div>
-        )}
       </div>
     </section>
   )
