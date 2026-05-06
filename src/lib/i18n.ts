@@ -64,7 +64,7 @@ const dict = {
       tagline: SPA_TAGLINE.en,
       h1: ['Massage & Spa in Medellín', 'for Men and Women.'],
       body: SPA_DESCRIPTION.en,
-      bookSession: 'Book Your Session',
+      bookSession: 'Book Your Session Now',
       exploreServices: 'Explore Services',
       section2Title: 'Curated Restoration',
       section2Body: 'Every treatment is calibrated to the physiological and psychological needs of men and women. No floral scents, no clutter — just pure architectural calm.',
