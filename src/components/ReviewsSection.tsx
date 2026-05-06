@@ -8,6 +8,7 @@ import {
   SPA_NAME_FULL,
   SPA_PHONES,
 } from '@/lib/spa'
+import { STATIC_REVIEWS } from '@/lib/reviews'
 import { ReviewsGrid } from './ReviewsGrid'
 
 interface PlaceReview {
@@ -18,6 +19,7 @@ interface PlaceReview {
     displayName: string
     photoUri: string
   }
+  isStatic?: true
 }
 
 interface PlaceDetails {
@@ -107,7 +109,13 @@ export async function ReviewsSection({ locale }: { locale: Locale }) {
   const place = await fetchPlaceDetails()
   const t = getDict(locale).location
 
-  const hasReviews = !!place.reviews && place.reviews.length > 0
+  const apiReviews = place.reviews ?? []
+  const apiNames = new Set(apiReviews.map(r => r.authorAttribution.displayName.toLowerCase()))
+  const supplemental = STATIC_REVIEWS.filter(
+    r => !apiNames.has(r.authorAttribution.displayName.toLowerCase())
+  )
+  const allReviews = [...apiReviews, ...supplemental]
+  const hasReviews = allReviews.length > 0
   const spaName = place.displayName?.text ?? SPA_NAME_FULL
   const spaCategory = place.primaryTypeDisplayName?.text
   const spaAddress = place.shortFormattedAddress ?? SPA_ADDRESS.full
@@ -139,7 +147,7 @@ export async function ReviewsSection({ locale }: { locale: Locale }) {
 
         {hasReviews ? (
           <ReviewsGrid
-            reviews={place.reviews!}
+            reviews={allReviews}
             reviewUrl={SPA_GOOGLE_REVIEW_URL}
             leaveReviewLabel={t.leaveReview}
             locale={locale}

@@ -13,6 +13,7 @@ interface PlaceReview {
     displayName: string
     photoUri: string
   }
+  isStatic?: true
 }
 
 function GoogleLogo({ className = 'h-4 w-4' }: { className?: string }) {
@@ -49,6 +50,36 @@ function StarRating({ rating }: { rating: number }) {
   )
 }
 
+function AuthorAvatar({ name, photoUri }: { name: string; photoUri: string }) {
+  if (photoUri) {
+    return (
+      <Image
+        src={photoUri}
+        alt=""
+        width={44}
+        height={44}
+        unoptimized
+        className="h-11 w-11 rounded-full object-cover ring-2 ring-outline/10"
+        aria-hidden
+      />
+    )
+  }
+  const initials = name
+    .split(' ')
+    .map(p => p[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase()
+  return (
+    <div
+      className="h-11 w-11 rounded-full bg-primary/15 flex items-center justify-center ring-2 ring-primary/20 shrink-0"
+      aria-hidden
+    >
+      <span className="font-label text-primary text-xs font-semibold tracking-wider">{initials}</span>
+    </div>
+  )
+}
+
 interface ReviewsGridProps {
   reviews: PlaceReview[]
   reviewUrl: string
@@ -56,69 +87,99 @@ interface ReviewsGridProps {
   locale: Locale
 }
 
-const INITIAL_VISIBLE = 6
+const INITIAL_VISIBLE = 9
+
+function shuffle<T>(arr: T[]): T[] {
+  const out = [...arr]
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]]
+  }
+  return out
+}
 
 export function ReviewsGrid({ reviews, reviewUrl, leaveReviewLabel, locale }: ReviewsGridProps) {
+  const [shuffled] = useState(() => shuffle(reviews))
   const [showAll, setShowAll] = useState(false)
-  const visible = showAll ? reviews : reviews.slice(0, INITIAL_VISIBLE)
-  const hasMore = reviews.length > INITIAL_VISIBLE
+
+  const visible = showAll ? shuffled : shuffled.slice(0, INITIAL_VISIBLE)
+  const hasMore = shuffled.length > INITIAL_VISIBLE
+  const hiddenCount = shuffled.length - INITIAL_VISIBLE
 
   const showMoreLabel = locale === 'es'
-    ? `Ver ${reviews.length - INITIAL_VISIBLE} reseña${reviews.length - INITIAL_VISIBLE !== 1 ? 's' : ''} más`
-    : `Show ${reviews.length - INITIAL_VISIBLE} more review${reviews.length - INITIAL_VISIBLE !== 1 ? 's' : ''}`
+    ? `Ver ${hiddenCount} reseña${hiddenCount !== 1 ? 's' : ''} más`
+    : `Show ${hiddenCount} more review${hiddenCount !== 1 ? 's' : ''}`
 
   return (
     <div itemScope itemType="https://schema.org/LocalBusiness">
       <meta itemProp="name" content="Diamond Spa" />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {visible.map((review, i) => (
           <div
             key={i}
-            className="bg-surface-container-low p-8 flex flex-col gap-4 relative"
+            className="group bg-surface-container-low hover:bg-surface-container p-7 flex flex-col gap-5 relative transition-colors duration-200"
             itemScope
             itemType="https://schema.org/Review"
             itemProp="review"
           >
             <meta itemProp="datePublished" content={review.relativePublishTimeDescription} />
-            <a
-              href={SPA_GOOGLE_REVIEW_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="View on Google"
-              title="Review from Google"
-              className="absolute top-4 right-4 opacity-80 hover:opacity-100 transition-opacity"
-            >
-              <GoogleLogo className="h-5 w-5" />
-            </a>
-            <div className="flex items-center gap-4 pr-8" itemProp="author" itemScope itemType="https://schema.org/Person">
-              <Image
-                src={review.authorAttribution.photoUri}
-                alt=""
-                width={40}
-                height={40}
-                unoptimized
-                className="h-10 w-10 rounded-full object-cover"
-                aria-hidden
-              />
-              <div className="flex flex-col gap-0.5">
-                <span className="font-label text-on-surface text-xs tracking-widest" itemProp="name">
-                  {review.authorAttribution.displayName}
-                </span>
-                <span className="font-body text-outline text-xs">{review.relativePublishTimeDescription}</span>
-              </div>
+
+            {/* Top row: stars + Google badge */}
+            <div className="flex items-start justify-between">
+              <StarRating rating={review.rating} />
+              {!review.isStatic && (
+                <a
+                  href={SPA_GOOGLE_REVIEW_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="View on Google"
+                  title="Review from Google"
+                  className="opacity-60 hover:opacity-100 transition-opacity shrink-0"
+                >
+                  <GoogleLogo className="h-4 w-4" />
+                </a>
+              )}
             </div>
-            <StarRating rating={review.rating} />
+
+            {/* Review text */}
             {review.text?.text && (
-              <p className="font-body text-secondary text-sm leading-relaxed line-clamp-5" itemProp="reviewBody">
+              <p
+                className="font-body text-secondary text-sm leading-relaxed flex-1 line-clamp-6 group-hover:line-clamp-none transition-all"
+                itemProp="reviewBody"
+              >
                 {review.text.text}
               </p>
             )}
+
+            {/* Author */}
+            <div
+              className="flex items-center gap-3 pt-3 border-t border-outline/10"
+              itemProp="author"
+              itemScope
+              itemType="https://schema.org/Person"
+            >
+              <AuthorAvatar
+                name={review.authorAttribution.displayName}
+                photoUri={review.authorAttribution.photoUri}
+              />
+              <div className="flex flex-col gap-0.5 min-w-0">
+                <span
+                  className="font-label text-on-surface text-xs tracking-widest truncate"
+                  itemProp="name"
+                >
+                  {review.authorAttribution.displayName}
+                </span>
+                <span className="font-body text-outline text-xs">
+                  {review.relativePublishTimeDescription}
+                </span>
+              </div>
+            </div>
           </div>
         ))}
       </div>
 
-      {hasMore && (
-        <div className="mt-8 flex justify-center">
+      <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+        {hasMore && (
           <button
             onClick={() => setShowAll(v => !v)}
             className="inline-flex items-center gap-2 px-6 py-3 border border-outline/30 text-on-surface font-label tracking-widest text-xs uppercase hover:bg-surface-container transition-colors"
@@ -130,10 +191,8 @@ export function ReviewsGrid({ reviews, reviewUrl, leaveReviewLabel, locale }: Re
               ? (locale === 'es' ? 'Ver menos' : 'Show less')
               : showMoreLabel}
           </button>
-        </div>
-      )}
+        )}
 
-      <div className="mt-8 flex justify-center">
         <a
           href={reviewUrl}
           target="_blank"
