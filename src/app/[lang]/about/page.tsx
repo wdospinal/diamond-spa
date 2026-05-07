@@ -13,7 +13,7 @@ const STONE_IMG = IMG_STONE
 const LOUNGE_IMG = IMG_LOUNGE
 
 const THERAPISTS_IMGS = IMG_THERAPISTS
-const THERAPISTS_NAMES = ['Daniela Salina', 'Sary Paez', 'Camila Mazo']
+const THERAPISTS_NAMES = ['Daniela Salina', 'Sary Paez', 'Camila Mazo', 'Valeria']
 
 export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
   const locale = isLocale(params.lang) ? params.lang : 'es'

@@ -139,6 +139,7 @@ const dict = {
         { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience' },
         { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience' },
         { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience' },
+        { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience' },
       ],
       ctaTitle: ['Return to your', 'Primal Calm.'],
       requestMembership: 'Request Appointment',
@@ -435,6 +436,7 @@ const dict = {
       teamTitle: ['Talento ', 'Diamond.'],
       teamBody: 'Profesionales dedicadas a tu equilibrio. Un equipo unido por la excelencia y el respeto, creando el ambiente de paz que mereces en El Poblado.',
       therapists: [
+        { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia' },
         { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia' },
         { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia' },
         { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia' },
