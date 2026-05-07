@@ -196,7 +196,7 @@ export default function MassageMedellinPage({ params }: { params: { lang: string
             <span className="font-label text-primary text-sm">{c.ratingBadge}</span>
           </div>
           <Link
-            href={`/${locale}/book`}
+            href={`/${locale}/book?service=relaxing`}
             className="inline-block bg-primary text-on-primary font-label text-sm tracking-widest uppercase px-8 py-4 hover:opacity-90 transition-opacity"
           >
             {c.bookCta}
@@ -266,7 +266,7 @@ export default function MassageMedellinPage({ params }: { params: { lang: string
           <h2 className="font-headline text-3xl md:text-4xl text-on-surface tracking-tighter mb-6">{c.ctaTitle}</h2>
           <p className="text-slate-400 font-body text-sm mb-8 max-w-md mx-auto">{c.ctaBody}</p>
           <Link
-            href={`/${locale}/book`}
+            href={`/${locale}/book?service=relaxing`}
             className="inline-block bg-primary text-on-primary font-label text-sm tracking-widest uppercase px-10 py-4 hover:opacity-90 transition-opacity"
           >
             {c.bookCta}

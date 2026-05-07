@@ -115,6 +115,8 @@ export async function ReviewsSection({ locale }: { locale: Locale }) {
     r => !apiNames.has(r.authorAttribution.displayName.toLowerCase())
   )
   const allReviews = [...apiReviews, ...supplemental]
+    .filter(r => r.text?.text && r.text.text.length > 50)
+    .sort((a, b) => (b.text?.text?.length ?? 0) - (a.text?.text?.length ?? 0))
   const hasReviews = allReviews.length > 0
   const spaName = place.displayName?.text ?? SPA_NAME_FULL
   const spaCategory = place.primaryTypeDisplayName?.text

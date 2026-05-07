@@ -7,9 +7,19 @@ import { SERVICES, formatCop, type DurationMinutes, type ServiceDef } from '@/li
 import { randomWhatsAppUrl, SPA_HOURS } from '@/lib/spa'
 
 type DurationService = ServiceDef & { pricingModel: 'duration'; prices: Record<DurationMinutes, number> }
+type FlatService = ServiceDef & { pricingModel: 'flat'; price: number }
+type WaxMachineService = ServiceDef & { pricingModel: 'wax-machine'; waxPrice: number; machinePrice: number }
+
 const MASSAGE_SERVICES = (SERVICES as unknown as ServiceDef[]).filter(
   (s): s is DurationService => s.pricingModel === 'duration'
 )
+const FACIAL_SERVICES = (SERVICES as unknown as ServiceDef[]).filter(
+  (s): s is FlatService => s.pricingModel === 'flat' && s.categoryId === 'facials'
+)
+const HAIR_REMOVAL_SERVICES = (SERVICES as unknown as ServiceDef[]).filter(
+  (s): s is WaxMachineService => s.pricingModel === 'wax-machine'
+)
+const ALL_BOOKABLE_SERVICES: ServiceDef[] = [...MASSAGE_SERVICES, ...FACIAL_SERVICES, ...HAIR_REMOVAL_SERVICES]
 
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as const
 
@@ -60,6 +70,7 @@ export default function BookClient({ locale }: { locale: string }) {
   const today = new Date()
   const [selectedService, setSelectedService] = useState<string | null>(null)
   const [selectedDuration, setSelectedDuration] = useState<DurationMinutes | null>(null)
+  const [selectedHairMethod, setSelectedHairMethod] = useState<'wax' | 'machine' | null>(null)
   const [calYear, setCalYear] = useState(today.getFullYear())
   const [calMonth, setCalMonth] = useState(today.getMonth())
   const [selectedDay, setSelectedDay] = useState<number | null>(null)
@@ -67,19 +78,29 @@ export default function BookClient({ locale }: { locale: string }) {
   const [confirmed, setConfirmed] = useState(false)
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', requests: '' })
 
-  // Pre-select service from ?service= query param (massages only)
+  // Pre-select service from ?service= query param
   useEffect(() => {
     const svcParam = searchParams?.get('service')
-    if (svcParam && MASSAGE_SERVICES.find(s => s.id === svcParam)) {
+    if (svcParam && ALL_BOOKABLE_SERVICES.find(s => s.id === svcParam)) {
       setSelectedService(svcParam)
     }
   }, [searchParams])
 
   const cells = buildCalendar(calYear, calMonth)
 
-  const selectedServiceObj = MASSAGE_SERVICES.find(s => s.id === selectedService)
-  const selectedPriceCop = selectedServiceObj && selectedDuration
-    ? selectedServiceObj.prices[selectedDuration]
+  const selectedServiceObj = ALL_BOOKABLE_SERVICES.find(s => s.id === selectedService)
+  const isMassage = selectedServiceObj?.pricingModel === 'duration'
+  const isHairRemoval = selectedServiceObj?.pricingModel === 'wax-machine'
+  const selectedPriceCop = selectedServiceObj
+    ? isMassage
+      ? (selectedDuration ? (selectedServiceObj as DurationService).prices[selectedDuration] : null)
+      : isHairRemoval
+        ? selectedHairMethod === 'wax'
+          ? (selectedServiceObj as WaxMachineService).waxPrice
+          : selectedHairMethod === 'machine'
+            ? (selectedServiceObj as WaxMachineService).machinePrice
+            : null
+        : (selectedServiceObj as FlatService).price
     : null
 
   function isPast(day: number) {
@@ -105,16 +126,26 @@ export default function BookClient({ locale }: { locale: string }) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!selectedService || !selectedDuration || !selectedDay || !selectedTime) return
+    if (!selectedService || (isMassage && !selectedDuration) || (isHairRemoval && !selectedHairMethod) || !selectedDay || !selectedTime) return
 
     const service = selectedServiceObj!
     const dateStr = `${t.months[calMonth]} ${selectedDay}, ${calYear}`
     const sName = serviceName(service)
     const priceCop = selectedPriceCop ?? 0
+    const hairMethodLabel = selectedHairMethod === 'wax'
+      ? (lang === 'es' ? 'Cera' : 'Wax')
+      : selectedHairMethod === 'machine'
+        ? (lang === 'es' ? 'Máquina' : 'Machine')
+        : ''
+    const serviceLabel = isMassage && selectedDuration
+      ? `${sName} (${selectedDuration} min)`
+      : isHairRemoval && selectedHairMethod
+        ? `${sName} (${hairMethodLabel})`
+        : sName
 
     const waText =
       `Hola Diamond Spa! Me gustaría reservar una cita:\n\n` +
-      `📋 ${t.serviceLabel}: ${sName} (${selectedDuration} min)\n` +
+      `📋 ${t.serviceLabel}: ${serviceLabel}\n` +
       `📅 ${t.dateLabel}: ${dateStr}\n` +
       `⏰ ${t.timeLabel}: ${selectedTime}\n` +
       `👤 Nombre: ${form.firstName} ${form.lastName}\n` +
@@ -127,7 +158,7 @@ export default function BookClient({ locale }: { locale: string }) {
 
     const smsBody =
       `[Diamond Spa] Nueva reserva\n` +
-      `Servicio: ${sName} (${selectedDuration} min)\n` +
+      `Servicio: ${serviceLabel}\n` +
       `Fecha: ${dateStr}\n` +
       `Cliente: ${form.firstName} ${form.lastName}\n` +
       `Tel: ${form.phone} | Email: ${form.email}` +
@@ -156,6 +187,16 @@ export default function BookClient({ locale }: { locale: string }) {
 
   if (confirmed) {
     const sName = selectedServiceObj ? serviceName(selectedServiceObj as ServiceDef) : ''
+    const confirmedHairMethod = selectedHairMethod === 'wax'
+      ? (lang === 'es' ? 'Cera' : 'Wax')
+      : selectedHairMethod === 'machine'
+        ? (lang === 'es' ? 'Máquina' : 'Machine')
+        : ''
+    const confirmedServiceLabel = isMassage && selectedDuration
+      ? `${sName} (${selectedDuration} min)`
+      : isHairRemoval && selectedHairMethod
+        ? `${sName} (${confirmedHairMethod})`
+        : sName
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center px-6 pt-24">
         <div className="max-w-lg w-full text-center">
@@ -167,7 +208,7 @@ export default function BookClient({ locale }: { locale: string }) {
           </p>
           <div className="bg-surface-container-high p-8 my-10 text-left flex flex-col gap-3">
             {[
-              [t.serviceLabel, `${sName} (${selectedDuration} min)`],
+              [t.serviceLabel, confirmedServiceLabel],
               [t.dateLabel, `${t.months[calMonth]} ${selectedDay}, ${calYear}`],
               [t.totalLabel, selectedPriceCop ? formatCop(selectedPriceCop) : '—'],
             ].map(([label, value]) => (
@@ -182,6 +223,7 @@ export default function BookClient({ locale }: { locale: string }) {
               setConfirmed(false)
               setSelectedService(null)
               setSelectedDuration(null)
+              setSelectedHairMethod(null)
               setSelectedDay(null)
               setSelectedTime(null)
               setForm({ firstName: '', lastName: '', email: '', phone: '', requests: '' })
@@ -212,39 +254,104 @@ export default function BookClient({ locale }: { locale: string }) {
             {/* Step 01 — Select service */}
             <div>
               <StepLabel n="01" label={t.step1} />
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-6">
-                {MASSAGE_SERVICES.map(s => {
-                  const isSelected = selectedService === s.id
-                  const fromPrice = s.prices[30]
-                  return (
-                    <button
-                      key={s.id}
-                      type="button"
-                      onClick={() => {
-                        setSelectedService(s.id)
-                        setSelectedDuration(null)
-                      }}
-                      className={`text-left p-5 transition-all duration-200 ${
-                        isSelected
-                          ? 'bg-surface-container-high border border-primary/40'
-                          : 'bg-surface-container hover:bg-surface-container-high border border-transparent'
-                      }`}
-                    >
-                      <span className="font-headline text-on-surface text-base block mb-3 leading-tight">
-                        {serviceName(s)}
-                      </span>
-                      <span className="font-body text-outline text-xs">
-                        {lang === 'en' ? 'from ' : 'desde '}
-                        <span className="text-primary font-medium">{formatCop(fromPrice)}</span>
-                      </span>
-                    </button>
-                  )
-                })}
+              <div className="mt-6 flex flex-col gap-6">
+                {/* Massages */}
+                <div>
+                  <p className="font-label text-outline text-[10px] tracking-[0.3em] uppercase mb-3">
+                    {lang === 'es' ? 'Masajes Exclusivos' : 'Exclusive Massages'}
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {MASSAGE_SERVICES.map(s => {
+                      const isSelected = selectedService === s.id
+                      return (
+                        <button
+                          key={s.id}
+                          type="button"
+                          onClick={() => { setSelectedService(s.id); setSelectedDuration(null); setSelectedHairMethod(null) }}
+                          className={`text-left p-5 transition-all duration-200 ${
+                            isSelected
+                              ? 'bg-surface-container-high border border-primary/40'
+                              : 'bg-surface-container hover:bg-surface-container-high border border-transparent'
+                          }`}
+                        >
+                          <span className="font-headline text-on-surface text-base block mb-3 leading-tight">
+                            {serviceName(s)}
+                          </span>
+                          <span className="font-body text-outline text-xs">
+                            {lang === 'en' ? 'from ' : 'desde '}
+                            <span className="text-primary font-medium">{formatCop(s.prices[30])}</span>
+                          </span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+                {/* Facials */}
+                <div>
+                  <p className="font-label text-outline text-[10px] tracking-[0.3em] uppercase mb-3">
+                    {lang === 'es' ? 'Faciales y Cuidado de la Piel' : 'Facials & Skin Care'}
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {FACIAL_SERVICES.map(s => {
+                      const isSelected = selectedService === s.id
+                      return (
+                        <button
+                          key={s.id}
+                          type="button"
+                          onClick={() => { setSelectedService(s.id); setSelectedDuration(null); setSelectedHairMethod(null) }}
+                          className={`text-left p-5 transition-all duration-200 ${
+                            isSelected
+                              ? 'bg-surface-container-high border border-primary/40'
+                              : 'bg-surface-container hover:bg-surface-container-high border border-transparent'
+                          }`}
+                        >
+                          <span className="font-headline text-on-surface text-base block mb-3 leading-tight">
+                            {serviceName(s)}
+                          </span>
+                          <span className="font-body text-primary text-xs font-medium tabular-nums">
+                            {formatCop(s.price)}
+                          </span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+                {/* Hair Removal */}
+                <div>
+                  <p className="font-label text-outline text-[10px] tracking-[0.3em] uppercase mb-3">
+                    {lang === 'es' ? 'Depilación' : 'Hair Removal'}
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {HAIR_REMOVAL_SERVICES.map(s => {
+                      const isSelected = selectedService === s.id
+                      return (
+                        <button
+                          key={s.id}
+                          type="button"
+                          onClick={() => { setSelectedService(s.id); setSelectedDuration(null); setSelectedHairMethod(null) }}
+                          className={`text-left p-5 transition-all duration-200 ${
+                            isSelected
+                              ? 'bg-surface-container-high border border-primary/40'
+                              : 'bg-surface-container hover:bg-surface-container-high border border-transparent'
+                          }`}
+                        >
+                          <span className="font-headline text-on-surface text-base block mb-3 leading-tight">
+                            {serviceName(s)}
+                          </span>
+                          <span className="font-body text-outline text-xs">
+                            {lang === 'es' ? 'desde ' : 'from '}
+                            <span className="text-primary font-medium">{formatCop(Math.min(s.waxPrice, s.machinePrice))}</span>
+                          </span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Step 02 — Select duration (visible only after service picked) */}
-            {selectedService && (
+            {/* Step 02 — Select duration (massages) or method (hair removal) */}
+            {selectedService && isMassage && (
               <div>
                 <StepLabel n="02" label={t.step1b} />
                 <div className="grid grid-cols-3 gap-3 mt-6 max-w-sm">
@@ -264,8 +371,38 @@ export default function BookClient({ locale }: { locale: string }) {
                         }`}
                       >
                         <span className="font-label text-on-surface text-sm font-bold block mb-1">
-                          {min} {lang === 'en' ? 'min' : 'min'}
+                          {min} min
                         </span>
+                        <span className="font-body text-primary text-sm tabular-nums">{formatCop(price)}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Step 02b — Select method (hair removal only) */}
+            {selectedService && isHairRemoval && (
+              <div>
+                <StepLabel n="02" label={lang === 'es' ? 'Seleccionar Método' : 'Select Method'} />
+                <div className="grid grid-cols-2 gap-3 mt-6 max-w-xs">
+                  {(['wax', 'machine'] as const).map(method => {
+                    const svc = HAIR_REMOVAL_SERVICES.find(s => s.id === selectedService)!
+                    const price = method === 'wax' ? svc.waxPrice : svc.machinePrice
+                    const label = method === 'wax' ? (lang === 'es' ? 'Cera' : 'Wax') : (lang === 'es' ? 'Máquina' : 'Machine')
+                    const isActive = selectedHairMethod === method
+                    return (
+                      <button
+                        key={method}
+                        type="button"
+                        onClick={() => setSelectedHairMethod(method)}
+                        className={`p-5 text-left transition-all duration-200 ${
+                          isActive
+                            ? 'bg-surface-container-high border border-primary/40'
+                            : 'bg-surface-container hover:bg-surface-container-high border border-transparent'
+                        }`}
+                      >
+                        <span className="font-label text-on-surface text-sm font-bold block mb-1">{label}</span>
                         <span className="font-body text-primary text-sm tabular-nums">{formatCop(price)}</span>
                       </button>
                     )
@@ -314,12 +451,13 @@ export default function BookClient({ locale }: { locale: string }) {
                   <p className="font-body text-outline text-xs">
                     {lang === 'es' ? 'Selecciona una fecha primero.' : 'Select a date first.'}
                   </p>
-                ) : !selectedDuration ? (
+                ) : (isMassage && !selectedDuration) ? (
                   <p className="font-body text-outline text-xs">
                     {lang === 'es' ? 'Selecciona una duración primero.' : 'Select a duration first.'}
                   </p>
                 ) : (() => {
-                  const slots = getTimeSlots(calYear, calMonth, selectedDay, selectedDuration)
+                  const slotDuration: DurationMinutes = selectedDuration ?? (isHairRemoval ? 30 : 60)
+                  const slots = getTimeSlots(calYear, calMonth, selectedDay, slotDuration)
                   return slots.length === 0 ? (
                     <p className="font-body text-outline text-xs">
                       {lang === 'es' ? 'No hay horarios disponibles para este día.' : 'No available times for this day.'}
@@ -382,11 +520,19 @@ export default function BookClient({ locale }: { locale: string }) {
                     value: selectedServiceObj ? serviceName(selectedServiceObj) : '—',
                     empty: !selectedService,
                   },
-                  {
+                  ...(isMassage ? [{
                     label: t.durationLabel,
                     value: selectedDuration ? `${selectedDuration} min` : '—',
                     empty: !selectedDuration,
-                  },
+                  }] : isHairRemoval ? [{
+                    label: lang === 'es' ? 'Método' : 'Method',
+                    value: selectedHairMethod === 'wax'
+                      ? (lang === 'es' ? 'Cera' : 'Wax')
+                      : selectedHairMethod === 'machine'
+                        ? (lang === 'es' ? 'Máquina' : 'Machine')
+                        : '—',
+                    empty: !selectedHairMethod,
+                  }] : []),
                   {
                     label: t.dateLabel,
                     value: selectedDay ? `${t.months[calMonth]} ${selectedDay}, ${calYear}` : '—',
@@ -417,7 +563,7 @@ export default function BookClient({ locale }: { locale: string }) {
               </div>
               <button
                 type="submit"
-                disabled={!selectedService || !selectedDuration || !selectedDay || !selectedTime}
+                disabled={!selectedService || (isMassage && !selectedDuration) || (isHairRemoval && !selectedHairMethod) || !selectedDay || !selectedTime}
                 className="w-full bg-primary text-on-primary py-5 font-label font-bold tracking-[0.2em] text-xs uppercase hover:bg-white transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-primary"
               >
                 {t.confirm}

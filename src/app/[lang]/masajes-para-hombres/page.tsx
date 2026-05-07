@@ -50,7 +50,7 @@ export default function MasajesParaHombresPage({ params }: { params: { lang: str
             {p.heroBody}
           </p>
           <Link
-            href={`/${locale}/book`}
+            href={`/${locale}/book?service=relaxing`}
             className="inline-block bg-primary text-on-primary font-label text-sm tracking-widest uppercase px-8 py-4 hover:opacity-90 transition-opacity"
           >
             {p.bookMassage}
@@ -145,7 +145,7 @@ export default function MasajesParaHombresPage({ params }: { params: { lang: str
             {p.ctaBody}
           </p>
           <Link
-            href={`/${locale}/book`}
+            href={`/${locale}/book?service=relaxing`}
             className="inline-block bg-primary text-on-primary font-label text-sm tracking-widest uppercase px-10 py-4 hover:opacity-90 transition-opacity"
           >
             {p.bookMassage}

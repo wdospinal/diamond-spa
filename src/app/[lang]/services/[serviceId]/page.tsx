@@ -217,7 +217,7 @@ export default function ServiceDetailPage({
       <section className="py-24 px-6 md:px-12 bg-surface">
         <div className="max-w-3xl mx-auto flex flex-col sm:flex-row gap-5 items-start">
           <Link
-            href={service.pricingModel === 'duration' ? `/${locale}/book?service=${service.id}` : `/${locale}/book`}
+            href={`/${locale}/book?service=${service.id}`}
             className="bg-primary text-on-primary px-10 py-5 font-label text-xs font-bold uppercase tracking-[0.2em] hover:bg-white transition-all"
           >
             {t.bookThisService}

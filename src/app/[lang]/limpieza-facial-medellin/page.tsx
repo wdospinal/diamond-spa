@@ -159,7 +159,7 @@ export default function LimpiezaFacialPage({ params }: { params: { lang: string 
           </h1>
           <p className="text-slate-400 font-body text-lg leading-relaxed max-w-2xl mb-8">{c.heroBody}</p>
           <Link
-            href={`/${locale}/book`}
+            href={`/${locale}/book?service=limpieza-facial-profunda`}
             className="inline-block bg-primary text-on-primary font-label text-sm tracking-widest uppercase px-8 py-4 hover:opacity-90 transition-opacity"
           >
             {c.bookCta}
@@ -234,7 +234,7 @@ export default function LimpiezaFacialPage({ params }: { params: { lang: string 
           <h2 className="font-headline text-3xl md:text-4xl text-on-surface tracking-tighter mb-6">{c.ctaTitle}</h2>
           <p className="text-slate-400 font-body text-sm mb-8 max-w-md mx-auto">{c.ctaBody}</p>
           <Link
-            href={`/${locale}/book`}
+            href={`/${locale}/book?service=limpieza-facial-profunda`}
             className="inline-block bg-primary text-on-primary font-label text-sm tracking-widest uppercase px-10 py-4 hover:opacity-90 transition-opacity"
           >
             {c.bookCta}

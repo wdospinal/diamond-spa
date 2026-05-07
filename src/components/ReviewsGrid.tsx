@@ -87,7 +87,7 @@ interface ReviewsGridProps {
   locale: Locale
 }
 
-const INITIAL_VISIBLE = 9
+const INITIAL_VISIBLE = 10
 
 function shuffle<T>(arr: T[]): T[] {
   const out = [...arr]

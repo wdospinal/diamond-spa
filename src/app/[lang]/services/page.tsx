@@ -169,7 +169,7 @@ export default function ServicesPage({ params }: { params: { lang: string } }) {
 
                     <div className="md:col-span-3 flex w-full flex-col gap-3 sm:flex-row md:flex-col">
                       <Link
-                        href={`/${locale}/book`}
+                        href={`/${locale}/book?service=${service.id}`}
                         className="inline-flex min-h-[3rem] w-full flex-1 items-center justify-center border border-transparent bg-primary px-6 py-3 font-label text-xs font-bold uppercase tracking-[0.15em] text-on-primary transition-all hover:bg-white sm:min-w-0 md:w-full md:flex-none"
                       >
                         {t.bookSession}
@@ -236,7 +236,7 @@ export default function ServicesPage({ params }: { params: { lang: string } }) {
 
                     <div className="md:col-span-3 flex w-full flex-col gap-3 sm:flex-row md:flex-col">
                       <Link
-                        href={`/${locale}/book`}
+                        href={`/${locale}/book?service=${service.id}`}
                         className="inline-flex min-h-[3rem] w-full flex-1 items-center justify-center border border-transparent bg-primary px-6 py-3 font-label text-xs font-bold uppercase tracking-[0.15em] text-on-primary transition-all hover:bg-white sm:min-w-0 md:w-full md:flex-none"
                       >
                         {t.bookSession}
