@@ -1,8 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { BASE_URL } from '@/lib/seo'
 import { SERVICES } from '@/lib/services'
-
-const LOCALES = ['es', 'en'] as const
+import { LOCALES_DISPLAY_ORDER } from '@/lib/constants'
 
 const STATIC_PATHS: { path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency'] }[] = [
   { path: '',                          priority: 1.0, changeFrequency: 'weekly'  },
@@ -21,7 +20,7 @@ const STATIC_PATHS: { path: string; priority: number; changeFrequency: MetadataR
 export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = []
 
-  for (const locale of LOCALES) {
+  for (const locale of LOCALES_DISPLAY_ORDER) {
     // Static pages
     for (const { path, priority, changeFrequency } of STATIC_PATHS) {
       entries.push({

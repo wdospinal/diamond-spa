@@ -5,11 +5,10 @@ import type { Metadata } from 'next'
 import { ServiceDetailBackLink } from '@/components/ServiceDetailBackLink'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { SERVICES, formatCop, getServiceById, type DurationMinutes, type ServiceDef } from '@/lib/services'
+import { DURATION_MINUTES } from '@/lib/constants'
 import { buildAlternates, buildOpenGraph, BASE_URL, BUSINESS } from '@/lib/seo'
 
 export const dynamic = 'force-static'
-
-const DURATIONS: DurationMinutes[] = [30, 60, 90]
 
 export async function generateStaticParams() {
   return SERVICES.map(s => ({ serviceId: s.id }))
@@ -143,7 +142,7 @@ export default function ServiceDetailPage({
             <>
               {/* Mobile: list */}
               <div className="flex flex-col divide-y divide-outline-variant/20 md:hidden">
-                {DURATIONS.map(min => (
+                {DURATION_MINUTES.map(min => (
                   <div key={min} className="flex items-center justify-between py-4">
                     <span className="font-label text-outline text-xs uppercase tracking-widest">
                       {min === 30 ? t.tableCol30 : min === 60 ? t.tableCol60 : t.tableCol90}
@@ -156,7 +155,7 @@ export default function ServiceDetailPage({
               </div>
               {/* Desktop: cards */}
               <div className="hidden md:grid grid-cols-3 gap-8">
-                {DURATIONS.map(min => (
+                {DURATION_MINUTES.map(min => (
                   <div key={min} className="bg-surface p-8 flex flex-col gap-3">
                     <span className="font-label text-outline text-[10px] uppercase tracking-widest">
                       {min === 30 ? t.tableCol30 : min === 60 ? t.tableCol60 : t.tableCol90}

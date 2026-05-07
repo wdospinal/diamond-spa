@@ -4,14 +4,14 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { type Locale } from '@/lib/i18n'
+import { LOCALES_DISPLAY_ORDER } from '@/lib/constants'
 import { randomWhatsAppUrl } from '@/lib/phones'
+import { SPA_WHATSAPP_GREETING } from '@/lib/spa'
 
 interface NavLink {
   label: string
   href: string
 }
-
-const WA_TEXT = 'Hola, quisiera hablar con la recepcionista de Diamond Spa.'
 
 export default function MobileMenuClient({
   locale,
@@ -26,6 +26,7 @@ export default function MobileMenuClient({
 }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const pathname = usePathname()
+  const waGreeting = SPA_WHATSAPP_GREETING[locale]
 
   function switchedPath(targetLocale: Locale) {
     if (!pathname) return `/${targetLocale}`
@@ -65,7 +66,7 @@ export default function MobileMenuClient({
           })}
           {/* Locale switcher */}
           <div className="flex gap-2">
-            {(['es', 'en'] as Locale[]).map(l => (
+            {LOCALES_DISPLAY_ORDER.map(l => (
               <Link
                 key={l}
                 href={switchedPath(l)}
@@ -80,7 +81,7 @@ export default function MobileMenuClient({
           </div>
           <a
             href="#"
-            onClick={(e) => { e.preventDefault(); setMenuOpen(false); window.open(randomWhatsAppUrl(WA_TEXT), '_blank', 'noopener,noreferrer') }}
+            onClick={(e) => { e.preventDefault(); setMenuOpen(false); window.open(randomWhatsAppUrl(waGreeting), '_blank', 'noopener,noreferrer') }}
             className="w-fit border border-primary/40 text-primary px-8 py-3 font-label font-bold tracking-widest text-xs uppercase"
           >
             {contactLabel}

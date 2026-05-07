@@ -8,13 +8,15 @@ import {
   SPA_PHONES,
 } from './spa'
 
-export type Locale = 'en' | 'es'
-export const LOCALES: Locale[] = ['en', 'es']
-export const DEFAULT_LOCALE: Locale = 'es'
+import type { Locale } from './constants/locale'
 
-export function isLocale(v: unknown): v is Locale {
-  return v === 'en' || v === 'es'
-}
+export {
+  LOCALES,
+  LOCALES_DISPLAY_ORDER,
+  DEFAULT_LOCALE,
+  isLocale,
+  type Locale,
+} from './constants/locale'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Shared bilingual pillar / feature blocks — defined once, spread into the dict

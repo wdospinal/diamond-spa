@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Playfair_Display } from 'next/font/google'
 import { getDict, type Locale } from '@/lib/i18n'
+import { SPA_WHATSAPP_GREETING } from '@/lib/spa'
 import MobileMenuClient from '@/components/MobileMenuClient'
 import NavLinksClient from '@/components/NavLinksClient'
 import WhatsAppLink from '@/components/WhatsAppLink'
@@ -11,10 +12,9 @@ const playfairDisplay = Playfair_Display({
   display: 'optional',
 })
 
-const WA_TEXT = 'Hola, quisiera hablar con la recepcionista de Diamond Spa.'
-
 export default function Navigation({ locale }: { locale: Locale }) {
   const t = getDict(locale).nav
+  const waGreeting = SPA_WHATSAPP_GREETING[locale]
 
   const links = [
     { label: t.services, href: `/${locale}/services` },
@@ -49,7 +49,7 @@ export default function Navigation({ locale }: { locale: Locale }) {
         <div className="hidden md:flex items-center gap-3">
 
           <WhatsAppLink
-            text={WA_TEXT}
+            text={waGreeting}
             className="flex items-center gap-2 border border-primary/40 text-primary px-5 py-2.5 font-label font-bold tracking-widest text-xs uppercase hover:bg-primary hover:text-on-primary transition-all duration-300"
           >
             <span className="material-symbols-outlined text-sm">support_agent</span>

@@ -1,5 +1,6 @@
-export const DURATION_MINUTES = [30, 60, 90] as const
-export type DurationMinutes = (typeof DURATION_MINUTES)[number]
+import { DURATION_MINUTES, type DurationMinutes } from './constants/durations'
+
+export { DURATION_MINUTES, type DurationMinutes }
 
 export type ServiceDef = {
   id: string

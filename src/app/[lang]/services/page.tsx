@@ -3,12 +3,11 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { SERVICES, formatCop, type DurationMinutes, type ServiceDef } from '@/lib/services'
+import { DURATION_MINUTES } from '@/lib/constants'
 import { buildAlternates, buildOpenGraph } from '@/lib/seo'
 import { SPA_WHATSAPP_GREETING, randomWhatsAppUrl } from '@/lib/spa'
 
 export const dynamic = 'force-static'
-
-const DURATIONS: DurationMinutes[] = [30, 60, 90]
 
 function serviceDisplayName(s: ServiceDef, locale: Locale) {
   return locale === 'en' ? s.name.en : s.name.es
@@ -96,7 +95,7 @@ export default function ServicesPage({ params }: { params: { lang: string } }) {
                     </div>
 
                     <div className="md:col-span-5 grid grid-cols-3 gap-3">
-                      {DURATIONS.map(min => (
+                      {DURATION_MINUTES.map(min => (
                         <div key={min} className="flex flex-col">
                           <span className="font-label text-outline text-[10px] uppercase tracking-widest mb-1">
                             {min === 30 ? t.tableCol30 : min === 60 ? t.tableCol60 : t.tableCol90}

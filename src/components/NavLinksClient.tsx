@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { type Locale } from '@/lib/i18n'
+import { LOCALES_DISPLAY_ORDER } from '@/lib/constants'
 
 interface NavLink {
   label: string
@@ -58,7 +59,7 @@ export default function NavLinksClient({
 
       {/* Locale switcher — preserves current path */}
       <div className="flex items-center border border-outline-variant/20">
-        {(['es', 'en'] as Locale[]).map(l => (
+        {LOCALES_DISPLAY_ORDER.map(l => (
           <Link
             key={l}
             href={switchedPath(l)}

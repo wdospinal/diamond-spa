@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { getDict, type Locale } from '@/lib/i18n'
 import { SERVICES, formatCop, type DurationMinutes, type ServiceDef } from '@/lib/services'
+import { DAY_NAMES, DURATION_MINUTES } from '@/lib/constants'
 import { randomWhatsAppUrl, SPA_HOURS } from '@/lib/spa'
 
 type DurationService = ServiceDef & { pricingModel: 'duration'; prices: Record<DurationMinutes, number> }
@@ -20,8 +21,6 @@ const HAIR_REMOVAL_SERVICES = (SERVICES as unknown as ServiceDef[]).filter(
   (s): s is WaxMachineService => s.pricingModel === 'wax-machine'
 )
 const ALL_BOOKABLE_SERVICES: ServiceDef[] = [...MASSAGE_SERVICES, ...FACIAL_SERVICES, ...HAIR_REMOVAL_SERVICES]
-
-const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as const
 
 function getTimeSlots(year: number, month: number, day: number, durationMin: number): string[] {
   const dayName = DAY_NAMES[new Date(year, month, day).getDay()]
@@ -58,8 +57,6 @@ function buildCalendar(year: number, month: number) {
   return cells
 }
 
-
-const DURATIONS: DurationMinutes[] = [30, 60, 90]
 
 export default function BookClient({ locale }: { locale: string }) {
   const lang = (locale === 'en' ? 'en' : 'es') as Locale
@@ -355,7 +352,7 @@ export default function BookClient({ locale }: { locale: string }) {
               <div>
                 <StepLabel n="02" label={t.step1b} />
                 <div className="grid grid-cols-3 gap-3 mt-6 max-w-sm">
-                  {DURATIONS.map(min => {
+                  {DURATION_MINUTES.map(min => {
                     const svc = MASSAGE_SERVICES.find(s => s.id === selectedService)!
                     const price = svc.prices[min]
                     const isActive = selectedDuration === min
