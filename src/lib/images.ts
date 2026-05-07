@@ -39,5 +39,5 @@ export const IMG_THERAPISTS = [
   '/therapists/daniela.png',  // Daniela Salina
   '/therapists/sary.png',     // Sary Paez
   '/therapists/camila.png',   // Camila Mazo
-  '/therapists/valeria.png',  // Valeria
+  '/therapists/valeria.png',  // Valeria 
 ]
