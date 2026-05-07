@@ -86,6 +86,11 @@ const dict = {
       quoteSource: 'Diamond Spa Guests',
       ctaTitle: ['Return to your', 'Primal Calm.'],
       reserveSession: 'Reserve Your Session',
+      reviewsLabel: 'What Guests Say',
+      reviewsTitle: 'Verified Experiences',
+      viewAllReviews: 'View All on Google',
+      locationLabel: 'Find Us in El Poblado',
+      openToday: 'Reserve Today',
     },
 
     services: {
@@ -386,6 +391,11 @@ const dict = {
       quoteSource: 'Huésped Diamond Spa',
       ctaTitle: ['Regresa a tu', 'Calma Primordial.'],
       reserveSession: 'Reservar tu Cita',
+      reviewsLabel: 'Lo Que Dicen',
+      reviewsTitle: 'Experiencias Verificadas',
+      viewAllReviews: 'Ver Todas en Google',
+      locationLabel: 'Encuéntranos en El Poblado',
+      openToday: 'Reserva Hoy',
     },
 
     services: {
