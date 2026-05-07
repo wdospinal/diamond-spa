@@ -177,7 +177,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
       </section>
 
       {/* INTERNATIONAL STANDARD */}
-      <section className="py-28 px-6 md:px-12 bg-surface">
+      <section className="py-28 px-6 md:px-12 bg-surface hidden">
         <div className="max-w-screen-2xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <div>
             <h2 className="font-headline text-4xl md:text-5xl text-on-surface mb-16">{h.standardTitle}</h2>
