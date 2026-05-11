@@ -22,12 +22,17 @@ export default function Navigation({ locale }: { locale: Locale }) {
     { label: t.location, href: `/${locale}/location` },
   ]
 
+  const homeLinkLabel = locale === 'es'
+    ? 'Diamond Spa — Ir al inicio'
+    : 'Diamond Spa — Go to home'
+  const primaryNavLabel = locale === 'es' ? 'Navegación principal' : 'Primary navigation'
+
   return (
-    <nav className="fixed top-0 w-full z-50 glass-nav">
+    <nav className="fixed top-0 w-full z-50 glass-nav" aria-label={primaryNavLabel}>
       <div className="flex justify-between items-center px-6 md:px-12 py-4 w-full max-w-screen-2xl mx-auto">
 
         {/* Logo — fixed width/height prevents CLS */}
-        <Link href={`/${locale}`} className="flex items-center gap-3">
+        <Link href={`/${locale}`} aria-label={homeLinkLabel} className="flex items-center gap-3">
           <Image
             src="/logotipo.png"
             alt=""
@@ -35,7 +40,7 @@ export default function Navigation({ locale }: { locale: Locale }) {
             height={56}
             className="h-14 w-14 object-contain"
             priority
-            aria-hidden
+            aria-hidden="true"
           />
           <span className={`${playfairDisplay.className} text-xl md:text-2xl text-primary tracking-tight`}>
             Diamond Spa
@@ -52,7 +57,7 @@ export default function Navigation({ locale }: { locale: Locale }) {
             text={waGreeting}
             className="flex items-center gap-2 border border-primary/40 text-primary px-5 py-2.5 font-label font-bold tracking-widest text-xs uppercase hover:bg-primary hover:text-on-primary transition-all duration-300"
           >
-            <span className="material-symbols-outlined text-sm">support_agent</span>
+            <span className="material-symbols-outlined text-sm" aria-hidden="true">support_agent</span>
             {t.contactReceptionist}
           </WhatsAppLink>
           <Link

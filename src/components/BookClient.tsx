@@ -197,7 +197,7 @@ export default function BookClient({ locale }: { locale: string }) {
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center px-6 pt-24">
         <div className="max-w-lg w-full text-center">
-          <span className="material-symbols-outlined text-primary text-6xl mb-8 block">check_circle</span>
+          <span className="material-symbols-outlined text-primary text-6xl mb-8 block" aria-hidden="true">check_circle</span>
           <span className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-6 block">{t.confirmedLabel}</span>
           <h1 className="font-headline text-4xl md:text-5xl text-on-surface mb-6">{t.confirmedTitle}</h1>
           <p className="font-body text-secondary leading-relaxed mb-4">
@@ -411,27 +411,59 @@ export default function BookClient({ locale }: { locale: string }) {
             {/* Step 03 — Choose date */}
             <div>
               <StepLabel n="03" label={t.step2} />
-              <div className="mt-6 bg-surface-container p-4 max-w-xs">
+              <div
+                className="mt-6 bg-surface-container p-4 max-w-xs"
+                role="group"
+                aria-label={lang === 'es' ? 'Calendario de reservas' : 'Booking calendar'}
+              >
                 <div className="flex justify-between items-center mb-4">
-                  <button type="button" onClick={prevMonth} className="text-outline hover:text-primary transition-colors">
-                    <span className="material-symbols-outlined text-base leading-none">chevron_left</span>
+                  <button
+                    type="button"
+                    onClick={prevMonth}
+                    aria-label={lang === 'es' ? 'Mes anterior' : 'Previous month'}
+                    className="text-outline hover:text-primary transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-base leading-none" aria-hidden="true">chevron_left</span>
                   </button>
-                  <span className="font-label text-on-surface text-xs tracking-widest uppercase">{t.months[calMonth]} {calYear}</span>
-                  <button type="button" onClick={nextMonth} className="text-outline hover:text-primary transition-colors">
-                    <span className="material-symbols-outlined text-base leading-none">chevron_right</span>
+                  <span
+                    className="font-label text-on-surface text-xs tracking-widest uppercase"
+                    aria-live="polite"
+                  >
+                    {t.months[calMonth]} {calYear}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={nextMonth}
+                    aria-label={lang === 'es' ? 'Mes siguiente' : 'Next month'}
+                    className="text-outline hover:text-primary transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-base leading-none" aria-hidden="true">chevron_right</span>
                   </button>
                 </div>
-                <div className="grid grid-cols-7 mb-1">
+                <div className="grid grid-cols-7 mb-1" aria-hidden="true">
                   {t.days.map(d => <div key={d} className="text-center font-label text-outline text-[10px] py-0.5">{d}</div>)}
                 </div>
-                <div className="grid grid-cols-7">
+                <div className="grid grid-cols-7" role="grid">
                   {cells.map((day, i) => {
-                    if (!day) return <div key={i} />
+                    if (!day) return <div key={i} role="gridcell" />
                     const past = isPast(day)
                     const active = selectedDay === day
+                    const dateLabel = `${t.months[calMonth]} ${day}, ${calYear}`
+                    const fullLabel = past
+                      ? (lang === 'es' ? `${dateLabel} (no disponible)` : `${dateLabel} (unavailable)`)
+                      : dateLabel
                     return (
-                      <button key={i} type="button" disabled={past} onClick={() => { setSelectedDay(day); setSelectedTime(null) }}
-                        className={`h-7 w-7 mx-auto flex items-center justify-center font-body text-[11px] transition-all duration-150 ${past ? 'text-outline/30 cursor-not-allowed' : active ? 'bg-primary text-on-primary' : 'text-on-surface hover:bg-surface-container-high'}`}>
+                      <button
+                        key={i}
+                        type="button"
+                        disabled={past}
+                        onClick={() => { setSelectedDay(day); setSelectedTime(null) }}
+                        role="gridcell"
+                        aria-label={fullLabel}
+                        aria-pressed={active}
+                        aria-disabled={past || undefined}
+                        className={`h-7 w-7 mx-auto flex items-center justify-center font-body text-[11px] transition-all duration-150 ${past ? 'text-outline/30 cursor-not-allowed' : active ? 'bg-primary text-on-primary' : 'text-on-surface hover:bg-surface-container-high'}`}
+                      >
                         {day}
                       </button>
                     )
@@ -460,12 +492,17 @@ export default function BookClient({ locale }: { locale: string }) {
                       {lang === 'es' ? 'No hay horarios disponibles para este día.' : 'No available times for this day.'}
                     </p>
                   ) : (
-                    <div className="flex flex-wrap gap-2 max-w-lg">
+                    <div
+                      className="flex flex-wrap gap-2 max-w-lg"
+                      role="group"
+                      aria-label={lang === 'es' ? 'Horarios disponibles' : 'Available time slots'}
+                    >
                       {slots.map(slot => (
                         <button
                           key={slot}
                           type="button"
                           onClick={() => setSelectedTime(slot)}
+                          aria-pressed={selectedTime === slot}
                           className={`px-4 py-2 font-label text-xs tracking-widest uppercase transition-all duration-150 ${
                             selectedTime === slot
                               ? 'bg-primary text-on-primary'

@@ -108,11 +108,11 @@ export default function HistoryPage({ params }: { params: { lang: string } }) {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-0 max-w-screen-2xl mx-auto">
             <div className="p-12 md:p-16 border-b md:border-b-0 md:border-r border-outline-variant/10">
-              <span className="material-symbols-outlined text-primary text-3xl mb-8 block">psychology</span>
+              <span className="material-symbols-outlined text-primary text-3xl mb-8 block" aria-hidden="true">psychology</span>
               <p className="font-body text-secondary text-lg leading-relaxed">{t.visionBody1}</p>
             </div>
             <div className="p-12 md:p-16">
-              <span className="material-symbols-outlined text-primary text-3xl mb-8 block">verified</span>
+              <span className="material-symbols-outlined text-primary text-3xl mb-8 block" aria-hidden="true">verified</span>
               <p className="font-body text-secondary text-lg leading-relaxed">{t.visionBody2}</p>
             </div>
           </div>
@@ -140,7 +140,7 @@ export default function HistoryPage({ params }: { params: { lang: string } }) {
             <h2 className="font-headline text-4xl md:text-5xl text-on-surface mb-8 leading-tight">{t.milestoneTitle}</h2>
             <p className="font-body text-secondary text-lg leading-relaxed mb-10">{t.milestoneBody}</p>
             <div className="flex items-start gap-3 text-secondary">
-              <span className="material-symbols-outlined text-primary text-lg mt-0.5">location_on</span>
+              <span className="material-symbols-outlined text-primary text-lg mt-0.5" aria-hidden="true">location_on</span>
               <span className="font-body text-sm">{SPA_ADDRESS.street}, {SPA_ADDRESS.neighborhood}, {SPA_ADDRESS.city}</span>
             </div>
           </div>

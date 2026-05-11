@@ -34,21 +34,38 @@ export default function MobileMenuClient({
     return `/${targetLocale}${stripped}`
   }
 
+  const LOCALE_LABELS: Record<Locale, { switchTo: string }> = {
+    en: { switchTo: 'Switch to English' },
+    es: { switchTo: 'Cambiar a español' },
+  }
+  const localeSwitcherLabel = locale === 'es' ? 'Cambiar idioma' : 'Change language'
+  const toggleMenuLabel = menuOpen
+    ? (locale === 'es' ? 'Cerrar menú' : 'Close menu')
+    : (locale === 'es' ? 'Abrir menú' : 'Open menu')
+  const mobileNavLabel = locale === 'es' ? 'Menú móvil' : 'Mobile menu'
+
   return (
     <>
       {/* Hamburger button */}
       <button
+        type="button"
         className="md:hidden text-primary"
         onClick={() => setMenuOpen(!menuOpen)}
-        aria-label="Toggle menu"
+        aria-label={toggleMenuLabel}
         aria-expanded={menuOpen}
+        aria-controls="mobile-menu"
       >
-        <span className="material-symbols-outlined">{menuOpen ? 'close' : 'menu'}</span>
+        <span className="material-symbols-outlined" aria-hidden="true">{menuOpen ? 'close' : 'menu'}</span>
       </button>
 
       {/* Mobile dropdown */}
       {menuOpen && (
-        <div className="md:hidden fixed top-[72px] left-0 right-0 z-40 bg-surface-container-low px-6 pb-8 pt-4 flex flex-col gap-6">
+        <div
+          id="mobile-menu"
+          role="navigation"
+          aria-label={mobileNavLabel}
+          className="md:hidden fixed top-[72px] left-0 right-0 z-40 bg-surface-container-low px-6 pb-8 pt-4 flex flex-col gap-6"
+        >
           {links.map(({ label, href }) => {
             const active = pathname === href || pathname.startsWith(href + '/')
             return (
@@ -56,6 +73,7 @@ export default function MobileMenuClient({
                 key={href}
                 href={href}
                 onClick={() => setMenuOpen(false)}
+                aria-current={active ? 'page' : undefined}
                 className={`font-label text-sm tracking-widest uppercase transition-colors ${
                   active ? 'text-primary border-l-2 border-primary pl-3' : 'text-on-surface'
                 }`}
@@ -65,22 +83,31 @@ export default function MobileMenuClient({
             )
           })}
           {/* Locale switcher */}
-          <div className="flex gap-2">
-            {LOCALES_DISPLAY_ORDER.map(l => (
-              <Link
-                key={l}
-                href={switchedPath(l)}
-                onClick={() => setMenuOpen(false)}
-                className={`px-3 py-1.5 font-label text-xs uppercase tracking-widest border transition-all ${
-                  locale === l ? 'bg-primary text-on-primary border-primary' : 'border-outline-variant/30 text-outline'
-                }`}
-              >
-                {l}
-              </Link>
-            ))}
+          <div className="flex gap-2" role="group" aria-label={localeSwitcherLabel}>
+            {LOCALES_DISPLAY_ORDER.map(l => {
+              const isCurrent = locale === l
+              return (
+                <Link
+                  key={l}
+                  href={switchedPath(l)}
+                  onClick={() => setMenuOpen(false)}
+                  hrefLang={l}
+                  lang={l}
+                  aria-label={LOCALE_LABELS[l].switchTo}
+                  aria-current={isCurrent ? 'true' : undefined}
+                  className={`px-3 py-1.5 font-label text-xs uppercase tracking-widest border transition-all ${
+                    isCurrent ? 'bg-primary text-on-primary border-primary' : 'border-outline-variant/30 text-outline'
+                  }`}
+                >
+                  {l}
+                </Link>
+              )
+            })}
           </div>
           <a
             href="#"
+            role="button"
+            aria-label={contactLabel}
             onClick={(e) => { e.preventDefault(); setMenuOpen(false); window.open(randomWhatsAppUrl(waGreeting), '_blank', 'noopener,noreferrer') }}
             className="w-fit border border-primary/40 text-primary px-8 py-3 font-label font-bold tracking-widest text-xs uppercase"
           >

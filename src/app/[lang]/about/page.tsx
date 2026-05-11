@@ -114,7 +114,7 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
         <div className="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-0">
           {t.pillars.map(({ icon, title, body }) => (
             <div key={title} className="bg-surface p-12 hover:bg-surface-container-low transition-colors duration-500 group">
-              <span className="material-symbols-outlined text-4xl text-primary mb-8 block">{icon}</span>
+              <span className="material-symbols-outlined text-4xl text-primary mb-8 block" aria-hidden="true">{icon}</span>
               <h3 className="font-headline text-2xl text-on-surface mb-6">{title}</h3>
               <p className="font-body text-secondary leading-relaxed">{body}</p>
             </div>
@@ -167,7 +167,7 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
             {t.hygieneItems.map(({ icon, title, body }) => (
               <div key={title} className="p-12 hover:bg-surface-container transition-colors duration-500">
-                <span className="material-symbols-outlined text-4xl text-primary mb-8 block">{icon}</span>
+                <span className="material-symbols-outlined text-4xl text-primary mb-8 block" aria-hidden="true">{icon}</span>
                 <h3 className="font-headline text-2xl text-on-surface mb-4">{title}</h3>
                 <p className="font-body text-secondary leading-relaxed text-sm">{body}</p>
               </div>

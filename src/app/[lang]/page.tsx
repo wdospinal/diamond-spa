@@ -87,7 +87,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
               <span className="font-label text-primary tracking-[0.3em] uppercase text-xs">{h.tagline}</span>
               <span className="w-px h-3 bg-outline-variant/40" />
               <span className="inline-flex items-center gap-1 font-label text-outline text-xs uppercase tracking-widest">
-                <span className="material-symbols-outlined shrink-0 overflow-visible" style={{ fontSize: '16px', lineHeight: '1' }}>location_on</span>
+                <span className="material-symbols-outlined shrink-0 overflow-visible" style={{ fontSize: '16px', lineHeight: '1' }} aria-hidden="true">location_on</span>
                 Medellín, El Poblado
               </span>
             </div>
@@ -98,7 +98,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href={`/${locale}/book`} className="inline-flex items-center gap-3 bg-primary text-on-primary px-10 py-5 font-label font-bold tracking-[0.2em] text-sm uppercase hover:bg-white transition-all duration-300">
                 {h.bookSession}
-                <span className="material-symbols-outlined text-base">arrow_forward</span>
+                <span className="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
               </Link>
               <Link href={`/${locale}/services`} className="inline-flex items-center gap-2 border border-outline-variant/30 text-on-surface px-10 py-5 font-label font-bold tracking-[0.2em] text-sm uppercase hover:bg-surface-container-high transition-all duration-300">
                 {h.exploreServices}
@@ -113,25 +113,29 @@ export default function HomePage({ params }: { params: { lang: string } }) {
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 group"
               >
-                <div className="flex gap-0.5">
+                <div
+                  className="flex gap-0.5"
+                  role="img"
+                  aria-label={locale === 'es' ? '5 estrellas de 5' : '5 out of 5 stars'}
+                >
                   {[1, 2, 3, 4, 5].map(i => (
-                    <span key={i} className="material-symbols-outlined text-primary" style={{ fontSize: '14px', fontVariationSettings: "'FILL' 1" }}>star</span>
+                    <span key={i} className="material-symbols-outlined text-primary" style={{ fontSize: '14px', fontVariationSettings: "'FILL' 1" }} aria-hidden="true">star</span>
                   ))}
                 </div>
                 <span className="font-label text-on-surface text-xs tracking-wider group-hover:text-primary transition-colors">
                   5.0 · 31 {locale === 'es' ? 'reseñas de Google' : 'Google reviews'}
                 </span>
               </a>
-              <span className="w-px h-3 bg-outline-variant/30 hidden sm:block" />
+              <span className="w-px h-3 bg-outline-variant/30 hidden sm:block" aria-hidden="true" />
               <div className="flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-outline" style={{ fontSize: '14px' }}>schedule</span>
+                <span className="material-symbols-outlined text-outline" style={{ fontSize: '14px' }} aria-hidden="true">schedule</span>
                 <span className="font-label text-outline text-xs tracking-wider">
                   {locale === 'es' ? 'Lun–Sáb 10:00–22:00 · Dom 10:00–19:00' : 'Mon–Sat 10:00–10pm · Sun 10:00–7pm'}
                 </span>
               </div>
-              <span className="w-px h-3 bg-outline-variant/30 hidden md:block" />
+              <span className="w-px h-3 bg-outline-variant/30 hidden md:block" aria-hidden="true" />
               <div className="hidden md:flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-outline" style={{ fontSize: '14px' }}>location_on</span>
+                <span className="material-symbols-outlined text-outline" style={{ fontSize: '14px' }} aria-hidden="true">location_on</span>
                 <span className="font-label text-outline text-xs tracking-wider">{SPA_ADDRESS.street}, {SPA_ADDRESS.neighborhood}</span>
               </div>
             </div>
@@ -147,7 +151,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
               <h2 className="font-headline text-4xl md:text-5xl text-on-surface">{h.section2Title}</h2>
               <p className="mt-4 font-body text-secondary max-w-lg leading-relaxed font-light">{h.section2Body}</p>
               <Link href={`/${locale}/masajes-para-hombres`} className="mt-4 inline-flex items-center gap-1 font-label text-primary text-xs tracking-widest uppercase hover:gap-2 transition-all">
-                {locale === 'es' ? 'Masajes para hombres en Medellín' : 'Massages for men in Medellín'} <span className="material-symbols-outlined text-sm">chevron_right</span>
+                {locale === 'es' ? 'Masajes para hombres en Medellín' : 'Massages for men in Medellín'} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
               </Link>
             </div>
           </div>
@@ -169,7 +173,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
                 <h3 className="font-headline text-3xl text-on-surface mb-3">{h.hairRemovalTitle}</h3>
                 <p className="font-body text-secondary text-sm max-w-md leading-relaxed mb-5">{deepTissueDesc}</p>
                 <Link href={`/${locale}/services/${FEATURED_SERVICES.deepTissue.id}${fromParam}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
-                  {h.viewDetails} <span className="material-symbols-outlined text-sm">chevron_right</span>
+                  {h.viewDetails} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
                 </Link>
               </div>
             </div>
@@ -190,7 +194,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
                 <h3 className="font-headline text-3xl text-on-surface mb-3">{h.facialTitle}</h3>
                 <p className="font-body text-secondary text-sm max-w-md leading-relaxed mb-5">{facialDesc}</p>
                 <Link href={`/${locale}/services/${FEATURED_SERVICES.facial.id}${fromParam}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
-                  {h.viewDetails} <span className="material-symbols-outlined text-sm">chevron_right</span>
+                  {h.viewDetails} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
                 </Link>
               </div>
             </div>
@@ -211,7 +215,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
                 <h3 className="font-headline text-3xl text-on-surface mb-3">{h.relaxTitle}</h3>
                 <p className="font-body text-secondary text-sm leading-relaxed mb-5">{relaxDesc}</p>
                 <Link href={`/${locale}/services/${FEATURED_SERVICES.sensitive.id}${fromParam}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
-                  {h.viewDetails} <span className="material-symbols-outlined text-sm">chevron_right</span>
+                  {h.viewDetails} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
                 </Link>
               </div>
             </div>
@@ -230,9 +234,13 @@ export default function HomePage({ params }: { params: { lang: string } }) {
             <div className="flex items-end gap-4 shrink-0">
               <div className="text-right">
                 <div className="font-headline text-5xl text-on-surface leading-none">5.0</div>
-                <div className="flex gap-0.5 justify-end mt-2">
+                <div
+                  className="flex gap-0.5 justify-end mt-2"
+                  role="img"
+                  aria-label={locale === 'es' ? '5 estrellas de 5' : '5 out of 5 stars'}
+                >
                   {[1, 2, 3, 4, 5].map(i => (
-                    <span key={i} className="material-symbols-outlined text-primary" style={{ fontSize: '16px', fontVariationSettings: "'FILL' 1" }}>star</span>
+                    <span key={i} className="material-symbols-outlined text-primary" style={{ fontSize: '16px', fontVariationSettings: "'FILL' 1" }} aria-hidden="true">star</span>
                   ))}
                 </div>
                 <div className="font-label text-outline text-xs mt-1.5 tracking-wider">
@@ -248,9 +256,13 @@ export default function HomePage({ params }: { params: { lang: string } }) {
                 key={review.authorAttribution.displayName}
                 className="bg-surface-container ring-1 ring-outline-variant/10 p-8 rounded-sm flex flex-col gap-6"
               >
-                <div className="flex gap-0.5">
+                <div
+                  className="flex gap-0.5"
+                  role="img"
+                  aria-label={locale === 'es' ? '5 estrellas de 5' : '5 out of 5 stars'}
+                >
                   {[1, 2, 3, 4, 5].map(i => (
-                    <span key={i} className="material-symbols-outlined text-primary" style={{ fontSize: '14px', fontVariationSettings: "'FILL' 1" }}>star</span>
+                    <span key={i} className="material-symbols-outlined text-primary" style={{ fontSize: '14px', fontVariationSettings: "'FILL' 1" }} aria-hidden="true">star</span>
                   ))}
                 </div>
                 <p className="font-body text-secondary text-sm leading-relaxed italic line-clamp-5 flex-1">
@@ -294,7 +306,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
               className="inline-flex items-center gap-2 border border-outline-variant/30 text-on-surface px-10 py-4 font-label font-bold tracking-[0.2em] text-xs uppercase hover:bg-surface-container-high transition-all duration-300"
             >
               {h.viewAllReviews}
-              <span className="material-symbols-outlined text-sm">open_in_new</span>
+              <span className="material-symbols-outlined text-sm" aria-hidden="true">open_in_new</span>
             </a>
           </div>
         </div>
@@ -308,7 +320,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
             <div>
               <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-6 block">{h.locationLabel}</span>
               <div className="flex items-start gap-4">
-                <span className="material-symbols-outlined text-primary text-2xl mt-0.5 shrink-0">location_on</span>
+                <span className="material-symbols-outlined text-primary text-2xl mt-0.5 shrink-0" aria-hidden="true">location_on</span>
                 <div>
                   <p className="font-label font-bold text-on-surface text-sm tracking-wide mb-1">{SPA_ADDRESS.street}</p>
                   <p className="font-body text-secondary text-sm">{SPA_ADDRESS.neighborhood}, {SPA_ADDRESS.city}</p>
@@ -319,7 +331,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 mt-4 font-label text-primary text-xs tracking-widest uppercase hover:gap-2 transition-all"
                   >
-                    {loc.viewOnMaps} <span className="material-symbols-outlined text-sm">chevron_right</span>
+                    {loc.viewOnMaps} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
                   </a>
                 </div>
               </div>
@@ -331,7 +343,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
               <div className="flex flex-col gap-4">
                 {loc.hours.map(({ day, time }) => (
                   <div key={day} className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-primary text-base shrink-0">schedule</span>
+                    <span className="material-symbols-outlined text-primary text-base shrink-0" aria-hidden="true">schedule</span>
                     <div className="flex-1 flex items-center justify-between gap-4">
                       <span className="font-label text-on-surface text-xs tracking-wide">{day}</span>
                       <span className="font-label text-outline text-xs">{time}</span>
@@ -354,13 +366,13 @@ export default function HomePage({ params }: { params: { lang: string } }) {
                   className="inline-flex items-center gap-3 bg-primary text-on-primary px-8 py-4 font-label font-bold tracking-[0.2em] text-xs uppercase hover:bg-white transition-all duration-300 w-fit"
                 >
                   {h.bookSession}
-                  <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                  <span className="material-symbols-outlined text-sm" aria-hidden="true">arrow_forward</span>
                 </Link>
                 <Link
                   href={`/${locale}/location`}
                   className="inline-flex items-center gap-1.5 font-label text-outline text-xs tracking-widest uppercase hover:text-on-surface transition-colors"
                 >
-                  <span className="material-symbols-outlined text-sm">map</span>
+                  <span className="material-symbols-outlined text-sm" aria-hidden="true">map</span>
                   {loc.getDirections}
                 </Link>
               </div>
@@ -377,7 +389,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
             <div className="flex flex-col gap-10">
               {h.features.map(({ icon, title, body }) => (
                 <div key={title} className="flex gap-6">
-                  <span className="material-symbols-outlined text-primary text-2xl mt-0.5 shrink-0">{icon}</span>
+                  <span className="material-symbols-outlined text-primary text-2xl mt-0.5 shrink-0" aria-hidden="true">{icon}</span>
                   <div>
                     <h4 className="font-label font-bold text-on-surface tracking-widest uppercase text-xs mb-3">{title}</h4>
                     <p className="font-body text-secondary text-sm leading-relaxed">{body}</p>
