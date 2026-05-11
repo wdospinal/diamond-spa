@@ -36,7 +36,7 @@ export const IMG_HISTORY_INTERIOR = u('1571896349842-33c89424de2d')
 // ─── Team portraits ───────────────────────────────────────────────────────────
 
 export const IMG_THERAPISTS = [
-  '/therapists/daniela.png',  // Daniela Salina
+  '/therapists/daniela.jpeg',  // Daniela Salina
   '/therapists/sary.png',     // Sary Paez
   '/therapists/camila.png',   // Camila Mazo
   '/therapists/valeria.png',  // Valeria 
