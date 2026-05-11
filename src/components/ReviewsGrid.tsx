@@ -27,11 +27,16 @@ function GoogleLogo({ className = 'h-4 w-4' }: { className?: string }) {
   )
 }
 
-function StarRating({ rating }: { rating: number }) {
+function StarRating({ rating, locale = 'en' }: { rating: number; locale?: Locale }) {
+  const label = locale === 'es'
+    ? `Calificación ${rating.toFixed(1)} de 5`
+    : `Rating ${rating.toFixed(1)} out of 5`
   return (
-    <div className="flex gap-0.5" itemProp="reviewRating" itemScope itemType="https://schema.org/Rating">
-      <meta itemProp="ratingValue" content={String(rating)} />
-      <meta itemProp="bestRating" content="5" />
+    <div
+      className="flex gap-0.5"
+      role="img"
+      aria-label={label}
+    >
       {[1, 2, 3, 4, 5].map(n => {
         const filled = rating >= n
         const half = !filled && rating >= n - 0.5
@@ -40,7 +45,7 @@ function StarRating({ rating }: { rating: number }) {
             key={n}
             className={`material-symbols-outlined text-sm ${filled || half ? 'text-primary' : 'text-outline/30'}`}
             style={{ fontVariationSettings: half ? "'FILL' 0" : "'FILL' 1" }}
-            aria-hidden
+            aria-hidden="true"
           >
             star
           </span>
@@ -60,7 +65,7 @@ function AuthorAvatar({ name, photoUri }: { name: string; photoUri: string }) {
         height={44}
         unoptimized
         className="h-11 w-11 rounded-full object-cover ring-2 ring-outline/10"
-        aria-hidden
+        aria-hidden="true"
       />
     )
   }
@@ -73,7 +78,7 @@ function AuthorAvatar({ name, photoUri }: { name: string; photoUri: string }) {
   return (
     <div
       className="h-11 w-11 rounded-full bg-primary/15 flex items-center justify-center ring-2 ring-primary/20 shrink-0"
-      aria-hidden
+      aria-hidden="true"
     >
       <span className="font-label text-primary text-xs font-semibold tracking-wider">{initials}</span>
     </div>
@@ -111,29 +116,24 @@ export function ReviewsGrid({ reviews, reviewUrl, leaveReviewLabel, locale }: Re
     : `Show ${hiddenCount} more review${hiddenCount !== 1 ? 's' : ''}`
 
   return (
-    <div itemScope itemType="https://schema.org/LocalBusiness">
-      <meta itemProp="name" content="Diamond Spa" />
+    <div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {visible.map((review, i) => (
           <div
             key={i}
             className="group bg-surface-container-low hover:bg-surface-container p-7 flex flex-col gap-5 relative transition-colors duration-200"
-            itemScope
-            itemType="https://schema.org/Review"
-            itemProp="review"
           >
-            <meta itemProp="datePublished" content={review.relativePublishTimeDescription} />
 
             {/* Top row: stars + Google badge */}
             <div className="flex items-start justify-between">
-              <StarRating rating={review.rating} />
+              <StarRating rating={review.rating} locale={locale} />
               {!review.isStatic && (
                 <a
                   href={SPA_GOOGLE_REVIEW_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="View on Google"
-                  title="Review from Google"
+                  aria-label={locale === 'es' ? 'Ver reseña en Google' : 'View review on Google'}
+                  title={locale === 'es' ? 'Reseña de Google' : 'Review from Google'}
                   className="opacity-60 hover:opacity-100 transition-opacity shrink-0"
                 >
                   <GoogleLogo className="h-4 w-4" />
@@ -145,7 +145,6 @@ export function ReviewsGrid({ reviews, reviewUrl, leaveReviewLabel, locale }: Re
             {review.text?.text && (
               <p
                 className="font-body text-secondary text-sm leading-relaxed flex-1 line-clamp-6 group-hover:line-clamp-none transition-all"
-                itemProp="reviewBody"
               >
                 {review.text.text}
               </p>
@@ -154,9 +153,6 @@ export function ReviewsGrid({ reviews, reviewUrl, leaveReviewLabel, locale }: Re
             {/* Author */}
             <div
               className="flex items-center gap-3 pt-3 border-t border-outline/10"
-              itemProp="author"
-              itemScope
-              itemType="https://schema.org/Person"
             >
               <AuthorAvatar
                 name={review.authorAttribution.displayName}
@@ -165,7 +161,6 @@ export function ReviewsGrid({ reviews, reviewUrl, leaveReviewLabel, locale }: Re
               <div className="flex flex-col gap-0.5 min-w-0">
                 <span
                   className="font-label text-on-surface text-xs tracking-widest truncate"
-                  itemProp="name"
                 >
                   {review.authorAttribution.displayName}
                 </span>
@@ -181,10 +176,12 @@ export function ReviewsGrid({ reviews, reviewUrl, leaveReviewLabel, locale }: Re
       <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
         {hasMore && (
           <button
+            type="button"
             onClick={() => setShowAll(v => !v)}
+            aria-expanded={showAll}
             className="inline-flex items-center gap-2 px-6 py-3 border border-outline/30 text-on-surface font-label tracking-widest text-xs uppercase hover:bg-surface-container transition-colors"
           >
-            <span className="material-symbols-outlined text-base">
+            <span className="material-symbols-outlined text-base" aria-hidden="true">
               {showAll ? 'expand_less' : 'expand_more'}
             </span>
             {showAll
@@ -199,7 +196,7 @@ export function ReviewsGrid({ reviews, reviewUrl, leaveReviewLabel, locale }: Re
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-on-primary font-label tracking-widest text-xs uppercase hover:bg-primary/90 transition-colors"
         >
-          <span className="material-symbols-outlined text-base">rate_review</span>
+          <span className="material-symbols-outlined text-base" aria-hidden="true">rate_review</span>
           {leaveReviewLabel}
         </a>
       </div>
