@@ -85,9 +85,12 @@ function GoogleLogo({ className = 'h-4 w-4' }: { className?: string }) {
   )
 }
 
-function StarRating({ rating }: { rating: number }) {
+function StarRating({ rating, locale = 'en' }: { rating: number; locale?: Locale }) {
+  const label = locale === 'es'
+    ? `Calificación ${rating.toFixed(1)} de 5`
+    : `Rating ${rating.toFixed(1)} out of 5`
   return (
-    <div className="flex gap-0.5">
+    <div className="flex gap-0.5" role="img" aria-label={label}>
       {[1, 2, 3, 4, 5].map(n => {
         const filled = rating >= n
         const half = !filled && rating >= n - 0.5
@@ -96,6 +99,7 @@ function StarRating({ rating }: { rating: number }) {
             key={n}
             className={`material-symbols-outlined text-sm ${filled || half ? 'text-primary' : 'text-outline/30'}`}
             style={{ fontVariationSettings: half ? "'FILL' 0" : "'FILL' 1" }}
+            aria-hidden="true"
           >
             star
           </span>
@@ -136,7 +140,7 @@ export async function ReviewsSection({ locale }: { locale: Locale }) {
             <div className="flex items-center gap-4 mb-1">
               <span className="font-headline text-6xl text-primary leading-none">{place.rating.toFixed(1)}</span>
               <div className="flex flex-col gap-1.5">
-                <StarRating rating={place.rating} />
+                <StarRating rating={place.rating} locale={locale} />
                 <span className="font-label text-outline text-xs tracking-widest inline-flex items-center gap-1.5">
                   {t.basedOn} {place.userRatingCount?.toLocaleString()}
                   <GoogleLogo className="h-3.5 w-3.5" />
@@ -157,7 +161,7 @@ export async function ReviewsSection({ locale }: { locale: Locale }) {
         ) : (
           <div className="bg-surface-container-low p-8 md:p-12 flex flex-col gap-6">
             <div className="flex items-start gap-4">
-              <span className="material-symbols-outlined text-primary text-3xl shrink-0">rate_review</span>
+              <span className="material-symbols-outlined text-primary text-3xl shrink-0" aria-hidden="true">rate_review</span>
               <div className="flex flex-col gap-2">
                 <h3 className="font-headline text-2xl md:text-3xl text-on-surface">{t.beFirstTitle}</h3>
                 <p className="font-body text-secondary text-sm md:text-base leading-relaxed max-w-2xl">{t.beFirstBody}</p>
@@ -186,7 +190,7 @@ export async function ReviewsSection({ locale }: { locale: Locale }) {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-on-primary font-label tracking-widest text-xs uppercase hover:bg-primary/90 transition-colors"
               >
-                <span className="material-symbols-outlined text-base">rate_review</span>
+                <span className="material-symbols-outlined text-base" aria-hidden="true">rate_review</span>
                 {t.leaveReview}
               </a>
               <a
@@ -195,7 +199,7 @@ export async function ReviewsSection({ locale }: { locale: Locale }) {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3 border border-outline/30 text-on-surface font-label tracking-widest text-xs uppercase hover:bg-surface-container transition-colors"
               >
-                <span className="material-symbols-outlined text-base">map</span>
+                <span className="material-symbols-outlined text-base" aria-hidden="true">map</span>
                 {t.viewOnMaps}
               </a>
             </div>

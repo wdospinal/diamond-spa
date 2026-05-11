@@ -166,7 +166,7 @@ export default function SpaElPobladoPage({ params }: { params: { lang: string } 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {c.whyPoints.map((p) => (
               <div key={p.title} className="bg-surface-container p-8">
-                <span className="material-symbols-outlined text-primary text-2xl mb-4 block">{p.icon}</span>
+                <span className="material-symbols-outlined text-primary text-2xl mb-4 block" aria-hidden="true">{p.icon}</span>
                 <h3 className="font-label font-bold text-on-surface text-xs tracking-widest uppercase mb-2">{p.title}</h3>
                 <p className="text-slate-400 font-body text-sm leading-relaxed">{p.body}</p>
               </div>
@@ -218,7 +218,7 @@ export default function SpaElPobladoPage({ params }: { params: { lang: string } 
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-primary font-label text-xs tracking-widest uppercase hover:opacity-80 transition-opacity"
             >
-              <span className="material-symbols-outlined text-sm">map</span>
+              <span className="material-symbols-outlined text-sm" aria-hidden="true">map</span>
               {locale === 'es' ? 'Ver en Google Maps →' : 'View on Google Maps →'}
             </a>
           </div>
@@ -232,7 +232,7 @@ export default function SpaElPobladoPage({ params }: { params: { lang: string } 
               <details key={faq.question} className="group py-6">
                 <summary className="font-label text-on-surface text-sm tracking-wide cursor-pointer list-none flex justify-between items-center gap-4">
                   {faq.question}
-                  <span className="material-symbols-outlined text-primary text-xl shrink-0 group-open:rotate-180 transition-transform">expand_more</span>
+                  <span className="material-symbols-outlined text-primary text-xl shrink-0 group-open:rotate-180 transition-transform" aria-hidden="true">expand_more</span>
                 </summary>
                 <p className="mt-4 text-slate-400 font-body text-sm leading-relaxed">{faq.answer}</p>
               </details>

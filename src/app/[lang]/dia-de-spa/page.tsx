@@ -233,7 +233,7 @@ export default function DiaDeSpaPage({ params }: { params: { lang: string } }) {
             {c.steps.map((step, i) => (
               <div key={step.title} className="flex flex-col gap-3">
                 <span className="font-label text-outline text-xs tracking-widest">{String(i + 1).padStart(2, '0')}</span>
-                <span className="material-symbols-outlined text-primary text-2xl">{step.icon}</span>
+                <span className="material-symbols-outlined text-primary text-2xl" aria-hidden="true">{step.icon}</span>
                 <h3 className="font-label font-bold text-on-surface text-xs tracking-widest uppercase">{step.title}</h3>
                 <p className="text-slate-400 font-body text-sm leading-relaxed">{step.body}</p>
               </div>
@@ -249,7 +249,7 @@ export default function DiaDeSpaPage({ params }: { params: { lang: string } }) {
               <details key={faq.question} className="group py-6">
                 <summary className="font-label text-on-surface text-sm tracking-wide cursor-pointer list-none flex justify-between items-center gap-4">
                   {faq.question}
-                  <span className="material-symbols-outlined text-primary text-xl shrink-0 group-open:rotate-180 transition-transform">expand_more</span>
+                  <span className="material-symbols-outlined text-primary text-xl shrink-0 group-open:rotate-180 transition-transform" aria-hidden="true">expand_more</span>
                 </summary>
                 <p className="mt-4 text-slate-400 font-body text-sm leading-relaxed">{faq.answer}</p>
               </details>

@@ -55,13 +55,25 @@ export default function LocationPage({ params }: { params: { lang: string } }) {
             <div className="flex flex-col gap-4 mb-8">
               {PHONES.map(({ display, wa }) => (
                 <div key={wa} className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-primary text-lg">phone</span>
-                  <span className="font-body text-secondary text-sm tracking-widest">{display}</span>
+                  <span className="material-symbols-outlined text-primary text-lg" aria-hidden="true">phone</span>
+                  <a
+                    href={`tel:+${wa}`}
+                    aria-label={locale === 'es' ? `Llamar al ${display}` : `Call ${display}`}
+                    className="font-body text-secondary text-sm tracking-widest hover:text-primary transition-colors"
+                  >
+                    {display}
+                  </a>
                 </div>
               ))}
               <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-primary text-lg">mail</span>
-                <span className="font-body text-secondary text-sm tracking-widest">{SPA_EMAIL}</span>
+                <span className="material-symbols-outlined text-primary text-lg" aria-hidden="true">mail</span>
+                <a
+                  href={`mailto:${SPA_EMAIL}`}
+                  aria-label={locale === 'es' ? `Enviar correo a ${SPA_EMAIL}` : `Email ${SPA_EMAIL}`}
+                  className="font-body text-secondary text-sm tracking-widest hover:text-primary transition-colors"
+                >
+                  {SPA_EMAIL}
+                </a>
               </div>
             </div>
             <a
@@ -70,7 +82,7 @@ export default function LocationPage({ params }: { params: { lang: string } }) {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-3 bg-primary text-on-primary px-8 py-4 font-label font-bold tracking-[0.2em] text-xs uppercase hover:bg-white transition-all duration-300"
             >
-              <span className="material-symbols-outlined text-base">directions</span>
+              <span className="material-symbols-outlined text-base" aria-hidden="true">directions</span>
               {t.getDirections}
             </a>
           </div>
@@ -83,7 +95,12 @@ export default function LocationPage({ params }: { params: { lang: string } }) {
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Diamond Spa location"
+              title={locale === 'es'
+                ? `Mapa de Google con la ubicación de Diamond Spa en ${SPA_ADDRESS.full}`
+                : `Google Map showing the location of Diamond Spa at ${SPA_ADDRESS.full}`}
+              aria-label={locale === 'es'
+                ? `Mapa de Google con la ubicación de Diamond Spa en ${SPA_ADDRESS.full}`
+                : `Google Map showing the location of Diamond Spa at ${SPA_ADDRESS.full}`}
             />
           </div>
         </div>
@@ -122,7 +139,7 @@ export default function LocationPage({ params }: { params: { lang: string } }) {
           </div>
           <div className="bg-surface-container-high p-10 flex flex-col justify-between">
             <div>
-              <span className="material-symbols-outlined text-primary text-3xl mb-6 block">lock</span>
+              <span className="material-symbols-outlined text-primary text-3xl mb-6 block" aria-hidden="true">lock</span>
               <h3 className="font-headline text-2xl text-on-surface mb-5">{t.privateTitle}</h3>
               <p className="font-body text-secondary leading-relaxed text-sm mb-8">{t.privateBody1}</p>
             </div>
@@ -140,7 +157,7 @@ export default function LocationPage({ params }: { params: { lang: string } }) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
             {t.transport.map(({ icon, label, detail }, i) => (
               <div key={label} className={`flex gap-6 items-start p-10 hover:bg-surface-container-high transition-colors duration-300 ${i < t.transport.length - 1 ? 'md:border-r border-outline-variant/10' : ''}`}>
-                <span className="material-symbols-outlined text-primary text-2xl shrink-0">{icon}</span>
+                <span className="material-symbols-outlined text-primary text-2xl shrink-0" aria-hidden="true">{icon}</span>
                 <div>
                   <h4 className="font-label font-bold text-on-surface text-xs tracking-widest uppercase mb-2">{label}</h4>
                   <p className="font-body text-secondary text-sm leading-relaxed">{detail}</p>

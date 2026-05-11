@@ -132,7 +132,12 @@ export default function HistoryPage({ params }: { params: { lang: string } }) {
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Diamond Spa location"
+              title={locale === 'es'
+                ? `Mapa de Google con la ubicación de Diamond Spa en ${SPA_ADDRESS.full}`
+                : `Google Map showing the location of Diamond Spa at ${SPA_ADDRESS.full}`}
+              aria-label={locale === 'es'
+                ? `Mapa de Google con la ubicación de Diamond Spa en ${SPA_ADDRESS.full}`
+                : `Google Map showing the location of Diamond Spa at ${SPA_ADDRESS.full}`}
             />
           </div>
           <div>

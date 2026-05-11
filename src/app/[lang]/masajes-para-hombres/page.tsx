@@ -106,7 +106,7 @@ export default function MasajesParaHombresPage({ params }: { params: { lang: str
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {p.pillars.map((pillar) => (
               <div key={pillar.icon} className="bg-surface-container p-8">
-                <span className="material-symbols-outlined text-primary text-3xl mb-4 block">{pillar.icon}</span>
+                <span className="material-symbols-outlined text-primary text-3xl mb-4 block" aria-hidden="true">{pillar.icon}</span>
                 <h3 className="font-headline text-lg text-on-surface tracking-tighter mb-2">
                   {pillar.title}
                 </h3>
@@ -128,7 +128,7 @@ export default function MasajesParaHombresPage({ params }: { params: { lang: str
               <details key={faq.question} className="group py-6">
                 <summary className="font-label text-on-surface text-sm tracking-wide cursor-pointer list-none flex justify-between items-center gap-4">
                   {faq.question}
-                  <span className="material-symbols-outlined text-primary text-xl shrink-0 group-open:rotate-180 transition-transform">expand_more</span>
+                  <span className="material-symbols-outlined text-primary text-xl shrink-0 group-open:rotate-180 transition-transform" aria-hidden="true">expand_more</span>
                 </summary>
                 <p className="mt-4 text-slate-400 font-body text-sm leading-relaxed">{faq.answer}</p>
               </details>

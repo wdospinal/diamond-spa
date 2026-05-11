@@ -1,6 +1,14 @@
 /**
  * Central image registry — single source of truth for all image URLs.
  * Unsplash images are free under the Unsplash License: https://unsplash.com/license
+ *
+ * Accessibility note: alt text is intentionally NOT stored here because
+ * it must be locale-aware and context-aware (depends on the surrounding
+ * copy and where the image appears). Always supply a meaningful, bilingual
+ * `alt` at the call site for every `<Image>` element. Use empty `alt=""`
+ * together with `aria-hidden="true"` only when the image is purely
+ * decorative and already conveyed by adjacent text (e.g. the logo next
+ * to "Diamond Spa", or hero background images).
  */
 
 const u = (id: string, w = 1200) =>
