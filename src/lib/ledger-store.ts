@@ -40,9 +40,7 @@ export async function applyLedgerExpenseSeed(): Promise<{ inserted: number; skip
   const rate = copPerUsd()
   const dateKey = todayKeyBogota()
   const rows = buildInitialExpenseRows(dateKey, rate)
-  for (const row of rows) {
-    await appendLedgerEntry(row)
-  }
+  await appendManyLedgerEntries(rows)
   await writeFile(SEED_FLAG, new Date().toISOString(), 'utf8')
   return { inserted: rows.length, skipped: false }
 }
@@ -77,6 +75,21 @@ export async function appendLedgerEntry(
   list.push(row)
   await writeFile(FILE, JSON.stringify(list, null, 2), 'utf8')
   return row
+}
+
+async function appendManyLedgerEntries(
+  inputs: Omit<LedgerEntry, 'id' | 'createdAt'>[]
+): Promise<LedgerEntry[]> {
+  await ensureDir()
+  const list = await readLedger()
+  const rows: LedgerEntry[] = inputs.map(input => ({
+    ...input,
+    id: randomUUID(),
+    createdAt: new Date().toISOString(),
+  }))
+  list.push(...rows)
+  await writeFile(FILE, JSON.stringify(list, null, 2), 'utf8')
+  return rows
 }
 
 export async function updateLedgerEntry(

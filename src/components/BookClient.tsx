@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { getDict, type Locale } from '@/lib/i18n'
 import { SERVICES, formatCop, type DurationMinutes, type ServiceDef } from '@/lib/services'
@@ -60,12 +60,21 @@ function buildCalendar(year: number, month: number): CalCell[] {
   return cells
 }
 
+function ServicePreloader({ onSelect }: { onSelect: (id: string) => void }) {
+  const { get: getParam } = useSearchParams()
+  useEffect(() => {
+    const svcParam = getParam('service')
+    if (svcParam && ALL_BOOKABLE_SERVICES.find(s => s.id === svcParam)) {
+      onSelect(svcParam)
+    }
+  }, [getParam, onSelect])
+  return null
+}
 
 export default function BookClient({ locale }: { locale: string }) {
   const lang = (locale === 'en' ? 'en' : 'es') as Locale
   const t = getDict(lang).book
   const tSvc = getDict(lang).services
-  const { get: getParam } = useSearchParams()
 
   const today = new Date()
   const [selectedService, setSelectedService] = useState<string | null>(null)
@@ -77,14 +86,6 @@ export default function BookClient({ locale }: { locale: string }) {
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
   const [confirmed, setConfirmed] = useState(false)
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', requests: '' })
-
-  // Pre-select service from ?service= query param
-  useEffect(() => {
-    const svcParam = getParam('service')
-    if (svcParam && ALL_BOOKABLE_SERVICES.find(s => s.id === svcParam)) {
-      setSelectedService(svcParam)
-    }
-  }, [getParam])
 
   const cells = buildCalendar(calYear, calMonth)
 
@@ -185,60 +186,60 @@ export default function BookClient({ locale }: { locale: string }) {
     setConfirmed(true)
   }
 
-  if (confirmed) {
-    const sName = selectedServiceObj ? serviceName(selectedServiceObj as ServiceDef) : ''
-    const confirmedHairMethod = selectedHairMethod === 'wax'
-      ? (lang === 'es' ? 'Cera' : 'Wax')
-      : selectedHairMethod === 'machine'
-        ? (lang === 'es' ? 'Máquina' : 'Machine')
-        : ''
-    const confirmedServiceLabel = isMassage && selectedDuration
-      ? `${sName} (${selectedDuration} min)`
-      : isHairRemoval && selectedHairMethod
-        ? `${sName} (${confirmedHairMethod})`
-        : sName
-    return (
-      <div className="min-h-screen bg-surface flex items-center justify-center px-6 pt-24">
-        <div className="max-w-lg w-full text-center">
-          <span className="material-symbols-outlined text-primary text-6xl mb-8 block" aria-hidden="true">check_circle</span>
-          <span className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-6 block">{t.confirmedLabel}</span>
-          <h1 className="font-headline text-4xl md:text-5xl text-on-surface mb-6">{t.confirmedTitle}</h1>
-          <p className="font-body text-secondary leading-relaxed mb-4">
-            {t.confirmedBody1} {form.firstName}. {t.confirmedBody2} <span className="text-primary">{form.email}</span>.
-          </p>
-          <div className="bg-surface-container-high p-8 my-10 text-left flex flex-col gap-3">
-            {[
-              [t.serviceLabel, confirmedServiceLabel],
-              [t.dateLabel, `${t.months[calMonth]} ${selectedDay}, ${calYear}`],
-              [t.totalLabel, selectedPriceCop ? formatCop(selectedPriceCop) : '—'],
-            ].map(([label, value]) => (
-              <div key={label} className="flex justify-between items-center gap-4">
-                <span className="font-label text-outline text-xs uppercase tracking-widest shrink-0">{label}</span>
-                <span className="font-body text-on-surface text-sm text-right">{value}</span>
-              </div>
-            ))}
-          </div>
-          <button
-            onClick={() => {
-              setConfirmed(false)
-              setSelectedService(null)
-              setSelectedDuration(null)
-              setSelectedHairMethod(null)
-              setSelectedDay(null)
-              setSelectedTime(null)
-              setForm({ firstName: '', lastName: '', email: '', phone: '', requests: '' })
-            }}
-            className="bg-primary text-on-primary px-10 py-4 font-label font-bold tracking-[0.2em] text-xs uppercase hover:bg-white transition-all"
-          >
-            {t.bookAnother}
-          </button>
-        </div>
-      </div>
-    )
-  }
+  const sName = selectedServiceObj ? serviceName(selectedServiceObj as ServiceDef) : ''
+  const confirmedHairMethod = selectedHairMethod === 'wax'
+    ? (lang === 'es' ? 'Cera' : 'Wax')
+    : selectedHairMethod === 'machine'
+      ? (lang === 'es' ? 'Máquina' : 'Machine')
+      : ''
+  const confirmedServiceLabel = isMassage && selectedDuration
+    ? `${sName} (${selectedDuration} min)`
+    : isHairRemoval && selectedHairMethod
+      ? `${sName} (${confirmedHairMethod})`
+      : sName
 
-  return (
+  return confirmed ? (
+    <div className="min-h-screen bg-surface flex items-center justify-center px-6 pt-24">
+      <div className="max-w-lg w-full text-center">
+        <span className="material-symbols-outlined text-primary text-6xl mb-8 block" aria-hidden="true">check_circle</span>
+        <span className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-6 block">{t.confirmedLabel}</span>
+        <h1 className="font-headline text-4xl md:text-5xl text-on-surface mb-6">{t.confirmedTitle}</h1>
+        <p className="font-body text-secondary leading-relaxed mb-4">
+          {t.confirmedBody1} {form.firstName}. {t.confirmedBody2} <span className="text-primary">{form.email}</span>.
+        </p>
+        <div className="bg-surface-container-high p-8 my-10 text-left flex flex-col gap-3">
+          {[
+            [t.serviceLabel, confirmedServiceLabel],
+            [t.dateLabel, `${t.months[calMonth]} ${selectedDay}, ${calYear}`],
+            [t.totalLabel, selectedPriceCop ? formatCop(selectedPriceCop) : '—'],
+          ].map(([label, value]) => (
+            <div key={label} className="flex justify-between items-center gap-4">
+              <span className="font-label text-outline text-xs uppercase tracking-widest shrink-0">{label}</span>
+              <span className="font-body text-on-surface text-sm text-right">{value}</span>
+            </div>
+          ))}
+        </div>
+        <button
+          onClick={() => {
+            setConfirmed(false)
+            setSelectedService(null)
+            setSelectedDuration(null)
+            setSelectedHairMethod(null)
+            setSelectedDay(null)
+            setSelectedTime(null)
+            setForm({ firstName: '', lastName: '', email: '', phone: '', requests: '' })
+          }}
+          className="bg-primary text-on-primary px-10 py-4 font-label font-bold tracking-[0.2em] text-xs uppercase hover:bg-white transition-all"
+        >
+          {t.bookAnother}
+        </button>
+      </div>
+    </div>
+  ) : (
     <>
+      <Suspense fallback={null}>
+        <ServicePreloader onSelect={setSelectedService} />
+      </Suspense>
       <header className="pt-12 md:pt-16 pb-16 px-6 md:px-12 bg-surface">
         <div className="max-w-screen-2xl mx-auto">
           <span className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-5 block">{t.label}</span>

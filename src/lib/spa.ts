@@ -6,13 +6,12 @@
 // Re-export all services, types and helpers so callers only need one import
 export {
   SERVICES,
-  DURATION_MINUTES,
   formatCop,
   getServiceById,
   getServicePrice,
   serviceDisplayName,
 } from './services'
-export type { ServiceDef, DurationMinutes } from './services'
+export type { ServiceDef } from './services'
 
 // ─── Identity ─────────────────────────────────────────────────────────────────
 
