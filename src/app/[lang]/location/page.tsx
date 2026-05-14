@@ -159,7 +159,7 @@ export default function LocationPage({ params }: { params: { lang: string } }) {
               <div key={label} className={`flex gap-6 items-start p-10 hover:bg-surface-container-high transition-colors duration-300 ${i < t.transport.length - 1 ? 'md:border-r border-outline-variant/10' : ''}`}>
                 <span className="material-symbols-outlined text-primary text-2xl shrink-0" aria-hidden="true">{icon}</span>
                 <div>
-                  <h4 className="font-label font-bold text-on-surface text-xs tracking-widest uppercase mb-2">{label}</h4>
+                  <h4 className="font-label font-semibold text-on-surface text-xs tracking-widest uppercase mb-2">{label}</h4>
                   <p className="font-body text-secondary text-sm leading-relaxed">{detail}</p>
                 </div>
               </div>

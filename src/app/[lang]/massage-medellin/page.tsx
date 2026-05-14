@@ -191,7 +191,7 @@ export default function MassageMedellinPage({ params }: { params: { lang: string
           <h1 className="font-headline text-4xl md:text-6xl text-on-surface tracking-tighter leading-tight mb-6">
             {c.h1}
           </h1>
-          <p className="text-slate-400 font-body text-lg leading-relaxed max-w-2xl mb-6">{c.heroBody}</p>
+          <p className="text-zinc-400 font-body text-lg leading-relaxed max-w-2xl mb-6">{c.heroBody}</p>
           <div className="flex items-center gap-2 mb-8">
             <span className="font-label text-primary text-sm">{c.ratingBadge}</span>
           </div>
@@ -210,7 +210,7 @@ export default function MassageMedellinPage({ params }: { params: { lang: string
             {c.massages.map((m) => (
               <div key={m.name} className="bg-surface-container p-8 flex flex-col gap-3">
                 <h3 className="font-headline text-xl text-on-surface tracking-tighter">{m.name}</h3>
-                <p className="text-slate-400 font-body text-sm leading-relaxed flex-1">{m.desc}</p>
+                <p className="text-zinc-400 font-body text-sm leading-relaxed flex-1">{m.desc}</p>
                 <div className="flex justify-between items-center border-t border-outline-variant/20 pt-4">
                   <span className="font-label text-primary text-xs tracking-widest">{m.price}</span>
                   <span className="font-label text-outline text-xs tracking-widest">{m.durations}</span>
@@ -225,7 +225,7 @@ export default function MassageMedellinPage({ params }: { params: { lang: string
             ))}
           </div>
           <div className="mt-8">
-            <Link href={`/${locale}/services`} className="text-slate-400 hover:text-primary font-label text-sm tracking-widest uppercase transition-colors">
+            <Link href={`/${locale}/services`} className="text-zinc-400 hover:text-primary font-label text-sm tracking-widest uppercase transition-colors">
               {locale === 'es' ? 'Ver todos los servicios →' : 'View all services →'}
             </Link>
           </div>
@@ -238,8 +238,8 @@ export default function MassageMedellinPage({ params }: { params: { lang: string
             {c.whyPoints.map((p) => (
               <div key={p.title} className="bg-surface-container p-8">
                 <span className="material-symbols-outlined text-primary text-2xl mb-4 block" aria-hidden="true">{p.icon}</span>
-                <h3 className="font-label font-bold text-on-surface text-xs tracking-widest uppercase mb-2">{p.title}</h3>
-                <p className="text-slate-400 font-body text-sm leading-relaxed">{p.body}</p>
+                <h3 className="font-label font-semibold text-on-surface text-xs tracking-widest uppercase mb-2">{p.title}</h3>
+                <p className="text-zinc-400 font-body text-sm leading-relaxed">{p.body}</p>
               </div>
             ))}
           </div>
@@ -255,7 +255,7 @@ export default function MassageMedellinPage({ params }: { params: { lang: string
                   {faq.question}
                   <span className="material-symbols-outlined text-primary text-xl shrink-0 group-open:rotate-180 transition-transform" aria-hidden="true">expand_more</span>
                 </summary>
-                <p className="mt-4 text-slate-400 font-body text-sm leading-relaxed">{faq.answer}</p>
+                <p className="mt-4 text-zinc-400 font-body text-sm leading-relaxed">{faq.answer}</p>
               </details>
             ))}
           </div>
@@ -264,7 +264,7 @@ export default function MassageMedellinPage({ params }: { params: { lang: string
         {/* CTA */}
         <section className="bg-surface-container p-12 text-center">
           <h2 className="font-headline text-3xl md:text-4xl text-on-surface tracking-tighter mb-6">{c.ctaTitle}</h2>
-          <p className="text-slate-400 font-body text-sm mb-8 max-w-md mx-auto">{c.ctaBody}</p>
+          <p className="text-zinc-400 font-body text-sm mb-8 max-w-md mx-auto">{c.ctaBody}</p>
           <Link
             href={`/${locale}/book?service=relaxing`}
             className="inline-block bg-primary text-on-primary font-label text-sm tracking-widest uppercase px-10 py-4 hover:opacity-90 transition-opacity"

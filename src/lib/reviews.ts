@@ -1,4 +1,4 @@
-export interface StaticReview {
+interface StaticReview {
   relativePublishTimeDescription: string
   rating: number
   text?: { text: string }

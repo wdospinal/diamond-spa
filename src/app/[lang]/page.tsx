@@ -392,7 +392,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
                 <div key={title} className="flex gap-6">
                   <span className="material-symbols-outlined text-primary text-2xl mt-0.5 shrink-0" aria-hidden="true">{icon}</span>
                   <div>
-                    <h4 className="font-label font-bold text-on-surface tracking-widest uppercase text-xs mb-3">{title}</h4>
+                    <h4 className="font-label font-semibold text-on-surface tracking-widest uppercase text-xs mb-3">{title}</h4>
                     <p className="font-body text-secondary text-sm leading-relaxed">{body}</p>
                   </div>
                 </div>

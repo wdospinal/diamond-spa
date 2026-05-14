@@ -1,6 +1,6 @@
 import type { ExpenseCategory } from '@/lib/expense-categories'
 
-export type InitialExpenseLine = {
+type InitialExpenseLine = {
   categoryId: ExpenseCategory['id']
   title: string
   /** COP; null o 0 = sin monto en las hojas (se guarda pendiente) */

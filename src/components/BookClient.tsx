@@ -62,7 +62,7 @@ export default function BookClient({ locale }: { locale: string }) {
   const lang = (locale === 'en' ? 'en' : 'es') as Locale
   const t = getDict(lang).book
   const tSvc = getDict(lang).services
-  const searchParams = useSearchParams()
+  const { get: getParam } = useSearchParams()
 
   const today = new Date()
   const [selectedService, setSelectedService] = useState<string | null>(null)
@@ -77,11 +77,11 @@ export default function BookClient({ locale }: { locale: string }) {
 
   // Pre-select service from ?service= query param
   useEffect(() => {
-    const svcParam = searchParams?.get('service')
+    const svcParam = getParam('service')
     if (svcParam && ALL_BOOKABLE_SERVICES.find(s => s.id === svcParam)) {
       setSelectedService(svcParam)
     }
-  }, [searchParams])
+  }, [getParam])
 
   const cells = buildCalendar(calYear, calMonth)
 

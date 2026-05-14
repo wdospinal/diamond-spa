@@ -190,7 +190,7 @@ export default function DiaDeSpaPage({ params }: { params: { lang: string } }) {
           <h1 className="font-headline text-4xl md:text-6xl text-on-surface tracking-tighter leading-tight mb-6">
             {c.h1}
           </h1>
-          <p className="text-slate-400 font-body text-lg leading-relaxed max-w-2xl mb-8">{c.heroBody}</p>
+          <p className="text-zinc-400 font-body text-lg leading-relaxed max-w-2xl mb-8">{c.heroBody}</p>
           <Link
             href={`/${locale}/book`}
             className="inline-block bg-primary text-on-primary font-label text-sm tracking-widest uppercase px-8 py-4 hover:opacity-90 transition-opacity"
@@ -208,7 +208,7 @@ export default function DiaDeSpaPage({ params }: { params: { lang: string } }) {
             {c.packages.map((pkg) => (
               <div key={pkg.name} className="bg-surface-container p-8 flex flex-col gap-4">
                 <h3 className="font-headline text-xl text-on-surface tracking-tighter">{pkg.name}</h3>
-                <p className="text-slate-400 font-body text-sm leading-relaxed flex-1">{pkg.desc}</p>
+                <p className="text-zinc-400 font-body text-sm leading-relaxed flex-1">{pkg.desc}</p>
                 <div className="border-t border-outline-variant/20 pt-4 flex justify-between items-center">
                   <span className="font-label text-primary text-xs tracking-widest">{pkg.price}</span>
                   <span className="font-label text-outline text-xs tracking-widest">{pkg.duration}</span>
@@ -234,8 +234,8 @@ export default function DiaDeSpaPage({ params }: { params: { lang: string } }) {
               <div key={step.title} className="flex flex-col gap-3">
                 <span className="font-label text-outline text-xs tracking-widest">{String(i + 1).padStart(2, '0')}</span>
                 <span className="material-symbols-outlined text-primary text-2xl" aria-hidden="true">{step.icon}</span>
-                <h3 className="font-label font-bold text-on-surface text-xs tracking-widest uppercase">{step.title}</h3>
-                <p className="text-slate-400 font-body text-sm leading-relaxed">{step.body}</p>
+                <h3 className="font-label font-semibold text-on-surface text-xs tracking-widest uppercase">{step.title}</h3>
+                <p className="text-zinc-400 font-body text-sm leading-relaxed">{step.body}</p>
               </div>
             ))}
           </div>
@@ -251,7 +251,7 @@ export default function DiaDeSpaPage({ params }: { params: { lang: string } }) {
                   {faq.question}
                   <span className="material-symbols-outlined text-primary text-xl shrink-0 group-open:rotate-180 transition-transform" aria-hidden="true">expand_more</span>
                 </summary>
-                <p className="mt-4 text-slate-400 font-body text-sm leading-relaxed">{faq.answer}</p>
+                <p className="mt-4 text-zinc-400 font-body text-sm leading-relaxed">{faq.answer}</p>
               </details>
             ))}
           </div>
@@ -260,7 +260,7 @@ export default function DiaDeSpaPage({ params }: { params: { lang: string } }) {
         {/* CTA */}
         <section className="bg-surface-container p-12 text-center">
           <h2 className="font-headline text-3xl md:text-4xl text-on-surface tracking-tighter mb-6">{c.ctaTitle}</h2>
-          <p className="text-slate-400 font-body text-sm mb-8 max-w-md mx-auto">{c.ctaBody}</p>
+          <p className="text-zinc-400 font-body text-sm mb-8 max-w-md mx-auto">{c.ctaBody}</p>
           <Link
             href={`/${locale}/book`}
             className="inline-block bg-primary text-on-primary font-label text-sm tracking-widest uppercase px-10 py-4 hover:opacity-90 transition-opacity"

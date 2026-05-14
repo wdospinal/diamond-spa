@@ -13,7 +13,7 @@ import {
 } from './spa'
 
 export const BASE_URL = SPA_BASE_URL
-export const DEFAULT_OG_IMAGE = SPA_OG_IMAGE
+const DEFAULT_OG_IMAGE = SPA_OG_IMAGE
 export const SITE_NAME = SPA_NAME_FULL
 
 // ─── hreflang + canonical ─────────────────────────────────────────────────────
