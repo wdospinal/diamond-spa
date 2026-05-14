@@ -118,8 +118,8 @@ export default function HomePage({ params }: { params: { lang: string } }) {
                   role="img"
                   aria-label={locale === 'es' ? '5 estrellas de 5' : '5 out of 5 stars'}
                 >
-                  {[1, 2, 3, 4, 5].map(i => (
-                    <span key={i} className="material-symbols-outlined text-primary" style={{ fontSize: '14px', fontVariationSettings: "'FILL' 1" }} aria-hidden="true">star</span>
+                  {[1, 2, 3, 4, 5].map(star => (
+                    <span key={star} className="material-symbols-outlined text-primary" style={{ fontSize: '14px', fontVariationSettings: "'FILL' 1" }} aria-hidden="true">star</span>
                   ))}
                 </div>
                 <span className="font-label text-on-surface text-xs tracking-wider group-hover:text-primary transition-colors">
@@ -239,8 +239,8 @@ export default function HomePage({ params }: { params: { lang: string } }) {
                   role="img"
                   aria-label={locale === 'es' ? '5 estrellas de 5' : '5 out of 5 stars'}
                 >
-                  {[1, 2, 3, 4, 5].map(i => (
-                    <span key={i} className="material-symbols-outlined text-primary" style={{ fontSize: '16px', fontVariationSettings: "'FILL' 1" }} aria-hidden="true">star</span>
+                  {[1, 2, 3, 4, 5].map(star => (
+                    <span key={star} className="material-symbols-outlined text-primary" style={{ fontSize: '16px', fontVariationSettings: "'FILL' 1" }} aria-hidden="true">star</span>
                   ))}
                 </div>
                 <div className="font-label text-outline text-xs mt-1.5 tracking-wider">
@@ -261,8 +261,8 @@ export default function HomePage({ params }: { params: { lang: string } }) {
                   role="img"
                   aria-label={locale === 'es' ? '5 estrellas de 5' : '5 out of 5 stars'}
                 >
-                  {[1, 2, 3, 4, 5].map(i => (
-                    <span key={i} className="material-symbols-outlined text-primary" style={{ fontSize: '14px', fontVariationSettings: "'FILL' 1" }} aria-hidden="true">star</span>
+                  {[1, 2, 3, 4, 5].map(star => (
+                    <span key={star} className="material-symbols-outlined text-primary" style={{ fontSize: '14px', fontVariationSettings: "'FILL' 1" }} aria-hidden="true">star</span>
                   ))}
                 </div>
                 <p className="font-body text-secondary text-sm leading-relaxed italic line-clamp-5 flex-1">

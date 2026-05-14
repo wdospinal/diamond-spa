@@ -609,7 +609,7 @@ function LedgerModal({
                   onChange={e => setCategoryId(e.target.value)}
                   className="bg-[#0a2438] border border-[#42484c] focus:border-[#a5cce6] outline-none p-3 font-body text-sm text-[#cfe5fa]"
                 >
-                  <option value="">— Sin categoría —</option>
+                  <option value="">(Sin categoría)</option>
                   {categories.map(c => (
                     <option key={c.id} value={c.id}>
                       {c.name}
@@ -646,7 +646,7 @@ function LedgerModal({
               required
               value={dateKey}
               onChange={e => setDateKey(e.target.value)}
-              className="bg-[#0a2438] border-b border-[#42484c] focus:border-[#a5cce6] outline-none py-3 px-3 font-body text-sm text-[#cfe5fa] scheme-dark"
+              className="bg-[#0a2438] border-b border-[#42484c] focus:border-[#a5cce6] outline-none p-3 font-body text-sm text-[#cfe5fa] scheme-dark"
             />
           </div>
           <div className="flex flex-col gap-1">

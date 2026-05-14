@@ -112,8 +112,8 @@ export default function LocationPage({ params }: { params: { lang: string } }) {
           <div className="max-w-screen-2xl mx-auto">
             <div className="h-8 w-32 bg-surface-container-high animate-pulse rounded mb-8" />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[1, 2, 3].map(i => (
-                <div key={i} className="bg-surface-container-low p-8 h-48 animate-pulse rounded" />
+              {[1, 2, 3].map(num => (
+                <div key={num} className="bg-surface-container-low p-8 h-48 animate-pulse rounded" />
               ))}
             </div>
           </div>
