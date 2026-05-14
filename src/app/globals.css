@@ -26,9 +26,9 @@ body {
   color: #cfe5fa;
 }
 
-/* Material Symbols — loaded in <head> of layout.tsx via SSR stylesheet link */
+/* Material Symbols — self-hosted via next/font (variable: --font-material-symbols) */
 .material-symbols-outlined {
-  font-family: 'Material Symbols Outlined';
+  font-family: var(--font-material-symbols);
   font-weight: normal;
   font-style: normal;
   font-size: 24px;
