@@ -7,6 +7,7 @@ import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { SERVICES, formatCop, getServiceById, type DurationMinutes, type ServiceDef } from '@/lib/services'
 import { DURATION_MINUTES } from '@/lib/constants'
 import { buildAlternates, buildOpenGraph, BASE_URL, BUSINESS } from '@/lib/seo'
+import { JsonLd } from '@/components/JsonLd'
 
 export const dynamic = 'force-static'
 
@@ -93,8 +94,8 @@ export default function ServiceDetailPage({
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <JsonLd data={serviceJsonLd} />
+      <JsonLd data={breadcrumbJsonLd} />
       {/* Back link */}
       <div className="pt-32 pb-0 px-6 md:px-12">
         <div className="max-w-screen-2xl mx-auto">

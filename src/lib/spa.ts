@@ -12,7 +12,7 @@ export {
   getServicePrice,
   serviceDisplayName,
 } from './services'
-export type { ServiceDef, ServiceId, DurationMinutes } from './services'
+export type { ServiceDef, DurationMinutes } from './services'
 
 // ─── Identity ─────────────────────────────────────────────────────────────────
 

@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
 import { SPA_ADDRESS, SPA_PHONES } from '@/lib/spa'
+import { JsonLd } from '@/components/JsonLd'
 
 export const dynamic = 'force-static'
 
@@ -180,8 +181,8 @@ export default function MassageMedellinPage({ params }: { params: { lang: string
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd()) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd([...c.faqs])) }} />
+      <JsonLd data={localBusinessJsonLd()} />
+      <JsonLd data={faqJsonLd([...c.faqs])} />
 
       <main className="max-w-screen-xl mx-auto px-6 md:px-12 pt-32 pb-24">
 

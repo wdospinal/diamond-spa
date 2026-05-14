@@ -48,12 +48,15 @@ function getTimeSlots(year: number, month: number, day: number, durationMin: num
   return slots
 }
 
-function buildCalendar(year: number, month: number) {
+type CalCell = { key: string; day: number | null }
+
+function buildCalendar(year: number, month: number): CalCell[] {
   const firstDay = new Date(year, month, 1).getDay()
   const daysInMonth = new Date(year, month + 1, 0).getDate()
-  const cells: (number | null)[] = Array(firstDay).fill(null)
-  for (let d = 1; d <= daysInMonth; d++) cells.push(d)
-  while (cells.length % 7 !== 0) cells.push(null)
+  const cells: CalCell[] = []
+  for (let p = 0; p < firstDay; p++) cells.push({ key: `pad-${p}`, day: null })
+  for (let d = 1; d <= daysInMonth; d++) cells.push({ key: `day-${d}`, day: d })
+  while (cells.length % 7 !== 0) cells.push({ key: `pad-${cells.length}`, day: null })
   return cells
 }
 
@@ -444,8 +447,8 @@ export default function BookClient({ locale }: { locale: string }) {
                   {t.days.map(d => <div key={d} className="text-center font-label text-outline text-[10px] py-0.5">{d}</div>)}
                 </div>
                 <div className="grid grid-cols-7" role="grid">
-                  {cells.map((day, i) => {
-                    if (!day) return <div key={`empty-${i}`} role="gridcell" />
+                  {cells.map(({ key, day }) => {
+                    if (!day) return <div key={key} role="gridcell" />
                     const past = isPast(day)
                     const active = selectedDay === day
                     const dateLabel = `${t.months[calMonth]} ${day}, ${calYear}`
@@ -454,7 +457,7 @@ export default function BookClient({ locale }: { locale: string }) {
                       : dateLabel
                     return (
                       <button
-                        key={`day-${day}`}
+                        key={key}
                         type="button"
                         disabled={past}
                         onClick={() => { setSelectedDay(day); setSelectedTime(null) }}

@@ -13,6 +13,7 @@ import {
   SPA_GOOGLE_REVIEW_URL,
 } from '@/lib/spa'
 import { STATIC_REVIEWS } from '@/lib/reviews'
+import { JsonLd } from '@/components/JsonLd'
 
 export const dynamic = 'force-static'
 
@@ -61,10 +62,7 @@ export default function HomePage({ params }: { params: { lang: string } }) {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd()) }}
-      />
+      <JsonLd data={localBusinessJsonLd()} />
 
       {/* HERO */}
       <section className="relative min-h-dvh flex items-center overflow-hidden">

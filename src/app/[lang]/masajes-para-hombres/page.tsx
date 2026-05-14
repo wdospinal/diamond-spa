@@ -5,6 +5,7 @@ import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { getMassageServices, serviceDisplayName, serviceShortDesc } from '@/lib/services'
 import { SERVICE_DETAIL_FROM_MASAJES, SERVICE_DETAIL_FROM_QUERY } from '@/lib/service-detail-nav'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
+import { JsonLd } from '@/components/JsonLd'
 
 export const dynamic = 'force-static'
 
@@ -27,14 +28,8 @@ export default function MasajesParaHombresPage({ params }: { params: { lang: str
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd()) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(p.faqs)) }}
-      />
+      <JsonLd data={localBusinessJsonLd()} />
+      <JsonLd data={faqJsonLd(p.faqs)} />
 
       <main className="max-w-screen-xl mx-auto px-6 md:px-12 pt-32 pb-24">
 

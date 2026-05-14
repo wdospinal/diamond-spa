@@ -5,6 +5,7 @@ import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd } from '@/lib/seo'
 import { ReviewsSection } from '@/components/ReviewsSection'
+import { JsonLd } from '@/components/JsonLd'
 import { PHONES } from '@/lib/phones'
 import { SPA_ADDRESS, SPA_EMAIL } from '@/lib/spa'
 
@@ -29,10 +30,7 @@ export default function LocationPage({ params }: { params: { lang: string } }) {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd()) }}
-      />
+      <JsonLd data={localBusinessJsonLd()} />
       {/* HERO */}
       <header className="pt-12 md:pt-16 pb-20 px-6 md:px-12 bg-surface">
         <div className="max-w-screen-2xl mx-auto">

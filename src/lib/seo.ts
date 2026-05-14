@@ -14,7 +14,7 @@ import {
 
 export const BASE_URL = SPA_BASE_URL
 const DEFAULT_OG_IMAGE = SPA_OG_IMAGE
-export const SITE_NAME = SPA_NAME_FULL
+const SITE_NAME = SPA_NAME_FULL
 
 // ─── hreflang + canonical ─────────────────────────────────────────────────────
 

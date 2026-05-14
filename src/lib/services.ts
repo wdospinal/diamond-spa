@@ -351,7 +351,7 @@ export const SERVICES = [
   },
 ] as const satisfies readonly ServiceDef[]
 
-export type ServiceId = (typeof SERVICES)[number]['id']
+type ServiceId = (typeof SERVICES)[number]['id']
 
 /** e.g. 120_000 → `$ 120.000 COP` (Colombian-style grouping). */
 export function formatCop(amount: number): string {
