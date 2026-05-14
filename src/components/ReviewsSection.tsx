@@ -143,7 +143,7 @@ export async function ReviewsSection({ locale }: { locale: Locale }) {
                 <StarRating rating={place.rating} locale={locale} />
                 <span className="font-label text-outline text-xs tracking-widest inline-flex items-center gap-1.5">
                   {t.basedOn} {place.userRatingCount?.toLocaleString()}
-                  <GoogleLogo className="h-3.5 w-3.5" />
+                  <GoogleLogo className="size-3.5" />
                   {t.googleReviews}
                 </span>
               </div>

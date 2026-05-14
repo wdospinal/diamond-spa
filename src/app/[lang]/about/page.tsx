@@ -136,7 +136,7 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {t.therapists.map(({ role, years }, i) => (
-              <div key={i} className="group">
+              <div key={THERAPISTS_NAMES[i]} className="group">
                 <div className="relative mb-6 aspect-[3/4] overflow-hidden rounded-sm bg-surface-container ring-1 ring-outline-variant/10">
                   <Image
                     src={THERAPISTS_IMGS[i]}

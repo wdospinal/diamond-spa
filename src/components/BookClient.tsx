@@ -68,8 +68,8 @@ export default function BookClient({ locale }: { locale: string }) {
   const [selectedService, setSelectedService] = useState<string | null>(null)
   const [selectedDuration, setSelectedDuration] = useState<DurationMinutes | null>(null)
   const [selectedHairMethod, setSelectedHairMethod] = useState<'wax' | 'machine' | null>(null)
-  const [calYear, setCalYear] = useState(today.getFullYear())
-  const [calMonth, setCalMonth] = useState(today.getMonth())
+  const [calYear, setCalYear] = useState(() => today.getFullYear())
+  const [calMonth, setCalMonth] = useState(() => today.getMonth())
   const [selectedDay, setSelectedDay] = useState<number | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
   const [confirmed, setConfirmed] = useState(false)
@@ -445,7 +445,7 @@ export default function BookClient({ locale }: { locale: string }) {
                 </div>
                 <div className="grid grid-cols-7" role="grid">
                   {cells.map((day, i) => {
-                    if (!day) return <div key={i} role="gridcell" />
+                    if (!day) return <div key={`empty-${i}`} role="gridcell" />
                     const past = isPast(day)
                     const active = selectedDay === day
                     const dateLabel = `${t.months[calMonth]} ${day}, ${calYear}`
@@ -454,7 +454,7 @@ export default function BookClient({ locale }: { locale: string }) {
                       : dateLabel
                     return (
                       <button
-                        key={i}
+                        key={`day-${day}`}
                         type="button"
                         disabled={past}
                         onClick={() => { setSelectedDay(day); setSelectedTime(null) }}

@@ -17,13 +17,15 @@ type LedgerModalState =
   | { mode: 'create'; kind: 'income' | 'expense' }
   | { mode: 'edit'; entry: LedgerEntry }
 
+const BOGOTA_DATE_FMT = new Intl.DateTimeFormat('fr-CA', {
+  timeZone: 'America/Bogota',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+})
+
 function bogotaTodayKey(): string {
-  return new Intl.DateTimeFormat('fr-CA', {
-    timeZone: 'America/Bogota',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(new Date())
+  return BOGOTA_DATE_FMT.format(new Date())
 }
 
 function parseCopDigits(s: string): number | undefined {
@@ -469,7 +471,7 @@ function LedgerModal({
 }) {
   const [kind, setKind] = useState<'income' | 'expense'>('income')
   const [amount, setAmount] = useState('')
-  const [dateKey, setDateKey] = useState(bogotaTodayKey())
+  const [dateKey, setDateKey] = useState(() => bogotaTodayKey())
   const [note, setNote] = useState('')
   const [categoryId, setCategoryId] = useState('')
   const [amountCopStr, setAmountCopStr] = useState('')
@@ -586,7 +588,7 @@ function LedgerModal({
               required={kind === 'income'}
               value={amount}
               onChange={e => setAmount(e.target.value)}
-              className="bg-[#0a2438] border-b border-[#42484c] focus:border-[#a5cce6] outline-none py-3 px-3 font-body text-sm text-[#cfe5fa]"
+              className="bg-[#0a2438] border-b border-[#42484c] focus:border-[#a5cce6] outline-none p-3 font-body text-sm text-[#cfe5fa]"
               placeholder="0"
             />
             {copPreview && kind === 'income' ? (
@@ -605,7 +607,7 @@ function LedgerModal({
                   id="cat"
                   value={categoryId}
                   onChange={e => setCategoryId(e.target.value)}
-                  className="bg-[#0a2438] border border-[#42484c] focus:border-[#a5cce6] outline-none py-3 px-3 font-body text-sm text-[#cfe5fa]"
+                  className="bg-[#0a2438] border border-[#42484c] focus:border-[#a5cce6] outline-none p-3 font-body text-sm text-[#cfe5fa]"
                 >
                   <option value="">— Sin categoría —</option>
                   {categories.map(c => (
@@ -625,7 +627,7 @@ function LedgerModal({
                   inputMode="numeric"
                   value={amountCopStr}
                   onChange={e => setAmountCopStr(e.target.value)}
-                  className="bg-[#0a2438] border-b border-[#42484c] focus:border-[#a5cce6] outline-none py-3 px-3 font-body text-sm text-[#cfe5fa]"
+                  className="bg-[#0a2438] border-b border-[#42484c] focus:border-[#a5cce6] outline-none p-3 font-body text-sm text-[#cfe5fa]"
                   placeholder="Ej. 3000000 o 3.000.000"
                 />
                 <p className="text-[10px] text-[#5c656d]">
@@ -656,7 +658,7 @@ function LedgerModal({
               type="text"
               value={note}
               onChange={e => setNote(e.target.value)}
-              className="bg-[#0a2438] border-b border-[#42484c] focus:border-[#a5cce6] outline-none py-3 px-3 font-body text-sm text-[#cfe5fa]"
+              className="bg-[#0a2438] border-b border-[#42484c] focus:border-[#a5cce6] outline-none p-3 font-body text-sm text-[#cfe5fa]"
               placeholder="Ej. insumos, propina, etc."
             />
           </div>

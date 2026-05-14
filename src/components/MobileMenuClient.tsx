@@ -104,15 +104,14 @@ export default function MobileMenuClient({
               )
             })}
           </div>
-          <a
-            href="#"
-            role="button"
+          <button
+            type="button"
             aria-label={contactLabel}
-            onClick={(e) => { e.preventDefault(); setMenuOpen(false); window.open(randomWhatsAppUrl(waGreeting), '_blank', 'noopener,noreferrer') }}
+            onClick={() => { setMenuOpen(false); window.open(randomWhatsAppUrl(waGreeting), '_blank', 'noopener,noreferrer') }}
             className="w-fit border border-primary/40 text-primary px-8 py-3 font-label font-bold tracking-widest text-xs uppercase"
           >
             {contactLabel}
-          </a>
+          </button>
           <Link
             href={`/${locale}/book`}
             onClick={() => setMenuOpen(false)}

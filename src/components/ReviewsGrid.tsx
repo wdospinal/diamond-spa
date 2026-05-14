@@ -64,7 +64,7 @@ function AuthorAvatar({ name, photoUri }: { name: string; photoUri: string }) {
         width={44}
         height={44}
         unoptimized
-        className="h-11 w-11 rounded-full object-cover ring-2 ring-outline/10"
+        className="size-11 rounded-full object-cover ring-2 ring-outline/10"
         aria-hidden="true"
       />
     )
@@ -77,7 +77,7 @@ function AuthorAvatar({ name, photoUri }: { name: string; photoUri: string }) {
     .toUpperCase()
   return (
     <div
-      className="h-11 w-11 rounded-full bg-primary/15 flex items-center justify-center ring-2 ring-primary/20 shrink-0"
+      className="size-11 rounded-full bg-primary/15 flex items-center justify-center ring-2 ring-primary/20 shrink-0"
       aria-hidden="true"
     >
       <span className="font-label text-primary text-xs font-semibold tracking-wider">{initials}</span>
@@ -118,9 +118,9 @@ export function ReviewsGrid({ reviews, reviewUrl, leaveReviewLabel, locale }: Re
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {visible.map((review, i) => (
+        {visible.map((review) => (
           <div
-            key={i}
+            key={review.authorAttribution.displayName}
             className="group bg-surface-container-low hover:bg-surface-container p-7 flex flex-col gap-5 relative transition-colors duration-200"
           >
 
@@ -136,7 +136,7 @@ export function ReviewsGrid({ reviews, reviewUrl, leaveReviewLabel, locale }: Re
                   title={locale === 'es' ? 'Reseña de Google' : 'Review from Google'}
                   className="opacity-60 hover:opacity-100 transition-opacity shrink-0"
                 >
-                  <GoogleLogo className="h-4 w-4" />
+                  <GoogleLogo className="size-4" />
                 </a>
               )}
             </div>

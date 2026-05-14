@@ -38,7 +38,7 @@ export default function Navigation({ locale }: { locale: Locale }) {
             alt=""
             width={56}
             height={56}
-            className="h-14 w-14 object-contain"
+            className="size-14 object-contain"
             priority
             aria-hidden="true"
           />

@@ -1,14 +1,16 @@
 import type { BookingRecord } from '@/lib/booking-types'
 import type { LedgerEntry } from '@/lib/ledger-types'
 
+const BOGOTA_DATE_FMT = new Intl.DateTimeFormat('fr-CA', {
+  timeZone: 'America/Bogota',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+})
+
 /** Today's calendar date in America/Bogota as YYYY-MM-DD */
 export function todayKeyBogota(now = new Date()): string {
-  return new Intl.DateTimeFormat('fr-CA', {
-    timeZone: 'America/Bogota',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(now)
+  return BOGOTA_DATE_FMT.format(now)
 }
 
 function parseKey(key: string): { y: number; m: number; d: number } {

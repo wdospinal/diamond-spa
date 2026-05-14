@@ -7,8 +7,8 @@ type WhatsAppLinkProps = {
   children: React.ReactNode
   className?: string
 } & Omit<
-  React.AnchorHTMLAttributes<HTMLAnchorElement>,
-  'href' | 'onClick' | 'children' | 'className'
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  'onClick' | 'children' | 'className' | 'type'
 >
 
 export default function WhatsAppLink({
@@ -17,19 +17,14 @@ export default function WhatsAppLink({
   className,
   ...rest
 }: WhatsAppLinkProps) {
-  function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
-    e.preventDefault()
-    window.open(randomWhatsAppUrl(text), '_blank', 'noopener,noreferrer')
-  }
   return (
-    <a
-      href="#"
-      role="button"
-      onClick={handleClick}
+    <button
+      type="button"
+      onClick={() => window.open(randomWhatsAppUrl(text), '_blank', 'noopener,noreferrer')}
       className={className}
       {...rest}
     >
       {children}
-    </a>
+    </button>
   )
 }

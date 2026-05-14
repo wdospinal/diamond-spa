@@ -1,5 +1,8 @@
 import { copPerUsd } from '@/lib/cop-rate'
 
+const USD_FMT = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
+const COP_FMT = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 })
+
 export function getCopPerUsd(): number {
   return copPerUsd()
 }
@@ -9,25 +12,13 @@ export function usdToCop(usd: number): number {
 }
 
 export function formatUsd(usd: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: 0,
-  }).format(usd)
+  return USD_FMT.format(usd)
 }
 
 export function formatCopFromUsd(usd: number): string {
-  return new Intl.NumberFormat('es-CO', {
-    style: 'currency',
-    currency: 'COP',
-    maximumFractionDigits: 0,
-  }).format(usdToCop(usd))
+  return COP_FMT.format(usdToCop(usd))
 }
 
 export function formatCopValue(cop: number): string {
-  return new Intl.NumberFormat('es-CO', {
-    style: 'currency',
-    currency: 'COP',
-    maximumFractionDigits: 0,
-  }).format(cop)
+  return COP_FMT.format(cop)
 }

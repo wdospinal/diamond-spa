@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 
 const STORAGE_KEY = 'diamond_cookie_consent'
 
@@ -23,9 +24,9 @@ export default function CookieConsent() {
         Usamos analíticas anónimas para mejorar el sitio.{' '}
         <span className="text-on-surface/40 mx-1">/</span>{' '}
         We use anonymous analytics to improve the site.{' '}
-        <a href="/es/privacy" className="text-primary underline underline-offset-2 hover:text-on-surface transition-colors">
+        <Link href="/es/privacy" className="text-primary underline underline-offset-2 hover:text-on-surface transition-colors">
           Política de Privacidad
-        </a>
+        </Link>
       </p>
       <div className="flex gap-3 shrink-0">
         <button

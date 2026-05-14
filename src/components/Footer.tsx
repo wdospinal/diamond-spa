@@ -27,7 +27,7 @@ export default function Footer({ locale }: { locale: Locale }) {
     locale === 'es' ? `Llamar al ${display}` : `Call ${display}`
 
   return (
-    <footer className="bg-surface-container-low py-20 px-6 md:px-12" role="contentinfo">
+    <footer className="bg-surface-container-low py-20 px-6 md:px-12">
       <div className="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
 
         {/* Brand */}

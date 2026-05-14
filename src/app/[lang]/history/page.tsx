@@ -62,7 +62,7 @@ export default function HistoryPage({ params }: { params: { lang: string } }) {
             { number: t.stat2Number, label: t.stat2Label },
             { number: t.stat3Number, label: t.stat3Label },
           ].map(({ number, label }, i) => (
-            <div key={i} className={`py-12 px-10 text-center ${i < 2 ? 'border-r border-on-primary/20' : ''}`}>
+            <div key={label} className={`py-12 px-10 text-center ${i < 2 ? 'border-r border-on-primary/20' : ''}`}>
               <p className="font-headline text-3xl md:text-4xl text-on-primary mb-2">{number}</p>
               <p className="font-label text-on-primary/60 text-xs tracking-widest uppercase">{label}</p>
             </div>
@@ -92,7 +92,7 @@ export default function HistoryPage({ params }: { params: { lang: string } }) {
                 className="object-cover opacity-70"
               />
             </div>
-            <div className="absolute -bottom-6 -left-6 w-40 h-40 border border-primary/30 hidden md:block" />
+            <div className="absolute -bottom-6 -left-6 size-40 border border-primary/30 hidden md:block" />
           </div>
         </div>
       </section>

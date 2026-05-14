@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
 
   const res = await fetch(url, {
     method: 'POST',
+    cache: 'no-store',
     headers: {
       Authorization: `Basic ${credentials}`,
       'Content-Type': 'application/x-www-form-urlencoded',
