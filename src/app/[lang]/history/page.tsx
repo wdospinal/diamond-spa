@@ -28,6 +28,9 @@ export default function HistoryPage({ params }: { params: { lang: string } }) {
   if (!isLocale(params.lang)) notFound()
   const locale = params.lang as Locale
   const t = getDict(locale).history
+  const mapTitle = locale === 'es'
+    ? `Mapa de Google con la ubicación de Diamond Spa en ${SPA_ADDRESS.full}`
+    : `Google Map showing the location of Diamond Spa at ${SPA_ADDRESS.full}`
 
   return (
     <>
@@ -124,24 +127,17 @@ export default function HistoryPage({ params }: { params: { lang: string } }) {
         <div className="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-24 items-center">
           {/* Map embed */}
           <div className="overflow-hidden min-h-[400px]">
-            {(() => {
-              const mapTitle = locale === 'es'
-                ? `Mapa de Google con la ubicación de Diamond Spa en ${SPA_ADDRESS.full}`
-                : `Google Map showing the location of Diamond Spa at ${SPA_ADDRESS.full}`
-              return (
-                <iframe
-                  src="https://maps.google.com/maps?q=Cra+43C+%2310-42,+El+Poblado,+Medell%C3%ADn,+Antioquia&output=embed&z=16"
-                  width="100%"
-                  height="400"
-                  style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg)' }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title={mapTitle}
-                  aria-label={mapTitle}
-                />
-              )
-            })()}
+            <iframe
+              src="https://maps.google.com/maps?q=Cra+43C+%2310-42,+El+Poblado,+Medell%C3%ADn,+Antioquia&output=embed&z=16"
+              width="100%"
+              height="400"
+              style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg)' }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title={mapTitle}
+              aria-label={mapTitle}
+            />
           </div>
           <div>
             <span className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-6 block">{t.milestoneLabel}</span>

@@ -27,6 +27,9 @@ export default function LocationPage({ params }: { params: { lang: string } }) {
   if (!isLocale(params.lang)) notFound()
   const locale = params.lang as Locale
   const t = getDict(locale).location
+  const mapTitle = locale === 'es'
+    ? `Mapa de Google con la ubicación de Diamond Spa en ${SPA_ADDRESS.full}`
+    : `Google Map showing the location of Diamond Spa at ${SPA_ADDRESS.full}`
 
   return (
     <>
@@ -93,12 +96,8 @@ export default function LocationPage({ params }: { params: { lang: string } }) {
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title={locale === 'es'
-                ? `Mapa de Google con la ubicación de Diamond Spa en ${SPA_ADDRESS.full}`
-                : `Google Map showing the location of Diamond Spa at ${SPA_ADDRESS.full}`}
-              aria-label={locale === 'es'
-                ? `Mapa de Google con la ubicación de Diamond Spa en ${SPA_ADDRESS.full}`
-                : `Google Map showing the location of Diamond Spa at ${SPA_ADDRESS.full}`}
+              title={mapTitle}
+              aria-label={mapTitle}
             />
           </div>
         </div>
