@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Manrope, Material_Symbols_Outlined, Noto_Serif } from 'next/font/google'
+import { Manrope, Noto_Serif } from 'next/font/google'
 import './globals.css'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
@@ -19,12 +19,6 @@ const manrope = Manrope({
   display: 'optional',
 })
 
-const materialSymbols = Material_Symbols_Outlined({
-  subsets: ['latin'],
-  variable: '--font-material-symbols',
-  display: 'block',
-})
-
 export const metadata: Metadata = {
   title: 'Diamond Spa — Spa for Men and Women in Medellín',
   description:
@@ -38,7 +32,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={`dark ${notoSerif.variable} ${manrope.variable} ${materialSymbols.variable}`}>
+    <html lang="es" className={`dark ${notoSerif.variable} ${manrope.variable}`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
+        />
+      </head>
       <body className="bg-surface text-on-surface font-body antialiased">
         {children}
         <Analytics />
