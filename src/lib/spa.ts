@@ -42,8 +42,8 @@ export const SPA_PHONES = [
 export const SPA_INSTAGRAM = 'https://www.instagram.com/diamondmassagesmed/'
 
 export const SPA_WHATSAPP_GREETING = {
-  en: 'Hello, I would like to speak with the receptionist at Diamond Spa.',
-  es: 'Hola, quisiera hablar con la recepcionista de Diamond Spa.',
+  en: 'Hello, I would like to speak with the receptionist at Diamond Spa',
+  es: 'Hola, quisiera hablar con la recepcionista de Diamond Spa',
 } as const
 
 // ─── Location ─────────────────────────────────────────────────────────────────
