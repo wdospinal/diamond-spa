@@ -244,7 +244,7 @@ function HomeReviews({ locale }: { locale: Locale }) {
                 ))}
               </div>
               <div className="font-label text-outline text-xs mt-1.5 tracking-wider">
-                31 {loc.googleReviews}
+              {SPA_RATING.count} {loc.googleReviews}
               </div>
             </div>
           </div>
