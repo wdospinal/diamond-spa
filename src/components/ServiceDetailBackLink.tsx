@@ -15,8 +15,8 @@ type Props = {
 }
 
 function BackLinkInner({ locale, backToServices, backToMenMassages, backToHome, className }: Props) {
-  const { get } = useSearchParams()
-  const from = get(SERVICE_DETAIL_FROM_QUERY)
+  const searchParams = useSearchParams()
+  const from = searchParams.get(SERVICE_DETAIL_FROM_QUERY)
   if (from === SERVICE_DETAIL_FROM_MASAJES) {
     return (
       <Link href={`/${locale}/${SERVICE_DETAIL_FROM_MASAJES}`} className={className}>

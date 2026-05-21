@@ -371,11 +371,24 @@ export function getServiceById(id: string): ServiceDef | undefined {
   return servicesList.find(s => s.id === id)
 }
 
-export function getServicePrice(serviceId: string, minutes: number): number | undefined {
-  if (minutes !== 30 && minutes !== 60 && minutes !== 90) return undefined
+export function getServicePrice(
+  serviceId: string,
+  minutes: number | null,
+  hairMethod?: 'wax' | 'machine',
+): number | undefined {
   const s = getServiceById(serviceId)
-  if (!s || s.pricingModel !== 'duration') return undefined
-  return s.prices[minutes as DurationMinutes]
+  if (!s) return undefined
+  if (s.pricingModel === 'duration') {
+    if (minutes !== 30 && minutes !== 60 && minutes !== 90) return undefined
+    return s.prices[minutes as DurationMinutes]
+  }
+  if (s.pricingModel === 'flat') return s.price
+  if (s.pricingModel === 'wax-machine') {
+    if (hairMethod === 'wax') return s.waxPrice
+    if (hairMethod === 'machine') return s.machinePrice
+    return undefined
+  }
+  return undefined
 }
 
 export function serviceDisplayName(s: ServiceDef, locale: 'en' | 'es'): string {

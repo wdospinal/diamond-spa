@@ -7,8 +7,10 @@ export type BookingRecord = {
   scheduledAt: string
   serviceId: string
   serviceName: string
-  /** Duration in minutes (30, 60, or 90). */
-  durationMinutes: number
+  /** Duration in minutes (30, 60, or 90) — null for flat-rate and wax/machine services. */
+  durationMinutes: number | null
+  /** Wax or machine method — only present for hair-removal services. */
+  hairMethod?: 'wax' | 'machine'
   /** COP amount charged per the price list. */
   priceCop: number
   /** USD equivalent at booking time (COP / rate) — used by dashboard stats. */

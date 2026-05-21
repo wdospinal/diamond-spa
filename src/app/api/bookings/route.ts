@@ -50,9 +50,14 @@ export async function POST(req: NextRequest) {
   }
 
   const serviceId = typeof body.serviceId === 'string' ? body.serviceId : ''
-  const durationMinutes = typeof body.durationMinutes === 'number'
-    ? body.durationMinutes
-    : Number(body.durationMinutes)
+  const durationMinutes = body.durationMinutes == null
+    ? null
+    : typeof body.durationMinutes === 'number'
+      ? body.durationMinutes
+      : Number(body.durationMinutes)
+  const hairMethod = body.hairMethod === 'wax' ? 'wax' as const
+    : body.hairMethod === 'machine' ? 'machine' as const
+    : undefined
   const year = typeof body.year === 'number' ? body.year : Number(body.year)
   const monthIndex = typeof body.monthIndex === 'number' ? body.monthIndex : Number(body.monthIndex)
   const day = typeof body.day === 'number' ? body.day : Number(body.day)
@@ -66,8 +71,10 @@ export async function POST(req: NextRequest) {
 
   const service = getServiceById(serviceId)
   if (!service) return bad('Invalid service')
-  if (![30, 60, 90].includes(durationMinutes)) return bad('Invalid duration — must be 30, 60, or 90')
-  const priceCop = getServicePrice(serviceId, durationMinutes)
+  if (service.pricingModel === 'duration' && ![30, 60, 90].includes(durationMinutes as number)) {
+    return bad('Invalid duration — must be 30, 60, or 90')
+  }
+  const priceCop = getServicePrice(serviceId, durationMinutes, hairMethod)
   if (priceCop == null) return bad('Invalid service/duration combination')
 
   if (!Number.isInteger(year) || year < 2020 || year > 2100) return bad('Invalid year')
@@ -93,9 +100,10 @@ export async function POST(req: NextRequest) {
       serviceId: service.id,
       serviceName: serviceDisplayName(service, bookingLocale),
       durationMinutes,
+      hairMethod,
       priceCop,
       price: priceUsd,
-      duration: `${durationMinutes} min`,
+      duration: durationMinutes ? `${durationMinutes} min` : hairMethod ?? 'flat',
       firstName,
       lastName,
       email,

@@ -61,13 +61,13 @@ function buildCalendar(year: number, month: number): CalCell[] {
 }
 
 function ServicePreloader({ onSelect }: { onSelect: (id: string) => void }) {
-  const { get: getParam } = useSearchParams()
+  const searchParams = useSearchParams()
   useEffect(() => {
-    const svcParam = getParam('service')
+    const svcParam = searchParams.get('service')
     if (svcParam && ALL_BOOKABLE_SERVICES.find(s => s.id === svcParam)) {
       onSelect(svcParam)
     }
-  }, [getParam, onSelect])
+  }, [searchParams, onSelect])
   return null
 }
 
@@ -173,6 +173,7 @@ export default function BookClient({ locale }: { locale: string }) {
         body: JSON.stringify({
           serviceId: selectedService,
           durationMinutes: selectedDuration,
+          hairMethod: selectedHairMethod,
           year: calYear,
           monthIndex: calMonth,
           day: selectedDay,
