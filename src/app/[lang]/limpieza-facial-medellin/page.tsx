@@ -12,7 +12,7 @@ const content = {
   en: {
     metaTitle: 'Facial Cleansing in Medellín — Diamond Spa El Poblado',
     metaDesc:
-      'Professional facial cleansing in El Poblado, Medellín. ⭐ 5.0 · 31 Google reviews. Deep cleanse, HydraFacial & express facial. Medical-grade products. Book now.',
+      'Professional facial cleansing in El Poblado, Medellín. ⭐ 4.9 · 90 Google reviews. Deep cleanse, HydraFacial & express facial. Medical-grade products. Book now.',
     heroLabel: 'Facials · El Poblado, Medellín',
     h1: 'Facial Cleansing in Medellín',
     heroBody:
@@ -71,7 +71,7 @@ const content = {
   es: {
     metaTitle: 'Limpieza Facial en Medellín — Diamond Spa El Poblado',
     metaDesc:
-      'Limpieza facial profesional en El Poblado, Medellín. ⭐ 5.0 · 31 reseñas en Google. Limpieza profunda, HydraFacial y facial express. Productos de grado médico. Reserva ahora.',
+      'Limpieza facial profesional en El Poblado, Medellín. ⭐ 4.9 · 90 reseñas en Google. Limpieza profunda, HydraFacial y facial express. Productos de grado médico. Reserva ahora.',
     heroLabel: 'Faciales · El Poblado, Medellín',
     h1: 'Limpieza Facial en Medellín',
     heroBody:

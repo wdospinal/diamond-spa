@@ -31,8 +31,8 @@ export async function generateMetadata({ params }: { params: { lang: string } })
     ? 'Diamond Spa — Spa for Men and Women in Medellín'
     : 'Diamond Spa — Spa para Hombres y Mujeres en Medellín'
   const description = locale === 'en'
-    ? 'Massages & spa for men and women in El Poblado, Medellín. ⭐ 5.0 · 31 Google reviews. Relaxing, deep tissue, sports, facials & hair removal. From $120,000 COP — book online.'
-    : 'Masajes y spa para hombres y mujeres en El Poblado, Medellín. ⭐ 5.0 · 31 reseñas en Google. Relajante, deep tissue, deportivo, faciales. Desde $120.000 COP — reserva online.'
+    ? 'Massages & spa for men and women in El Poblado, Medellín. ⭐ 4.9 · 90 Google reviews. Relaxing, deep tissue, sports, facials & hair removal. From $120,000 COP — book online.'
+    : 'Masajes y spa para hombres y mujeres en El Poblado, Medellín. ⭐ 4.9 · 90 reseñas en Google. Relajante, deep tissue, deportivo, faciales. Desde $120.000 COP — reserva online.'
   return {
     title,
     description,

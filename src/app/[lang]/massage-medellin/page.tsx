@@ -12,13 +12,13 @@ const content = {
   en: {
     metaTitle: 'Massage in Medellín — Relaxation & Deep Tissue | Diamond Spa El Poblado',
     metaDesc:
-      'Best massage in Medellín, El Poblado. ⭐ 5.0 · 31 Google reviews. Relaxing, deep tissue, sports & 4-hands. Private rooms, bilingual staff. From $120,000 COP — book now.',
+      'Best massage in Medellín, El Poblado. ⭐ 4.9 · 90 Google reviews. Relaxing, deep tissue, sports & 4-hands. Private rooms, bilingual staff. From $120,000 COP — book now.',
     heroLabel: 'Massage · El Poblado, Medellín',
     h1: 'Massage in Medellín',
     heroBody:
       'Diamond Spa is Medellín\'s premier massage destination in El Poblado. We offer therapeutic and relaxation massages for men and women in a private, professional environment. Bilingual staff, private rooms, and staggered appointments for total discretion.',
     bookCta: 'Book a Massage',
-    ratingBadge: '⭐ 5.0 · 31 Google reviews',
+    ratingBadge: '⭐ 4.9 · 90 Google reviews',
     massagesTitle: 'Our Massages in Medellín',
     massages: [
       {
@@ -88,13 +88,13 @@ const content = {
   es: {
     metaTitle: 'Masaje en Medellín — Relajante y Deep Tissue | Diamond Spa El Poblado',
     metaDesc:
-      'El mejor masaje en Medellín, El Poblado. ⭐ 5.0 · 31 reseñas en Google. Relajante, deep tissue, deportivo y 4 manos. Cabinas privadas, personal bilingüe. Desde $120.000 COP.',
+      'El mejor masaje en Medellín, El Poblado. ⭐ 4.9 · 90 reseñas en Google. Relajante, deep tissue, deportivo y 4 manos. Cabinas privadas, personal bilingüe. Desde $120.000 COP.',
     heroLabel: 'Masajes · El Poblado, Medellín',
     h1: 'Masajes en Medellín',
     heroBody:
       'Diamond Spa es el destino de masajes premium de Medellín en El Poblado. Ofrecemos masajes terapéuticos y de relajación para hombres y mujeres en un ambiente privado y profesional. Personal bilingüe, cabinas privadas y citas escalonadas para total discreción.',
     bookCta: 'Reservar un Masaje',
-    ratingBadge: '⭐ 5.0 · 31 reseñas en Google',
+    ratingBadge: '⭐ 4.9 · 90 reseñas en Google',
     massagesTitle: 'Nuestros Masajes en Medellín',
     massages: [
       {
