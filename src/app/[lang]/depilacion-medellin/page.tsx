@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import { isLocale, type Locale } from '@/lib/i18n'
 import { SERVICES, formatCop } from '@/lib/services'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
-import { SPA_ADDRESS, SPA_PHONES } from '@/lib/spa'
+import { SPA_ADDRESS, SPA_PHONES, SPA_RATING } from '@/lib/spa'
 import { JsonLd } from '@/components/JsonLd'
 
 export const dynamic = 'force-static'
@@ -15,7 +15,7 @@ const content = {
   en: {
     metaTitle: 'Hair Removal in Medellín — Wax & Machine | Diamond Spa El Poblado',
     metaDesc:
-      'Professional hair removal in El Poblado, Medellín. ⭐ 5.0 · 90 Google reviews. Wax & machine: legs, bikini, underarm, back & full body. From $20,000 COP — book now.',
+      `Professional hair removal in El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} Google reviews. Wax & machine: legs, bikini, underarm, back & full body. From $20,000 COP — book now.`,
     ogImageAlt: 'Hair Removal in Medellín — Diamond Spa',
     heroLabel: 'El Poblado, Medellín',
     h1: 'Hair Removal in Medellín',
@@ -73,7 +73,7 @@ const content = {
   es: {
     metaTitle: 'Depilación en Medellín — Cera y Máquina | Diamond Spa El Poblado',
     metaDesc:
-      'Depilación profesional en El Poblado, Medellín. ⭐ 5.0 · 90 reseñas en Google. Cera y máquina: piernas, bikini, axilas, espalda y cuerpo completo. Desde $20.000 COP — reserva ahora.',
+      `Depilación profesional en El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reseñas en Google. Cera y máquina: piernas, bikini, axilas, espalda y cuerpo completo. Desde $20.000 COP — reserva ahora.`,
     ogImageAlt: 'Depilación en Medellín — Diamond Spa',
     heroLabel: 'El Poblado, Medellín',
     h1: 'Depilación en Medellín',

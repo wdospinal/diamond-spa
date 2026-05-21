@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
-import { SPA_ADDRESS } from '@/lib/spa'
+import { SPA_ADDRESS, SPA_RATING } from '@/lib/spa'
 import { JsonLd } from '@/components/JsonLd'
 
 export const dynamic = 'force-static'
@@ -12,7 +12,7 @@ const content = {
   en: {
     metaTitle: 'Facial Cleansing in Medellín — Deep, HydraFacial & Basic | Diamond Spa El Poblado',
     metaDesc:
-      'Professional facial cleansing in El Poblado, Medellín. ⭐ 5.0 · 90 Google reviews. Deep cleanse ($250,000), HydraFacial ($350,000) & basic ($150,000). Certified cosmetologists — book now.',
+      `Professional facial cleansing in El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} Google reviews. Deep cleanse ($250,000), HydraFacial ($350,000) & basic ($150,000). Certified cosmetologists — book now.`,
     heroLabel: 'Facials · El Poblado, Medellín',
     h1: 'Facial Cleansing in Medellín',
     heroBody:
@@ -71,7 +71,7 @@ const content = {
   es: {
     metaTitle: 'Limpieza Facial en Medellín — Profunda, HydraFacial y Básica | Diamond Spa El Poblado',
     metaDesc:
-      'Limpieza facial profesional en El Poblado, Medellín. ⭐ 5.0 · 90 reseñas. Profunda ($250.000), HydraFacial ($350.000) y básica ($150.000). Cosmetólogas certificadas — reserva ahora.',
+      `Limpieza facial profesional en El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reseñas. Profunda ($250.000), HydraFacial ($350.000) y básica ($150.000). Cosmetólogas certificadas — reserva ahora.`,
     heroLabel: 'Faciales · El Poblado, Medellín',
     h1: 'Limpieza Facial en Medellín',
     heroBody:

@@ -3,14 +3,14 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
-import { SPA_ADDRESS, SPA_HOURS } from '@/lib/spa'
+import { SPA_ADDRESS, SPA_HOURS, SPA_RATING } from '@/lib/spa'
 import { JsonLd } from '@/components/JsonLd'
 
 export const dynamic = 'force-static'
 
 const content = {
   en: {
-    metaTitle: 'Spa in El Poblado Medellín ⭐ 5.0 — Massages, Facials & Hair Removal | Diamond Spa',
+    metaTitle: `Spa in El Poblado Medellín ⭐ ${SPA_RATING.value} — Massages, Facials & Hair Removal | Diamond Spa`,
     metaDesc:
       'Diamond Spa: top-rated spa in El Poblado, Medellín. Bilingual staff, private rooms, discreet entrance. Massages, HydraFacial & professional hair removal. From $120,000 COP — book now.',
     heroLabel: 'El Poblado, Medellín',
@@ -43,7 +43,7 @@ const content = {
       {
         question: 'What are the best spas in El Poblado, Medellín?',
         answer:
-          'Diamond Spa is one of the top-rated spas in El Poblado with a 5.0 Google rating. We specialise in therapeutic massages, HydraFacial, and professional hair removal in a private and exclusive environment.',
+          `Diamond Spa is one of the top-rated spas in El Poblado with a ${SPA_RATING.value} Google rating. We specialise in therapeutic massages, HydraFacial, and professional hair removal in a private and exclusive environment.`,
       },
       {
         question: 'Do you offer massages in El Poblado for both men and women?',
@@ -64,7 +64,7 @@ const content = {
     ctaBody: 'Private arrival instructions sent 24 hours before. We look forward to welcoming you.',
   },
   es: {
-    metaTitle: 'Spa en El Poblado Medellín ⭐ 5.0 — Masajes, Faciales y Depilación | Diamond Spa',
+    metaTitle: `Spa en El Poblado Medellín ⭐ ${SPA_RATING.value} — Masajes, Faciales y Depilación | Diamond Spa`,
     metaDesc:
       'Diamond Spa: el mejor spa en El Poblado, Medellín. Personal bilingüe, cabinas privadas, entrada discreta. Masajes, HydraFacial y depilación profesional. Desde $120.000 COP — reserva ahora.',
     heroLabel: 'El Poblado, Medellín',
@@ -97,7 +97,7 @@ const content = {
       {
         question: '¿Cuáles son los mejores spas en El Poblado, Medellín?',
         answer:
-          'Diamond Spa es uno de los spas mejor valorados en El Poblado con una calificación de 5.0 en Google. Nos especializamos en masajes terapéuticos, HydraFacial y depilación profesional en un ambiente privado y exclusivo.',
+          `Diamond Spa es uno de los spas mejor valorados en El Poblado con una calificación de ${SPA_RATING.value} en Google. Nos especializamos en masajes terapéuticos, HydraFacial y depilación profesional en un ambiente privado y exclusivo.`,
       },
       {
         question: '¿Ofrecen masajes en El Poblado para hombres y mujeres?',
@@ -150,8 +150,8 @@ export default function SpaElPobladoPage({ params }: { params: { lang: string } 
           </h1>
           <p className="text-zinc-400 font-body text-lg leading-relaxed max-w-2xl mb-8">{c.heroBody}</p>
           <div className="flex items-center gap-4 mb-8">
-            <span className="font-label text-primary text-sm">⭐ 5.0</span>
-            <span className="font-body text-outline text-sm">· 90 {locale === 'es' ? 'reseñas en Google' : 'Google reviews'}</span>
+            <span className="font-label text-primary text-sm">⭐ {SPA_RATING.value}</span>
+            <span className="font-body text-outline text-sm">· {SPA_RATING.count} {locale === 'es' ? 'reseñas en Google' : 'Google reviews'}</span>
           </div>
           <Link
             href={`/${locale}/book`}

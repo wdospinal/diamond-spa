@@ -11,6 +11,7 @@ import {
   SPA_ADDRESS,
   SPA_GOOGLE_PLACES_ID,
   SPA_GOOGLE_REVIEW_URL,
+  SPA_RATING,
 } from '@/lib/spa'
 import { STATIC_REVIEWS } from '@/lib/reviews'
 import { JsonLd } from '@/components/JsonLd'
@@ -28,11 +29,11 @@ const FEATURED_REVIEWS = STATIC_REVIEWS.slice(0, 3)
 export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
   const locale = isLocale(params.lang) ? params.lang : 'es'
   const title = locale === 'en'
-    ? 'Diamond Spa Medellín — Spa for Men and Women | El Poblado ⭐ 5.0'
-    : 'Diamond Spa Medellín — Masajes y Spa para Hombres y Mujeres | El Poblado ⭐ 5.0'
+    ? `Diamond Spa Medellín — Spa for Men and Women | El Poblado ⭐ ${SPA_RATING.value}`
+    : `Diamond Spa Medellín — Masajes y Spa para Hombres y Mujeres | El Poblado ⭐ ${SPA_RATING.value}`
   const description = locale === 'en'
-    ? 'Spa in El Poblado, Medellín for men and women. Relaxing, deep tissue, sports & 4-hands massages · Facials · Hair removal. ⭐ 5.0 · 90 Google reviews. From $120,000 COP — book now.'
-    : 'Spa en El Poblado, Medellín para hombres y mujeres. Masajes relajantes, deep tissue, deportivo, 4 manos · Faciales · Depilación. ⭐ 5.0 · 90 reseñas. Desde $120.000 COP — reserva ahora.'
+    ? `Spa in El Poblado, Medellín for men and women. Relaxing, deep tissue, sports & 4-hands massages · Facials · Hair removal. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} Google reviews. From $120,000 COP — book now.`
+    : `Spa en El Poblado, Medellín para hombres y mujeres. Masajes relajantes, deep tissue, deportivo, 4 manos · Faciales · Depilación. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reseñas. Desde $120.000 COP — reserva ahora.`
   return {
     title,
     description,
@@ -103,7 +104,7 @@ function HomeHero({ locale }: { locale: Locale }) {
                 ))}
               </div>
               <span className="font-label text-on-surface text-xs tracking-wider group-hover:text-primary transition-colors">
-                5.0 · 90 {locale === 'es' ? 'reseñas de Google' : 'Google reviews'}
+                {SPA_RATING.value} · {SPA_RATING.count} {locale === 'es' ? 'reseñas de Google' : 'Google reviews'}
               </span>
             </a>
             <span className="w-px h-3 bg-outline-variant/30 hidden sm:block" aria-hidden="true" />
@@ -232,7 +233,7 @@ function HomeReviews({ locale }: { locale: Locale }) {
           </div>
           <div className="flex items-end gap-4 shrink-0">
             <div className="text-right">
-              <div className="font-headline text-5xl text-on-surface leading-none">5.0</div>
+              <div className="font-headline text-5xl text-on-surface leading-none">{SPA_RATING.value}</div>
               <div
                 className="flex gap-0.5 justify-end mt-2"
                 role="img"

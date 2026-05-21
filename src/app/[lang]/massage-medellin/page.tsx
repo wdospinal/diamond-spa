@@ -3,22 +3,22 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
-import { SPA_ADDRESS, SPA_PHONES } from '@/lib/spa'
+import { SPA_ADDRESS, SPA_PHONES, SPA_RATING } from '@/lib/spa'
 import { JsonLd } from '@/components/JsonLd'
 
 export const dynamic = 'force-static'
 
 const content = {
   en: {
-    metaTitle: 'Best Massage in Medellín Near You ⭐ 5.0 — El Poblado | Diamond Spa',
+    metaTitle: `Best Massage in Medellín Near You ⭐ ${SPA_RATING.value} — El Poblado | Diamond Spa`,
     metaDesc:
-      'Massage near El Poblado, Medellín. ⭐ 5.0 · 90 Google reviews. Relaxing, deep tissue, sports & 4-hands. Private rooms, bilingual staff. From $120,000 COP — book online.',
+      `Massage near El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} Google reviews. Relaxing, deep tissue, sports & 4-hands. Private rooms, bilingual staff. From $120,000 COP — book online.`,
     heroLabel: 'Massage · El Poblado, Medellín',
     h1: 'Massage in Medellín',
     heroBody:
       'Diamond Spa is Medellín\'s premier massage destination in El Poblado. If you\'re searching for a massage near you in El Poblado or Medellín\'s city center, we\'re minutes away from Parque El Poblado. Therapeutic and relaxation massages for men and women in a private, professional environment with bilingual staff.',
     bookCta: 'Book a Massage',
-    ratingBadge: '⭐ 4.9 · 90 Google reviews',
+    ratingBadge: `⭐ ${SPA_RATING.value} · ${SPA_RATING.count} Google reviews`,
     massagesTitle: 'Our Massages in Medellín',
     massages: [
       {
@@ -71,7 +71,7 @@ const content = {
       {
         question: 'Is Diamond Spa a good massage place in Medellín?',
         answer:
-          'Diamond Spa has a 5.0 Google rating from 90 reviews — making it one of the top-rated massage spas in Medellín. We specialise in therapeutic bodywork in a private, exclusive environment.',
+          `Diamond Spa has a ${SPA_RATING.value} Google rating from ${SPA_RATING.count} reviews — making it one of the top-rated massage spas in Medellín. We specialise in therapeutic bodywork in a private, exclusive environment.`,
       },
       {
         question: 'Do you offer massages near El Poblado?',
@@ -88,13 +88,13 @@ const content = {
   es: {
     metaTitle: 'Masaje en Medellín — Relajante y Deep Tissue | Diamond Spa El Poblado',
     metaDesc:
-      'El mejor masaje en Medellín, El Poblado. ⭐ 4.9 · 90 reseñas en Google. Relajante, deep tissue, deportivo y 4 manos. Cabinas privadas, personal bilingüe. Desde $120.000 COP.',
+      `El mejor masaje en Medellín, El Poblado. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reseñas en Google. Relajante, deep tissue, deportivo y 4 manos. Cabinas privadas, personal bilingüe. Desde $120.000 COP.`,
     heroLabel: 'Masajes · El Poblado, Medellín',
     h1: 'Masajes en Medellín',
     heroBody:
       'Diamond Spa es el destino de masajes premium de Medellín en El Poblado. Ofrecemos masajes terapéuticos y de relajación para hombres y mujeres en un ambiente privado y profesional. Personal bilingüe, cabinas privadas y citas escalonadas para total discreción.',
     bookCta: 'Reservar un Masaje',
-    ratingBadge: '⭐ 4.9 · 90 reseñas en Google',
+    ratingBadge: `⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reseñas en Google`,
     massagesTitle: 'Nuestros Masajes en Medellín',
     massages: [
       {
@@ -147,7 +147,7 @@ const content = {
       {
         question: '¿Es Diamond Spa un buen lugar para masajes en Medellín?',
         answer:
-          'Diamond Spa tiene una calificación de 5.0 en Google con 90 reseñas — uno de los spas de masajes mejor valorados en Medellín. Nos especializamos en trabajo corporal terapéutico en un ambiente privado y exclusivo.',
+          `Diamond Spa tiene una calificación de ${SPA_RATING.value} en Google con ${SPA_RATING.count} reseñas — uno de los spas de masajes mejor valorados en Medellín. Nos especializamos en trabajo corporal terapéutico en un ambiente privado y exclusivo.`,
       },
       {
         question: '¿Ofrecen masajes cerca de El Poblado?',

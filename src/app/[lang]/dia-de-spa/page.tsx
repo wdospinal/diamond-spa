@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
-import { SPA_ADDRESS, SPA_PHONES } from '@/lib/spa'
+import { SPA_ADDRESS, SPA_PHONES, SPA_RATING } from '@/lib/spa'
 import { JsonLd } from '@/components/JsonLd'
 
 export const dynamic = 'force-static'
@@ -12,7 +12,7 @@ const content = {
   en: {
     metaTitle: 'Spa Day in Medellín — Relaxation Packages | Diamond Spa El Poblado',
     metaDesc:
-      'Treat yourself to a full spa day in Medellín, El Poblado. ⭐ 4.9 · 90 Google reviews. Massage + facial packages. Private rooms, bilingual staff. Book now.',
+      `Treat yourself to a full spa day in Medellín, El Poblado. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} Google reviews. Massage + facial packages. Private rooms, bilingual staff. Book now.`,
     heroLabel: 'El Poblado, Medellín',
     h1: 'Spa Day in Medellín',
     heroBody:
@@ -79,7 +79,7 @@ const content = {
   es: {
     metaTitle: 'Día de Spa en Medellín — Paquetes Relajantes | Diamond Spa El Poblado',
     metaDesc:
-      'Regálate un día de spa completo en Medellín, El Poblado. ⭐ 4.9 · 90 reseñas en Google. Paquetes masaje + facial. Cabinas privadas, personal bilingüe. Reserva ahora.',
+      `Regálate un día de spa completo en Medellín, El Poblado. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reseñas en Google. Paquetes masaje + facial. Cabinas privadas, personal bilingüe. Reserva ahora.`,
     heroLabel: 'El Poblado, Medellín',
     h1: 'Día de Spa en Medellín',
     heroBody:
