@@ -294,9 +294,9 @@ const dict = {
     },
 
     masajesParaHombres: {
-      metaTitle: 'Massages for Men in Medellín — Diamond Spa El Poblado',
+      metaTitle: 'Massages for Men in Medellín ⭐ 5.0 — From $120,000 COP | Diamond Spa',
       metaDesc:
-        'Massages for men in El Poblado, Medellín. ⭐ 4.9 · 90 Google reviews. Relaxing, deep tissue, sports & 4-hands. Private rooms, bilingual staff. From $120,000 COP — book now.',
+        'Top-rated spa for men in El Poblado, Medellín. Relaxing, Deep Tissue, Sports & 4-Hands. Private rooms · 90 five-star reviews. Book online in 60 seconds.',
       ogImageAlt: 'Massages for Men in Medellín — Diamond Spa',
       heroLabel: 'El Poblado, Medellín',
       heroTitle: 'Massages for Men in Medellín',
@@ -345,6 +345,9 @@ const dict = {
       aboutUsLabel: 'About us',
       services: 'Services',
       massagesForMen: 'Massages for Men',
+      massagesForWomen: 'Massages for Women',
+      hairRemoval: 'Hair Removal',
+      facials: 'Facials',
       philosophy: 'Philosophy',
       heritage: 'Our Heritage',
       location: 'Location',
@@ -599,9 +602,9 @@ const dict = {
     },
 
     masajesParaHombres: {
-      metaTitle: 'Masajes para Hombres en Medellín — Diamond Spa El Poblado',
+      metaTitle: 'Masajes para Hombres en Medellín ⭐ 5.0 — Desde $120.000 COP | Diamond Spa',
       metaDesc:
-        'Masajes para hombres en El Poblado, Medellín. ⭐ 4.9 · 90 reseñas en Google. Relajante, deep tissue, deportivo y 4 manos. Cabinas privadas, personal bilingüe. Desde $120.000 COP — agenda hoy.',
+        'El spa para hombres en El Poblado, Medellín. Relajante, Deep Tissue, Deportivo y 4 Manos. Cabinas privadas · 90 reseñas de 5 estrellas. Reserva online en 60 segundos.',
       ogImageAlt: 'Masajes para Hombres en Medellín — Diamond Spa',
       heroLabel: 'El Poblado, Medellín',
       heroTitle: 'Masajes para Hombres en Medellín',
@@ -650,6 +653,9 @@ const dict = {
       aboutUsLabel: 'Sobre nosotros',
       services: 'Servicios',
       massagesForMen: 'Masajes para Hombres',
+      massagesForWomen: 'Masajes para Mujeres',
+      hairRemoval: 'Depilación',
+      facials: 'Faciales',
       philosophy: 'Filosofía',
       heritage: 'Nuestra Historia',
       location: 'Ubicación',

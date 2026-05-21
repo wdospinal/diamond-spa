@@ -10,13 +10,13 @@ export const dynamic = 'force-static'
 
 const content = {
   en: {
-    metaTitle: 'Massage in Medellín — Relaxation & Deep Tissue | Diamond Spa El Poblado',
+    metaTitle: 'Best Massage in Medellín Near You ⭐ 5.0 — El Poblado | Diamond Spa',
     metaDesc:
-      'Best massage in Medellín, El Poblado. ⭐ 4.9 · 90 Google reviews. Relaxing, deep tissue, sports & 4-hands. Private rooms, bilingual staff. From $120,000 COP — book now.',
+      'Massage near El Poblado, Medellín. ⭐ 5.0 · 90 Google reviews. Relaxing, deep tissue, sports & 4-hands. Private rooms, bilingual staff. From $120,000 COP — book online.',
     heroLabel: 'Massage · El Poblado, Medellín',
     h1: 'Massage in Medellín',
     heroBody:
-      'Diamond Spa is Medellín\'s premier massage destination in El Poblado. We offer therapeutic and relaxation massages for men and women in a private, professional environment. Bilingual staff, private rooms, and staggered appointments for total discretion.',
+      'Diamond Spa is Medellín\'s premier massage destination in El Poblado. If you\'re searching for a massage near you in El Poblado or Medellín\'s city center, we\'re minutes away from Parque El Poblado. Therapeutic and relaxation massages for men and women in a private, professional environment with bilingual staff.',
     bookCta: 'Book a Massage',
     ratingBadge: '⭐ 4.9 · 90 Google reviews',
     massagesTitle: 'Our Massages in Medellín',

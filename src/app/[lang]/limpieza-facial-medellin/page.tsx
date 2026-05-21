@@ -10,9 +10,9 @@ export const dynamic = 'force-static'
 
 const content = {
   en: {
-    metaTitle: 'Facial Cleansing in Medellín — Diamond Spa El Poblado',
+    metaTitle: 'Facial Cleansing in Medellín — Deep, HydraFacial & Basic | Diamond Spa El Poblado',
     metaDesc:
-      'Professional facial cleansing in El Poblado, Medellín. ⭐ 4.9 · 90 Google reviews. Deep cleanse, HydraFacial & express facial. Medical-grade products. Book now.',
+      'Professional facial cleansing in El Poblado, Medellín. ⭐ 5.0 · 90 Google reviews. Deep cleanse ($250,000), HydraFacial ($350,000) & basic ($150,000). Certified cosmetologists — book now.',
     heroLabel: 'Facials · El Poblado, Medellín',
     h1: 'Facial Cleansing in Medellín',
     heroBody:
@@ -27,9 +27,9 @@ const content = {
     ],
     treatmentsTitle: 'Our Facial Treatments',
     treatments: [
-      { name: 'HydraFacial', desc: 'Our most advanced facial treatment. 3-step process: deep cleanse, gentle acid exfoliation, and intense hydration with hyaluronic acid and antioxidants.', href: '/services/hidrafacial' },
-      { name: 'Deep Facial Cleanse', desc: 'Manual and mechanical extraction of impurities, blackheads, and excess sebum. Ideal for oily or congested skin.', href: '/services/limpieza-profunda-facial' },
-      { name: 'Express Facial', desc: 'A quick yet effective cleanse and hydration session. Perfect for regular maintenance or as part of a spa day.', href: '/services/facial-express' },
+      { name: 'HydraFacial', desc: 'Our most advanced facial treatment. 3-step process: deep cleanse, gentle acid exfoliation, and intense hydration with hyaluronic acid and antioxidants.', href: '/hydrafacial-medellin' },
+      { name: 'Deep Facial Cleanse', desc: 'Manual and mechanical extraction of impurities, blackheads, and excess sebum. Ideal for oily or congested skin.', href: '/services/limpieza-facial-profunda' },
+      { name: 'Basic Facial Cleanse', desc: 'A quick yet effective cleanse and hydration session. Perfect for regular maintenance or as part of a spa day.', href: '/services/limpieza-facial-basica' },
     ],
     processTitle: 'Our Process',
     steps: [
@@ -69,9 +69,9 @@ const content = {
     ctaBody: 'Professional facial treatments by certified cosmetologists. Private room, exclusive environment.',
   },
   es: {
-    metaTitle: 'Limpieza Facial en Medellín — Diamond Spa El Poblado',
+    metaTitle: 'Limpieza Facial en Medellín — Profunda, HydraFacial y Básica | Diamond Spa El Poblado',
     metaDesc:
-      'Limpieza facial profesional en El Poblado, Medellín. ⭐ 4.9 · 90 reseñas en Google. Limpieza profunda, HydraFacial y facial express. Productos de grado médico. Reserva ahora.',
+      'Limpieza facial profesional en El Poblado, Medellín. ⭐ 5.0 · 90 reseñas. Profunda ($250.000), HydraFacial ($350.000) y básica ($150.000). Cosmetólogas certificadas — reserva ahora.',
     heroLabel: 'Faciales · El Poblado, Medellín',
     h1: 'Limpieza Facial en Medellín',
     heroBody:
@@ -86,9 +86,9 @@ const content = {
     ],
     treatmentsTitle: 'Nuestros Tratamientos Faciales',
     treatments: [
-      { name: 'HydraFacial', desc: 'Nuestro tratamiento facial más avanzado. Proceso de 3 pasos: limpieza profunda, exfoliación suave con ácidos e hidratación intensa con ácido hialurónico y antioxidantes.', href: '/services/hidrafacial' },
-      { name: 'Limpieza Facial Profunda', desc: 'Extracción manual y mecánica de impurezas, puntos negros y exceso de sebo. Ideal para pieles grasas o congestionadas.', href: '/services/limpieza-profunda-facial' },
-      { name: 'Facial Express', desc: 'Una sesión de limpieza e hidratación rápida pero efectiva. Perfecta para mantenimiento regular o como parte de un día de spa.', href: '/services/facial-express' },
+      { name: 'HydraFacial', desc: 'Nuestro tratamiento facial más avanzado. Proceso de 3 pasos: limpieza profunda, exfoliación suave con ácidos e hidratación intensa con ácido hialurónico y antioxidantes.', href: '/hydrafacial-medellin' },
+      { name: 'Limpieza Facial Profunda', desc: 'Extracción manual y mecánica de impurezas, puntos negros y exceso de sebo. Ideal para pieles grasas o congestionadas.', href: '/services/limpieza-facial-profunda' },
+      { name: 'Limpieza Facial Básica', desc: 'Una sesión de limpieza e hidratación rápida pero efectiva. Perfecta para mantenimiento regular o como parte de un día de spa.', href: '/services/limpieza-facial-basica' },
     ],
     processTitle: 'Nuestro Proceso',
     steps: [

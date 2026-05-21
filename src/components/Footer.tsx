@@ -41,6 +41,9 @@ export default function Footer({ locale }: { locale: Locale }) {
           <h5 className="text-on-surface font-label text-xs tracking-widest uppercase mb-2">{t.aboutUsLabel}</h5>
           <Link href={`/${locale}/services`} className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.services}</Link>
           <Link href={`/${locale}/masajes-para-hombres`} className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.massagesForMen}</Link>
+          <Link href={`/${locale}/masajes-para-mujeres`} className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.massagesForWomen}</Link>
+          <Link href={`/${locale}/depilacion-medellin`} className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.hairRemoval}</Link>
+          <Link href={`/${locale}/limpieza-facial-medellin`} className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.facials}</Link>
           <Link href={`/${locale}/about`}    className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.philosophy}</Link>
           <Link href={`/${locale}/history`}  className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.heritage}</Link>
           <Link href={`/${locale}/location`} className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.location}</Link>

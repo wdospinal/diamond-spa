@@ -10,6 +10,7 @@ import {
   SPA_ADDRESS,
   SPA_GEO,
   SPA_HOURS,
+  SPA_RATING,
 } from './spa'
 
 export const BASE_URL = SPA_BASE_URL
@@ -120,10 +121,10 @@ export function localBusinessJsonLd() {
     })),
     aggregateRating: {
       '@type': 'AggregateRating',
-      ratingValue: '5.0',
+      ratingValue: SPA_RATING.value,
       bestRating: '5',
       worstRating: '1',
-      reviewCount: '31',
+      reviewCount: String(SPA_RATING.count),
     },
     priceRange: '$$',
     servesCuisine: undefined,
