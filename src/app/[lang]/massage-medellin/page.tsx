@@ -71,7 +71,7 @@ const content = {
       {
         question: 'Is Diamond Spa a good massage place in Medellín?',
         answer:
-          'Diamond Spa has a 5.0 Google rating from 31 reviews — making it one of the top-rated massage spas in Medellín. We specialise in therapeutic bodywork in a private, exclusive environment.',
+          'Diamond Spa has a 5.0 Google rating from 90 reviews — making it one of the top-rated massage spas in Medellín. We specialise in therapeutic bodywork in a private, exclusive environment.',
       },
       {
         question: 'Do you offer massages near El Poblado?',
@@ -147,7 +147,7 @@ const content = {
       {
         question: '¿Es Diamond Spa un buen lugar para masajes en Medellín?',
         answer:
-          'Diamond Spa tiene una calificación de 5.0 en Google con 31 reseñas — uno de los spas de masajes mejor valorados en Medellín. Nos especializamos en trabajo corporal terapéutico en un ambiente privado y exclusivo.',
+          'Diamond Spa tiene una calificación de 5.0 en Google con 90 reseñas — uno de los spas de masajes mejor valorados en Medellín. Nos especializamos en trabajo corporal terapéutico en un ambiente privado y exclusivo.',
       },
       {
         question: '¿Ofrecen masajes cerca de El Poblado?',

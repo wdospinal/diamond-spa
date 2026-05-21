@@ -103,7 +103,7 @@ function HomeHero({ locale }: { locale: Locale }) {
                 ))}
               </div>
               <span className="font-label text-on-surface text-xs tracking-wider group-hover:text-primary transition-colors">
-                5.0 · 31 {locale === 'es' ? 'reseñas de Google' : 'Google reviews'}
+                5.0 · 90 {locale === 'es' ? 'reseñas de Google' : 'Google reviews'}
               </span>
             </a>
             <span className="w-px h-3 bg-outline-variant/30 hidden sm:block" aria-hidden="true" />

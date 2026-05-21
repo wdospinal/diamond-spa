@@ -151,7 +151,7 @@ export default function SpaElPobladoPage({ params }: { params: { lang: string } 
           <p className="text-zinc-400 font-body text-lg leading-relaxed max-w-2xl mb-8">{c.heroBody}</p>
           <div className="flex items-center gap-4 mb-8">
             <span className="font-label text-primary text-sm">⭐ 5.0</span>
-            <span className="font-body text-outline text-sm">· 31 {locale === 'es' ? 'reseñas en Google' : 'Google reviews'}</span>
+            <span className="font-body text-outline text-sm">· 90 {locale === 'es' ? 'reseñas en Google' : 'Google reviews'}</span>
           </div>
           <Link
             href={`/${locale}/book`}
