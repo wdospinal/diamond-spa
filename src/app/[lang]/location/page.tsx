@@ -6,6 +6,7 @@ import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd } from '@/lib/seo'
 import { ReviewsSection } from '@/components/ReviewsSection'
 import { JsonLd } from '@/components/JsonLd'
+import MapEmbed from '@/components/MapEmbed'
 import { PHONES } from '@/lib/phones'
 import { SPA_ADDRESS, SPA_EMAIL } from '@/lib/spa'
 
@@ -88,16 +89,13 @@ export default function LocationPage({ params }: { params: { lang: string } }) {
             </a>
           </div>
           <div className="min-h-[460px] overflow-hidden">
-            <iframe
+            {/* MapEmbed defers Google Maps JS until the map scrolls into view,
+                saving ~200 KB of third-party script from blocking TBT. */}
+            <MapEmbed
               src="https://maps.google.com/maps?q=Cra+43C+%2310-42,+El+Poblado,+Medell%C3%ADn,+Antioquia&output=embed&z=16"
-              width="100%"
-              height="460"
-              style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg)' }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
               title={mapTitle}
-              aria-label={mapTitle}
+              height={460}
+              style={{ filter: 'invert(90%) hue-rotate(180deg)' }}
             />
           </div>
         </div>

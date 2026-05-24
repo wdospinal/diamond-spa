@@ -2,7 +2,9 @@
 
 import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { getDict, type Locale } from '@/lib/i18n'
+// Type-only import — erased at compile time, does NOT add i18n to the client bundle.
+// The dict value is computed on the server (book/page.tsx) and passed as a prop.
+import type { Locale, Dict } from '@/lib/i18n'
 import { SERVICES, formatCop, type DurationMinutes, type ServiceDef } from '@/lib/services'
 import { DAY_NAMES, DURATION_MINUTES } from '@/lib/constants'
 import { randomWhatsAppUrl, SPA_HOURS } from '@/lib/spa'
@@ -71,10 +73,15 @@ function ServicePreloader({ onSelect }: { onSelect: (id: string) => void }) {
   return null
 }
 
-export default function BookClient({ locale }: { locale: string }) {
+export default function BookClient({
+  locale,
+  t,
+}: {
+  locale: string
+  /** Book-section dictionary pre-computed on the server to keep i18n out of the client bundle. */
+  t: Dict['book']
+}) {
   const lang = (locale === 'en' ? 'en' : 'es') as Locale
-  const t = getDict(lang).book
-  const tSvc = getDict(lang).services
 
   const today = new Date()
   const [selectedService, setSelectedService] = useState<string | null>(null)

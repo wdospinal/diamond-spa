@@ -50,6 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* DNS prefetch for third-party image/resource CDNs */}
         <link rel="dns-prefetch" href="https://lh3.googleusercontent.com" />
         <link rel="dns-prefetch" href="https://maps.googleapis.com" />
+        <link rel="dns-prefetch" href="https://api.dicebear.com" />
       </head>
       <body className="bg-surface text-on-surface font-body antialiased">
         {children}

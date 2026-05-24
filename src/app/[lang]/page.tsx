@@ -275,7 +275,6 @@ function HomeReviews({ locale }: { locale: Locale }) {
                   aria-hidden="true"
                   width={40}
                   height={40}
-                  unoptimized
                   className="size-10 rounded-full object-cover"
                 />
                 <div>

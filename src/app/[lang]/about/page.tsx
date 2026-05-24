@@ -145,7 +145,7 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
                       : `Portrait of ${THERAPISTS_NAMES[i]}, certified ${role.toLowerCase()} from the Diamond Spa team`}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover opacity-70 grayscale transition-all duration-700 group-hover:opacity-100 group-hover:grayscale-0"
+                    className="object-cover opacity-70 grayscale transition-[filter,opacity] duration-700 group-hover:opacity-100 group-hover:grayscale-0"
                   />
                 </div>
                 <h4 className="font-headline text-xl text-on-surface mb-1">{THERAPISTS_NAMES[i]}</h4>

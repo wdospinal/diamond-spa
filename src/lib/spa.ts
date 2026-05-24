@@ -112,7 +112,8 @@ export const SPA_BASE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ?? 'https://diamondspa.com.co'
 
 export const SPA_OG_IMAGE = `${SPA_BASE_URL}/og-image.jpg`
-export const SPA_LOGO = `${SPA_BASE_URL}/logo.png`
+// logo.webp exists in /public — was previously pointing to a non-existent logo.png
+export const SPA_LOGO = `${SPA_BASE_URL}/logo.webp`
 
 export const SPA_KEYWORDS =
   'spa medellin, masajes medellin, masajes para hombres en medellin, masajes medellin para hombres, spa para hombres medellin, masajes el poblado, spa el poblado, diamond spa, masajes de lujo, medellin antioquia, masaje relajante medellin, masaje deportivo medellin, deep tissue medellin, depilacion masculina medellin, spa para mujeres medellin'
