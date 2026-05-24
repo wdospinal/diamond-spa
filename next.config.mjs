@@ -71,6 +71,11 @@ const nextConfig = {
         source: '/:path*.jpg',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },
+      {
+        // Self-hosted icon font — version is baked into the filename, safe to cache forever
+        source: '/:path*.woff2',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
     ]
   },
 
