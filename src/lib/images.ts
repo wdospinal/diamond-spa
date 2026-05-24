@@ -16,13 +16,13 @@ const u = (id: string, w = 1200) =>
 
 // ─── Local public assets ──────────────────────────────────────────────────────
 
-export const IMG_HERO_HOME        = '/diamond-wallpaper.jpeg'
-export const IMG_LOGO             = '/logo.png'
-export const IMG_LOGOTIPO         = '/logotipo.png'
-export const IMG_DEEP_TISSUE         = '/depilacion.jpeg'
-export const IMG_RELAXATION         = '/relaxation.png'
-export const IMG_FACIAL         = '/skin.png'
-export const IMG_ABOUT_HERO       = '/filo.png'
+export const IMG_HERO_HOME        = '/diamond-wallpaper.webp'
+export const IMG_LOGO             = '/logo.webp'
+export const IMG_LOGOTIPO         = '/logotipo.webp'
+export const IMG_DEEP_TISSUE      = '/depilacion.webp'
+export const IMG_RELAXATION       = '/relaxation.webp'
+export const IMG_FACIAL           = '/skin.webp'
+export const IMG_ABOUT_HERO       = '/filo.webp'
 
 // ─── Home page ────────────────────────────────────────────────────────────────
 
@@ -31,8 +31,8 @@ export const IMG_BOUTIQUE         = u('1571896349842-33c89424de2d')
 
 // ─── About / Philosophy page ──────────────────────────────────────────────────
 
-export const IMG_STONE            = '/maquina.jpeg'
-export const IMG_LOUNGE           = '/masaje.jpeg'
+export const IMG_STONE            = '/maquina.webp'
+export const IMG_LOUNGE           = '/masaje.webp'
 
 // ─── History / Story page ─────────────────────────────────────────────────────
 
@@ -44,8 +44,8 @@ export const IMG_HISTORY_INTERIOR = u('1571896349842-33c89424de2d')
 // ─── Team portraits ───────────────────────────────────────────────────────────
 
 export const IMG_THERAPISTS = [
-  '/therapists/daniela.jpeg',  // Daniela Salina
-  '/therapists/sary.png',     // Sary Paez
-  '/therapists/camila.png',   // Camila Mazo
-  '/therapists/valeria.png',  // Valeria 
+  '/therapists/daniela.webp',  // Daniela Salina
+  '/therapists/sary.webp',     // Sary Paez
+  '/therapists/camila.webp',   // Camila Mazo
+  '/therapists/valeria.webp',  // Valeria
 ]

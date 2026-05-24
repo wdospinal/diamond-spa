@@ -1,16 +1,10 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { Playfair_Display } from 'next/font/google'
 import { getDict, type Locale } from '@/lib/i18n'
 import { SPA_WHATSAPP_GREETING } from '@/lib/spa'
 import MobileMenuClient from '@/components/MobileMenuClient'
 import NavLinksClient from '@/components/NavLinksClient'
 import WhatsAppLink from '@/components/WhatsAppLink'
-
-const playfairDisplay = Playfair_Display({
-  subsets: ['latin', 'latin-ext'],
-  display: 'optional',
-})
 
 export default function Navigation({ locale }: { locale: Locale }) {
   const t = getDict(locale).nav
@@ -34,7 +28,7 @@ export default function Navigation({ locale }: { locale: Locale }) {
         {/* Logo — fixed width/height prevents CLS */}
         <Link href={`/${locale}`} aria-label={homeLinkLabel} className="flex items-center gap-3">
           <Image
-            src="/logotipo.png"
+            src="/logotipo.webp"
             alt=""
             width={56}
             height={56}
@@ -42,7 +36,7 @@ export default function Navigation({ locale }: { locale: Locale }) {
             priority
             aria-hidden="true"
           />
-          <span className={`${playfairDisplay.className} text-xl md:text-2xl text-primary tracking-tight`}>
+          <span className="font-headline text-xl md:text-2xl text-primary tracking-tight">
             Diamond Spa
           </span>
         </Link>
