@@ -38,7 +38,7 @@ export default function Footer({ locale }: { locale: Locale }) {
 
         {/* About us */}
         <div className="flex flex-col gap-3">
-          <h5 className="text-on-surface font-label text-xs tracking-widest uppercase mb-2">{t.aboutUsLabel}</h5>
+          <p className="text-on-surface font-label text-xs tracking-widest uppercase mb-2">{t.aboutUsLabel}</p>
           <Link href={`/${locale}/services`} className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.services}</Link>
           <Link href={`/${locale}/masajes-para-hombres`} className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.massagesForMen}</Link>
           <Link href={`/${locale}/masajes-para-mujeres`} className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.massagesForWomen}</Link>
@@ -51,7 +51,7 @@ export default function Footer({ locale }: { locale: Locale }) {
 
         {/* Legal */}
         <div className="flex flex-col gap-3">
-          <h5 className="text-on-surface font-label text-xs tracking-widest uppercase mb-2">{t.legalLabel}</h5>
+          <p className="text-on-surface font-label text-xs tracking-widest uppercase mb-2">{t.legalLabel}</p>
           <Link href={legal('privacy')} className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.privacy}</Link>
           <Link href={legal('terms')} className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.terms}</Link>
           <Link href={legal('press')} className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.press}</Link>
@@ -66,7 +66,7 @@ export default function Footer({ locale }: { locale: Locale }) {
 
         {/* Contact */}
         <div className="flex flex-col gap-4">
-          <h5 className="text-on-surface font-label text-xs tracking-widest uppercase mb-2">{t.contactLabel}</h5>
+          <p className="text-on-surface font-label text-xs tracking-widest uppercase mb-2">{t.contactLabel}</p>
           <a
             href={`mailto:${SPA_EMAIL}`}
             aria-label={emailLabel}

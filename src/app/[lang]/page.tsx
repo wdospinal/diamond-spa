@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import Image from 'next/image'
+import Image, { getImageProps } from 'next/image'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
@@ -48,19 +48,32 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 function HomeHero({ locale }: { locale: Locale }) {
   const h = getDict(locale).home
   const googleMapsUrl = `https://www.google.com/maps/place/?q=place_id:${SPA_GOOGLE_PLACES_ID}`
+
+  // Use getImageProps + native <img> for the LCP hero so we can force
+  // decoding="sync". Next.js <Image> always emits decoding="async" which lets
+  // the browser defer decode until after paint — causing a large "element render
+  // delay" in the LCP breakdown. With decoding="sync" the browser decodes the
+  // image inline, eliminating the post-load stall.
+  const heroAlt = locale === 'es'
+    ? 'Interior boutique de Diamond Spa en El Poblado, Medellín, con iluminación cálida y ambiente relajante'
+    : 'Boutique interior of Diamond Spa in El Poblado, Medellín, with warm lighting and a relaxing atmosphere'
+  const { props: heroImgProps } = getImageProps({
+    src: IMG_HERO_HOME,
+    alt: heroAlt,
+    fill: true,
+    priority: true,
+    quality: 65,
+    sizes: '(max-width: 640px) 100vw, (max-width: 1280px) 100vw, 1536px',
+  })
+
   return (
     <section className="relative min-h-dvh flex items-center overflow-hidden">
       <div className="absolute inset-0 z-0">
-        <Image
-          src={IMG_HERO_HOME}
-          alt={locale === 'es'
-            ? 'Interior boutique de Diamond Spa en El Poblado, Medellín, con iluminación cálida y ambiente relajante'
-            : 'Boutique interior of Diamond Spa in El Poblado, Medellín, with warm lighting and a relaxing atmosphere'}
-          fill
-          priority
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          {...heroImgProps}
           fetchPriority="high"
-          quality={65}
-          sizes="(max-width: 640px) 100vw, (max-width: 1280px) 100vw, 1536px"
+          decoding="sync"
           className="object-cover opacity-30"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-surface via-surface/80 to-surface/20" />
@@ -173,7 +186,7 @@ function HomeServices({ locale }: { locale: Locale }) {
               <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-3 block">{h.care}</span>
               <h3 className="font-headline text-3xl text-on-surface mb-3">{h.hairRemovalTitle}</h3>
               <p className="font-body text-secondary text-sm max-w-md leading-relaxed mb-5">{deepTissueDesc}</p>
-              <Link href={`/${locale}/services/${FEATURED_SERVICES.deepTissue.id}${fromParam}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
+              <Link href={`/${locale}/services/${FEATURED_SERVICES.deepTissue.id}${fromParam}`} aria-label={locale === 'es' ? `Ver detalles: ${h.hairRemovalTitle}` : `View details: ${h.hairRemovalTitle}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
                 {h.viewDetails} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
               </Link>
             </div>
@@ -193,7 +206,7 @@ function HomeServices({ locale }: { locale: Locale }) {
               <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-3 block">{h.treatments}</span>
               <h3 className="font-headline text-3xl text-on-surface mb-3">{h.facialTitle}</h3>
               <p className="font-body text-secondary text-sm max-w-md leading-relaxed mb-5">{facialDesc}</p>
-              <Link href={`/${locale}/services/${FEATURED_SERVICES.facial.id}${fromParam}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
+              <Link href={`/${locale}/services/${FEATURED_SERVICES.facial.id}${fromParam}`} aria-label={locale === 'es' ? `Ver detalles: ${h.facialTitle}` : `View details: ${h.facialTitle}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
                 {h.viewDetails} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
               </Link>
             </div>
@@ -214,7 +227,7 @@ function HomeServices({ locale }: { locale: Locale }) {
               <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-3 block">{h.relaxLabel}</span>
               <h3 className="font-headline text-3xl text-on-surface mb-3">{h.relaxTitle}</h3>
               <p className="font-body text-secondary text-sm leading-relaxed mb-5">{relaxDesc}</p>
-              <Link href={`/${locale}/services/${FEATURED_SERVICES.sensitive.id}${fromParam}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
+              <Link href={`/${locale}/services/${FEATURED_SERVICES.sensitive.id}${fromParam}`} aria-label={locale === 'es' ? `Ver detalles: ${h.relaxTitle}` : `View details: ${h.relaxTitle}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
                 {h.viewDetails} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
               </Link>
             </div>

@@ -1,18 +1,19 @@
 import type { Metadata } from 'next'
 import { Manrope, Playfair_Display } from 'next/font/google'
-import ReactDOM from 'react-dom'
 import './globals.css'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import CookieConsent from '@/components/CookieConsent'
-import MaterialSymbolsLoader from '@/components/MaterialSymbolsLoader'
-import { MATERIAL_SYMBOLS_HREF } from '@/lib/material-symbols'
 
 /**
  * next/font/google self-hosts both fonts from /_next/static/media/ (same origin,
- * no extra DNS). display:'swap' + fallback array triggers Next.js automatic
- * font-metric overrides (@font-face size-adjust / ascent-override / descent-override)
- * so the fallback font matches the web font metrics → zero layout shift on swap.
+ * no extra DNS lookup, 1-year immutable cache). display:'swap' + fallback array
+ * triggers Next.js automatic font-metric overrides (size-adjust / ascent-override /
+ * descent-override) so the fallback font matches the web font metrics → CLS=0.
+ *
+ * Material Symbols Outlined is self-hosted via @font-face in globals.css
+ * (public/fonts/material-symbols-outlined.woff2) — no Google Fonts round-trip,
+ * 1-year immutable cache, eliminates the googleapis→gstatic network chain.
  */
 const playfairDisplay = Playfair_Display({
   subsets: ['latin'],
@@ -45,34 +46,16 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  /**
-   * ReactDOM.preload / preconnect emit resource hints into the earliest
-   * possible HTTP response flush — before the component tree is serialised.
-   * This breaks the "critical request chain":
-   *   HTML → (discover link) → fonts.googleapis.com CSS → fonts.gstatic.com woff2
-   * by starting those connections in parallel with the HTML download.
-   * Types are stable in React 19 / @types/react@19 — no casts needed.
-   */
-  ReactDOM.preconnect('https://fonts.googleapis.com')
-  ReactDOM.preconnect('https://fonts.gstatic.com', { crossOrigin: 'anonymous' })
-  ReactDOM.preload(MATERIAL_SYMBOLS_HREF, { as: 'style' })
-
   return (
     <html lang="es" className={`dark ${playfairDisplay.variable} ${manrope.variable}`}>
       <head>
-        {/*
-          ReactDOM.preconnect / preload above emit the Google Fonts hints
-          earlier (in the first HTTP flush) than a static <link> in JSX.
-          Keeping only the DNS-prefetch tags here for secondary CDNs.
-        */}
+        {/* DNS prefetch for lazy-loaded third-party content */}
         <link rel="dns-prefetch" href="https://lh3.googleusercontent.com" />
         <link rel="dns-prefetch" href="https://maps.googleapis.com" />
         <link rel="dns-prefetch" href="https://api.dicebear.com" />
       </head>
       <body className="bg-surface text-on-surface font-body antialiased">
         {children}
-        {/* Loads icon font after hydration — never blocks rendering */}
-        <MaterialSymbolsLoader />
         <Analytics />
         <SpeedInsights />
         <CookieConsent />
