@@ -1,35 +1,5 @@
-import path from 'path'
-import { fileURLToPath } from 'url'
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /**
-   * Turbopack config — Next.js 16 default bundler.
-   *
-   * resolve.alias: Next.js always bundles polyfill-module.js regardless of
-   * browser targets. Because ALL our targets (Chrome 92+, FF 90+, Safari 15.4+)
-   * natively support every polyfilled API, we replace the file with an empty
-   * module. This eliminates the ~14 KiB "Legacy JavaScript" chunk PageSpeed
-   * was flagging (Array.prototype.at, Object.hasOwn, trimStart/End, etc.).
-   */
-  turbopack: {
-    resolve: {
-      alias: {
-        // Next.js loads polyfill-module via a relative require inside
-        // next/dist/client/app-globals.js:
-        //   require("../build/polyfills/polyfill-module")
-        // Turbopack resolves that to the absolute path below.
-        // Alias it to an empty module — all APIs are natively supported
-        // by our browser targets (Chrome 92+, FF 90+, Safari 15.4+).
-        [path.resolve(
-          __dirname,
-          'node_modules/next/dist/build/polyfills/polyfill-module.js'
-        )]: path.resolve(__dirname, 'src/lib/empty-polyfills.js'),
-      },
-    },
-  },
 
   async redirects() {
     return [

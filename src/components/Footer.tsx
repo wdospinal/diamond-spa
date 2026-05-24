@@ -33,32 +33,32 @@ export default function Footer({ locale }: { locale: Locale }) {
         {/* Brand */}
         <div className="md:col-span-1">
           <div className="text-xl font-headline tracking-tighter text-primary mb-6">Diamond Spa</div>
-          <p className="text-zinc-500 font-body text-sm leading-relaxed">{t.tagline}</p>
+          <p className="text-secondary font-body text-sm leading-relaxed">{t.tagline}</p>
         </div>
 
         {/* About us */}
         <div className="flex flex-col gap-3">
           <p className="text-on-surface font-label text-xs tracking-widest uppercase mb-2">{t.aboutUsLabel}</p>
-          <Link href={`/${locale}/services`} className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.services}</Link>
-          <Link href={`/${locale}/masajes-para-hombres`} className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.massagesForMen}</Link>
-          <Link href={`/${locale}/masajes-para-mujeres`} className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.massagesForWomen}</Link>
-          <Link href={`/${locale}/depilacion-medellin`} className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.hairRemoval}</Link>
-          <Link href={`/${locale}/limpieza-facial-medellin`} className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.facials}</Link>
-          <Link href={`/${locale}/about`}    className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.philosophy}</Link>
-          <Link href={`/${locale}/history`}  className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.heritage}</Link>
-          <Link href={`/${locale}/location`} className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.location}</Link>
+          <Link href={`/${locale}/services`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.services}</Link>
+          <Link href={`/${locale}/masajes-para-hombres`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.massagesForMen}</Link>
+          <Link href={`/${locale}/masajes-para-mujeres`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.massagesForWomen}</Link>
+          <Link href={`/${locale}/depilacion-medellin`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.hairRemoval}</Link>
+          <Link href={`/${locale}/limpieza-facial-medellin`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.facials}</Link>
+          <Link href={`/${locale}/about`}    className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.philosophy}</Link>
+          <Link href={`/${locale}/history`}  className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.heritage}</Link>
+          <Link href={`/${locale}/location`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.location}</Link>
         </div>
 
         {/* Legal */}
         <div className="flex flex-col gap-3">
           <p className="text-on-surface font-label text-xs tracking-widest uppercase mb-2">{t.legalLabel}</p>
-          <Link href={legal('privacy')} className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.privacy}</Link>
-          <Link href={legal('terms')} className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.terms}</Link>
-          <Link href={legal('press')} className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200">{t.press}</Link>
+          <Link href={legal('privacy')} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.privacy}</Link>
+          <Link href={legal('terms')} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.terms}</Link>
+          <Link href={legal('press')} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.press}</Link>
           <a
             href={`mailto:${SPA_EMAIL}`}
             aria-label={`${t.contact} — ${SPA_EMAIL}`}
-            className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200"
+            className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200"
           >
             {t.contact}
           </a>
@@ -70,7 +70,7 @@ export default function Footer({ locale }: { locale: Locale }) {
           <a
             href={`mailto:${SPA_EMAIL}`}
             aria-label={emailLabel}
-            className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200"
+            className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200"
           >
             {SPA_EMAIL}
           </a>
@@ -79,7 +79,7 @@ export default function Footer({ locale }: { locale: Locale }) {
               key={wa}
               href={`tel:+${wa}`}
               aria-label={phoneLabel(display)}
-              className="text-zinc-500 hover:text-primary font-body text-sm transition-colors duration-200"
+              className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200"
             >
               {display}
             </a>
@@ -90,21 +90,21 @@ export default function Footer({ locale }: { locale: Locale }) {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={instagramLabel}
-              className="text-zinc-500 hover:text-primary transition-colors duration-200"
+              className="text-secondary hover:text-primary transition-colors duration-200"
             >
               {IGSvg}
             </a>
             <a
               href={`mailto:${SPA_EMAIL}`}
               aria-label={emailLabel}
-              className="text-zinc-500 hover:text-primary transition-colors duration-200"
+              className="text-secondary hover:text-primary transition-colors duration-200"
             >
               <span className="material-symbols-outlined text-xl" aria-hidden="true">mail</span>
             </a>
             <WhatsAppLink
               text={SPA_WHATSAPP_GREETING[locale]}
               aria-label={whatsappLabel}
-              className="text-zinc-500 hover:text-primary transition-colors duration-200"
+              className="text-secondary hover:text-primary transition-colors duration-200"
             >
               {WASvg}
             </WhatsAppLink>
@@ -113,11 +113,11 @@ export default function Footer({ locale }: { locale: Locale }) {
       </div>
 
       <div className="max-w-screen-2xl mx-auto mt-16 pt-8 border-t border-outline-variant/10 flex flex-col md:flex-row justify-between items-center gap-4">
-        <p className="text-zinc-500 font-body text-xs tracking-widest uppercase">{t.copyright}</p>
+        <p className="text-secondary font-body text-xs tracking-widest uppercase">{t.copyright}</p>
         <nav className="flex flex-wrap justify-center gap-6 md:gap-8" aria-label={t.legalLabel}>
-          <Link href={legal('privacy')} className="text-zinc-500 hover:text-on-surface font-body text-xs tracking-widest uppercase transition-colors">{t.privacy}</Link>
-          <Link href={legal('terms')} className="text-zinc-500 hover:text-on-surface font-body text-xs tracking-widest uppercase transition-colors">{t.terms}</Link>
-          <Link href={legal('press')} className="text-zinc-500 hover:text-on-surface font-body text-xs tracking-widest uppercase transition-colors">{t.press}</Link>
+          <Link href={legal('privacy')} className="text-secondary hover:text-on-surface font-body text-xs tracking-widest uppercase transition-colors">{t.privacy}</Link>
+          <Link href={legal('terms')} className="text-secondary hover:text-on-surface font-body text-xs tracking-widest uppercase transition-colors">{t.terms}</Link>
+          <Link href={legal('press')} className="text-secondary hover:text-on-surface font-body text-xs tracking-widest uppercase transition-colors">{t.press}</Link>
         </nav>
       </div>
     </footer>

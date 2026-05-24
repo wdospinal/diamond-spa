@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import Image, { getImageProps } from 'next/image'
+import Image from 'next/image'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
@@ -49,31 +49,21 @@ function HomeHero({ locale }: { locale: Locale }) {
   const h = getDict(locale).home
   const googleMapsUrl = `https://www.google.com/maps/place/?q=place_id:${SPA_GOOGLE_PLACES_ID}`
 
-  // Use getImageProps + native <img> for the LCP hero so we can force
-  // decoding="sync". Next.js <Image> always emits decoding="async" which lets
-  // the browser defer decode until after paint — causing a large "element render
-  // delay" in the LCP breakdown. With decoding="sync" the browser decodes the
-  // image inline, eliminating the post-load stall.
-  const heroAlt = locale === 'es'
-    ? 'Interior boutique de Diamond Spa en El Poblado, Medellín, con iluminación cálida y ambiente relajante'
-    : 'Boutique interior of Diamond Spa in El Poblado, Medellín, with warm lighting and a relaxing atmosphere'
-  const { props: heroImgProps } = getImageProps({
-    src: IMG_HERO_HOME,
-    alt: heroAlt,
-    fill: true,
-    priority: true,
-    quality: 65,
-    sizes: '(max-width: 640px) 100vw, (max-width: 1280px) 100vw, 1536px',
-  })
-
   return (
     <section className="relative min-h-dvh flex items-center overflow-hidden">
       <div className="absolute inset-0 z-0">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          {...heroImgProps}
+        {/* priority={true} emits <link rel="preload" fetchpriority="high"> in <head>
+            so the browser discovers the image at HTML-parse time, not after JS. */}
+        <Image
+          src={IMG_HERO_HOME}
+          alt={locale === 'es'
+            ? 'Interior boutique de Diamond Spa en El Poblado, Medellín, con iluminación cálida y ambiente relajante'
+            : 'Boutique interior of Diamond Spa in El Poblado, Medellín, with warm lighting and a relaxing atmosphere'}
+          fill
+          priority
           fetchPriority="high"
-          decoding="sync"
+          quality={65}
+          sizes="(max-width: 640px) 100vw, (max-width: 1280px) 100vw, 1536px"
           className="object-cover opacity-30"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-surface via-surface/80 to-surface/20" />
