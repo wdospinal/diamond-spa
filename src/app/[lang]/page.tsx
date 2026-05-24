@@ -58,7 +58,8 @@ function HomeHero({ locale }: { locale: Locale }) {
             : 'Boutique interior of Diamond Spa in El Poblado, Medellín, with warm lighting and a relaxing atmosphere'}
           fill
           priority
-          sizes="100vw"
+          quality={65}
+          sizes="(max-width: 640px) 100vw, (max-width: 1280px) 100vw, 1536px"
           className="object-cover opacity-30"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-surface via-surface/80 to-surface/20" />
@@ -203,7 +204,8 @@ function HomeServices({ locale }: { locale: Locale }) {
                 ? 'Persona disfrutando de un masaje relajante de aceites esenciales en una camilla de Diamond Spa'
                 : 'Person enjoying a relaxing essential-oil massage on a treatment table at Diamond Spa'}
               fill
-              sizes="100vw"
+              quality={65}
+          sizes="(max-width: 640px) 100vw, (max-width: 1280px) 100vw, 1536px"
               className="object-cover img-hover-color"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-surface-container-lowest/95 via-surface-container/70 to-transparent" />
