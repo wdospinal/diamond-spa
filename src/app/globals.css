@@ -71,6 +71,19 @@ body {
   border-radius: 2px;
 }
 
+/*
+ * Touch devices: hover never fires, so img-hover-color transitions are dead
+ * weight that just create extra GPU compositor layers. Remove them to reduce
+ * paint/composite overhead on mobile.
+ */
+@media (hover: none) and (pointer: coarse) {
+  .img-hover-color {
+    transition: none;
+    /* Slightly less aggressive grayscale so images read better without hover */
+    filter: grayscale(60%) brightness(0.75);
+  }
+}
+
 /* Respect user's motion preferences */
 @media (prefers-reduced-motion: reduce) {
   html {

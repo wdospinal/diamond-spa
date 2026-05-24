@@ -1,30 +1,38 @@
 'use client'
 /**
- * Loads Material Symbols Outlined asynchronously after the page is interactive
- * so it never blocks the critical rendering path.
+ * Activates the Material Symbols Outlined icon font after hydration.
  *
- * The font is subset to only the 19 icons used in this project
- * (icon_names= param) — ~30 KB vs the full variable font at ~3,852 KB.
+ * Strategy:
+ *  1. layout.tsx adds <link rel="preload" as="style"> to the <head> at
+ *     SSR time — the browser starts downloading the font CSS immediately
+ *     when the HTML is parsed (no waiting for JS).
+ *  2. This component fires on mount and promotes that preload link to a
+ *     full stylesheet in one DOM mutation, with no extra network request.
+ *  3. Falls back to creating a fresh <link> if no preload is found.
  *
- * Icons used: arrow_forward, check_circle, chevron_left, chevron_right,
- * directions, expand_less, expand_more, location_on, lock, mail, map,
- * open_in_new, phone, psychology, rate_review, schedule, star,
- * support_agent, verified
+ * The icon font is subset to only the icons used in this project
+ * (~35–40 KB vs the full variable font at ~3,852 KB).
+ * All icon names are maintained in @/lib/material-symbols.ts.
  */
 
 import { useEffect } from 'react'
-
-const MATERIAL_SYMBOLS_HREF =
-  'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,200,0..1,0' +
-  '&icon_names=arrow_forward,check_circle,chevron_left,chevron_right,directions,expand_less,expand_more,' +
-  'location_on,lock,mail,map,open_in_new,phone,psychology,rate_review,schedule,star,support_agent,verified' +
-  '&display=block'
+import { MATERIAL_SYMBOLS_HREF } from '@/lib/material-symbols'
 
 export default function MaterialSymbolsLoader() {
   useEffect(() => {
-    // Skip if already injected (StrictMode double-invoke, HMR, etc.)
-    if (document.querySelector(`link[href="${MATERIAL_SYMBOLS_HREF}"]`)) return
+    // Already applied — nothing to do (handles StrictMode double-invoke / HMR)
+    if (document.querySelector(`link[rel="stylesheet"][href="${MATERIAL_SYMBOLS_HREF}"]`)) return
 
+    // Promote the SSR preload link to a stylesheet — zero extra round-trip
+    const preloaded = document.querySelector(
+      `link[rel="preload"][href="${MATERIAL_SYMBOLS_HREF}"]`
+    ) as HTMLLinkElement | null
+    if (preloaded) {
+      preloaded.rel = 'stylesheet'
+      return
+    }
+
+    // Fallback: create a new stylesheet link (e.g. on pages without the preload)
     const link = document.createElement('link')
     link.rel = 'stylesheet'
     link.href = MATERIAL_SYMBOLS_HREF
