@@ -2,14 +2,15 @@ import { isLocale, type Locale } from '@/lib/i18n'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 
-export default function LangLayout({
+export default async function LangLayout({
   children,
   params,
 }: {
   children: React.ReactNode
-  params: { lang: string }
+  params: Promise<{ lang: string }>
 }) {
-  const locale: Locale = isLocale(params.lang) ? params.lang : 'es'
+  const { lang } = await params
+  const locale: Locale = isLocale(lang) ? lang : 'es'
   return (
     <div lang={locale}>
       <Navigation locale={locale} />

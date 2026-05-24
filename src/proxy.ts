@@ -6,7 +6,8 @@ function adminAppHostname(hostname: string) {
   return base === 'app.diamondspa.com.co' || base === 'app.localhost'
 }
 
-export function middleware(request: NextRequest) {
+// Next.js 16: renamed from `middleware` to `proxy`
+export function proxy(request: NextRequest) {
   const host = request.headers.get('host') ?? ''
   const hostname = host.split(':')[0]
 

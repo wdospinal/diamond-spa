@@ -26,8 +26,9 @@ const FEATURED_SERVICES = {
 
 const FEATURED_REVIEWS = STATIC_REVIEWS.slice(0, 3)
 
-export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
-  const locale = isLocale(params.lang) ? params.lang : 'es'
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params
+  const locale = isLocale(lang) ? lang : 'es'
   const title = locale === 'en'
     ? `Diamond Spa Medellín — Spa for Men and Women | El Poblado ⭐ ${SPA_RATING.value}`
     : `Diamond Spa Medellín — Masajes y Spa para Hombres y Mujeres | El Poblado ⭐ ${SPA_RATING.value}`
@@ -408,9 +409,10 @@ function HomeCta({ locale }: { locale: Locale }) {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function HomePage({ params }: { params: { lang: string } }) {
-  if (!isLocale(params.lang)) notFound()
-  const locale = params.lang as Locale
+export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params
+  if (!isLocale(lang)) notFound()
+  const locale = lang as Locale
   return (
     <>
       <JsonLd data={localBusinessJsonLd()} />

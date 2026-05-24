@@ -15,7 +15,7 @@ function bad(msg: string, status = 400) {
 }
 
 export async function GET() {
-  const token = cookies().get(adminCookieName())?.value
+  const token = (await cookies()).get(adminCookieName())?.value
   if (!verifySessionToken(token)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }

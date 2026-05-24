@@ -18,15 +18,16 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: { lang: string; serviceId: string }
+  params: Promise<{ lang: string; serviceId: string }>
 }): Promise<Metadata> {
-  const locale = isLocale(params.lang) ? params.lang : 'es'
-  const service = getServiceById(params.serviceId)
+  const { lang, serviceId } = await params
+  const locale = isLocale(lang) ? lang : 'es'
+  const service = getServiceById(serviceId)
   if (!service) return {}
   const name = locale === 'en' ? service.name.en : service.name.es
   const description = locale === 'en' ? service.shortDesc.en : service.shortDesc.es
   const title = `${name} — Diamond Spa Medellín`
-  const path = `/services/${params.serviceId}`
+  const path = `/services/${serviceId}`
   return {
     title,
     description,
@@ -35,14 +36,15 @@ export async function generateMetadata({
   }
 }
 
-export default function ServiceDetailPage({
+export default async function ServiceDetailPage({
   params,
 }: {
-  params: { lang: string; serviceId: string }
+  params: Promise<{ lang: string; serviceId: string }>
 }) {
-  if (!isLocale(params.lang)) notFound()
-  const locale = params.lang as Locale
-  const service = getServiceById(params.serviceId)
+  const { lang, serviceId } = await params
+  if (!isLocale(lang)) notFound()
+  const locale = lang as Locale
+  const service = getServiceById(serviceId)
   if (!service) notFound()
 
   const t = getDict(locale).services

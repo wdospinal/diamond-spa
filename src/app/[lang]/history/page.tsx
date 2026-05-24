@@ -9,8 +9,9 @@ import { buildAlternates, buildOpenGraph } from '@/lib/seo'
 import { SPA_ADDRESS } from '@/lib/spa'
 import { IMG_HISTORY_HERO, IMG_HISTORY_INTERIOR } from '@/lib/images'
 
-export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
-  const locale = isLocale(params.lang) ? params.lang : 'es'
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params
+  const locale = isLocale(lang) ? lang : 'es'
   const t = getDict(locale)
   const { metaTitle: title, metaDesc: description } = t.history
   return {
@@ -24,9 +25,10 @@ export async function generateMetadata({ params }: { params: { lang: string } })
 const HERO_IMG = IMG_HISTORY_HERO
 const INTERIOR_IMG = IMG_HISTORY_INTERIOR
 
-export default function HistoryPage({ params }: { params: { lang: string } }) {
-  if (!isLocale(params.lang)) notFound()
-  const locale = params.lang as Locale
+export default async function HistoryPage({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params
+  if (!isLocale(lang)) notFound()
+  const locale = lang as Locale
   const t = getDict(locale).history
   const mapTitle = locale === 'es'
     ? `Mapa de Google con la ubicación de Diamond Spa en ${SPA_ADDRESS.full}`

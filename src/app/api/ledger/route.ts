@@ -36,7 +36,7 @@ function validateAmount(kind: 'income' | 'expense', amountRaw: number): string |
 }
 
 export async function POST(req: NextRequest) {
-  const token = cookies().get(adminCookieName())?.value
+  const token = (await cookies()).get(adminCookieName())?.value
   if (!verifySessionToken(token)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
@@ -80,8 +80,8 @@ export async function POST(req: NextRequest) {
   }
 }
 
-function requireAuth() {
-  const token = cookies().get(adminCookieName())?.value
+async function requireAuth() {
+  const token = (await cookies()).get(adminCookieName())?.value
   if (!verifySessionToken(token)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
@@ -89,7 +89,7 @@ function requireAuth() {
 }
 
 export async function PATCH(req: NextRequest) {
-  const auth = requireAuth()
+  const auth = await requireAuth()
   if (auth) return auth
 
   let body: Record<string, unknown>
@@ -145,7 +145,7 @@ export async function PATCH(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const auth = requireAuth()
+  const auth = await requireAuth()
   if (auth) return auth
 
   let id = req.nextUrl.searchParams.get('id')?.trim() ?? ''

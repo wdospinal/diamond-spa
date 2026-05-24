@@ -16,9 +16,10 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 
-export default function BookPage({ params }: { params: { lang: string } }) {
-  if (!isLocale(params.lang)) notFound()
-  const locale = params.lang as Locale
+export default async function BookPage({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params
+  if (!isLocale(lang)) notFound()
+  const locale = lang as Locale
 
   // Compute the locale-specific dict on the server so BookClient doesn't
   // need to import the full 39 KB bilingual i18n module at runtime.

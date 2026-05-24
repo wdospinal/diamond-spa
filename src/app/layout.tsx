@@ -46,15 +46,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   /**
-   * ReactDOM.preload / preconnect are React 18 APIs that emit resource hints
-   * into the earliest possible HTTP response flush — before the component tree
-   * is serialised. This breaks the "critical request chain":
+   * ReactDOM.preload / preconnect emit resource hints into the earliest
+   * possible HTTP response flush — before the component tree is serialised.
+   * This breaks the "critical request chain":
    *   HTML → (discover link) → fonts.googleapis.com CSS → fonts.gstatic.com woff2
-   * by starting those connections at the same time as the HTML download.
+   * by starting those connections in parallel with the HTML download.
+   * Types are stable in React 19 / @types/react@19 — no casts needed.
    */
   ReactDOM.preconnect('https://fonts.googleapis.com')
-  ReactDOM.preconnect('https://fonts.gstatic.com', { crossOrigin: 'anonymous' } as never)
-  ReactDOM.preload(MATERIAL_SYMBOLS_HREF, { as: 'style' } as never)
+  ReactDOM.preconnect('https://fonts.gstatic.com', { crossOrigin: 'anonymous' })
+  ReactDOM.preload(MATERIAL_SYMBOLS_HREF, { as: 'style' })
 
   return (
     <html lang="es" className={`dark ${playfairDisplay.variable} ${manrope.variable}`}>

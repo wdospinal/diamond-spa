@@ -15,8 +15,9 @@ const LOUNGE_IMG = IMG_LOUNGE
 const THERAPISTS_IMGS = IMG_THERAPISTS
 const THERAPISTS_NAMES = ['Daniela Salina', 'Sary Paez', 'Camila Mazo', 'Valeria']
 
-export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
-  const locale = isLocale(params.lang) ? params.lang : 'es'
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params
+  const locale = isLocale(lang) ? lang : 'es'
   const t = getDict(locale)
   const { metaTitle: title, metaDesc: description } = t.about
   return {
@@ -27,9 +28,10 @@ export async function generateMetadata({ params }: { params: { lang: string } })
   }
 }
 
-export default function AboutPage({ params }: { params: { lang: string } }) {
-  if (!isLocale(params.lang)) notFound()
-  const locale = params.lang as Locale
+export default async function AboutPage({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params
+  if (!isLocale(lang)) notFound()
+  const locale = lang as Locale
   const t = getDict(locale).about
 
   return (

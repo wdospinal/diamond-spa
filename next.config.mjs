@@ -1,5 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  /**
+   * Next.js 16 uses Turbopack by default — declare an empty turbopack block
+   * so it's explicit and silences the "webpack config with no turbopack" warning.
+   * The old webpack.cache=false workaround is no longer needed under Turbopack.
+   *
+   * Browser targets: the `browserslist` field in package.json is respected by
+   * the bundler automatically. Targeting Chrome 92+ / Firefox 90+ / Safari 15.4+
+   * eliminates ~12 KiB of polyfills for Array.prototype.at, Object.hasOwn, etc.
+   * that PageSpeed was flagging under "Legacy JavaScript".
+   */
+  turbopack: {},
+
   async redirects() {
     return [
       // lang-less paths → Spanish (permanent so Google treats /es/* as canonical)
@@ -83,14 +95,6 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
-  },
-
-  // Avoid PackFileCacheStrategy ENOENT on vendor-chunks like @vercel.js after rebuilds / stale .next
-  webpack: (config, { dev }) => {
-    if (dev) {
-      config.cache = false
-    }
-    return config
   },
 }
 

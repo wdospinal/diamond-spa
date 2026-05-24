@@ -129,8 +129,9 @@ const content = {
   },
 } as const
 
-export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
-  const locale = (isLocale(params.lang) ? params.lang : 'es') as Locale
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params
+  const locale = (isLocale(lang) ? lang : 'es') as Locale
   const c = content[locale]
   return {
     title: c.metaTitle,
@@ -140,9 +141,10 @@ export async function generateMetadata({ params }: { params: { lang: string } })
   }
 }
 
-export default function LimpiezaFacialPage({ params }: { params: { lang: string } }) {
-  if (!isLocale(params.lang)) notFound()
-  const locale = params.lang as Locale
+export default async function LimpiezaFacialPage({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params
+  if (!isLocale(lang)) notFound()
+  const locale = lang as Locale
   const c = content[locale]
 
   return (

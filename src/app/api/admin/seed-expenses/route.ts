@@ -4,7 +4,7 @@ import { adminCookieName, verifySessionToken } from '@/lib/admin-session'
 import { applyLedgerExpenseSeed } from '@/lib/ledger-store'
 
 export async function POST() {
-  const token = cookies().get(adminCookieName())?.value
+  const token = (await cookies()).get(adminCookieName())?.value
   if (!verifySessionToken(token)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }

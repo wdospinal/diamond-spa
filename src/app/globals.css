@@ -1,13 +1,99 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Tailwind v4 — single import replaces the three @tailwind directives */
+@import "tailwindcss";
 
 /* Fonts load via next/font in layout.tsx (avoids blocked or reordered remote @imports). */
 
-:root {
+/* ─── Dark-mode variant ─────────────────────────────────────────────────────
+   Replicates Tailwind v3 darkMode:'class' — dark: utilities fire whenever
+   the element (or any ancestor) has the .dark class.               */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ─── Design tokens ─────────────────────────────────────────────────────────
+   @theme emits each variable to :root AND generates the corresponding
+   Tailwind utilities automatically:
+     --color-*    →  bg-*, text-*, border-*, ring-*, etc.
+     --font-*     →  font-* (font-family utility)
+     --radius-*   →  rounded-*                                       */
+@theme {
+  /* ── Surface / background scale ─────────────────── */
+  --color-surface:                   #001524;
+  --color-surface-dim:               #001524;
+  --color-surface-bright:            #273b4c;
+  --color-surface-container-lowest:  #00101c;
+  --color-surface-container-low:     #071d2d;
+  --color-surface-container:         #0b2131;
+  --color-surface-container-high:    #172c3c;
+  --color-surface-container-highest: #223747;
+  --color-surface-variant:           #223747;
+  --color-surface-tint:              #a5cce6;
+
+  /* ── On-surface / text ──────────────────────────── */
+  --color-on-surface:         #cfe5fa;
+  --color-on-surface-variant: #c1c7cd;
+  --color-background:         #001524;
+  --color-on-background:      #cfe5fa;
+
+  /* ── Primary ─────────────────────────────────────── */
+  --color-primary:                  #a5cce6;
+  --color-primary-fixed:            #c5e7ff;
+  --color-primary-fixed-dim:        #a5cce6;
+  --color-primary-container:        #7fa5be;
+  --color-on-primary:               #053449;
+  --color-on-primary-fixed:         #001e2d;
+  --color-on-primary-fixed-variant: #234b61;
+  --color-on-primary-container:     #103b50;
+  --color-inverse-primary:          #3d6379;
+
+  /* ── Secondary ───────────────────────────────────── */
+  --color-secondary:                  #bbc9cf;
+  --color-secondary-fixed:            #d7e5eb;
+  --color-secondary-fixed-dim:        #bbc9cf;
+  --color-secondary-container:        #3e4b50;
+  --color-on-secondary:               #253237;
+  --color-on-secondary-fixed:         #101d22;
+  --color-on-secondary-fixed-variant: #3c494e;
+  --color-on-secondary-container:     #adbbc1;
+
+  /* ── Tertiary ─────────────────────────────────────── */
+  --color-tertiary:                  #f0bd8d;
+  --color-tertiary-fixed:            #ffdcbe;
+  --color-tertiary-fixed-dim:        #f0bd8d;
+  --color-tertiary-container:        #c6976a;
+  --color-on-tertiary:               #482905;
+  --color-on-tertiary-fixed:         #2d1600;
+  --color-on-tertiary-fixed-variant: #623f1a;
+  --color-on-tertiary-container:     #50300b;
+
+  /* ── Outline ─────────────────────────────────────── */
+  --color-outline:         #8c9197;
+  --color-outline-variant: #42484c;
+
+  /* ── Inverse surface ─────────────────────────────── */
+  --color-inverse-surface:    #cfe5fa;
+  --color-inverse-on-surface: #1e3243;
+
+  /* ── Error ───────────────────────────────────────── */
+  --color-error:             #ffb4ab;
+  --color-error-container:   #93000a;
+  --color-on-error:          #690005;
+  --color-on-error-container:#ffdad6;
+
+  /* ── Typography ──────────────────────────────────── */
   --font-headline: var(--font-playfair), 'Playfair Display', Georgia, serif;
-  --font-body: var(--font-manrope), 'Manrope', system-ui, sans-serif;
+  --font-body:     var(--font-manrope), Manrope, system-ui, sans-serif;
+  --font-label:    var(--font-manrope), Manrope, system-ui, sans-serif;
+
+  /* ── Border radius ───────────────────────────────── */
+  --radius:      0.125rem;
+  --radius-sm:   0.125rem;
+  --radius-md:   0.25rem;
+  --radius-lg:   0.25rem;
+  --radius-xl:   0.5rem;
+  --radius-2xl:  0.5rem;
+  --radius-full: 0.75rem;
 }
+
+/* ─── Base styles ────────────────────────────────────────────────────────── */
 
 html {
   scroll-behavior: smooth;
@@ -26,7 +112,8 @@ body {
   color: #cfe5fa;
 }
 
-/* Material Symbols — loaded via Google Fonts link in layout.tsx */
+/* ─── Material Symbols ───────────────────────────────────────────────────── */
+/* Loaded via Google Fonts link in layout.tsx */
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined';
   font-weight: normal;
@@ -47,14 +134,14 @@ body {
   vertical-align: middle;
 }
 
-/* Glass nav */
+/* ─── Glass nav ──────────────────────────────────────────────────────────── */
 .glass-nav {
   background: rgba(0, 21, 36, 0.82);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
 }
 
-/* Grayscale-to-colour on hover */
+/* ─── Grayscale-to-colour on hover ──────────────────────────────────────── */
 .img-hover-color {
   filter: grayscale(100%) brightness(0.65);
   transition: filter 0.4s ease-out, transform 0.4s ease-out;
@@ -64,7 +151,7 @@ body {
   transform: scale(1.04);
 }
 
-/* Focus ring for keyboard navigation */
+/* ─── Focus ring ─────────────────────────────────────────────────────────── */
 :focus-visible {
   outline: 2px solid #a5cce6;
   outline-offset: 3px;
@@ -79,12 +166,11 @@ body {
 @media (hover: none) and (pointer: coarse) {
   .img-hover-color {
     transition: none;
-    /* Slightly less aggressive grayscale so images read better without hover */
     filter: grayscale(60%) brightness(0.75);
   }
 }
 
-/* Respect user's motion preferences */
+/* ─── Reduced motion ─────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -105,14 +191,8 @@ body {
   }
 }
 
-/* Custom scrollbar */
+/* ─── Custom scrollbar ───────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: #001524; }
 ::-webkit-scrollbar-thumb { background: #42484c; border-radius: 2px; }
 ::-webkit-scrollbar-thumb:hover { background: #a5cce6; }
-
-@layer utilities {
-  .font-headline { font-family: var(--font-headline); }
-  .font-body     { font-family: var(--font-body); }
-  .font-label    { font-family: var(--font-body); }
-}

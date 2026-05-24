@@ -12,8 +12,14 @@ import { SPA_ADDRESS, SPA_EMAIL } from '@/lib/spa'
 
 export const revalidate = 3600
 
-export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
-  const locale = isLocale(params.lang) ? params.lang : 'es'
+// Pre-render both locales at build time; ISR revalidates every hour.
+export function generateStaticParams() {
+  return [{ lang: 'es' }, { lang: 'en' }]
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params
+  const locale = isLocale(lang) ? lang : 'es'
   const t = getDict(locale)
   const { metaTitle: title, metaDesc: description } = t.location
   return {
@@ -24,9 +30,10 @@ export async function generateMetadata({ params }: { params: { lang: string } })
   }
 }
 
-export default function LocationPage({ params }: { params: { lang: string } }) {
-  if (!isLocale(params.lang)) notFound()
-  const locale = params.lang as Locale
+export default async function LocationPage({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params
+  if (!isLocale(lang)) notFound()
+  const locale = lang as Locale
   const t = getDict(locale).location
   const mapTitle = locale === 'es'
     ? `Mapa de Google con la ubicación de Diamond Spa en ${SPA_ADDRESS.full}`

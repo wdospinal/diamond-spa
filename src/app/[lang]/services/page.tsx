@@ -16,8 +16,9 @@ function serviceShortDesc(s: ServiceDef, locale: Locale) {
   return locale === 'en' ? s.shortDesc.en : s.shortDesc.es
 }
 
-export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
-  const locale = isLocale(params.lang) ? params.lang : 'es'
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params
+  const locale = isLocale(lang) ? lang : 'es'
   const t = getDict(locale)
   const { metaTitle: title, metaDesc: description } = t.services
   return {
@@ -28,9 +29,10 @@ export async function generateMetadata({ params }: { params: { lang: string } })
   }
 }
 
-export default function ServicesPage({ params }: { params: { lang: string } }) {
-  if (!isLocale(params.lang)) notFound()
-  const locale = params.lang as Locale
+export default async function ServicesPage({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params
+  if (!isLocale(lang)) notFound()
+  const locale = lang as Locale
   const t = getDict(locale).services
 
   const allServices = SERVICES as unknown as ServiceDef[]
