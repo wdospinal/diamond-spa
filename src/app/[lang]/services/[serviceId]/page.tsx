@@ -31,7 +31,7 @@ export async function generateMetadata({
   return {
     title,
     description,
-    alternates: buildAlternates(path),
+    alternates: buildAlternates(path, locale),
     openGraph: buildOpenGraph({ title, description, path, locale, imageAlt: `${name} — Diamond Spa` }),
   }
 }

@@ -114,7 +114,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   return {
     title: c.metaTitle,
     description: c.metaDesc,
-    alternates: buildAlternates('/masajes-para-mujeres'),
+    alternates: buildAlternates('/masajes-para-mujeres', locale),
     openGraph: buildOpenGraph({ title: c.metaTitle, description: c.metaDesc, path: '/masajes-para-mujeres', locale, imageAlt: c.ogImageAlt }),
   }
 }

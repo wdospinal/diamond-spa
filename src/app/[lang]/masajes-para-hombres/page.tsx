@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   return {
     title,
     description,
-    alternates: buildAlternates('/masajes-para-hombres'),
+    alternates: buildAlternates('/masajes-para-hombres', locale),
     openGraph: buildOpenGraph({ title, description, path: '/masajes-para-hombres', locale, imageAlt }),
   }
 }

@@ -19,10 +19,10 @@ const SITE_NAME = SPA_NAME_FULL
 
 // ─── hreflang + canonical ─────────────────────────────────────────────────────
 
-export function buildAlternates(path: string): Metadata['alternates'] {
+export function buildAlternates(path: string, locale: 'es' | 'en' = 'es'): Metadata['alternates'] {
   const base = path === '' ? '' : path
   return {
-    canonical: `${BASE_URL}/es${base}`,
+    canonical: `${BASE_URL}/${locale}${base}`,
     languages: {
       es: `${BASE_URL}/es${base}`,
       en: `${BASE_URL}/en${base}`,

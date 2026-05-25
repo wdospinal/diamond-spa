@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   return {
     title,
     description,
-    alternates: buildAlternates(''),
+    alternates: buildAlternates('', locale),
     openGraph: buildOpenGraph({ title, description, path: '', locale, imageAlt: 'Diamond Spa — El Poblado, Medellín' }),
   }
 }

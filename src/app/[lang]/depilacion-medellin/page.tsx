@@ -137,7 +137,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   return {
     title: c.metaTitle,
     description: c.metaDesc,
-    alternates: buildAlternates('/depilacion-medellin'),
+    alternates: buildAlternates('/depilacion-medellin', locale),
     openGraph: buildOpenGraph({ title: c.metaTitle, description: c.metaDesc, path: '/depilacion-medellin', locale, imageAlt: c.ogImageAlt }),
   }
 }

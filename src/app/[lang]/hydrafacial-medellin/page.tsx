@@ -128,7 +128,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   return {
     title: c.metaTitle,
     description: c.metaDesc,
-    alternates: buildAlternates('/hydrafacial-medellin'),
+    alternates: buildAlternates('/hydrafacial-medellin', locale),
     openGraph: buildOpenGraph({ title: c.metaTitle, description: c.metaDesc, path: '/hydrafacial-medellin', locale, imageAlt: c.ogImageAlt }),
   }
 }

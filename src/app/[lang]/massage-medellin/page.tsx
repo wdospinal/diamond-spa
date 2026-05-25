@@ -170,7 +170,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   return {
     title: c.metaTitle,
     description: c.metaDesc,
-    alternates: buildAlternates('/massage-medellin'),
+    alternates: buildAlternates('/massage-medellin', locale),
     openGraph: buildOpenGraph({ title: c.metaTitle, description: c.metaDesc, path: '/massage-medellin', locale }),
   }
 }

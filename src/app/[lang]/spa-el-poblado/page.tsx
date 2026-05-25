@@ -126,7 +126,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   return {
     title: c.metaTitle,
     description: c.metaDesc,
-    alternates: buildAlternates('/spa-el-poblado'),
+    alternates: buildAlternates('/spa-el-poblado', locale),
     openGraph: buildOpenGraph({ title: c.metaTitle, description: c.metaDesc, path: '/spa-el-poblado', locale }),
   }
 }

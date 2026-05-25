@@ -136,7 +136,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   return {
     title: c.metaTitle,
     description: c.metaDesc,
-    alternates: buildAlternates('/limpieza-facial-medellin'),
+    alternates: buildAlternates('/limpieza-facial-medellin', locale),
     openGraph: buildOpenGraph({ title: c.metaTitle, description: c.metaDesc, path: '/limpieza-facial-medellin', locale }),
   }
 }

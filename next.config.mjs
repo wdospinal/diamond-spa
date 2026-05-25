@@ -3,6 +3,13 @@ const nextConfig = {
 
   async redirects() {
     return [
+      // www → non-www (permanent 308 so Google consolidates to diamondspa.com.co)
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.diamondspa.com.co' }],
+        destination: 'https://diamondspa.com.co/:path*',
+        permanent: true,
+      },
       // lang-less paths → Spanish (permanent so Google treats /es/* as canonical)
       { source: '/services',  destination: '/es/services',  permanent: true },
       { source: '/about',     destination: '/es/about',     permanent: true },
