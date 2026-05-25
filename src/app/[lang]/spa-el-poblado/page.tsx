@@ -12,7 +12,7 @@ const content = {
   en: {
     metaTitle: `Spa in El Poblado Medellín ⭐ ${SPA_RATING.value} — Massages, Facials & Hair Removal | Diamond Spa`,
     metaDesc:
-      'Diamond Spa: top-rated spa in El Poblado, Medellín. Bilingual staff, private rooms, discreet entrance. Massages, HydraFacial & professional hair removal. From $120,000 COP — book now.',
+      'Top-rated spa in El Poblado, Medellín. Massages, HydraFacial & hair removal. Bilingual staff, private rooms. From $120,000 COP — book now.',
     heroLabel: 'El Poblado, Medellín',
     h1: 'Spa in El Poblado, Medellín',
     heroBody:
@@ -66,7 +66,7 @@ const content = {
   es: {
     metaTitle: `Spa en El Poblado Medellín ⭐ ${SPA_RATING.value} — Masajes, Faciales y Depilación | Diamond Spa`,
     metaDesc:
-      'Diamond Spa: el mejor spa en El Poblado, Medellín. Personal bilingüe, cabinas privadas, entrada discreta. Masajes, HydraFacial y depilación profesional. Desde $120.000 COP — reserva ahora.',
+      'El mejor spa en El Poblado, Medellín. Masajes, HydraFacial y depilación. Personal bilingüe, cabinas privadas. Desde $120.000 COP — reserva ahora.',
     heroLabel: 'El Poblado, Medellín',
     h1: 'Spa en El Poblado, Medellín',
     heroBody:

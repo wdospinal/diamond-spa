@@ -16,7 +16,7 @@ const content = {
   en: {
     metaTitle: 'Massages for Women in Medellín — Diamond Spa El Poblado',
     metaDesc:
-      `Exclusive massages for women in El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} Google reviews. Relaxing, deep tissue, 4-hands & more. Private rooms, certified therapists. From $120,000 COP — book now.`,
+      `Massages for women in El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reviews. Relaxing, deep tissue, 4-hands & more. Private rooms. From $120,000 COP — book now.`,
     ogImageAlt: 'Massages for Women in Medellín — Diamond Spa',
     heroLabel: 'El Poblado, Medellín',
     h1: 'Massages for Women in Medellín',
@@ -62,7 +62,7 @@ const content = {
   es: {
     metaTitle: 'Masajes para Mujeres en Medellín — Diamond Spa El Poblado',
     metaDesc:
-      `Masajes exclusivos para mujeres en El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reseñas en Google. Relajante, deep tissue, 4 manos y más. Cabinas privadas, terapeutas certificadas. Desde $120.000 COP — reserva ahora.`,
+      `Masajes para mujeres en El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reseñas. Relajante, deep tissue, 4 manos y más. Cabinas privadas. Desde $120.000 COP — reserva ahora.`,
     ogImageAlt: 'Masajes para Mujeres en Medellín — Diamond Spa',
     heroLabel: 'El Poblado, Medellín',
     h1: 'Masajes para Mujeres en Medellín',

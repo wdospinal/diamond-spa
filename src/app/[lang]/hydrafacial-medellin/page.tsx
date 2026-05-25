@@ -12,7 +12,7 @@ const content = {
   en: {
     metaTitle: 'HydraFacial in Medellín — Diamond Spa El Poblado',
     metaDesc:
-      `Professional HydraFacial in El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} Google reviews. Deep cleanse, extraction & vitamin hydration in one session. $350,000 COP — book now.`,
+      `HydraFacial in El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} Google reviews. Deep cleanse, extraction & vitamin hydration in one session. $350,000 COP — book now.`,
     ogImageAlt: 'HydraFacial in Medellín — Diamond Spa',
     heroLabel: 'Facials · El Poblado, Medellín',
     h1: 'HydraFacial in Medellín',
@@ -67,7 +67,7 @@ const content = {
   es: {
     metaTitle: 'HydraFacial en Medellín — Diamond Spa El Poblado',
     metaDesc:
-      `HydraFacial profesional en El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reseñas en Google. Limpieza profunda, extracción e hidratación con vitaminas en una sesión. $350.000 COP — reserva ahora.`,
+      `HydraFacial en El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reseñas. Limpieza profunda, extracción e hidratación vitamínica en una sesión. $350.000 COP — reserva ahora.`,
     ogImageAlt: 'HydraFacial en Medellín — Diamond Spa',
     heroLabel: 'Faciales · El Poblado, Medellín',
     h1: 'HydraFacial en Medellín',

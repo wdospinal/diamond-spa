@@ -96,7 +96,7 @@ const dict = {
 
     services: {
       metaTitle: 'Massages & Services for Men and Women — Diamond Spa Medellín',
-      metaDesc: `Massages & spa in El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} Google reviews. Relaxing, deep tissue, sports, 4-hands, facials & hair removal. From $120,000 COP — book now.`,
+      metaDesc: `Massages & spa in El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reviews. Deep tissue, sports, 4-hands, facials & hair removal. From $120,000 COP — book now.`,
       label: 'The Selection',
       title: 'Massages & Services in Medellín',
       subtitle: 'Massages for men and women in El Poblado: relaxing, sports, deep tissue and more. Facials and hair removal. Transparent COP pricing.',
@@ -404,7 +404,7 @@ const dict = {
 
     services: {
       metaTitle: 'Masajes y Servicios para Hombres y Mujeres — Diamond Spa Medellín',
-      metaDesc: `Masajes y spa en El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reseñas en Google. Relajante, deep tissue, deportivo, 4 manos, faciales y depilación. Desde $120.000 COP — agenda hoy.`,
+      metaDesc: `Masajes y spa en El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reseñas. Deep tissue, deportivo, 4 manos, faciales y depilación. Desde $120.000 COP — agenda hoy.`,
       label: 'La Selección',
       title: 'Masajes y Servicios en Medellín',
       subtitle: 'Masajes para hombres y mujeres en El Poblado: relajantes, deportivos, deep tissue y más. Faciales y depilación. Precios transparentes en COP.',
@@ -605,7 +605,7 @@ const dict = {
     masajesParaHombres: {
       metaTitle: `Masajes para Hombres en Medellín ⭐ ${SPA_RATING.value} — Desde $120.000 COP | Diamond Spa`,
       metaDesc:
-        `El spa para hombres en El Poblado, Medellín. Relajante, Deep Tissue, Deportivo y 4 Manos. Cabinas privadas · ${SPA_RATING.count} reseñas de 5 estrellas. Reserva online en 60 segundos.`,
+        `Spa para hombres en El Poblado, Medellín. Relajante, Deep Tissue, Deportivo y 4 Manos. Cabinas privadas · ${SPA_RATING.count} reseñas ⭐ ${SPA_RATING.value}. Reserva ahora.`,
       ogImageAlt: 'Masajes para Hombres en Medellín — Diamond Spa',
       heroLabel: 'El Poblado, Medellín',
       heroTitle: 'Masajes para Hombres en Medellín',

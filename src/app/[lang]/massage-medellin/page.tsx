@@ -12,7 +12,7 @@ const content = {
   en: {
     metaTitle: `Best Massage in Medellín Near You ⭐ ${SPA_RATING.value} — El Poblado | Diamond Spa`,
     metaDesc:
-      `Massage near El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} Google reviews. Relaxing, deep tissue, sports & 4-hands. Private rooms, bilingual staff. From $120,000 COP — book online.`,
+      `Massage in El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} Google reviews. Relaxing, deep tissue, sports & 4-hands. Private rooms, bilingual staff. From $120,000 COP.`,
     heroLabel: 'Massage · El Poblado, Medellín',
     h1: 'Massage in Medellín',
     heroBody:
@@ -88,7 +88,7 @@ const content = {
   es: {
     metaTitle: 'Masaje en Medellín — Relajante y Deep Tissue | Diamond Spa El Poblado',
     metaDesc:
-      `El mejor masaje en Medellín, El Poblado. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reseñas en Google. Relajante, deep tissue, deportivo y 4 manos. Cabinas privadas, personal bilingüe. Desde $120.000 COP.`,
+      `Masajes en El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reseñas en Google. Relajante, deep tissue, deportivo y 4 manos. Cabinas privadas. Desde $120.000 COP.`,
     heroLabel: 'Masajes · El Poblado, Medellín',
     h1: 'Masajes en Medellín',
     heroBody:
