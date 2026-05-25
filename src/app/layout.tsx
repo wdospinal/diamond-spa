@@ -1,9 +1,7 @@
 import type { Metadata } from 'next'
 import { Manrope, Playfair_Display } from 'next/font/google'
 import './globals.css'
-import { Analytics } from '@vercel/analytics/react'
-import { SpeedInsights } from '@vercel/speed-insights/next'
-import CookieConsent from '@/components/CookieConsent'
+import ClientProviders from '@/components/ClientProviders'
 
 /**
  * next/font/google self-hosts both fonts from /_next/static/media/ (same origin,
@@ -56,9 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="bg-surface text-on-surface font-body antialiased">
         {children}
-        <Analytics />
-        <SpeedInsights />
-        <CookieConsent />
+        <ClientProviders />
       </body>
     </html>
   )
