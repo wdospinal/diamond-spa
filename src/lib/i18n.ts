@@ -125,7 +125,7 @@ const dict = {
     },
 
     about: {
-      metaTitle: 'About us — Diamond Spa Medellín',
+      metaTitle: 'About Us — Massages & Spa in Medellín | El Poblado',
       metaDesc: 'The philosophy and heritage behind Diamond Spa — precision wellness in El Poblado, Medellín.',
       tagline: SPA_TAGLINE.en,
       titleParts: ['The', 'Philosophy'],
@@ -433,7 +433,7 @@ const dict = {
     },
 
     about: {
-      metaTitle: 'Sobre nosotros — Diamond Spa Medellín',
+      metaTitle: 'Sobre Nosotros — Spa y Masajes en El Poblado Medellín',
       metaDesc: 'La filosofía y herencia de Diamond Spa — bienestar de precisión en El Poblado, Medellín.',
       tagline: SPA_TAGLINE.es,
       titleParts: ['La', 'Filosofía'],
