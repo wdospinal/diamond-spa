@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     title,
     description,
     alternates: buildAlternates('/location'),
-    openGraph: buildOpenGraph({ title, description, path: '/location', locale, imageAlt: 'Diamond Spa — Cra 43C #10-42, El Poblado, Medellín' }),
+    openGraph: buildOpenGraph({ title, description, path: '/location', locale, imageAlt: `Diamond Spa — ${SPA_ADDRESS.full}` }),
   }
 }
 

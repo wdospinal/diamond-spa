@@ -161,7 +161,7 @@ const dict = {
 
     location: {
       metaTitle: 'Location — Diamond Spa El Poblado, Medellín',
-      metaDesc: `Find Diamond Spa at ${SPA_ADDRESS.full}.`,
+      metaDesc: `Luxury spa in El Poblado, Medellín — ${SPA_ADDRESS.street}. Therapeutic massages, facials & hair removal. Open Mon–Sat 10am–10pm, Sun 10am–7pm. Book online.`,
       label: 'Find Us',
       titleParts: ['Our', 'Address'],
       getDirections: 'Get Directions',
@@ -469,7 +469,7 @@ const dict = {
 
     location: {
       metaTitle: 'Ubicación — Diamond Spa El Poblado, Medellín',
-      metaDesc: `Encuéntranos en ${SPA_ADDRESS.full}.`,
+      metaDesc: `Spa de lujo en El Poblado, Medellín — ${SPA_ADDRESS.street}. Masajes terapéuticos, faciales y depilación láser. Abierto Lun–Sáb 10am–10pm. Reserva en línea.`,
       label: 'Encuéntranos',
       titleParts: ['Nuestra', 'Dirección'],
       getDirections: 'Cómo Llegar',
