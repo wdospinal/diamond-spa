@@ -11,12 +11,12 @@ import {
   SPA_ADDRESS,
   SPA_GOOGLE_PLACES_ID,
   SPA_GOOGLE_REVIEW_URL,
-  SPA_RATING,
 } from '@/lib/spa'
+import { fetchPlaceRating } from '@/lib/google-places'
 import { STATIC_REVIEWS } from '@/lib/reviews'
 import { JsonLd } from '@/components/JsonLd'
 
-export const dynamic = 'force-static'
+export const revalidate = 36000
 
 const FEATURED_SERVICES = {
   deepTissue: getServiceById('depilacion-cuerpo-completo')!,
@@ -29,12 +29,13 @@ const FEATURED_REVIEWS = STATIC_REVIEWS.slice(0, 3)
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params
   const locale = isLocale(lang) ? lang : 'es'
+  const rating = await fetchPlaceRating()
   const title = locale === 'en'
-    ? `Diamond Spa Medellín — Spa for Men and Women | El Poblado ⭐ ${SPA_RATING.value}`
-    : `Diamond Spa Medellín — Masajes y Spa para Hombres y Mujeres | El Poblado ⭐ ${SPA_RATING.value}`
+    ? `Diamond Spa Medellín — Spa for Men and Women | El Poblado ⭐ ${rating.value}`
+    : `Diamond Spa Medellín — Masajes y Spa para Hombres y Mujeres | El Poblado ⭐ ${rating.value}`
   const description = locale === 'en'
-    ? `Spa in El Poblado, Medellín. Massages, facials & hair removal for men and women. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} Google reviews. From $120,000 COP — book now.`
-    : `Spa en El Poblado, Medellín. Masajes, faciales y depilación para hombres y mujeres. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reseñas. Desde $120.000 COP — reserva ahora.`
+    ? `Spa in El Poblado, Medellín. Massages, facials & hair removal for men and women. ⭐ ${rating.value} · ${rating.count} Google reviews. From $120,000 COP — book now.`
+    : `Spa en El Poblado, Medellín. Masajes, faciales y depilación para hombres y mujeres. ⭐ ${rating.value} · ${rating.count} reseñas. Desde $120.000 COP — reserva ahora.`
   return {
     title,
     description,
@@ -45,7 +46,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 
 // ─── Section components ───────────────────────────────────────────────────────
 
-function HomeHero({ locale }: { locale: Locale }) {
+function HomeHero({ locale, rating }: { locale: Locale; rating: { value: string; count: number } }) {
   const h = getDict(locale).home
   const googleMapsUrl = `https://www.google.com/maps/place/?q=place_id:${SPA_GOOGLE_PLACES_ID}`
 
@@ -110,7 +111,7 @@ function HomeHero({ locale }: { locale: Locale }) {
                 ))}
               </div>
               <span className="font-label text-on-surface text-xs tracking-wider group-hover:text-primary transition-colors">
-                {SPA_RATING.value} · {SPA_RATING.count} {locale === 'es' ? 'reseñas de Google' : 'Google reviews'}
+                {rating.value} · {rating.count} {locale === 'es' ? 'reseñas de Google' : 'Google reviews'}
               </span>
             </a>
             <span className="w-px h-3 bg-outline-variant/30 hidden sm:block" aria-hidden="true" />
@@ -228,7 +229,7 @@ function HomeServices({ locale }: { locale: Locale }) {
   )
 }
 
-function HomeReviews({ locale }: { locale: Locale }) {
+function HomeReviews({ locale, rating }: { locale: Locale; rating: { value: string; count: number } }) {
   const { home: h, location: loc } = getDict(locale)
   return (
     <section className="py-28 px-6 md:px-12 bg-surface">
@@ -240,18 +241,18 @@ function HomeReviews({ locale }: { locale: Locale }) {
           </div>
           <div className="flex items-end gap-4 shrink-0">
             <div className="text-right">
-              <div className="font-headline text-5xl text-on-surface leading-none">{SPA_RATING.value}</div>
+              <div className="font-headline text-5xl text-on-surface leading-none">{rating.value}</div>
               <div
                 className="flex gap-0.5 justify-end mt-2"
                 role="img"
-                aria-label={locale === 'es' ? '5 estrellas de 5' : '5 out of 5 stars'}
+                aria-label={locale === 'es' ? `${rating.value} estrellas de 5` : `${rating.value} out of 5 stars`}
               >
                 {[1, 2, 3, 4, 5].map(star => (
                   <span key={star} className="material-symbols-outlined text-primary" style={{ fontSize: '16px', fontVariationSettings: "'FILL' 1" }} aria-hidden="true">star</span>
                 ))}
               </div>
               <div className="font-label text-outline text-xs mt-1.5 tracking-wider">
-              {SPA_RATING.count} {loc.googleReviews}
+              {rating.count} {loc.googleReviews}
               </div>
             </div>
           </div>
@@ -419,12 +420,13 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const { lang } = await params
   if (!isLocale(lang)) notFound()
   const locale = lang as Locale
+  const rating = await fetchPlaceRating()
   return (
     <>
       <JsonLd data={localBusinessJsonLd()} />
-      <HomeHero locale={locale} />
+      <HomeHero locale={locale} rating={rating} />
       <HomeServices locale={locale} />
-      <HomeReviews locale={locale} />
+      <HomeReviews locale={locale} rating={rating} />
       <HomeLocation locale={locale} />
       <HomeCta locale={locale} />
     </>
