@@ -3,58 +3,13 @@ import { getDict, type Locale } from '@/lib/i18n'
 import {
   SPA_ADDRESS,
   SPA_GEO,
-  SPA_GOOGLE_PLACES_ID,
   SPA_GOOGLE_REVIEW_URL,
   SPA_NAME_FULL,
   SPA_PHONES,
 } from '@/lib/spa'
+import { fetchPlaceDetails, type PlaceReview, type PlaceDetails } from '@/lib/google-places'
 import { STATIC_REVIEWS } from '@/lib/reviews'
 import { ReviewsGrid } from './ReviewsGrid'
-
-interface PlaceReview {
-  relativePublishTimeDescription: string
-  rating: number
-  text?: { text: string }
-  authorAttribution: {
-    displayName: string
-    photoUri: string
-  }
-  isStatic?: true
-}
-
-interface PlaceDetails {
-  rating?: number
-  userRatingCount?: number
-  reviews?: PlaceReview[]
-  displayName?: { text: string; languageCode: string }
-  shortFormattedAddress?: string
-  internationalPhoneNumber?: string
-  primaryTypeDisplayName?: { text: string }
-  googleMapsUri?: string
-}
-
-async function fetchPlaceDetails(): Promise<PlaceDetails> {
-  const key = process.env.GOOGLE_PLACES_API_KEY
-  if (!key) return {}
-  try {
-    const res = await fetch(
-      `https://places.googleapis.com/v1/places/${SPA_GOOGLE_PLACES_ID}`,
-      {
-        headers: {
-          'X-Goog-Api-Key': key,
-          'X-Goog-FieldMask':
-            'rating,userRatingCount,reviews,displayName,shortFormattedAddress,internationalPhoneNumber,primaryTypeDisplayName,googleMapsUri',
-        },
-        next: { revalidate: 3600 },
-      }
-    )
-    if (!res.ok) return {}
-    const data = await res.json()
-    return data as PlaceDetails
-  } catch {
-    return {}
-  }
-}
 
 function GoogleLogo({ className = 'h-4 w-4' }: { className?: string }) {
   return (
