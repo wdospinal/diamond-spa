@@ -1,14 +1,16 @@
 import { notFound } from 'next/navigation'
-
-export const dynamic = 'force-static'
+import Image from 'next/image'
+import Link from 'next/link'
 import type { Metadata } from 'next'
-import LegalArticle from '@/components/LegalArticle'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph } from '@/lib/seo'
+import { SPA_EMAIL, SPA_INSTAGRAM, SPA_TIKTOK, SPA_WHATSAPP_GREETING, SPA_ADDRESS, SPA_NAME_FULL } from '@/lib/spa'
+
+export const dynamic = 'force-static'
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params
-  const locale = isLocale(lang) ? lang : 'es'
+  const locale = isLocale(lang) ? lang : 'en'
   const { metaTitle: title, metaDesc: description } = getDict(locale).legal.press
   return {
     title,
@@ -18,10 +20,257 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   }
 }
 
+const IGSvg = (
+  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+  </svg>
+)
+
+const TikTokSvg = (
+  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+    <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/>
+  </svg>
+)
+
+const MailSvg = (
+  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+    <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/>
+  </svg>
+)
+
 export default async function PressPage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params
   if (!isLocale(lang)) notFound()
   const locale = lang as Locale
-  const t = getDict(locale).legal.press
-  return <LegalArticle title={t.title} paragraphs={t.body} />
+
+  const isEn = locale === 'en'
+
+  return (
+    <>
+      {/* Hero */}
+      <header className="pt-40 pb-16 px-6 md:px-12 bg-surface">
+        <div className="max-w-screen-2xl mx-auto">
+          <span className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-5 block">
+            {isEn ? 'Media & Press' : 'Prensa y Medios'}
+          </span>
+          <h1 className="font-headline text-6xl md:text-8xl text-on-surface font-light leading-tight">
+            {isEn ? 'Press Room' : 'Sala de Prensa'}
+          </h1>
+          <p className="mt-8 text-on-surface-variant text-lg max-w-xl font-light leading-relaxed">
+            {isEn
+              ? `For media inquiries, interview requests, photography, or brand partnerships, reach out directly. We respond within two business days.`
+              : `Para consultas de medios, solicitudes de entrevistas, fotografía o alianzas de marca, contáctenos directamente. Respondemos en dos días hábiles.`}
+          </p>
+        </div>
+      </header>
+
+      {/* Contact card */}
+      <section className="py-16 px-6 md:px-12 bg-surface-container-low">
+        <div className="max-w-screen-2xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            {/* Contact info */}
+            <div>
+              <h2 className="font-headline text-2xl text-on-surface mb-8">
+                {isEn ? 'Media Contact' : 'Contacto de Prensa'}
+              </h2>
+              <div className="flex flex-col gap-5">
+                <a
+                  href={`mailto:${SPA_EMAIL}`}
+                  className="flex items-center gap-4 group"
+                  aria-label={isEn ? `Email ${SPA_EMAIL}` : `Correo ${SPA_EMAIL}`}
+                >
+                  <span className="w-10 h-10 bg-surface flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-all shrink-0">
+                    {MailSvg}
+                  </span>
+                  <div>
+                    <p className="font-label text-[10px] uppercase tracking-widest text-outline mb-0.5">{isEn ? 'Email' : 'Correo'}</p>
+                    <p className="font-body text-on-surface text-sm">{SPA_EMAIL}</p>
+                  </div>
+                </a>
+
+                <a
+                  href={SPA_INSTAGRAM}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 group"
+                  aria-label={isEn ? 'Diamond Spa on Instagram' : 'Diamond Spa en Instagram'}
+                >
+                  <span className="w-10 h-10 bg-surface flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-all shrink-0">
+                    {IGSvg}
+                  </span>
+                  <div>
+                    <p className="font-label text-[10px] uppercase tracking-widest text-outline mb-0.5">Instagram</p>
+                    <p className="font-body text-on-surface text-sm">@diamondmassagesmed</p>
+                  </div>
+                </a>
+
+                <a
+                  href={SPA_TIKTOK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 group"
+                  aria-label={isEn ? 'Diamond Spa on TikTok' : 'Diamond Spa en TikTok'}
+                >
+                  <span className="w-10 h-10 bg-surface flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-all shrink-0">
+                    {TikTokSvg}
+                  </span>
+                  <div>
+                    <p className="font-label text-[10px] uppercase tracking-widest text-outline mb-0.5">TikTok</p>
+                    <p className="font-body text-on-surface text-sm">@diamond.spa95</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            {/* Brand kit quick facts */}
+            <div>
+              <h2 className="font-headline text-2xl text-on-surface mb-8">
+                {isEn ? 'Brand Facts' : 'Datos de Marca'}
+              </h2>
+              <div className="flex flex-col gap-4">
+                {[
+                  [isEn ? 'Full name' : 'Nombre completo', SPA_NAME_FULL],
+                  [isEn ? 'Location' : 'Ubicación', SPA_ADDRESS.full],
+                  [isEn ? 'Neighbourhood' : 'Barrio', `${SPA_ADDRESS.neighborhood}, ${SPA_ADDRESS.city}`],
+                  [isEn ? 'Rating' : 'Calificación', '4.9 ★ Google (102+ reviews)'],
+                  [isEn ? 'Languages' : 'Idiomas', isEn ? 'Spanish & English' : 'Español e Inglés'],
+                  [isEn ? 'Hours (Mon–Sat)' : 'Horario (Lun–Sáb)', '10:00 AM – 10:00 PM'],
+                  [isEn ? 'Hours (Sun)' : 'Horario (Dom)', '10:00 AM – 7:00 PM'],
+                ].map(([label, value]) => (
+                  <div key={label} className="flex gap-4 py-3 border-b border-outline-variant/10">
+                    <span className="font-label text-[10px] uppercase tracking-widest text-outline w-32 shrink-0 pt-0.5">{label}</span>
+                    <span className="font-body text-on-surface text-sm">{value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Example post / content feature */}
+      <section className="py-24 px-6 md:px-12 bg-surface">
+        <div className="max-w-screen-2xl mx-auto">
+          <span className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-6 block">
+            {isEn ? 'Featured Content' : 'Contenido Destacado'}
+          </span>
+          <h2 className="font-headline text-3xl md:text-4xl text-on-surface font-light mb-16">
+            {isEn ? 'From our social media' : 'Desde nuestras redes sociales'}
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+            {/* Post card */}
+            <div className="bg-surface-container-low ring-1 ring-outline-variant/10 overflow-hidden">
+              {/* Post header */}
+              <div className="flex items-center gap-3 px-5 py-4 border-b border-outline-variant/10">
+                <div className="w-9 h-9 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center shrink-0">
+                  <Image src="/logo.webp" alt="Diamond Spa" width={36} height={36} className="object-cover" />
+                </div>
+                <div>
+                  <p className="font-label text-on-surface text-xs tracking-wider">diamond.spa95</p>
+                  <p className="font-body text-outline text-[11px]">{isEn ? 'El Poblado, Medellín' : 'El Poblado, Medellín'}</p>
+                </div>
+                <a
+                  href={SPA_TIKTOK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={isEn ? 'Follow on TikTok' : 'Seguir en TikTok'}
+                  className="ml-auto text-primary hover:text-on-surface transition-colors"
+                >
+                  {TikTokSvg}
+                </a>
+              </div>
+
+              {/* Post image */}
+              <div className="relative aspect-square bg-surface-container-high overflow-hidden">
+                <Image
+                  src="/masaje.avif"
+                  alt={isEn ? 'Relaxing massage session at Diamond Spa Medellín' : 'Sesión de masaje relajante en Diamond Spa Medellín'}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+              </div>
+
+              {/* Post caption */}
+              <div className="px-5 py-4">
+                <p className="font-body text-on-surface text-sm leading-relaxed">
+                  {isEn
+                    ? '✨ Because your body deserves the best. Deep tissue, four-hands, volcanic stones — every session is designed to give you back what the week took from you. Private rooms. Bilingual staff. El Poblado, Medellín.'
+                    : '✨ Porque tu cuerpo merece lo mejor. Tejido profundo, cuatro manos, piedras volcánicas — cada sesión está diseñada para devolverte lo que la semana te quitó. Salas privadas. Atención bilingüe. El Poblado, Medellín.'}
+                </p>
+                <p className="mt-3 font-label text-primary text-xs tracking-wider">
+                  #DiamondSpa #MasajesMedellin #ElPoblado #SpaLujo #MedellinColombia
+                </p>
+              </div>
+
+              {/* Follow CTA */}
+              <div className="px-5 pb-5 flex gap-3">
+                <a
+                  href={SPA_TIKTOK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 text-center bg-primary text-on-primary py-3 font-label text-xs tracking-widest uppercase hover:bg-white transition-all"
+                >
+                  {isEn ? 'Follow on TikTok' : 'Seguir en TikTok'}
+                </a>
+                <a
+                  href={SPA_INSTAGRAM}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 text-center border border-outline-variant text-on-surface py-3 font-label text-xs tracking-widest uppercase hover:bg-surface-container transition-all"
+                >
+                  {isEn ? 'Follow on Instagram' : 'Seguir en Instagram'}
+                </a>
+              </div>
+            </div>
+
+            {/* Usage rights */}
+            <div className="flex flex-col gap-8">
+              <div>
+                <h3 className="font-headline text-xl text-on-surface mb-4">
+                  {isEn ? 'Usage Rights' : 'Derechos de Uso'}
+                </h3>
+                <p className="font-body text-secondary text-sm leading-relaxed">
+                  {isEn
+                    ? `Journalists and content creators may use the ${SPA_NAME_FULL} name, logo, and photography for editorial coverage with proper attribution. Commercial use requires written approval. Please reach out before publishing.`
+                    : `Periodistas y creadores de contenido pueden usar el nombre, logotipo y fotografías de ${SPA_NAME_FULL} para cobertura editorial con atribución correcta. El uso comercial requiere aprobación escrita. Por favor contáctenos antes de publicar.`}
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-headline text-xl text-on-surface mb-4">
+                  {isEn ? 'Response Time' : 'Tiempo de Respuesta'}
+                </h3>
+                <p className="font-body text-secondary text-sm leading-relaxed">
+                  {isEn
+                    ? 'We respond to all media inquiries within two business days. For urgent requests, please indicate it in your subject line.'
+                    : 'Respondemos a todas las consultas de medios en dos días hábiles. Para solicitudes urgentes, indíquelo en el asunto de su mensaje.'}
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-headline text-xl text-on-surface mb-4">
+                  {isEn ? 'Collaborations' : 'Colaboraciones'}
+                </h3>
+                <p className="font-body text-secondary text-sm leading-relaxed">
+                  {isEn
+                    ? 'We welcome collaborations with travel bloggers, wellness creators, and lifestyle media. If your audience values quality experiences in Medellín, we would love to connect.'
+                    : 'Damos la bienvenida a colaboraciones con bloggers de viajes, creadores de bienestar y medios de estilo de vida. Si tu audiencia valora experiencias de calidad en Medellín, nos encantaría conectar.'}
+                </p>
+              </div>
+
+              <Link
+                href={`mailto:${SPA_EMAIL}`}
+                className="inline-flex items-center gap-3 bg-primary text-on-primary px-8 py-4 font-label text-xs font-bold uppercase tracking-[0.2em] hover:bg-white transition-all w-fit"
+              >
+                {MailSvg}
+                {isEn ? 'Contact Press Team' : 'Contactar Prensa'}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  )
 }
