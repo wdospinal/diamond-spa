@@ -8,6 +8,7 @@ import type { Locale, Dict } from '@/lib/i18n'
 import { SERVICES, formatCop, type DurationMinutes, type ServiceDef } from '@/lib/services'
 import { DAY_NAMES, DURATION_MINUTES } from '@/lib/constants'
 import { randomWhatsAppUrl, SPA_HOURS } from '@/lib/spa'
+import { EVENTS, trackEvent } from '@/lib/events'
 
 type DurationService = ServiceDef & { pricingModel: 'duration'; prices: Record<DurationMinutes, number> }
 type FlatService = ServiceDef & { pricingModel: 'flat'; price: number }
@@ -162,6 +163,15 @@ export default function BookClient({
       (form.requests ? `💬 Notas: ${form.requests}\n` : '') +
       `\n💰 ${t.totalLabel}: ${formatCop(priceCop)}`
 
+    trackEvent(EVENTS.BOOKING_SUBMITTED, {
+      service_id: selectedService ?? '',
+      service_name: sName,
+      category: selectedServiceObj?.categoryId ?? '',
+      duration_minutes: selectedDuration ?? 0,
+      hair_method: selectedHairMethod ?? '',
+      price_cop: priceCop,
+      locale: lang,
+    })
     window.open(randomWhatsAppUrl(waText), '_blank')
 
     const smsBody =
@@ -229,6 +239,7 @@ export default function BookClient({
         </div>
         <button
           onClick={() => {
+            trackEvent(EVENTS.BOOKING_ANOTHER_CLICKED, { locale: lang })
             setConfirmed(false)
             setSelectedService(null)
             setSelectedDuration(null)
@@ -276,7 +287,7 @@ export default function BookClient({
                         <button
                           key={s.id}
                           type="button"
-                          onClick={() => { setSelectedService(s.id); setSelectedDuration(null); setSelectedHairMethod(null) }}
+                          onClick={() => { setSelectedService(s.id); setSelectedDuration(null); setSelectedHairMethod(null); trackEvent(EVENTS.BOOKING_SERVICE_SELECTED, { service_id: s.id, service_name: serviceName(s), category: 'massages', locale: lang }) }}
                           className={`text-left p-5 transition-all duration-200 ${
                             isSelected
                               ? 'bg-surface-container-high border border-primary/40'
@@ -307,7 +318,7 @@ export default function BookClient({
                         <button
                           key={s.id}
                           type="button"
-                          onClick={() => { setSelectedService(s.id); setSelectedDuration(null); setSelectedHairMethod(null) }}
+                          onClick={() => { setSelectedService(s.id); setSelectedDuration(null); setSelectedHairMethod(null); trackEvent(EVENTS.BOOKING_SERVICE_SELECTED, { service_id: s.id, service_name: serviceName(s), category: 'facials', locale: lang }) }}
                           className={`text-left p-5 transition-all duration-200 ${
                             isSelected
                               ? 'bg-surface-container-high border border-primary/40'
@@ -337,7 +348,7 @@ export default function BookClient({
                         <button
                           key={s.id}
                           type="button"
-                          onClick={() => { setSelectedService(s.id); setSelectedDuration(null); setSelectedHairMethod(null) }}
+                          onClick={() => { setSelectedService(s.id); setSelectedDuration(null); setSelectedHairMethod(null); trackEvent(EVENTS.BOOKING_SERVICE_SELECTED, { service_id: s.id, service_name: serviceName(s), category: 'hair-removal', locale: lang }) }}
                           className={`text-left p-5 transition-all duration-200 ${
                             isSelected
                               ? 'bg-surface-container-high border border-primary/40'
@@ -372,7 +383,7 @@ export default function BookClient({
                       <button
                         key={min}
                         type="button"
-                        onClick={() => setSelectedDuration(min)}
+                        onClick={() => { setSelectedDuration(min); trackEvent(EVENTS.BOOKING_DURATION_SELECTED, { service_id: selectedService ?? '', duration_minutes: min }) }}
                         className={`p-5 text-left transition-all duration-200 ${
                           isActive
                             ? 'bg-surface-container-high border border-primary/40'
@@ -404,7 +415,7 @@ export default function BookClient({
                       <button
                         key={method}
                         type="button"
-                        onClick={() => setSelectedHairMethod(method)}
+                        onClick={() => { setSelectedHairMethod(method); trackEvent(EVENTS.BOOKING_HAIR_METHOD_SELECTED, { service_id: selectedService ?? '', method }) }}
                         className={`p-5 text-left transition-all duration-200 ${
                           isActive
                             ? 'bg-surface-container-high border border-primary/40'
@@ -469,7 +480,7 @@ export default function BookClient({
                         key={key}
                         type="button"
                         disabled={past}
-                        onClick={() => { setSelectedDay(day); setSelectedTime(null) }}
+                        onClick={() => { setSelectedDay(day); setSelectedTime(null); trackEvent(EVENTS.BOOKING_DATE_SELECTED, { service_id: selectedService ?? '', date: `${calYear}-${String(calMonth + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}` }) }}
                         role="gridcell"
                         aria-label={fullLabel}
                         aria-pressed={active}
@@ -513,7 +524,7 @@ export default function BookClient({
                         <button
                           key={slot}
                           type="button"
-                          onClick={() => setSelectedTime(slot)}
+                          onClick={() => { setSelectedTime(slot); trackEvent(EVENTS.BOOKING_TIME_SELECTED, { service_id: selectedService ?? '', time_slot: slot }) }}
                           aria-pressed={selectedTime === slot}
                           className={`px-4 py-2 font-label text-xs tracking-widest uppercase transition-all duration-150 ${
                             selectedTime === slot
