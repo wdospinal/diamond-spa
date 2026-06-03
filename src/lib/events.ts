@@ -19,7 +19,7 @@ export const EVENTS = {
   BOOKING_SUBMITTED:            'booking_submitted',
   BOOKING_ANOTHER_CLICKED:      'booking_another_clicked',
 
-  // Service discovery
+  // Service discovery funnel
   SERVICE_CARD_CLICKED:         'service_card_clicked',
   SERVICE_DETAIL_VIEWED:        'service_detail_viewed',
 
