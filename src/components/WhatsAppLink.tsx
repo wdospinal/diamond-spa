@@ -1,9 +1,11 @@
 'use client'
 
 import { randomWhatsAppUrl } from '@/lib/phones'
+import { EVENTS, trackEvent } from '@/lib/events'
 
 type WhatsAppLinkProps = {
   text: string
+  source?: string
   children: React.ReactNode
   className?: string
 } & Omit<
@@ -13,6 +15,7 @@ type WhatsAppLinkProps = {
 
 export default function WhatsAppLink({
   text,
+  source = 'site',
   children,
   className,
   ...rest
@@ -20,7 +23,10 @@ export default function WhatsAppLink({
   return (
     <button
       type="button"
-      onClick={() => window.open(randomWhatsAppUrl(text), '_blank', 'noopener,noreferrer')}
+      onClick={() => {
+        trackEvent(EVENTS.WHATSAPP_CLICKED, { platform: 'whatsapp', source })
+        window.open(randomWhatsAppUrl(text), '_blank', 'noopener,noreferrer')
+      }}
       className={className}
       {...rest}
     >

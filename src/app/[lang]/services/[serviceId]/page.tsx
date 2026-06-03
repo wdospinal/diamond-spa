@@ -1,18 +1,20 @@
-import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { ServiceDetailBackLink } from '@/components/ServiceDetailBackLink'
+import { ServiceDetailTracker } from '@/components/ServiceDetailTracker'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
-import { SERVICES, formatCop, getServiceById, type DurationMinutes, type ServiceDef } from '@/lib/services'
+import { SERVICES, formatCop, getServiceBySlug, type DurationMinutes, type ServiceDef } from '@/lib/services'
 import { DURATION_MINUTES } from '@/lib/constants'
-import { buildAlternates, buildOpenGraph, BASE_URL, BUSINESS } from '@/lib/seo'
+import { buildServiceAlternates, buildOpenGraph, BASE_URL, BUSINESS } from '@/lib/seo'
 import { JsonLd } from '@/components/JsonLd'
 
 export const dynamic = 'force-static'
 
 export async function generateStaticParams() {
-  return SERVICES.map(s => ({ serviceId: s.id }))
+  return (['en', 'es'] as const).flatMap(lang =>
+    SERVICES.map(s => ({ lang, serviceId: lang === 'en' ? s.slugEn : s.id }))
+  )
 }
 
 export async function generateMetadata({
@@ -21,18 +23,18 @@ export async function generateMetadata({
   params: Promise<{ lang: string; serviceId: string }>
 }): Promise<Metadata> {
   const { lang, serviceId } = await params
-  const locale = isLocale(lang) ? lang : 'es'
-  const service = getServiceById(serviceId)
+  const locale = isLocale(lang) ? lang : 'en'
+  const service = getServiceBySlug(serviceId, locale)
   if (!service) return {}
   const name = locale === 'en' ? service.name.en : service.name.es
   const description = locale === 'en' ? service.shortDesc.en : service.shortDesc.es
   const title = `${name} — Diamond Spa Medellín`
-  const path = `/services/${serviceId}`
+  const slug = locale === 'en' ? service.slugEn : service.id
   return {
     title,
     description,
-    alternates: buildAlternates(path, locale),
-    openGraph: buildOpenGraph({ title, description, path, locale, imageAlt: `${name} — Diamond Spa` }),
+    alternates: buildServiceAlternates(service, locale),
+    openGraph: buildOpenGraph({ title, description, path: `/services/${slug}`, locale, imageAlt: `${name} — Diamond Spa` }),
   }
 }
 
@@ -44,7 +46,7 @@ export default async function ServiceDetailPage({
   const { lang, serviceId } = await params
   if (!isLocale(lang)) notFound()
   const locale = lang as Locale
-  const service = getServiceById(serviceId)
+  const service = getServiceBySlug(serviceId, locale)
   if (!service) notFound()
 
   const t = getDict(locale).services
@@ -54,6 +56,7 @@ export default async function ServiceDetailPage({
     'border border-outline-variant text-on-surface px-10 py-5 font-label text-xs uppercase tracking-[0.2em] hover:bg-surface-container-high transition-all'
   const name = locale === 'en' ? service.name.en : service.name.es
   const description = locale === 'en' ? service.description.en : service.description.es
+  const slug = locale === 'en' ? service.slugEn : service.id
 
   // Build Service price for JSON-LD
   const servicePrice: number =
@@ -90,7 +93,7 @@ export default async function ServiceDetailPage({
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: locale === 'en' ? 'Home' : 'Inicio', item: `${BASE_URL}/${locale}` },
       { '@type': 'ListItem', position: 2, name: locale === 'en' ? 'Services' : 'Servicios', item: `${BASE_URL}/${locale}/services` },
-      { '@type': 'ListItem', position: 3, name },
+      { '@type': 'ListItem', position: 3, name, item: `${BASE_URL}/${locale}/services/${slug}` },
     ],
   }
 
@@ -98,24 +101,17 @@ export default async function ServiceDetailPage({
     <>
       <JsonLd data={serviceJsonLd} />
       <JsonLd data={breadcrumbJsonLd} />
+      <ServiceDetailTracker serviceId={service.id} serviceName={name} locale={locale} />
       {/* Back link */}
       <div className="pt-32 pb-0 px-6 md:px-12">
         <div className="max-w-screen-2xl mx-auto">
-          <Suspense
-            fallback={
-              <Link href={`/${locale}/services`} className={backFallbackClass}>
-                {t.backToServices}
-              </Link>
-            }
-          >
-            <ServiceDetailBackLink
-              locale={locale}
-              backToServices={t.backToServices}
-              backToMenMassages={t.backToMenMassages}
-              backToHome={t.backToHome}
-              className={backFallbackClass}
-            />
-          </Suspense>
+          <ServiceDetailBackLink
+            locale={locale}
+            backToServices={t.backToServices}
+            backToMenMassages={t.backToMenMassages}
+            backToHome={t.backToHome}
+            className={backFallbackClass}
+          />
         </div>
       </div>
 
@@ -224,21 +220,13 @@ export default async function ServiceDetailPage({
           >
             {t.bookThisService}
           </Link>
-          <Suspense
-            fallback={
-              <Link href={`/${locale}/services`} className={backCtaClass}>
-                {t.backToServices}
-              </Link>
-            }
-          >
-            <ServiceDetailBackLink
-              locale={locale}
-              backToServices={t.backToServices}
-              backToMenMassages={t.backToMenMassages}
-              backToHome={t.backToHome}
-              className={backCtaClass}
-            />
-          </Suspense>
+          <ServiceDetailBackLink
+            locale={locale}
+            backToServices={t.backToServices}
+            backToMenMassages={t.backToMenMassages}
+            backToHome={t.backToHome}
+            className={backCtaClass}
+          />
         </div>
       </section>
     </>

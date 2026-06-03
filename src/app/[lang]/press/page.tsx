@@ -6,6 +6,7 @@ import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph } from '@/lib/seo'
 import { SPA_EMAIL, SPA_INSTAGRAM, SPA_TIKTOK, SPA_ADDRESS, SPA_NAME_FULL } from '@/lib/spa'
 import { IGIcon, MailIcon, TikTokIcon } from '@/components/SocialIcons'
+import { TrackedSocialLink } from '@/components/TrackedSocialLink'
 
 export const dynamic = 'force-static'
 
@@ -57,8 +58,10 @@ export default async function PressPage({ params }: { params: Promise<{ lang: st
                 {isEn ? 'Media Contact' : 'Contacto de Prensa'}
               </h2>
               <div className="flex flex-col gap-5">
-                <a
+                <TrackedSocialLink
                   href={`mailto:${SPA_EMAIL}`}
+                  platform="email"
+                  source="press"
                   className="flex items-center gap-4 group"
                   aria-label={isEn ? `Email ${SPA_EMAIL}` : `Correo ${SPA_EMAIL}`}
                 >
@@ -69,10 +72,12 @@ export default async function PressPage({ params }: { params: Promise<{ lang: st
                     <p className="font-label text-[10px] uppercase tracking-widest text-outline mb-0.5">{isEn ? 'Email' : 'Correo'}</p>
                     <p className="font-body text-on-surface text-sm">{SPA_EMAIL}</p>
                   </div>
-                </a>
+                </TrackedSocialLink>
 
-                <a
+                <TrackedSocialLink
                   href={SPA_INSTAGRAM}
+                  platform="instagram"
+                  source="press"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-4 group"
@@ -85,10 +90,12 @@ export default async function PressPage({ params }: { params: Promise<{ lang: st
                     <p className="font-label text-[10px] uppercase tracking-widest text-outline mb-0.5">Instagram</p>
                     <p className="font-body text-on-surface text-sm">@diamondmassagesmed</p>
                   </div>
-                </a>
+                </TrackedSocialLink>
 
-                <a
+                <TrackedSocialLink
                   href={SPA_TIKTOK}
+                  platform="tiktok"
+                  source="press"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-4 group"
@@ -101,7 +108,7 @@ export default async function PressPage({ params }: { params: Promise<{ lang: st
                     <p className="font-label text-[10px] uppercase tracking-widest text-outline mb-0.5">TikTok</p>
                     <p className="font-body text-on-surface text-sm">@diamond.spa95</p>
                   </div>
-                </a>
+                </TrackedSocialLink>
               </div>
             </div>
 

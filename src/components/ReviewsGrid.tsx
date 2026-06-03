@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import type { Locale } from '@/lib/i18n'
 import { SPA_GOOGLE_REVIEW_URL } from '@/lib/spa'
+import { EVENTS, trackEvent } from '@/lib/events'
 
 interface PlaceReview {
   relativePublishTimeDescription: string
@@ -195,6 +196,7 @@ export function ReviewsGrid({ reviews, reviewUrl, leaveReviewLabel, locale }: Re
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-on-primary font-label tracking-widest text-xs uppercase hover:bg-primary/90 transition-colors"
+          onClick={() => trackEvent(EVENTS.GOOGLE_REVIEW_CLICKED, { platform: 'google', source: 'reviews-grid' })}
         >
           <span className="material-symbols-outlined text-base" aria-hidden="true">rate_review</span>
           {leaveReviewLabel}

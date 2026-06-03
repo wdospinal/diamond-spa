@@ -4,6 +4,7 @@ import { PHONES } from '@/lib/phones'
 import { SPA_EMAIL, SPA_INSTAGRAM, SPA_TIKTOK, SPA_WHATSAPP_GREETING } from '@/lib/spa'
 import WhatsAppLink from '@/components/WhatsAppLink'
 import { IGIcon, WAIcon, MailIcon, TikTokIcon } from '@/components/SocialIcons'
+import { TrackedSocialLink } from '@/components/TrackedSocialLink'
 
 export default function Footer({ locale }: { locale: Locale }) {
   const t = getDict(locale).footer
@@ -57,52 +58,63 @@ export default function Footer({ locale }: { locale: Locale }) {
         {/* Contact */}
         <div className="flex flex-col gap-4">
           <p className="text-on-surface font-label text-xs tracking-widest uppercase mb-2">{t.contactLabel}</p>
-          <a
+          <TrackedSocialLink
             href={`mailto:${SPA_EMAIL}`}
+            platform="email"
+            source="footer"
             aria-label={emailLabel}
             className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200"
           >
             {SPA_EMAIL}
-          </a>
+          </TrackedSocialLink>
           {PHONES.map(({ display, wa }) => (
-            <a
+            <TrackedSocialLink
               key={wa}
               href={`tel:+${wa}`}
+              platform="phone"
+              source="footer"
               aria-label={phoneLabel(display)}
               className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200"
             >
               {display}
-            </a>
+            </TrackedSocialLink>
           ))}
           {/* Social icons — all 20×20 SVG for consistent sizing */}
           <div className="flex gap-4 mt-2 items-center">
-            <a
+            <TrackedSocialLink
               href={SPA_INSTAGRAM}
+              platform="instagram"
+              source="footer"
               target="_blank"
               rel="noopener noreferrer"
               aria-label={instagramLabel}
               className="text-secondary hover:text-primary transition-colors duration-200"
             >
               <IGIcon />
-            </a>
-            <a
+            </TrackedSocialLink>
+            <TrackedSocialLink
               href={SPA_TIKTOK}
+              platform="tiktok"
+              source="footer"
               target="_blank"
               rel="noopener noreferrer"
               aria-label={tiktokLabel}
               className="text-secondary hover:text-primary transition-colors duration-200"
             >
               <TikTokIcon />
-            </a>
-            <a
+            </TrackedSocialLink>
+            <TrackedSocialLink
               href={`mailto:${SPA_EMAIL}`}
+              platform="email"
+              source="footer"
               aria-label={emailLabel}
               className="text-secondary hover:text-primary transition-colors duration-200"
             >
               <MailIcon />
-            </a>
+            </TrackedSocialLink>
             <WhatsAppLink
               text={SPA_WHATSAPP_GREETING[locale]}
+              source="footer"
               aria-label={whatsappLabel}
               className="text-secondary hover:text-primary transition-colors duration-200"
             >
