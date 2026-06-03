@@ -6,7 +6,9 @@ import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd } from '@/lib/seo'
 import { IMG_HERO_HOME, IMG_DEEP_TISSUE, IMG_FACIAL, IMG_RELAXATION, IMG_BOUTIQUE } from '@/lib/images'
 import { getServiceById } from '@/lib/services'
-import { SERVICE_DETAIL_FROM_HOME, SERVICE_DETAIL_FROM_QUERY } from '@/lib/service-detail-nav'
+import { SERVICE_DETAIL_FROM_HOME } from '@/lib/service-detail-nav'
+import { ServiceCardLink } from '@/components/ServiceCardLink'
+import { getServiceSlug } from '@/lib/services'
 import {
   SPA_ADDRESS,
   SPA_GOOGLE_PLACES_ID,
@@ -145,7 +147,6 @@ function HomeHero({ locale, rating }: { locale: Locale; rating: { value: string;
 
 function HomeServices({ locale }: { locale: Locale }) {
   const h = getDict(locale).home
-  const fromParam = `?${SERVICE_DETAIL_FROM_QUERY}=${SERVICE_DETAIL_FROM_HOME}`
   const deepTissueDesc = locale === 'en' ? FEATURED_SERVICES.deepTissue.shortDesc.en : FEATURED_SERVICES.deepTissue.shortDesc.es
   const facialDesc = locale === 'en' ? FEATURED_SERVICES.facial.shortDesc.en : FEATURED_SERVICES.facial.shortDesc.es
   const relaxDesc = locale === 'en' ? FEATURED_SERVICES.sensitive.shortDesc.en : FEATURED_SERVICES.sensitive.shortDesc.es
@@ -177,9 +178,9 @@ function HomeServices({ locale }: { locale: Locale }) {
               <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-3 block">{h.care}</span>
               <h3 className="font-headline text-3xl text-on-surface mb-3">{h.hairRemovalTitle}</h3>
               <p className="font-body text-secondary text-sm max-w-md leading-relaxed mb-5">{deepTissueDesc}</p>
-              <Link href={`/${locale}/services/${FEATURED_SERVICES.deepTissue.id}${fromParam}`} aria-label={locale === 'es' ? `Ver detalles: ${h.hairRemovalTitle}` : `View details: ${h.hairRemovalTitle}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
+              <ServiceCardLink href={`/${locale}/services/${getServiceSlug(FEATURED_SERVICES.deepTissue, locale)}`} from={SERVICE_DETAIL_FROM_HOME} aria-label={locale === 'es' ? `Ver detalles: ${h.hairRemovalTitle}` : `View details: ${h.hairRemovalTitle}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
                 {h.viewDetails} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
-              </Link>
+              </ServiceCardLink>
             </div>
           </div>
           <div className="md:col-span-6 relative group min-h-[480px] overflow-hidden rounded-sm bg-surface-container ring-1 ring-outline-variant/10">
@@ -197,9 +198,9 @@ function HomeServices({ locale }: { locale: Locale }) {
               <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-3 block">{h.treatments}</span>
               <h3 className="font-headline text-3xl text-on-surface mb-3">{h.facialTitle}</h3>
               <p className="font-body text-secondary text-sm max-w-md leading-relaxed mb-5">{facialDesc}</p>
-              <Link href={`/${locale}/services/${FEATURED_SERVICES.facial.id}${fromParam}`} aria-label={locale === 'es' ? `Ver detalles: ${h.facialTitle}` : `View details: ${h.facialTitle}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
+              <ServiceCardLink href={`/${locale}/services/${getServiceSlug(FEATURED_SERVICES.facial, locale)}`} from={SERVICE_DETAIL_FROM_HOME} aria-label={locale === 'es' ? `Ver detalles: ${h.facialTitle}` : `View details: ${h.facialTitle}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
                 {h.viewDetails} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
-              </Link>
+              </ServiceCardLink>
             </div>
           </div>
           <div className="md:col-span-12 relative flex min-h-[480px] items-center overflow-hidden rounded-sm bg-surface-container ring-1 ring-outline-variant/10 group">
@@ -218,9 +219,9 @@ function HomeServices({ locale }: { locale: Locale }) {
               <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-3 block">{h.relaxLabel}</span>
               <h3 className="font-headline text-3xl text-on-surface mb-3">{h.relaxTitle}</h3>
               <p className="font-body text-secondary text-sm leading-relaxed mb-5">{relaxDesc}</p>
-              <Link href={`/${locale}/services/${FEATURED_SERVICES.sensitive.id}${fromParam}`} aria-label={locale === 'es' ? `Ver detalles: ${h.relaxTitle}` : `View details: ${h.relaxTitle}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
+              <ServiceCardLink href={`/${locale}/services/${getServiceSlug(FEATURED_SERVICES.sensitive, locale)}`} from={SERVICE_DETAIL_FROM_HOME} aria-label={locale === 'es' ? `Ver detalles: ${h.relaxTitle}` : `View details: ${h.relaxTitle}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
                 {h.viewDetails} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
-              </Link>
+              </ServiceCardLink>
             </div>
           </div>
         </div>

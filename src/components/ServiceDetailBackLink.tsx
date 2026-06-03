@@ -1,10 +1,9 @@
 'use client'
 
-import { Suspense } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
 import type { Locale } from '@/lib/i18n'
-import { SERVICE_DETAIL_FROM_MASAJES, SERVICE_DETAIL_FROM_HOME, SERVICE_DETAIL_FROM_QUERY } from '@/lib/service-detail-nav'
+import { SERVICE_DETAIL_FROM_MASAJES, SERVICE_DETAIL_FROM_HOME, SERVICE_DETAIL_FROM_KEY } from '@/lib/service-detail-nav'
 
 type Props = {
   locale: Locale
@@ -14,9 +13,13 @@ type Props = {
   className?: string
 }
 
-function BackLinkInner({ locale, backToServices, backToMenMassages, backToHome, className }: Props) {
-  const searchParams = useSearchParams()
-  const from = searchParams.get(SERVICE_DETAIL_FROM_QUERY)
+export function ServiceDetailBackLink({ locale, backToServices, backToMenMassages, backToHome, className }: Props) {
+  const [from, setFrom] = useState<string | null>(null)
+
+  useEffect(() => {
+    setFrom(sessionStorage.getItem(SERVICE_DETAIL_FROM_KEY))
+  }, [])
+
   if (from === SERVICE_DETAIL_FROM_MASAJES) {
     return (
       <Link href={`/${locale}/${SERVICE_DETAIL_FROM_MASAJES}`} className={className}>
@@ -35,13 +38,5 @@ function BackLinkInner({ locale, backToServices, backToMenMassages, backToHome, 
     <Link href={`/${locale}/services`} className={className}>
       {backToServices}
     </Link>
-  )
-}
-
-export function ServiceDetailBackLink(props: Props) {
-  return (
-    <Suspense fallback={<Link href={`/${props.locale}/services`} className={props.className}>{props.backToServices}</Link>}>
-      <BackLinkInner {...props} />
-    </Suspense>
   )
 }

@@ -3,9 +3,11 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { getMassageServices, serviceDisplayName, serviceShortDesc } from '@/lib/services'
-import { SERVICE_DETAIL_FROM_MASAJES, SERVICE_DETAIL_FROM_QUERY } from '@/lib/service-detail-nav'
+import { SERVICE_DETAIL_FROM_MASAJES } from '@/lib/service-detail-nav'
+import { getServiceSlug } from '@/lib/services'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
 import { JsonLd } from '@/components/JsonLd'
+import { ServiceCardLink } from '@/components/ServiceCardLink'
 
 export const dynamic = 'force-static'
 
@@ -69,12 +71,13 @@ export default async function MasajesParaHombresPage({ params }: { params: Promi
                   {serviceShortDesc(m, locale)}
                 </p>
                 <div className="flex gap-4 mt-2">
-                  <Link
-                    href={`/${locale}/services/${m.id}?${SERVICE_DETAIL_FROM_QUERY}=${SERVICE_DETAIL_FROM_MASAJES}`}
+                  <ServiceCardLink
+                    href={`/${locale}/services/${getServiceSlug(m, locale)}`}
+                    from={SERVICE_DETAIL_FROM_MASAJES}
                     className="text-primary font-label text-xs tracking-widest uppercase hover:opacity-80 transition-opacity"
                   >
                     {p.viewDetails}
-                  </Link>
+                  </ServiceCardLink>
                   <Link
                     href={`/${locale}/book?service=${m.id}`}
                     className="text-primary font-label text-xs tracking-widest uppercase hover:opacity-80 transition-opacity"

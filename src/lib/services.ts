@@ -4,6 +4,8 @@ export { DURATION_MINUTES, type DurationMinutes }
 
 export type ServiceDef = {
   id: string
+  /** URL slug for English pages (e.g. "wax-half-leg"). Equals id when id is already English. */
+  slugEn: string
   name: { en: string; es: string }
   category: { en: string; es: string }
   categoryId: 'massages' | 'facials' | 'hair-removal'
@@ -19,6 +21,7 @@ export const SERVICES = [
   // ── EXCLUSIVE MASSAGES ──────────────────────────────────────────────────────
   {
     id: 'relaxing',
+    slugEn: 'relaxing',
     name: { en: 'Relaxing massage', es: 'Relajante' },
     category: { en: 'Exclusive Massages', es: 'Masajes Exclusivos' },
     categoryId: 'massages' as const,
@@ -35,6 +38,7 @@ export const SERVICES = [
   },
   {
     id: 'deep-tissue',
+    slugEn: 'deep-tissue',
     name: { en: 'Deep tissue', es: 'Deep Tissue' },
     category: { en: 'Exclusive Massages', es: 'Masajes Exclusivos' },
     categoryId: 'massages' as const,
@@ -51,6 +55,7 @@ export const SERVICES = [
   },
   {
     id: 'four-hands',
+    slugEn: 'four-hands',
     name: { en: 'Four hands', es: '4 Manos' },
     category: { en: 'Exclusive Massages', es: 'Masajes Exclusivos' },
     categoryId: 'massages' as const,
@@ -67,6 +72,7 @@ export const SERVICES = [
   },
   {
     id: 'duo',
+    slugEn: 'duo',
     name: { en: 'Duo massage', es: 'Duo Masaje' },
     category: { en: 'Exclusive Massages', es: 'Masajes Exclusivos' },
     categoryId: 'massages' as const,
@@ -83,6 +89,7 @@ export const SERVICES = [
   },
   {
     id: 'hot-stones',
+    slugEn: 'hot-stones',
     name: { en: 'Volcanic stone massage', es: 'Con Piedras Volcánicas' },
     category: { en: 'Exclusive Massages', es: 'Masajes Exclusivos' },
     categoryId: 'massages' as const,
@@ -99,6 +106,7 @@ export const SERVICES = [
   },
   {
     id: 'sports',
+    slugEn: 'sports',
     name: { en: 'Sports massage', es: 'Deportivo' },
     category: { en: 'Exclusive Massages', es: 'Masajes Exclusivos' },
     categoryId: 'massages' as const,
@@ -115,6 +123,7 @@ export const SERVICES = [
   },
   {
     id: 'sensitive',
+    slugEn: 'sensitive',
     name: { en: 'Sensitive massage', es: 'Masaje Sensitivo' },
     category: { en: 'Exclusive Massages', es: 'Masajes Exclusivos' },
     categoryId: 'massages' as const,
@@ -133,6 +142,7 @@ export const SERVICES = [
   // ── FACIALS & SKIN CARE ──────────────────────────────────────────────────────
   {
     id: 'hidrafacial',
+    slugEn: 'hydrafacial',
     name: { en: 'HydraFacial', es: 'Hidrafacial' },
     category: { en: 'Facials & Skin Care', es: 'Faciales y Cuidado de la Piel' },
     categoryId: 'facials' as const,
@@ -149,6 +159,7 @@ export const SERVICES = [
   },
   {
     id: 'limpieza-facial-profunda',
+    slugEn: 'deep-facial-cleanse',
     name: { en: 'Deep Facial Cleansing', es: 'Limpieza Facial Profunda' },
     category: { en: 'Facials & Skin Care', es: 'Faciales y Cuidado de la Piel' },
     categoryId: 'facials' as const,
@@ -165,6 +176,7 @@ export const SERVICES = [
   },
   {
     id: 'limpieza-facial-basica',
+    slugEn: 'basic-facial-cleanse',
     name: { en: 'Basic Facial Cleansing', es: 'Limpieza Facial Básica' },
     category: { en: 'Facials & Skin Care', es: 'Faciales y Cuidado de la Piel' },
     categoryId: 'facials' as const,
@@ -181,6 +193,7 @@ export const SERVICES = [
   },
   {
     id: 'hidratacion-facial',
+    slugEn: 'facial-hydration',
     name: { en: 'Facial Hydration', es: 'Hidratación Facial' },
     category: { en: 'Facials & Skin Care', es: 'Faciales y Cuidado de la Piel' },
     categoryId: 'facials' as const,
@@ -197,6 +210,7 @@ export const SERVICES = [
   },
   {
     id: 'limpieza-espalda',
+    slugEn: 'back-cleanse',
     name: { en: 'Back Cleansing', es: 'Limpieza de Espalda' },
     category: { en: 'Facials & Skin Care', es: 'Faciales y Cuidado de la Piel' },
     categoryId: 'facials' as const,
@@ -215,6 +229,7 @@ export const SERVICES = [
   // ── HAIR REMOVAL ─────────────────────────────────────────────────────────────
   {
     id: 'depilacion-axila',
+    slugEn: 'wax-underarm',
     name: { en: 'Underarm', es: 'Axila' },
     category: { en: 'Hair Removal', es: 'Depilación' },
     categoryId: 'hair-removal' as const,
@@ -232,6 +247,7 @@ export const SERVICES = [
   },
   {
     id: 'depilacion-bikini',
+    slugEn: 'wax-bikini',
     name: { en: 'Bikini', es: 'Bikini' },
     category: { en: 'Hair Removal', es: 'Depilación' },
     categoryId: 'hair-removal' as const,
@@ -249,6 +265,7 @@ export const SERVICES = [
   },
   {
     id: 'depilacion-media-pierna',
+    slugEn: 'wax-half-leg',
     name: { en: 'Half Leg', es: 'Media Pierna' },
     category: { en: 'Hair Removal', es: 'Depilación' },
     categoryId: 'hair-removal' as const,
@@ -266,6 +283,7 @@ export const SERVICES = [
   },
   {
     id: 'depilacion-pierna-completa',
+    slugEn: 'wax-full-leg',
     name: { en: 'Full Leg', es: 'Pierna Completa' },
     category: { en: 'Hair Removal', es: 'Depilación' },
     categoryId: 'hair-removal' as const,
@@ -283,6 +301,7 @@ export const SERVICES = [
   },
   {
     id: 'depilacion-pecho',
+    slugEn: 'wax-chest',
     name: { en: 'Chest', es: 'Pecho' },
     category: { en: 'Hair Removal', es: 'Depilación' },
     categoryId: 'hair-removal' as const,
@@ -300,6 +319,7 @@ export const SERVICES = [
   },
   {
     id: 'depilacion-espalda',
+    slugEn: 'wax-back',
     name: { en: 'Back', es: 'Espalda' },
     category: { en: 'Hair Removal', es: 'Depilación' },
     categoryId: 'hair-removal' as const,
@@ -317,6 +337,7 @@ export const SERVICES = [
   },
   {
     id: 'depilacion-zona-perianal',
+    slugEn: 'wax-perianal',
     name: { en: 'Perianal Zone', es: 'Zona Perianal' },
     category: { en: 'Hair Removal', es: 'Depilación' },
     categoryId: 'hair-removal' as const,
@@ -334,6 +355,7 @@ export const SERVICES = [
   },
   {
     id: 'depilacion-cuerpo-completo',
+    slugEn: 'wax-full-body',
     name: { en: 'Full Body', es: 'Cuerpo Completo' },
     category: { en: 'Hair Removal', es: 'Depilación' },
     categoryId: 'hair-removal' as const,
@@ -369,6 +391,15 @@ export function getMassageServices(): ServiceDef[] {
 
 export function getServiceById(id: string): ServiceDef | undefined {
   return servicesList.find(s => s.id === id)
+}
+
+export function getServiceBySlug(slug: string, locale: 'en' | 'es'): ServiceDef | undefined {
+  if (locale === 'en') return servicesList.find(s => s.slugEn === slug)
+  return servicesList.find(s => s.id === slug)
+}
+
+export function getServiceSlug(service: ServiceDef, locale: 'en' | 'es'): string {
+  return locale === 'en' ? service.slugEn : service.id
 }
 
 export function getServicePrice(

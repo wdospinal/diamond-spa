@@ -3,14 +3,14 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { isLocale, type Locale } from '@/lib/i18n'
 import { getMassageServices, serviceDisplayName, serviceShortDesc } from '@/lib/services'
-import { SERVICE_DETAIL_FROM_QUERY } from '@/lib/service-detail-nav'
+import { SERVICE_DETAIL_FROM_MUJERES } from '@/lib/service-detail-nav'
+import { getServiceSlug } from '@/lib/services'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
 import { SPA_ADDRESS, SPA_PHONES, SPA_RATING } from '@/lib/spa'
 import { JsonLd } from '@/components/JsonLd'
+import { ServiceCardLink } from '@/components/ServiceCardLink'
 
 export const dynamic = 'force-static'
-
-const FROM_MUJERES = 'masajes-para-mujeres'
 
 const content = {
   en: {
@@ -167,12 +167,13 @@ export default async function MasajesParaMujeresPage({ params }: { params: Promi
                   {serviceShortDesc(m, locale)}
                 </p>
                 <div className="flex gap-4 mt-2">
-                  <Link
-                    href={`/${locale}/services/${m.id}?${SERVICE_DETAIL_FROM_QUERY}=${FROM_MUJERES}`}
+                  <ServiceCardLink
+                    href={`/${locale}/services/${getServiceSlug(m, locale)}`}
+                    from={SERVICE_DETAIL_FROM_MUJERES}
                     className="text-primary font-label text-xs tracking-widest uppercase hover:opacity-80 transition-opacity"
                   >
                     {c.viewDetails}
-                  </Link>
+                  </ServiceCardLink>
                   <Link
                     href={`/${locale}/book?service=${m.id}`}
                     className="text-primary font-label text-xs tracking-widest uppercase hover:opacity-80 transition-opacity"

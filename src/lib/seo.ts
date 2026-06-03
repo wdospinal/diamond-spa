@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import type { ServiceDef } from './services'
 import {
   SPA_NAME,
   SPA_NAME_FULL,
@@ -26,7 +27,21 @@ export function buildAlternates(path: string, locale: 'es' | 'en' = 'es'): Metad
     languages: {
       es: `${BASE_URL}/es${base}`,
       en: `${BASE_URL}/en${base}`,
-      'x-default': `${BASE_URL}/es${base}`,
+      'x-default': `${BASE_URL}/en${base}`,
+    },
+  }
+}
+
+/** Alternates for service detail pages — uses locale-specific slugs (EN and ES differ). */
+export function buildServiceAlternates(service: ServiceDef, locale: 'es' | 'en'): Metadata['alternates'] {
+  const enSlug = service.slugEn
+  const esSlug = service.id
+  return {
+    canonical: `${BASE_URL}/${locale}/services/${locale === 'en' ? enSlug : esSlug}`,
+    languages: {
+      es: `${BASE_URL}/es/services/${esSlug}`,
+      en: `${BASE_URL}/en/services/${enSlug}`,
+      'x-default': `${BASE_URL}/en/services/${enSlug}`,
     },
   }
 }
