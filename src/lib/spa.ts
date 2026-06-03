@@ -40,6 +40,7 @@ export const SPA_PHONES = [
 ] as const
 
 export const SPA_INSTAGRAM = 'https://www.instagram.com/diamondmassagesmed/'
+export const SPA_TIKTOK = 'https://www.tiktok.com/@diamond.spa95'
 
 export const SPA_WHATSAPP_GREETING = {
   en: 'Hello, I would like to speak with the receptionist at Diamond Spa.',

@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { getDict, type Locale } from '@/lib/i18n'
 import { PHONES } from '@/lib/phones'
-import { SPA_EMAIL, SPA_INSTAGRAM, SPA_WHATSAPP_GREETING } from '@/lib/spa'
+import { SPA_EMAIL, SPA_INSTAGRAM, SPA_TIKTOK, SPA_WHATSAPP_GREETING } from '@/lib/spa'
 import WhatsAppLink from '@/components/WhatsAppLink'
 
 const IGSvg = (
@@ -16,11 +16,24 @@ const WASvg = (
   </svg>
 )
 
+const MailSvg = (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+    <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/>
+  </svg>
+)
+
+const TikTokSvg = (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+    <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/>
+  </svg>
+)
+
 export default function Footer({ locale }: { locale: Locale }) {
   const t = getDict(locale).footer
   const legal = (slug: 'privacy' | 'terms' | 'press') => `/${locale}/${slug}`
 
   const instagramLabel = locale === 'es' ? 'Diamond Spa en Instagram' : 'Diamond Spa on Instagram'
+  const tiktokLabel = locale === 'es' ? 'Diamond Spa en TikTok' : 'Diamond Spa on TikTok'
   const emailLabel = locale === 'es' ? `Enviar correo a ${SPA_EMAIL}` : `Email ${SPA_EMAIL}`
   const whatsappLabel = locale === 'es' ? 'Contactar por WhatsApp' : 'Contact via WhatsApp'
   const phoneLabel = (display: string) =>
@@ -84,7 +97,8 @@ export default function Footer({ locale }: { locale: Locale }) {
               {display}
             </a>
           ))}
-          <div className="flex gap-4 mt-2">
+          {/* Social icons — all 20×20 SVG for consistent sizing */}
+          <div className="flex gap-4 mt-2 items-center">
             <a
               href={SPA_INSTAGRAM}
               target="_blank"
@@ -95,11 +109,20 @@ export default function Footer({ locale }: { locale: Locale }) {
               {IGSvg}
             </a>
             <a
+              href={SPA_TIKTOK}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={tiktokLabel}
+              className="text-secondary hover:text-primary transition-colors duration-200"
+            >
+              {TikTokSvg}
+            </a>
+            <a
               href={`mailto:${SPA_EMAIL}`}
               aria-label={emailLabel}
               className="text-secondary hover:text-primary transition-colors duration-200"
             >
-              <span className="material-symbols-outlined text-xl" aria-hidden="true">mail</span>
+              {MailSvg}
             </a>
             <WhatsAppLink
               text={SPA_WHATSAPP_GREETING[locale]}
