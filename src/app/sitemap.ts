@@ -14,6 +14,7 @@ const STATIC_PATHS: { path: string; priority: number; changeFrequency: MetadataR
   { path: '/spa-el-poblado',           priority: 0.9, changeFrequency: 'weekly'  },
   { path: '/limpieza-facial-medellin', priority: 0.9, changeFrequency: 'weekly'  },
   { path: '/massage-medellin',         priority: 0.9, changeFrequency: 'weekly'  },
+  { path: '/spa-near-me',              priority: 0.9, changeFrequency: 'monthly' },
   { path: '/about',                    priority: 0.7, changeFrequency: 'monthly' },
   { path: '/location',                 priority: 0.8, changeFrequency: 'monthly' },
   { path: '/history',                  priority: 0.6, changeFrequency: 'monthly' },
@@ -36,10 +37,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       })
     }
 
-    // Service detail pages
+    // Service detail pages — English uses English slugs, Spanish uses Spanish
     for (const svc of SERVICES) {
+      const slug = locale === 'en' ? svc.slugEn : svc.id
       entries.push({
-        url: `${BASE_URL}/${locale}/services/${svc.id}`,
+        url: `${BASE_URL}/${locale}/services/${slug}`,
         lastModified: new Date(),
         changeFrequency: 'monthly',
         priority: 0.7,
