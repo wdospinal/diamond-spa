@@ -2,7 +2,7 @@ import Image from 'next/image'
 import { getDict, type Locale } from '@/lib/i18n'
 import {
   SPA_ADDRESS,
-  SPA_GEO,
+  SPA_GOOGLE_MAPS_URL,
   SPA_GOOGLE_REVIEW_URL,
   SPA_NAME_FULL,
   SPA_PHONES,
@@ -81,9 +81,7 @@ export async function ReviewsSection({ locale }: { locale: Locale }) {
   const spaCategory = place.primaryTypeDisplayName?.text
   const spaAddress = place.shortFormattedAddress ?? SPA_ADDRESS.full
   const spaPhone = place.internationalPhoneNumber ?? SPA_PHONES[0].display
-  const mapsUri =
-    place.googleMapsUri ??
-    `https://www.google.com/maps/search/?api=1&query=${SPA_GEO.latitude},${SPA_GEO.longitude}`
+  const mapsUri = place.googleMapsUri ?? SPA_GOOGLE_MAPS_URL
 
   return (
     <section className="py-24 px-6 md:px-12 bg-surface">

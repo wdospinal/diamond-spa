@@ -48,7 +48,7 @@ const content = {
     faqs: [
       {
         question: 'Where can I get professional hair removal in Medellín?',
-        answer: `Diamond Spa offers professional hair removal at ${SPA_ADDRESS.full}, El Poblado, Medellín. We use hot wax and electric machine with certified cosmetologists.`,
+        answer: `Diamond Spa offers professional hair removal at ${SPA_ADDRESS.full}. We use hot wax and electric machine with certified cosmetologists.`,
       },
       {
         question: 'How much does hair removal cost in Medellín?',
@@ -106,7 +106,7 @@ const content = {
     faqs: [
       {
         question: '¿Dónde hacen depilación profesional en Medellín?',
-        answer: `Diamond Spa ofrece depilación profesional en ${SPA_ADDRESS.full}, El Poblado, Medellín. Usamos cera caliente y máquina eléctrica con cosmetólogas certificadas.`,
+        answer: `Diamond Spa ofrece depilación profesional en ${SPA_ADDRESS.full}. Usamos cera caliente y máquina eléctrica con cosmetólogas certificadas.`,
       },
       {
         question: '¿Cuánto cuesta la depilación en Medellín?',

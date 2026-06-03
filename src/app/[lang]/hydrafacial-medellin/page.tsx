@@ -58,7 +58,7 @@ const content = {
       },
       {
         question: 'Where can I get a HydraFacial in Medellín?',
-        answer: `Diamond Spa offers HydraFacial in Medellín at ${SPA_ADDRESS.full}, El Poblado. Book online or write to us on WhatsApp ${SPA_PHONES[1].display}.`,
+        answer: `Diamond Spa offers HydraFacial in Medellín at ${SPA_ADDRESS.full}. Book online or write to us on WhatsApp ${SPA_PHONES[1].display}.`,
       },
     ],
     ctaTitle: 'Book Your HydraFacial Today',
@@ -113,7 +113,7 @@ const content = {
       },
       {
         question: '¿Dónde puedo hacerme un HydraFacial en Medellín?',
-        answer: `Diamond Spa ofrece HydraFacial en Medellín en ${SPA_ADDRESS.full}, El Poblado. Reserva online o escríbenos al WhatsApp ${SPA_PHONES[1].display}.`,
+        answer: `Diamond Spa ofrece HydraFacial en Medellín en ${SPA_ADDRESS.full}. Reserva online o escríbenos al WhatsApp ${SPA_PHONES[1].display}.`,
       },
     ],
     ctaTitle: 'Reserva tu HydraFacial Hoy',

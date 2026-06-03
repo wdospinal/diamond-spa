@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
-import { SPA_ADDRESS, SPA_HOURS, SPA_RATING } from '@/lib/spa'
+import { SPA_ADDRESS, SPA_HOURS, SPA_RATING, SPA_GOOGLE_MAPS_URL } from '@/lib/spa'
 import { JsonLd } from '@/components/JsonLd'
 
 export const dynamic = 'force-static'
@@ -216,7 +216,7 @@ export default async function SpaElPobladoPage({ params }: { params: Promise<{ l
             <h2 className="font-headline text-xl text-on-surface tracking-tighter mb-6">{c.addressTitle}</h2>
             <p className="font-body text-on-surface text-sm leading-relaxed mb-4">{SPA_ADDRESS.full}</p>
             <a
-              href={`https://www.google.com/maps/search/?api=1&query=${SPA_ADDRESS.full}`}
+              href={SPA_GOOGLE_MAPS_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-primary font-label text-xs tracking-widest uppercase hover:opacity-80 transition-opacity"

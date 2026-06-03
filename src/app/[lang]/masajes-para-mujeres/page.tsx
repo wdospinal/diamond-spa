@@ -2,9 +2,8 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { isLocale, type Locale } from '@/lib/i18n'
-import { getMassageServices, serviceDisplayName, serviceShortDesc } from '@/lib/services'
+import { getMassageServices, getFacialServices, getHairRemovalServices, serviceDisplayName, serviceShortDesc, formatCop, getServiceSlug } from '@/lib/services'
 import { SERVICE_DETAIL_FROM_MUJERES } from '@/lib/service-detail-nav'
-import { getServiceSlug } from '@/lib/services'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
 import { SPA_ADDRESS, SPA_PHONES, SPA_RATING } from '@/lib/spa'
 import { JsonLd } from '@/components/JsonLd'
@@ -22,11 +21,14 @@ const content = {
     h1: 'Massages for Women in Medellín',
     heroBody:
       'Diamond Spa offers exclusive massages for women in El Poblado, Medellín. A quiet luxury environment with certified female therapists, private rooms, and staggered appointments for total privacy. Relaxing, deep tissue, 4-hands and more — all designed to deliver real results in a professional, discreet setting.',
-    bookMassage: 'Book a Massage',
-    featuredTitle: 'Our Massages for Women',
+    bookMassage: 'Book a Session',
+    featuredTitle: 'Massages for Women',
+    facialsTitle: 'Facials & Skin Care',
+    hairRemovalTitle: 'Hair Removal',
     viewDetails: 'View details',
     book: 'Book',
     viewAllServices: 'View all services →',
+    from: 'from',
     whyTitle: 'Why Diamond Spa?',
     pillars: [
       { icon: 'lock', title: 'Total Privacy', body: 'Private rooms, staggered appointments, and a discreet entrance ensure your session is exclusively yours.' },
@@ -68,11 +70,14 @@ const content = {
     h1: 'Masajes para Mujeres en Medellín',
     heroBody:
       'Diamond Spa ofrece masajes exclusivos para mujeres en El Poblado, Medellín. Un entorno de lujo silencioso con terapeutas femeninas certificadas, cabinas privadas y citas escalonadas para total privacidad. Masaje relajante, deep tissue, 4 manos y mucho más — diseñados para entregar resultados reales en un ambiente profesional y discreto.',
-    bookMassage: 'Reservar Masaje',
-    featuredTitle: 'Nuestros Masajes para Mujeres',
+    bookMassage: 'Reservar Cita',
+    featuredTitle: 'Masajes para Mujeres',
+    facialsTitle: 'Faciales y Cuidado de la Piel',
+    hairRemovalTitle: 'Depilación',
     viewDetails: 'Ver detalles',
     book: 'Reservar',
     viewAllServices: 'Ver todos los servicios →',
+    from: 'desde',
     whyTitle: '¿Por qué Diamond Spa?',
     pillars: [
       { icon: 'lock', title: 'Total Privacidad', body: 'Cabinas privadas, citas escalonadas y entrada discreta para que tu sesión sea exclusivamente tuya.' },
@@ -125,6 +130,8 @@ export default async function MasajesParaMujeresPage({ params }: { params: Promi
   const locale = lang as Locale
   const c = content[locale]
   const massageServices = getMassageServices()
+  const facialServices = getFacialServices()
+  const hairRemovalServices = getHairRemovalServices()
 
   return (
     <>
@@ -191,6 +198,92 @@ export default async function MasajesParaMujeresPage({ params }: { params: Promi
             >
               {c.viewAllServices}
             </Link>
+          </div>
+        </section>
+
+        {/* Facials grid */}
+        <section className="mb-20">
+          <h2 className="font-headline text-2xl md:text-3xl text-on-surface tracking-tighter mb-10">
+            {c.facialsTitle}
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {facialServices.map((s) => {
+              const price = s.pricingModel === 'flat' ? s.price : null
+              return (
+                <div key={s.id} className="bg-surface-container p-8 flex flex-col gap-4">
+                  <h3 className="font-headline text-xl text-on-surface tracking-tighter">
+                    {serviceDisplayName(s, locale)}
+                  </h3>
+                  <p className="text-zinc-400 font-body text-sm leading-relaxed flex-1">
+                    {serviceShortDesc(s, locale)}
+                  </p>
+                  {price !== null && (
+                    <span className="font-body text-primary text-sm tabular-nums">
+                      {formatCop(price)}
+                    </span>
+                  )}
+                  <div className="flex gap-4 mt-2">
+                    <ServiceCardLink
+                      href={`/${locale}/services/${getServiceSlug(s, locale)}`}
+                      from={SERVICE_DETAIL_FROM_MUJERES}
+                      className="text-primary font-label text-xs tracking-widest uppercase hover:opacity-80 transition-opacity"
+                    >
+                      {c.viewDetails}
+                    </ServiceCardLink>
+                    <Link
+                      href={`/${locale}/book?service=${s.id}`}
+                      className="text-primary font-label text-xs tracking-widest uppercase hover:opacity-80 transition-opacity"
+                    >
+                      {c.book}
+                    </Link>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </section>
+
+        {/* Hair Removal grid */}
+        <section className="mb-20">
+          <h2 className="font-headline text-2xl md:text-3xl text-on-surface tracking-tighter mb-10">
+            {c.hairRemovalTitle}
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {hairRemovalServices.map((s) => {
+              const minPrice = s.pricingModel === 'wax-machine'
+                ? Math.min(s.waxPrice, s.machinePrice)
+                : null
+              return (
+                <div key={s.id} className="bg-surface-container p-8 flex flex-col gap-4">
+                  <h3 className="font-headline text-xl text-on-surface tracking-tighter">
+                    {serviceDisplayName(s, locale)}
+                  </h3>
+                  <p className="text-zinc-400 font-body text-sm leading-relaxed flex-1">
+                    {serviceShortDesc(s, locale)}
+                  </p>
+                  {minPrice !== null && (
+                    <span className="font-body text-outline text-xs">
+                      {c.from} <span className="text-primary font-medium">{formatCop(minPrice)}</span>
+                    </span>
+                  )}
+                  <div className="flex gap-4 mt-2">
+                    <ServiceCardLink
+                      href={`/${locale}/services/${getServiceSlug(s, locale)}`}
+                      from={SERVICE_DETAIL_FROM_MUJERES}
+                      className="text-primary font-label text-xs tracking-widest uppercase hover:opacity-80 transition-opacity"
+                    >
+                      {c.viewDetails}
+                    </ServiceCardLink>
+                    <Link
+                      href={`/${locale}/book?service=${s.id}`}
+                      className="text-primary font-label text-xs tracking-widest uppercase hover:opacity-80 transition-opacity"
+                    >
+                      {c.book}
+                    </Link>
+                  </div>
+                </div>
+              )
+            })}
           </div>
         </section>
 

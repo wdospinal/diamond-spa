@@ -42,7 +42,6 @@ const content = {
     whatToExpectTitle: 'What to Expect',
     steps: [
       { icon: 'calendar_month', title: 'Book Online', body: 'Select your package and preferred time. Confirmation is immediate.' },
-      { icon: 'door_front', title: 'Private Arrival', body: 'Discreet entrance. No waiting room. Your room is prepared exclusively for you.' },
       { icon: 'spa', title: 'Your Session', body: 'Seamless transitions between treatments by our certified specialists.' },
       { icon: 'self_improvement', title: 'Leave Renewed', body: 'Take your time. No rush. Leave feeling balanced in body and mind.' },
     ],
@@ -109,7 +108,6 @@ const content = {
     whatToExpectTitle: 'Qué esperar',
     steps: [
       { icon: 'calendar_month', title: 'Reserva Online', body: 'Elige tu paquete y horario preferido. La confirmación es inmediata.' },
-      { icon: 'door_front', title: 'Llegada Privada', body: 'Entrada discreta. Sin sala de espera. Tu cabina preparada exclusivamente para ti.' },
       { icon: 'spa', title: 'Tu Sesión', body: 'Transiciones fluidas entre tratamientos por nuestras especialistas certificadas.' },
       { icon: 'self_improvement', title: 'Sal Renovado', body: 'Sin prisa. Sal sintiéndote equilibrado en cuerpo y mente.' },
     ],

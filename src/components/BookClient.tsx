@@ -93,7 +93,7 @@ export default function BookClient({
   const [selectedDay, setSelectedDay] = useState<number | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
   const [confirmed, setConfirmed] = useState(false)
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', requests: '' })
+  const [form, setForm] = useState({ name: '', phone: '', requests: '' })
 
   const cells = buildCalendar(calYear, calMonth)
 
@@ -157,8 +157,7 @@ export default function BookClient({
       `📋 ${t.serviceLabel}: ${serviceLabel}\n` +
       `📅 ${t.dateLabel}: ${dateStr}\n` +
       `⏰ ${t.timeLabel}: ${selectedTime}\n` +
-      `👤 Nombre: ${form.firstName} ${form.lastName}\n` +
-      `📧 Email: ${form.email}\n` +
+      `👤 Nombre: ${form.name}\n` +
       `📱 Tel: ${form.phone}\n` +
       (form.requests ? `💬 Notas: ${form.requests}\n` : '') +
       `\n💰 ${t.totalLabel}: ${formatCop(priceCop)}`
@@ -178,8 +177,8 @@ export default function BookClient({
       `[Diamond Spa] Nueva reserva\n` +
       `Servicio: ${serviceLabel}\n` +
       `Fecha: ${dateStr}\n` +
-      `Cliente: ${form.firstName} ${form.lastName}\n` +
-      `Tel: ${form.phone} | Email: ${form.email}` +
+      `Cliente: ${form.name}\n` +
+      `Tel: ${form.phone}` +
       (form.requests ? `\nNotas: ${form.requests}` : '')
 
     try { await fetch('/api/send-sms', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: smsBody }) }) } catch { /* non-blocking */ }
@@ -196,7 +195,9 @@ export default function BookClient({
           day: selectedDay,
           timeSlot: selectedTime,
           locale: lang,
-          ...form,
+          name: form.name,
+          phone: form.phone,
+          requests: form.requests,
         }),
       })
     } catch { /* non-blocking */ }
@@ -223,7 +224,7 @@ export default function BookClient({
         <span className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-6 block">{t.confirmedLabel}</span>
         <h1 className="font-headline text-4xl md:text-5xl text-on-surface mb-6">{t.confirmedTitle}</h1>
         <p className="font-body text-secondary leading-relaxed mb-4">
-          {t.confirmedBody1} {form.firstName}. {t.confirmedBody2} <span className="text-primary">{form.email}</span>.
+          {t.confirmedBody1} {form.name}. {t.confirmedBody2}
         </p>
         <div className="bg-surface-container-high p-8 my-10 text-left flex flex-col gap-3">
           {[
@@ -246,7 +247,7 @@ export default function BookClient({
             setSelectedHairMethod(null)
             setSelectedDay(null)
             setSelectedTime(null)
-            setForm({ firstName: '', lastName: '', email: '', phone: '', requests: '' })
+            setForm({ name: '', phone: '', requests: '' })
           }}
           className="bg-primary text-on-primary px-10 py-4 font-label font-bold tracking-[0.2em] text-xs uppercase hover:bg-white transition-all"
         >
@@ -544,11 +545,9 @@ export default function BookClient({
             {/* Step 05 — Personal details */}
             <div>
               <StepLabel n="05" label={t.step4} />
-              <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-xl">
+              <div className="mt-6 flex flex-col gap-5 max-w-xl">
                 {([
-                  { id: 'firstName', label: t.firstName, type: 'text' },
-                  { id: 'lastName', label: t.lastName, type: 'text' },
-                  { id: 'email', label: t.email, type: 'email' },
+                  { id: 'name', label: t.name, type: 'text' },
                   { id: 'phone', label: t.phone, type: 'tel' },
                 ] as const).map(({ id, label, type }) => (
                   <div key={id} className="flex flex-col gap-1">
@@ -557,7 +556,7 @@ export default function BookClient({
                       className="bg-surface-container-highest border-b border-outline focus:border-primary outline-none py-3 px-0 font-body text-sm text-on-surface placeholder:text-outline/40 transition-colors duration-200" />
                   </div>
                 ))}
-                <div className="sm:col-span-2 flex flex-col gap-1">
+                <div className="flex flex-col gap-1">
                   <label htmlFor="requests" className="font-label text-xs text-outline uppercase tracking-widest">{t.specialRequests}</label>
                   <textarea id="requests" rows={3} value={form.requests} onChange={e => setForm(f => ({ ...f, requests: e.target.value }))} placeholder={t.requestsPlaceholder}
                     className="bg-surface-container-highest border-b border-outline focus:border-primary outline-none py-3 px-0 font-body text-sm text-on-surface placeholder:text-outline/40 transition-colors duration-200 resize-none" />

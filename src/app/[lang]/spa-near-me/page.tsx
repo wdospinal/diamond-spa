@@ -10,6 +10,7 @@ import {
   SPA_PHONES,
   SPA_RATING,
   SPA_GOOGLE_REVIEW_URL,
+  SPA_GOOGLE_MAPS_URL,
   SPA_WHATSAPP_GREETING,
   randomWhatsAppUrl,
 } from '@/lib/spa'
@@ -258,7 +259,7 @@ export default async function SpaNearMePage({ params }: { params: Promise<{ lang
                 </div>
               </div>
               <a
-                href={`https://www.google.com/maps/search/?api=1&query=${SPA_GEO.latitude},${SPA_GEO.longitude}`}
+                href={SPA_GOOGLE_MAPS_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 mt-8 border border-outline-variant text-on-surface px-8 py-3 font-label text-xs uppercase tracking-widest hover:bg-surface-container transition-all"

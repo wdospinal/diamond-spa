@@ -389,6 +389,14 @@ export function getMassageServices(): ServiceDef[] {
   return servicesList.filter(s => s.categoryId === 'massages')
 }
 
+export function getFacialServices(): ServiceDef[] {
+  return servicesList.filter(s => s.categoryId === 'facials')
+}
+
+export function getHairRemovalServices(): ServiceDef[] {
+  return servicesList.filter(s => s.categoryId === 'hair-removal')
+}
+
 export function getServiceById(id: string): ServiceDef | undefined {
   return servicesList.find(s => s.id === id)
 }
