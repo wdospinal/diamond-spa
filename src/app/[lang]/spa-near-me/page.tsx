@@ -2,13 +2,12 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
-import { buildAlternates, buildOpenGraph, BASE_URL, BUSINESS, localBusinessJsonLd } from '@/lib/seo'
+import { buildAlternates, buildOpenGraph, BASE_URL, BUSINESS, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
 import {
   SPA_ADDRESS,
   SPA_GEO,
   SPA_HOURS,
   SPA_PHONES,
-  SPA_EMAIL,
   SPA_RATING,
   SPA_GOOGLE_REVIEW_URL,
   SPA_WHATSAPP_GREETING,
@@ -22,8 +21,7 @@ import { JsonLd } from '@/components/JsonLd'
 
 export const dynamic = 'force-static'
 
-const MAP_SRC = `https://www.google.com/maps/embed/v1/place?key=AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY&q=Diamond+Spa+Medellin&zoom=16`
-const MAP_SRC_FALLBACK = `https://maps.google.com/maps?q=${SPA_GEO.latitude},${SPA_GEO.longitude}&t=&z=16&ie=UTF8&iwloc=&output=embed`
+const MAP_SRC = `https://maps.google.com/maps?q=${SPA_GEO.latitude},${SPA_GEO.longitude}&t=&z=16&ie=UTF8&iwloc=&output=embed`
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params
@@ -45,18 +43,11 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   }
 }
 
-// Pick 3 representative services per category
-const FEATURED_MASSAGES = (SERVICES as unknown as ServiceDef[])
-  .filter(s => s.categoryId === 'massages')
-  .slice(0, 3)
-
-const FEATURED_FACIALS = (SERVICES as unknown as ServiceDef[])
-  .filter(s => s.categoryId === 'facials')
-  .slice(0, 3)
-
-const FEATURED_HAIR = (SERVICES as unknown as ServiceDef[])
-  .filter(s => s.categoryId === 'hair-removal')
-  .slice(0, 3)
+const serviceList = SERVICES as unknown as ServiceDef[]
+const top3 = (cat: ServiceDef['categoryId']) => serviceList.filter(s => s.categoryId === cat).slice(0, 3)
+const FEATURED_MASSAGES = top3('massages')
+const FEATURED_FACIALS  = top3('facials')
+const FEATURED_HAIR     = top3('hair-removal')
 
 function ServicePrice({ service, locale }: { service: ServiceDef; locale: Locale }) {
   if (service.pricingModel === 'flat') {
@@ -154,18 +145,8 @@ export default async function SpaNearMePage({ params }: { params: Promise<{ lang
   if (!isLocale(lang)) notFound()
   const locale = lang as Locale
   const isEn = locale === 'en'
-  const t = getDict(locale)
   const faq = isEn ? FAQ_EN : FAQ_ES
-
-  const faqJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: faq.map(({ q, a }) => ({
-      '@type': 'Question',
-      name: q,
-      acceptedAnswer: { '@type': 'Answer', text: a },
-    })),
-  }
+  const whatsappUrl = randomWhatsAppUrl(SPA_WHATSAPP_GREETING[locale])
 
   const breadcrumbJsonLd = {
     '@context': 'https://schema.org',
@@ -181,14 +162,14 @@ export default async function SpaNearMePage({ params }: { params: Promise<{ lang
   return (
     <>
       <JsonLd data={localBusinessJsonLd()} />
-      <JsonLd data={faqJsonLd} />
+      <JsonLd data={faqJsonLd(faq.map(({ q, a }) => ({ question: q, answer: a })))} />
       <JsonLd data={breadcrumbJsonLd} />
 
       {/* Hero */}
       <header className="pt-40 pb-16 px-6 md:px-12 bg-surface">
         <div className="max-w-screen-2xl mx-auto">
           <span className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-5 block">
-            {isEn ? 'El Poblado, Medellín' : 'El Poblado, Medellín'}
+            El Poblado, Medellín
           </span>
           <h1 className="font-headline text-5xl md:text-7xl text-on-surface font-light leading-tight max-w-4xl">
             {isEn ? 'Luxury Spa Near You in Medellín' : 'Spa de Lujo Cerca de Ti en Medellín'}
@@ -206,7 +187,7 @@ export default async function SpaNearMePage({ params }: { params: Promise<{ lang
               {isEn ? 'Book Now' : 'Reservar Ahora'}
             </Link>
             <a
-              href={randomWhatsAppUrl(SPA_WHATSAPP_GREETING[locale])}
+              href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="border border-outline-variant text-on-surface px-10 py-4 font-label text-xs font-bold uppercase tracking-[0.2em] hover:bg-surface-container transition-all w-fit"
@@ -289,7 +270,7 @@ export default async function SpaNearMePage({ params }: { params: Promise<{ lang
 
             {/* Map */}
             <MapEmbed
-              src={MAP_SRC_FALLBACK}
+              src={MAP_SRC}
               title={isEn ? 'Diamond Spa location in El Poblado, Medellín' : 'Ubicación de Diamond Spa en El Poblado, Medellín'}
               height={440}
             />
@@ -448,7 +429,7 @@ export default async function SpaNearMePage({ params }: { params: Promise<{ lang
               {isEn ? 'Book a Session' : 'Reservar Sesión'}
             </Link>
             <a
-              href={randomWhatsAppUrl(SPA_WHATSAPP_GREETING[locale])}
+              href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="border border-outline-variant text-on-surface px-12 py-5 font-label text-xs font-bold uppercase tracking-[0.2em] hover:bg-surface-container-high transition-all"

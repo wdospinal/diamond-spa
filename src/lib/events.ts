@@ -34,62 +34,6 @@ export const EVENTS = {
 
 export type EventName = (typeof EVENTS)[keyof typeof EVENTS]
 
-// ─── Payload types ────────────────────────────────────────────────────────────
-
-export interface BookingServiceSelectedPayload {
-  service_id: string
-  service_name: string
-  category: string
-  locale: string
-}
-
-export interface BookingDurationSelectedPayload {
-  service_id: string
-  duration_minutes: number
-}
-
-export interface BookingHairMethodSelectedPayload {
-  service_id: string
-  method: 'wax' | 'machine'
-}
-
-export interface BookingDateSelectedPayload {
-  service_id: string
-  date: string          // ISO yyyy-MM-dd
-}
-
-export interface BookingTimeSelectedPayload {
-  service_id: string
-  time_slot: string
-}
-
-export interface BookingSubmittedPayload {
-  service_id: string
-  service_name: string
-  category: string
-  duration_minutes?: number
-  hair_method?: string
-  price_cop: number
-  locale: string
-}
-
-export interface ServiceCardClickedPayload {
-  service_id: string
-  service_name: string
-  source: string        // 'home' | 'masajes-para-hombres' | 'masajes-para-mujeres' | 'services'
-}
-
-export interface ServiceDetailViewedPayload {
-  service_id: string
-  service_name: string
-  locale: string
-}
-
-export interface SocialClickedPayload {
-  platform: string      // 'instagram' | 'tiktok' | 'whatsapp' | 'email' | 'phone' | 'google'
-  source: string        // where in the page: 'footer' | 'press' | 'contact'
-}
-
 // ─── Track helper ─────────────────────────────────────────────────────────────
 
 type Primitive = string | number | boolean

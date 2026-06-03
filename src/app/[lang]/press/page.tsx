@@ -4,7 +4,8 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph } from '@/lib/seo'
-import { SPA_EMAIL, SPA_INSTAGRAM, SPA_TIKTOK, SPA_WHATSAPP_GREETING, SPA_ADDRESS, SPA_NAME_FULL } from '@/lib/spa'
+import { SPA_EMAIL, SPA_INSTAGRAM, SPA_TIKTOK, SPA_ADDRESS, SPA_NAME_FULL } from '@/lib/spa'
+import { IGIcon, MailIcon, TikTokIcon } from '@/components/SocialIcons'
 
 export const dynamic = 'force-static'
 
@@ -19,24 +20,6 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     openGraph: buildOpenGraph({ title, description, path: '/press', locale }),
   }
 }
-
-const IGSvg = (
-  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
-    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-  </svg>
-)
-
-const TikTokSvg = (
-  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
-    <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/>
-  </svg>
-)
-
-const MailSvg = (
-  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
-    <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/>
-  </svg>
-)
 
 export default async function PressPage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params
@@ -80,7 +63,7 @@ export default async function PressPage({ params }: { params: Promise<{ lang: st
                   aria-label={isEn ? `Email ${SPA_EMAIL}` : `Correo ${SPA_EMAIL}`}
                 >
                   <span className="w-10 h-10 bg-surface flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-all shrink-0">
-                    {MailSvg}
+                    <MailIcon size={22} />
                   </span>
                   <div>
                     <p className="font-label text-[10px] uppercase tracking-widest text-outline mb-0.5">{isEn ? 'Email' : 'Correo'}</p>
@@ -96,7 +79,7 @@ export default async function PressPage({ params }: { params: Promise<{ lang: st
                   aria-label={isEn ? 'Diamond Spa on Instagram' : 'Diamond Spa en Instagram'}
                 >
                   <span className="w-10 h-10 bg-surface flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-all shrink-0">
-                    {IGSvg}
+                    <IGIcon size={22} />
                   </span>
                   <div>
                     <p className="font-label text-[10px] uppercase tracking-widest text-outline mb-0.5">Instagram</p>
@@ -112,7 +95,7 @@ export default async function PressPage({ params }: { params: Promise<{ lang: st
                   aria-label={isEn ? 'Diamond Spa on TikTok' : 'Diamond Spa en TikTok'}
                 >
                   <span className="w-10 h-10 bg-surface flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-all shrink-0">
-                    {TikTokSvg}
+                    <TikTokIcon size={22} />
                   </span>
                   <div>
                     <p className="font-label text-[10px] uppercase tracking-widest text-outline mb-0.5">TikTok</p>
@@ -177,7 +160,7 @@ export default async function PressPage({ params }: { params: Promise<{ lang: st
                   aria-label={isEn ? 'Follow on TikTok' : 'Seguir en TikTok'}
                   className="ml-auto text-primary hover:text-on-surface transition-colors"
                 >
-                  {TikTokSvg}
+                  <TikTokIcon size={22} />
                 </a>
               </div>
 
@@ -264,7 +247,7 @@ export default async function PressPage({ params }: { params: Promise<{ lang: st
                 href={`mailto:${SPA_EMAIL}`}
                 className="inline-flex items-center gap-3 bg-primary text-on-primary px-8 py-4 font-label text-xs font-bold uppercase tracking-[0.2em] hover:bg-white transition-all w-fit"
               >
-                {MailSvg}
+                <MailIcon size={22} />
                 {isEn ? 'Contact Press Team' : 'Contactar Prensa'}
               </Link>
             </div>
