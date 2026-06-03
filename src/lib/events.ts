@@ -10,7 +10,7 @@ import { track } from '@vercel/analytics'
 // ─── Event names ─────────────────────────────────────────────────────────────
 
 export const EVENTS = {
-  // Booking funnel
+  // Booking services funnel
   BOOKING_SERVICE_SELECTED:     'booking_service_selected',
   BOOKING_DURATION_SELECTED:    'booking_duration_selected',
   BOOKING_HAIR_METHOD_SELECTED: 'booking_hair_method_selected',
