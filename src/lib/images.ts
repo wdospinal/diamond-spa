@@ -74,6 +74,8 @@ export const IMG_THERAPISTS = [
   '/therapists/daniela.avif',  // Daniela Salina
   '/therapists/sary.avif',     // Sary Paez
   '/therapists/camila.avif',   // Camila Mazo
+  '/therapists/juliana.avif',  // Juliana Piedrahita Roldán
+  '/therapists/sheila.avif',   // Sheila
 ]
 
 // WebP fallbacks for therapist <picture> elements
@@ -81,4 +83,6 @@ export const IMG_THERAPISTS_WEBP = [
   '/therapists/daniela.webp',
   '/therapists/sary.webp',
   '/therapists/camila.webp',
+  '/therapists/juliana.webp',
+  '/therapists/sheila.webp',
 ]

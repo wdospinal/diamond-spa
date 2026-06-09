@@ -58,6 +58,16 @@ export const THERAPISTS: BilingualTherapist[] = [
     en: { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience' },
     es: { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia' },
   },
+  {
+    name: 'Juliana Piedrahita Roldán',
+    en: { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience' },
+    es: { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia' },
+  },
+  {
+    name: 'Sheila',
+    en: { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience' },
+    es: { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia' },
+  },
 ]
 
 /** Trust highlights on the Home page ("The International Standard" section). */
