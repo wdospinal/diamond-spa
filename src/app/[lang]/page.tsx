@@ -20,6 +20,12 @@ import { JsonLd } from '@/components/JsonLd'
 
 export const revalidate = 36000
 
+// Prerender both locales at build time — without this the homepage is the only
+// page served on-demand (first visitor after each deploy pays the render cost).
+export function generateStaticParams() {
+  return [{ lang: 'es' }, { lang: 'en' }]
+}
+
 const FEATURED_SERVICES = {
   deepTissue: getServiceById('depilacion-cuerpo-completo')!,
   facial: getServiceById('hidrafacial')!,

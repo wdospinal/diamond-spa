@@ -92,6 +92,9 @@ const nextConfig = {
      *   read AVIF source → resize + transcode → serve WebP  (cached)
      */
     formats: ['image/avif', 'image/webp'],
+    // Next 16 rejects any quality not listed here with a 400. The hero/relax
+    // images use quality={65}, so it must be declared alongside the default 75.
+    qualities: [65, 75],
     remotePatterns: [
       {
         protocol: 'https',
