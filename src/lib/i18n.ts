@@ -30,6 +30,36 @@ function mapPillars(items: BilingualPillar[], locale: 'en' | 'es'): Pillar[] {
   return items.map(({ icon, en, es }) => ({ icon, ...(locale === 'en' ? en : es) }))
 }
 
+type Therapist = { name: string; role: string; years: string }
+type BilingualTherapist = {
+  name: string
+  en: { role: string; years: string }
+  es: { role: string; years: string }
+}
+
+function mapTherapists(items: BilingualTherapist[], locale: 'en' | 'es'): Therapist[] {
+  return items.map(({ name, en, es }) => ({ name, ...(locale === 'en' ? en : es) }))
+}
+
+/** About page team portraits — keep in sync with IMG_THERAPISTS in images.ts */
+export const THERAPISTS: BilingualTherapist[] = [
+  {
+    name: 'Daniela Salina',
+    en: { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience' },
+    es: { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia' },
+  },
+  {
+    name: 'Sary Paez',
+    en: { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience' },
+    es: { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia' },
+  },
+  {
+    name: 'Camila Mazo',
+    en: { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience' },
+    es: { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia' },
+  },
+]
+
 /** Trust highlights on the Home page ("The International Standard" section). */
 const FEATURES: BilingualPillar[] = [
   {
@@ -141,12 +171,7 @@ const dict = {
       teamLabel: 'Our Specialists',
       teamTitle: ['Talent ', 'Diamond.'],
       teamBody: 'Professional dedicated to your balance. A united team by excellence and respect, creating the peaceful environment you deserve in El Poblado.',
-      therapists: [
-        { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience' },
-        { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience' },
-        { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience' },
-        { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience' },
-      ],
+      therapists: mapTherapists(THERAPISTS, 'en'),
       ctaTitle: ['Return to your', 'Primal Calm.'],
       requestMembership: 'Request Appointment',
       exploreServices: 'Explore Services',
@@ -447,12 +472,7 @@ const dict = {
       teamLabel: 'Nuestros Especialistas',
       teamTitle: ['Talento ', 'Diamond.'],
       teamBody: 'Profesionales dedicadas a tu equilibrio. Un equipo unido por la excelencia y el respeto, creando el ambiente de paz que mereces en El Poblado.',
-      therapists: [
-        { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia' },
-        { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia' },
-        { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia' },
-        { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia' },
-      ],
+      therapists: mapTherapists(THERAPISTS, 'es'),
       ctaTitle: ['Regresa a tu', 'Calma Primordial.'],
       requestMembership: 'Solicitar Cita',
       exploreServices: 'Explorar Servicios',
