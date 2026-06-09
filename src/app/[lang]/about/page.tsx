@@ -8,6 +8,7 @@ import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph } from '@/lib/seo'
 import { IMG_ABOUT_HERO, IMG_STONE, IMG_LOUNGE, IMG_THERAPISTS, IMG_THERAPISTS_WEBP } from '@/lib/images'
 
+// ─── About / Philosophy page ──────────────────────────────────────────────────
 const HERO_IMG = IMG_ABOUT_HERO
 const STONE_IMG = IMG_STONE
 const LOUNGE_IMG = IMG_LOUNGE
