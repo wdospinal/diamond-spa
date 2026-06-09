@@ -8,7 +8,7 @@ import { ReviewsSection } from '@/components/ReviewsSection'
 import { JsonLd } from '@/components/JsonLd'
 import MapEmbed from '@/components/MapEmbed'
 import { PHONES } from '@/lib/phones'
-import { SPA_ADDRESS, SPA_EMAIL } from '@/lib/spa'
+import { SPA_ADDRESS, SPA_EMAIL, SPA_MAP_EMBED_SRC } from '@/lib/spa'
 
 export const revalidate = 3600
 
@@ -99,7 +99,7 @@ export default async function LocationPage({ params }: { params: Promise<{ lang:
             {/* MapEmbed defers Google Maps JS until the map scrolls into view,
                 saving ~200 KB of third-party script from blocking TBT. */}
             <MapEmbed
-              src="https://maps.google.com/maps?q=Cra+43C+%2310-42,+El+Poblado,+Medell%C3%ADn,+Antioquia&output=embed&z=16"
+              src={SPA_MAP_EMBED_SRC}
               title={mapTitle}
               height={460}
               style={{ filter: 'invert(90%) hue-rotate(180deg)' }}

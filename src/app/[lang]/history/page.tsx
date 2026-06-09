@@ -6,7 +6,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph } from '@/lib/seo'
-import { SPA_ADDRESS } from '@/lib/spa'
+import { SPA_ADDRESS, SPA_MAP_EMBED_SRC } from '@/lib/spa'
 import { IMG_HISTORY_HERO, IMG_HISTORY_INTERIOR } from '@/lib/images'
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
@@ -130,7 +130,7 @@ export default async function HistoryPage({ params }: { params: Promise<{ lang: 
           {/* Map embed */}
           <div className="overflow-hidden min-h-[400px]">
             <iframe
-              src="https://maps.google.com/maps?q=Cra+43C+%2310-42,+El+Poblado,+Medell%C3%ADn,+Antioquia&output=embed&z=16"
+              src={SPA_MAP_EMBED_SRC}
               width="100%"
               height="400"
               style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg)' }}

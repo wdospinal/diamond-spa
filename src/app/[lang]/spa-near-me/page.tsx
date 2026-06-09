@@ -5,13 +5,13 @@ import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph, BASE_URL, BUSINESS, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
 import {
   SPA_ADDRESS,
-  SPA_GEO,
   SPA_HOURS,
   SPA_PHONES,
   SPA_RATING,
   SPA_GOOGLE_REVIEW_URL,
   SPA_GOOGLE_MAPS_URL,
   SPA_WHATSAPP_GREETING,
+  SPA_MAP_EMBED_SRC,
   randomWhatsAppUrl,
 } from '@/lib/spa'
 import { SERVICES, formatCop, getServiceSlug, type ServiceDef, type DurationMinutes } from '@/lib/services'
@@ -22,7 +22,6 @@ import { JsonLd } from '@/components/JsonLd'
 
 export const dynamic = 'force-static'
 
-const MAP_SRC = `https://maps.google.com/maps?q=${SPA_GEO.latitude},${SPA_GEO.longitude}&t=&z=16&ie=UTF8&iwloc=&output=embed`
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params
@@ -271,7 +270,7 @@ export default async function SpaNearMePage({ params }: { params: Promise<{ lang
 
             {/* Map */}
             <MapEmbed
-              src={MAP_SRC}
+              src={SPA_MAP_EMBED_SRC}
               title={isEn ? 'Diamond Spa location in El Poblado, Medellín' : 'Ubicación de Diamond Spa en El Poblado, Medellín'}
               height={440}
             />

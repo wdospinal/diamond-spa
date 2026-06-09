@@ -61,9 +61,11 @@ export const SPA_ADDRESS = {
 } as const
 
 export const SPA_GEO = {
-  latitude: 6.2072,
-  longitude: -75.5680,
+  latitude: 6.211541,
+  longitude: -75.5716917,
 } as const
+
+export const SPA_MAP_EMBED_SRC = `https://maps.google.com/maps?q=${SPA_GEO.latitude},${SPA_GEO.longitude}&output=embed&z=17`
 
 export const SPA_GOOGLE_PLACES_ID = 'ChIJKzwytpApRI4RjIhtXLsMvK8'
 

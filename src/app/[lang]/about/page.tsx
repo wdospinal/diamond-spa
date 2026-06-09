@@ -13,7 +13,7 @@ const STONE_IMG = IMG_STONE
 const LOUNGE_IMG = IMG_LOUNGE
 
 const THERAPISTS_IMGS = IMG_THERAPISTS
-const THERAPISTS_NAMES = ['Daniela Salina', 'Sary Paez', 'Camila Mazo', 'Valeria']
+const THERAPISTS_NAMES = ['Daniela Salina', 'Sary Paez', 'Camila Mazo']
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params
