@@ -55,18 +55,18 @@ export const THERAPISTS: BilingualTherapist[] = [
   },
   {
     name: 'Camila Mazo',
-    en: { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience' },
-    es: { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia' },
+    en: { role: 'Cosmetologist & Massage Therapist', years: '4+ years experience' },
+    es: { role: 'Cosmetóloga & Masajista', years: '4+ años de experiencia' },
   },
   {
     name: 'Juliana Piedrahita Roldán',
-    en: { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience' },
-    es: { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia' },
+    en: { role: 'Cosmetologist & Massage Therapist', years: '4+ years experience' },
+    es: { role: 'Cosmetóloga & Masajista', years: '3+ años de experiencia' },
   },
   {
     name: 'Sheila',
-    en: { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience' },
-    es: { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia' },
+    en: { role: 'Cosmetologist & Massage Therapist', years: '3+ years experience' },
+    es: { role: 'Cosmetóloga & Masajista', years: '4+ años de experiencia' },
   },
 ]
 
