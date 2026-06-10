@@ -7,6 +7,7 @@ import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph } from '@/lib/seo'
 import { IMG_ABOUT_HERO, IMG_STONE, IMG_LOUNGE, IMG_THERAPISTS, IMG_THERAPISTS_WEBP } from '@/lib/images'
+import { TherapistCard } from '@/components/TherapistCard'
 
 const HERO_IMG = IMG_ABOUT_HERO
 const STONE_IMG = IMG_STONE
@@ -135,28 +136,17 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {t.therapists.map(({ name, role, years }, i) => (
-              <div key={name} className="group">
-                <div className="relative mb-6 aspect-[3/4] overflow-hidden rounded-sm bg-surface-container ring-1 ring-outline-variant/10">
-                  {/* <picture> = browser-native AVIF/WebP detection without JS */}
-                  <picture>
-                    <source srcSet={IMG_THERAPISTS[i]}      type="image/avif" />
-                    <source srcSet={IMG_THERAPISTS_WEBP[i]}  type="image/webp" />
-                    <Image
-                      src={IMG_THERAPISTS_WEBP[i]}
-                      alt={locale === 'es'
-                        ? `Retrato de ${name}, ${role.toLowerCase()} certificada del equipo de Diamond Spa`
-                        : `Portrait of ${name}, certified ${role.toLowerCase()} from the Diamond Spa team`}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      className="object-cover opacity-70 grayscale transition-[filter,opacity] duration-700 group-hover:opacity-100 group-hover:grayscale-0"
-                      unoptimized
-                    />
-                  </picture>
-                </div>
-                <h4 className="font-headline text-xl text-on-surface mb-1">{name}</h4>
-                <p className="font-label text-primary text-xs tracking-widest uppercase">{role}</p>
-                <p className="font-body text-secondary text-xs mt-1">{years}</p>
-              </div>
+              <TherapistCard
+                key={name}
+                avifSrc={IMG_THERAPISTS[i]}
+                webpSrc={IMG_THERAPISTS_WEBP[i]}
+                alt={locale === 'es'
+                  ? `Retrato de ${name}, ${role.toLowerCase()} certificada del equipo de Diamond Spa`
+                  : `Portrait of ${name}, certified ${role.toLowerCase()} from the Diamond Spa team`}
+                name={name}
+                role={role}
+                years={years}
+              />
             ))}
           </div>
         </div>
