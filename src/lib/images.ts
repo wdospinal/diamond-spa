@@ -63,10 +63,10 @@ export const IMG_LOUNGE           = '/masaje.avif'
 
 // ─── History / Story page ─────────────────────────────────────────────────────
 
-/** Dark moody spa — hero background for story page */
-export const IMG_HISTORY_HERO     = u('1596178060810-72c088fb981a')
-/** Upscale spa interior — founding story section */
-export const IMG_HISTORY_INTERIOR = u('1571896349842-33c89424de2d')
+/** Diamond Spa waiting room — hero background for story page */
+export const IMG_HISTORY_HERO     = '/diamond-wallpaper.avif'
+/** Diamond Spa interior (Google Maps photo) — founding story section */
+export const IMG_HISTORY_INTERIOR = '/history-interior-1.jpg'
 
 // ─── Team portraits ───────────────────────────────────────────────────────────
 
