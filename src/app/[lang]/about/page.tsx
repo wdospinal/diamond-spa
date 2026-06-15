@@ -9,6 +9,7 @@ import { buildAlternates, buildOpenGraph } from '@/lib/seo'
 import { IMG_ABOUT_HERO, IMG_STONE, IMG_LOUNGE, IMG_THERAPISTS, IMG_THERAPISTS_WEBP } from '@/lib/images'
 import { TherapistCard } from '@/components/TherapistCard'
 
+// TODO: Update images
 const HERO_IMG = IMG_ABOUT_HERO
 const STONE_IMG = IMG_STONE
 const LOUNGE_IMG = IMG_LOUNGE
