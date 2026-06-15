@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { appendBooking, readBookings } from '@/lib/bookings-store'
-import { readLedger, isLedgerSeedApplied } from '@/lib/ledger-store'
 import { adminCookieName, verifySessionToken } from '@/lib/admin-session'
-import { EXPENSE_CATEGORIES } from '@/lib/expense-categories'
 import { getServiceById, getServicePrice, serviceDisplayName } from '@/lib/services'
 import { parseTimeSlot } from '@/lib/parse-time-slot'
-import { computeDashboardStats } from '@/lib/income-stats'
 import { copPerUsd } from '@/lib/cop-rate'
 import { SPA_EMAIL } from '@/lib/spa'
 
@@ -20,25 +17,13 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const [bookings, ledger] = await Promise.all([readBookings(), readLedger()])
+  const bookings = await readBookings()
   const sorted = [...bookings].sort((a, b) => {
     const da = a.dateKey.localeCompare(b.dateKey)
     if (da !== 0) return -da
     return (b.timeSlot || '').localeCompare(a.timeSlot || '')
   })
-  const ledgerSorted = [...ledger].sort((a, b) => {
-    const d = b.dateKey.localeCompare(a.dateKey)
-    if (d !== 0) return d
-    return b.createdAt.localeCompare(a.createdAt)
-  })
-  const stats = computeDashboardStats(bookings, ledger)
-  return NextResponse.json({
-    bookings: sorted,
-    ledger: ledgerSorted,
-    stats,
-    expenseCategories: EXPENSE_CATEGORIES,
-    seedExpensesDone: isLedgerSeedApplied(),
-  })
+  return NextResponse.json({ bookings: sorted })
 }
 
 export async function POST(req: NextRequest) {
@@ -62,8 +47,10 @@ export async function POST(req: NextRequest) {
   const monthIndex = typeof body.monthIndex === 'number' ? body.monthIndex : Number(body.monthIndex)
   const day = typeof body.day === 'number' ? body.day : Number(body.day)
   const timeSlot = typeof body.timeSlot === 'string' ? body.timeSlot : ''
-  const firstName = typeof body.firstName === 'string' ? body.firstName.trim() : ''
-  const lastName = typeof body.lastName === 'string' ? body.lastName.trim() : ''
+  // The booking form sends a single `name`; older payloads sent firstName/lastName.
+  const name = typeof body.name === 'string' && body.name.trim()
+    ? body.name.trim()
+    : [body.firstName, body.lastName].filter(s => typeof s === 'string').join(' ').trim()
   const email = typeof body.email === 'string' ? body.email.trim() : ''
   const phone = typeof body.phone === 'string' ? body.phone.trim() : ''
   const requests = typeof body.requests === 'string' ? body.requests.trim() : ''
@@ -81,7 +68,7 @@ export async function POST(req: NextRequest) {
   if (!Number.isInteger(monthIndex) || monthIndex < 0 || monthIndex > 11) return bad('Invalid month')
   if (!Number.isInteger(day) || day < 1 || day > 31) return bad('Invalid day')
   if (!parseTimeSlot(timeSlot)) return bad('Invalid time')
-  if (!firstName || !lastName || !email || !phone) return bad('Missing contact fields')
+  if (!name || !phone) return bad('Missing contact fields')
 
   const rate = copPerUsd()
   const priceUsd = priceCop / rate
@@ -104,9 +91,8 @@ export async function POST(req: NextRequest) {
       priceCop,
       price: priceUsd,
       duration: durationMinutes ? `${durationMinutes} min` : hairMethod ?? 'flat',
-      firstName,
-      lastName,
-      email,
+      name,
+      email: email || undefined,
       phone,
       requests: requests || undefined,
     })
@@ -128,16 +114,15 @@ export async function POST(req: NextRequest) {
         body: JSON.stringify({
           from: 'Diamond Spa <reserva@zanacode.com>',
           to: [SPA_EMAIL],
-          subject: `[Diamond Spa] Nueva reserva — ${firstName} ${lastName}`,
+          subject: `[Diamond Spa] Nueva reserva — ${name}`,
           html: `<h2 style="color:#1a1a1a">Nueva Reserva — Diamond Spa</h2>
 <table style="border-collapse:collapse;font-family:sans-serif;font-size:14px;color:#333">
-  <tr><td style="padding:6px 12px;font-weight:bold">Servicio</td><td style="padding:6px 12px">${serviceDisplayName(service, bookingLocale)} (${durationMinutes} min)</td></tr>
+  <tr><td style="padding:6px 12px;font-weight:bold">Servicio</td><td style="padding:6px 12px">${serviceDisplayName(service, bookingLocale)}${durationMinutes ? ` (${durationMinutes} min)` : ''}</td></tr>
   <tr style="background:#f5f5f5"><td style="padding:6px 12px;font-weight:bold">Fecha</td><td style="padding:6px 12px">${dateKey} a las ${timeSlot}</td></tr>
-  <tr><td style="padding:6px 12px;font-weight:bold">Cliente</td><td style="padding:6px 12px">${firstName} ${lastName}</td></tr>
-  <tr style="background:#f5f5f5"><td style="padding:6px 12px;font-weight:bold">Email</td><td style="padding:6px 12px">${email}</td></tr>
-  <tr><td style="padding:6px 12px;font-weight:bold">Teléfono</td><td style="padding:6px 12px">${phone}</td></tr>
-  <tr style="background:#f5f5f5"><td style="padding:6px 12px;font-weight:bold">Precio</td><td style="padding:6px 12px">${priceFmt}</td></tr>
-  ${requests ? `<tr><td style="padding:6px 12px;font-weight:bold">Notas</td><td style="padding:6px 12px">${requests}</td></tr>` : ''}
+  <tr><td style="padding:6px 12px;font-weight:bold">Cliente</td><td style="padding:6px 12px">${name}</td></tr>
+  <tr style="background:#f5f5f5"><td style="padding:6px 12px;font-weight:bold">Teléfono</td><td style="padding:6px 12px">${phone}</td></tr>
+  <tr><td style="padding:6px 12px;font-weight:bold">Precio</td><td style="padding:6px 12px">${priceFmt}</td></tr>
+  ${requests ? `<tr style="background:#f5f5f5"><td style="padding:6px 12px;font-weight:bold">Notas</td><td style="padding:6px 12px">${requests}</td></tr>` : ''}
 </table>
 <p style="color:#888;font-size:11px;margin-top:16px">ID: ${row.id}</p>`,
         }),
@@ -148,7 +133,7 @@ export async function POST(req: NextRequest) {
   } catch (e) {
     console.error('bookings write failed', e)
     return NextResponse.json(
-      { error: 'Could not save booking. If you deploy to serverless hosting, configure persistent storage or BOOKINGS_FILE.' },
+      { error: 'Could not save booking. Configure Vercel KV (KV_REST_API_URL/KV_REST_API_TOKEN) for durable storage.' },
       { status: 503 }
     )
   }

@@ -21,6 +21,7 @@
 import { mkdir, readFile, writeFile } from 'fs/promises'
 import { dirname, join } from 'path'
 import { FUNNEL_STAGE_KEYS, type FunnelStageKey } from '@/lib/funnel-stages'
+import { kvConfigured, kvPipeline } from '@/lib/kv'
 
 export interface FunnelHit {
   /** YYYY-MM-DD, Bogota-aligned. */
@@ -42,31 +43,6 @@ const FILE = process.env.FUNNEL_FILE ?? join(process.cwd(), 'data', 'funnel-dail
 
 function keyFor(day: string, stage: string) {
   return `funnel:${day}:${stage}`
-}
-
-// ─── KV (Upstash / Vercel KV REST) backend ─────────────────────────────────────
-
-function kvEnv(): { url: string; token: string } | null {
-  const url = process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL
-  const token = process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN
-  return url && token ? { url, token } : null
-}
-
-type KvResult = { result?: unknown; error?: string }
-
-async function kvPipeline(commands: (string | number)[][]): Promise<KvResult[]> {
-  const env = kvEnv()!
-  const res = await fetch(`${env.url}/pipeline`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${env.token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(commands),
-    cache: 'no-store',
-  })
-  if (!res.ok) throw new Error(`KV pipeline failed: ${res.status} ${await res.text()}`)
-  return (await res.json()) as KvResult[]
 }
 
 // ─── JSON-file backend (local/dev) ──────────────────────────────────────────────
@@ -113,7 +89,7 @@ function enumerateDays(fromDay: string, toDay: string): string[] {
 
 export async function recordFunnelHits(hits: FunnelHit[]): Promise<void> {
   if (hits.length === 0) return
-  if (kvEnv()) {
+  if (kvConfigured()) {
     const commands: (string | number)[][] = []
     const expired = new Set<string>()
     for (const h of hits) {
@@ -138,14 +114,14 @@ export async function readFunnel(fromDay: string, toDay: string): Promise<Funnel
     return { days, byDay, totals: Object.fromEntries(FUNNEL_STAGE_KEYS.map(s => [s, 0])) }
   }
 
-  if (kvEnv()) {
+  if (kvConfigured()) {
     const commands = days.flatMap(d => FUNNEL_STAGE_KEYS.map(s => ['SCARD', keyFor(d, s)]))
     const results = await kvPipeline(commands)
     let i = 0
     for (const d of days) {
       byDay[d] = {}
       for (const s of FUNNEL_STAGE_KEYS) {
-        const r = results[i++]?.result
+        const r = results[i++]
         byDay[d][s] = typeof r === 'number' ? r : Number(r ?? 0) || 0
       }
     }
