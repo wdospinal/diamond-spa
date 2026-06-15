@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 // Type-only import — erased at compile time, does NOT add i18n to the client bundle.
 // The dict value is computed on the server (book/page.tsx) and passed as a prop.
@@ -95,6 +95,15 @@ export default function BookClient({
   const [confirmed, setConfirmed] = useState(false)
   const [form, setForm] = useState({ name: '', phone: '', requests: '' })
 
+  // Fire `booking_started` exactly once — on the first real interaction (service
+  // pick), not merely landing on /book, so it reflects genuine intent (funnel "Desire").
+  const bookingStartedRef = useRef(false)
+  function markBookingStarted() {
+    if (bookingStartedRef.current) return
+    bookingStartedRef.current = true
+    trackEvent(EVENTS.BOOKING_STARTED, { locale: lang })
+  }
+
   const cells = buildCalendar(calYear, calMonth)
 
   const selectedServiceObj = ALL_BOOKABLE_SERVICES.find(s => s.id === selectedService)
@@ -171,6 +180,8 @@ export default function BookClient({
       price_cop: priceCop,
       locale: lang,
     })
+    // Booking confirmation hands off to WhatsApp — count it as the funnel's final "contact" stage.
+    trackEvent(EVENTS.WHATSAPP_CLICKED, { platform: 'whatsapp', source: 'booking' })
     window.open(randomWhatsAppUrl(waText), '_blank')
 
     const smsBody =
@@ -288,7 +299,7 @@ export default function BookClient({
                         <button
                           key={s.id}
                           type="button"
-                          onClick={() => { setSelectedService(s.id); setSelectedDuration(null); setSelectedHairMethod(null); trackEvent(EVENTS.BOOKING_SERVICE_SELECTED, { service_id: s.id, service_name: serviceName(s), category: 'massages', locale: lang }) }}
+                          onClick={() => { markBookingStarted(); setSelectedService(s.id); setSelectedDuration(null); setSelectedHairMethod(null); trackEvent(EVENTS.BOOKING_SERVICE_SELECTED, { service_id: s.id, service_name: serviceName(s), category: 'massages', locale: lang }) }}
                           className={`text-left p-5 transition-all duration-200 ${
                             isSelected
                               ? 'bg-surface-container-high border border-primary/40'
@@ -319,7 +330,7 @@ export default function BookClient({
                         <button
                           key={s.id}
                           type="button"
-                          onClick={() => { setSelectedService(s.id); setSelectedDuration(null); setSelectedHairMethod(null); trackEvent(EVENTS.BOOKING_SERVICE_SELECTED, { service_id: s.id, service_name: serviceName(s), category: 'facials', locale: lang }) }}
+                          onClick={() => { markBookingStarted(); setSelectedService(s.id); setSelectedDuration(null); setSelectedHairMethod(null); trackEvent(EVENTS.BOOKING_SERVICE_SELECTED, { service_id: s.id, service_name: serviceName(s), category: 'facials', locale: lang }) }}
                           className={`text-left p-5 transition-all duration-200 ${
                             isSelected
                               ? 'bg-surface-container-high border border-primary/40'
@@ -349,7 +360,7 @@ export default function BookClient({
                         <button
                           key={s.id}
                           type="button"
-                          onClick={() => { setSelectedService(s.id); setSelectedDuration(null); setSelectedHairMethod(null); trackEvent(EVENTS.BOOKING_SERVICE_SELECTED, { service_id: s.id, service_name: serviceName(s), category: 'hair-removal', locale: lang }) }}
+                          onClick={() => { markBookingStarted(); setSelectedService(s.id); setSelectedDuration(null); setSelectedHairMethod(null); trackEvent(EVENTS.BOOKING_SERVICE_SELECTED, { service_id: s.id, service_name: serviceName(s), category: 'hair-removal', locale: lang }) }}
                           className={`text-left p-5 transition-all duration-200 ${
                             isSelected
                               ? 'bg-surface-container-high border border-primary/40'

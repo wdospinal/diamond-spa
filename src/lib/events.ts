@@ -11,6 +11,7 @@ import { track } from '@vercel/analytics'
 
 export const EVENTS = {
   // Booking services
+  BOOKING_STARTED:              'booking_started',
   BOOKING_SERVICE_SELECTED:     'booking_service_selected',
   BOOKING_DURATION_SELECTED:    'booking_duration_selected',
   BOOKING_HAIR_METHOD_SELECTED: 'booking_hair_method_selected',
@@ -93,6 +94,7 @@ export interface SocialClickedPayload {
 // ─── Payload map — enforced at every call site ────────────────────────────────
 
 interface EventPayloadMap {
+  booking_started:              { locale: string }
   booking_service_selected:     BookingServiceSelectedPayload
   booking_duration_selected:    BookingDurationSelectedPayload
   booking_hair_method_selected: BookingHairMethodSelectedPayload

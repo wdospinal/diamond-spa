@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import type { BookingRecord } from '@/lib/booking-types'
 import type { LedgerEntry } from '@/lib/ledger-types'
 import type { PeriodMoney } from '@/lib/income-stats'
@@ -59,6 +60,12 @@ function AdminHeader({
         <h1 className="font-headline text-3xl md:text-4xl text-[#cfe5fa]">Reservas y finanzas</h1>
       </div>
       <div className="flex flex-wrap items-center gap-3">
+        <Link
+          href="/admin/funnel"
+          className="bg-[#102a3d] border border-[#a5cce6]/35 text-[#a5cce6] px-5 py-2.5 font-label font-bold tracking-[0.15em] text-[10px] uppercase hover:bg-[#1a3d52] transition-colors"
+        >
+          Embudo de ventas
+        </Link>
         <button
           type="button"
           onClick={onAddIncome}

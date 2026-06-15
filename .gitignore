@@ -37,3 +37,5 @@ next-env.d.ts
 /data/bookings.json
 /data/ledger.json
 /data/.seed-expenses-v1
+# funnel counters fallback (local / self-hosted; prod uses Vercel KV)
+/data/funnel-daily.json
