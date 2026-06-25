@@ -6,6 +6,17 @@ import { getServiceById, getServicePrice, serviceDisplayName } from '@/lib/servi
 import { parseTimeSlot } from '@/lib/parse-time-slot'
 import { copPerUsd } from '@/lib/cop-rate'
 import { SPA_EMAIL } from '@/lib/spa'
+import { readSubscriptions } from '@/lib/push-store'
+import webpush from 'web-push'
+
+// Configurar Web Push
+const vapidPublic = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || ''
+const vapidPrivate = process.env.VAPID_PRIVATE_KEY || ''
+const vapidSubject = process.env.VAPID_SUBJECT || 'mailto:admin@diamondspa.com'
+
+if (vapidPublic && vapidPrivate) {
+  webpush.setVapidDetails(vapidSubject, vapidPublic, vapidPrivate)
+}
 
 function bad(msg: string, status = 400) {
   return NextResponse.json({ error: msg }, { status })
@@ -127,6 +138,27 @@ export async function POST(req: NextRequest) {
 <p style="color:#888;font-size:11px;margin-top:16px">ID: ${row.id}</p>`,
         }),
       }).catch(err => console.error('Resend email error:', err))
+    }
+
+    // Enviar Notificación Push a los admins si VAPID está configurado
+    if (vapidPublic && vapidPrivate) {
+      try {
+        const subs = await readSubscriptions()
+        const payload = JSON.stringify({
+          title: '¡Nueva Reserva Recibida!',
+          body: `${name} reservó ${service.name} para el ${dateKey} a las ${timeSlot}.`,
+          icon: '/favicon.ico'
+        })
+
+        const pushPromises = subs.map(sub => 
+          webpush.sendNotification(sub, payload).catch(err => {
+            console.error('Error al enviar push de nueva reserva:', err)
+          })
+        )
+        await Promise.all(pushPromises)
+      } catch (pushErr) {
+        console.error('Error procesando suscripciones push:', pushErr)
+      }
     }
 
     return NextResponse.json({ ok: true, id: row.id })

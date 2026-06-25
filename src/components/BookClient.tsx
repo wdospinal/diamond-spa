@@ -64,26 +64,26 @@ const CATEGORIES: { id: Category; label: string; icon: string; sub: string }[] =
 ]
 
 const SERVICES: Service[] = [
-  { id: 'relajante',  category: 'masajes',    name: 'Masaje Relajante',         desc: 'Libera tensión y estrés acumulado',         duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 120000 }, { label: '60 min', value: 200000 }, { label: '90 min', value: 260000 }] },
-  { id: 'deep',       category: 'masajes',    name: 'Deep Tissue',              desc: 'Para tensión muscular profunda',            duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 130000 }, { label: '60 min', value: 220000 }, { label: '90 min', value: 280000 }] },
-  { id: '4manos',     category: 'masajes',    name: 'Masaje 4 Manos',           desc: 'Dos terapeutas, doble relajación',         duration: '60 min',      durationMin: 60, prices: [{ label: '60 min', value: 230000 }] },
-  { id: 'duo',        category: 'masajes',    name: 'Duo Masaje',               desc: 'Para parejas o acompañantes',              duration: '60 min',      durationMin: 60, prices: [{ label: '60 min', value: 220000 }] },
-  { id: 'piedras',    category: 'masajes',    name: 'Piedras Volcánicas',       desc: 'Calor profundo y relajación total',       duration: '75 min',      durationMin: 75, prices: [{ label: '75 min', value: 130000 }] },
-  { id: 'deportivo',  category: 'masajes',    name: 'Masaje Deportivo',         desc: 'Recuperación muscular activa',             duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 140000 }, { label: '60 min', value: 220000 }, { label: '90 min', value: 280000 }] },
-  { id: 'sensitivo',  category: 'masajes',    name: 'Masaje Sensitivo',         desc: 'Estimulación sensorial suave',             duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 130000 }, { label: '60 min', value: 210000 }, { label: '90 min', value: 270000 }] },
-  { id: 'hydra',      category: 'faciales',   name: 'Hydrafacial',              desc: 'Limpieza profunda con tecnología',         duration: '90 min',      durationMin: 90, prices: [{ label: '90 min', value: 350000 }] },
-  { id: 'limpprof',   category: 'faciales',   name: 'Limpieza Facial Profunda', desc: 'Extracción y purificación',               duration: '60 min',      durationMin: 60, prices: [{ label: '60 min', value: 250000 }] },
-  { id: 'limpbas',    category: 'faciales',   name: 'Limpieza Facial Básica',   desc: 'Limpieza y tonificación de la piel',      duration: '45 min',      durationMin: 45, prices: [{ label: '45 min', value: 150000 }] },
-  { id: 'hidrata',    category: 'faciales',   name: 'Hidratación Facial',       desc: 'Nutrición intensa para la piel',          duration: '45 min',      durationMin: 45, prices: [{ label: '45 min', value: 200000 }] },
-  { id: 'limpespalda',category: 'faciales',   name: 'Limpieza de Espalda',      desc: 'Purificación de espalda completa',        duration: '60 min',      durationMin: 60, prices: [{ label: '60 min', value: 200000 }] },
-  { id: 'axila',      category: 'depilacion', name: 'Axila',                    desc: '',                                         duration: '20 min',      durationMin: 20, prices: [{ label: 'Cera', value: 20000 }, { label: 'Máquina', value: 30000 }] },
-  { id: 'bikini',     category: 'depilacion', name: 'Bikini',                   desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: 'Cera', value: 60000 }, { label: 'Máquina', value: 80000 }] },
-  { id: 'mediapie',   category: 'depilacion', name: 'Media Pierna',             desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: 'Cera', value: 70000 }, { label: 'Máquina', value: 90000 }] },
-  { id: 'pientera',   category: 'depilacion', name: 'Pierna Completa',          desc: '',                                         duration: '45 min',      durationMin: 45, prices: [{ label: 'Cera', value: 85000 }, { label: 'Máquina', value: 110000 }] },
-  { id: 'pecho',      category: 'depilacion', name: 'Pecho',                    desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: 'Cera', value: 50000 }, { label: 'Máquina', value: 70000 }] },
-  { id: 'espalda',    category: 'depilacion', name: 'Espalda',                  desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: 'Cera', value: 40000 }, { label: 'Máquina', value: 60000 }] },
-  { id: 'perianal',   category: 'depilacion', name: 'Zona Perianal',            desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: 'Cera', value: 45000 }, { label: 'Máquina', value: 65000 }] },
-  { id: 'cuerpo',     category: 'depilacion', name: 'Cuerpo Completo',          desc: '',                                         duration: '2 h',         durationMin: 120,prices: [{ label: 'Cera', value: 250000 }, { label: 'Máquina', value: 320000 }] },
+  { id: 'relaxing',  category: 'masajes',    name: 'Masaje Relajante',         desc: 'Libera tensión y estrés acumulado',         duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 120000 }, { label: '60 min', value: 200000 }, { label: '90 min', value: 260000 }] },
+  { id: 'deep-tissue',       category: 'masajes',    name: 'Deep Tissue',              desc: 'Para tensión muscular profunda',            duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 130000 }, { label: '60 min', value: 220000 }, { label: '90 min', value: 280000 }] },
+  { id: 'four-hands',     category: 'masajes',    name: 'Masaje 4 Manos',           desc: 'Dos terapeutas, doble relajación',         duration: '60 min',      durationMin: 60, prices: [{ label: '30 min', value: 230000 }, { label: '60 min', value: 350000 }, { label: '90 min', value: 480000 }] },
+  { id: 'duo',        category: 'masajes',    name: 'Duo Masaje',               desc: 'Para parejas o acompañantes',              duration: '60 min',      durationMin: 60, prices: [{ label: '30 min', value: 220000 }, { label: '60 min', value: 380000 }, { label: '90 min', value: 500000 }] },
+  { id: 'hot-stones',    category: 'masajes',    name: 'Piedras Volcánicas',       desc: 'Calor profundo y relajación total',       duration: '75 min',      durationMin: 75, prices: [{ label: '30 min', value: 130000 }, { label: '60 min', value: 220000 }, { label: '90 min', value: 280000 }] },
+  { id: 'sports',  category: 'masajes',    name: 'Masaje Deportivo',         desc: 'Recuperación muscular activa',             duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 140000 }, { label: '60 min', value: 240000 }, { label: '90 min', value: 300000 }] },
+  { id: 'sensitive',  category: 'masajes',    name: 'Masaje Sensitivo',         desc: 'Estimulación sensorial suave',             duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 130000 }, { label: '60 min', value: 220000 }, { label: '90 min', value: 280000 }] },
+  { id: 'hidrafacial',      category: 'faciales',   name: 'Hydrafacial',              desc: 'Limpieza profunda con tecnología',         duration: '90 min',      durationMin: 90, prices: [{ label: 'Único', value: 350000 }] },
+  { id: 'limpieza-facial-profunda',   category: 'faciales',   name: 'Limpieza Facial Profunda', desc: 'Extracción y purificación',               duration: '60 min',      durationMin: 60, prices: [{ label: 'Único', value: 250000 }] },
+  { id: 'limpieza-facial-basica',    category: 'faciales',   name: 'Limpieza Facial Básica',   desc: 'Limpieza y tonificación de la piel',      duration: '45 min',      durationMin: 45, prices: [{ label: 'Único', value: 150000 }] },
+  { id: 'hidratacion-facial',    category: 'faciales',   name: 'Hidratación Facial',       desc: 'Nutrición intensa para la piel',          duration: '45 min',      durationMin: 45, prices: [{ label: 'Único', value: 200000 }] },
+  { id: 'limpieza-espalda',category: 'faciales',   name: 'Limpieza de Espalda',      desc: 'Purificación de espalda completa',        duration: '60 min',      durationMin: 60, prices: [{ label: 'Único', value: 200000 }] },
+  { id: 'depilacion-axila',      category: 'depilacion', name: 'Axila',                    desc: '',                                         duration: '20 min',      durationMin: 20, prices: [{ label: 'Cera', value: 30000 }, { label: 'Máquina', value: 20000 }] },
+  { id: 'depilacion-bikini',     category: 'depilacion', name: 'Bikini',                   desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: 'Cera', value: 80000 }, { label: 'Máquina', value: 60000 }] },
+  { id: 'depilacion-media-pierna',   category: 'depilacion', name: 'Media Pierna',             desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: 'Cera', value: 100000 }, { label: 'Máquina', value: 70000 }] },
+  { id: 'depilacion-pierna-completa',   category: 'depilacion', name: 'Pierna Completa',          desc: '',                                         duration: '45 min',      durationMin: 45, prices: [{ label: 'Cera', value: 150000 }, { label: 'Máquina', value: 85000 }] },
+  { id: 'depilacion-pecho',      category: 'depilacion', name: 'Pecho',                    desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: 'Cera', value: 80000 }, { label: 'Máquina', value: 50000 }] },
+  { id: 'depilacion-espalda',    category: 'depilacion', name: 'Espalda',                  desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: 'Cera', value: 60000 }, { label: 'Máquina', value: 40000 }] },
+  { id: 'depilacion-zona-perianal',   category: 'depilacion', name: 'Zona Perianal',            desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: 'Cera', value: 65000 }, { label: 'Máquina', value: 45000 }] },
+  { id: 'depilacion-cuerpo-completo',     category: 'depilacion', name: 'Cuerpo Completo',          desc: '',                                         duration: '2 h',         durationMin: 120,prices: [{ label: 'Cera', value: 400000 }, { label: 'Máquina', value: 250000 }] },
 ]
 
 const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
@@ -233,7 +233,19 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
     window.open(randomWhatsAppUrl(waText), '_blank')
 
     try { await fetch('/api/send-sms', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: `[Diamond] ${svcLabel} · ${dateStr} · ${selTime} · ${form.name} · ${form.phone}` }) }) } catch {}
-    try { await fetch('/api/bookings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ serviceId: service.id, durationMinutes: service.durationMin, year: calYear, monthIndex: calMonth, day: selDay, timeSlot: selTime, locale: lang, name: form.name, phone: form.phone, requests: form.notes }) }) } catch {}
+    let payloadDuration: number | null = null
+    let hairMethod: 'wax' | 'machine' | undefined = undefined
+
+    if (service.category === 'masajes') {
+      if (selectedPrice?.label.includes('30')) payloadDuration = 30
+      else if (selectedPrice?.label.includes('90')) payloadDuration = 90
+      else payloadDuration = 60
+    }
+    if (service.category === 'depilacion') {
+      hairMethod = selectedPrice?.label === 'Cera' ? 'wax' : 'machine'
+    }
+
+    try { await fetch('/api/bookings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ serviceId: service.id, durationMinutes: payloadDuration, hairMethod: hairMethod, year: calYear, monthIndex: calMonth, day: selDay, timeSlot: selTime, locale: lang, name: form.name, phone: form.phone, requests: form.notes }) }) } catch {}
 
     setSubmitting(false)
     setConfirmed(true)
