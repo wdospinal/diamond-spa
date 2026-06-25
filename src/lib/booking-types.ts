@@ -24,6 +24,8 @@ export type BookingRecord = {
   email?: string
   phone: string
   requests?: string
+  /** Booking status, e.g. for arrivals */
+  status?: 'pending' | 'arrived'
 }
 
 /** Display name for a booking — uses the single `name` field, falling back to legacy first/last. */
