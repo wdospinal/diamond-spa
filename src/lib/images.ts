@@ -28,6 +28,7 @@
  * it must be locale-aware and context-aware. Always supply a meaningful,
  * bilingual `alt` at the call site. Use alt="" + aria-hidden="true" only
  * for purely decorative images already conveyed by adjacent text.
+ * 
  */
 
 const u = (id: string, w = 1200) =>
