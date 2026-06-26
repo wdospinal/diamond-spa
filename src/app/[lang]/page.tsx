@@ -73,9 +73,9 @@ function HomeHero({ locale, rating }: { locale: Locale; rating: { value: string;
           fetchPriority="high"
           quality={65}
           sizes="(max-width: 640px) 100vw, (max-width: 1280px) 100vw, 1536px"
-          className="object-cover opacity-30"
+          className="object-cover opacity-60"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-surface via-surface/80 to-surface/20" />
+        <div className="absolute inset-0 bg-gradient-to-r from-surface via-surface/50 to-transparent" />
       </div>
       <div className="relative z-10 max-w-screen-2xl mx-auto w-full px-6 md:px-12 pt-10 md:pt-14 pb-24">
         <div className="lg:w-2/3 flex flex-col">

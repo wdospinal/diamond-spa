@@ -35,7 +35,7 @@ const u = (id: string, w = 1200) =>
 
 // ─── Local public assets (AVIF primary, WebP fallback kept alongside) ─────────
 
-export const IMG_HERO_HOME        = '/diamond-wallpaper.avif'
+export const IMG_HERO_HOME        = '/diamond-wallpaper.png'
 export const IMG_LOGO             = '/logo.avif'
 export const IMG_LOGOTIPO         = '/logotipo.avif'
 export const IMG_DEEP_TISSUE      = '/depilacion.avif'
@@ -44,7 +44,7 @@ export const IMG_FACIAL           = '/skin.avif'
 export const IMG_ABOUT_HERO       = '/filo.avif'
 
 // WebP fallbacks — used by <picture> srcSet for browsers without AVIF support
-export const IMG_HERO_HOME_WEBP   = '/diamond-wallpaper.webp'
+export const IMG_HERO_HOME_WEBP   = '/diamond-wallpaper.png'
 export const IMG_LOGOTIPO_WEBP    = '/logotipo.webp'
 export const IMG_DEEP_TISSUE_WEBP = '/depilacion.webp'
 export const IMG_RELAXATION_WEBP  = '/relaxation.webp'
