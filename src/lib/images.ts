@@ -45,6 +45,7 @@ export const IMG_DEEP_TISSUE      = '/depilacion.avif'
 export const IMG_RELAXATION       = '/relaxation.avif'
 export const IMG_FACIAL           = '/skin.avif'
 export const IMG_ABOUT_HERO       = '/filo.avif'
+export const IMG_HERO_ABOUT       = '/about-hero.png'
 
 // WebP fallbacks — used by <picture> srcSet for browsers without AVIF support
 export const IMG_HERO_HOME_WEBP   = '/diamond-wallpaper.png'
