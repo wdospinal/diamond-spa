@@ -1,7 +1,9 @@
 import { notFound } from 'next/navigation'
+import Image from 'next/image'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
+import { IMG_HERO_SERVICES } from '@/lib/images'
 import { SERVICES, formatCop, getServiceSlug, type DurationMinutes, type ServiceDef } from '@/lib/services'
 import { DURATION_MINUTES } from '@/lib/constants'
 import { buildAlternates, buildOpenGraph } from '@/lib/seo'
@@ -43,8 +45,25 @@ export default async function ServicesPage({ params }: { params: Promise<{ lang:
   return (
     <>
       {/* HERO */}
-      <header className="pt-40 pb-16 px-6 md:px-12 bg-surface">
-        <div className="max-w-screen-2xl mx-auto">
+      <header className="relative pt-40 pb-24 px-6 md:px-12 overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          {/* priority={true} emits <link rel="preload" fetchpriority="high"> in <head>
+              so the browser discovers the image at HTML-parse time, not after JS. */}
+          <Image
+            src={IMG_HERO_SERVICES}
+            alt={locale === 'es'
+              ? 'Pareja relajándose durante un masaje en Diamond Spa, El Poblado, Medellín, con iluminación cálida'
+              : 'Couple relaxing during a massage at Diamond Spa in El Poblado, Medellín, with warm lighting'}
+            fill
+            priority
+            fetchPriority="high"
+            quality={65}
+            sizes="100vw"
+            className="object-cover opacity-60"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-surface via-surface/50 to-transparent" />
+        </div>
+        <div className="relative z-10 max-w-screen-2xl mx-auto">
           <span className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-5 block">{t.label}</span>
           <h1 className="font-headline text-6xl md:text-8xl text-on-surface font-light leading-tight">{t.title}</h1>
           <p className="mt-8 text-on-surface-variant text-lg max-w-xl font-light leading-relaxed">{t.subtitle}</p>

@@ -36,6 +36,7 @@ const u = (id: string, w = 1200) =>
 // ─── Local public assets (AVIF primary, WebP fallback kept alongside) ─────────
 
 export const IMG_HERO_HOME        = '/diamond-wallpaper.png'
+export const IMG_HERO_SERVICES    = '/services-hero.png'
 export const IMG_LOGO             = '/logo.avif'
 export const IMG_LOGOTIPO         = '/logotipo.avif'
 export const IMG_DEEP_TISSUE      = '/depilacion.avif'

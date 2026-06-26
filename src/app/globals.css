@@ -172,14 +172,16 @@ body {
 }
 
 /*
- * Touch devices: hover never fires, so img-hover-color transitions are dead
- * weight that just create extra GPU compositor layers. Remove them to reduce
- * paint/composite overhead on mobile.
+ * Touch devices: hover never fires (and tap triggers a sticky :hover that
+ * "lights up" the image). Pin the image to its default, full-colour state with
+ * no filter and kill the hover transition/transform so tapping never changes it.
  */
 @media (hover: none) and (pointer: coarse) {
-  .img-hover-color {
+  .img-hover-color,
+  .group:hover .img-hover-color {
     transition: none;
-    filter: grayscale(60%) brightness(0.75);
+    filter: none;
+    transform: none;
   }
 }
 
