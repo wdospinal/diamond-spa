@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
-import { IMG_HERO_SERVICES } from '@/lib/images'
+import { IMG_HERO_SERVICES, IMG_HERO_SERVICES_H } from '@/lib/images'
 import { SERVICES, formatCop, getServiceSlug, type DurationMinutes, type ServiceDef } from '@/lib/services'
 import { DURATION_MINUTES } from '@/lib/constants'
 import { buildAlternates, buildOpenGraph } from '@/lib/seo'
@@ -48,7 +48,8 @@ export default async function ServicesPage({ params }: { params: Promise<{ lang:
       <header className="relative pt-40 pb-24 px-6 md:px-12 overflow-hidden">
         <div className="absolute inset-0 z-0">
           {/* priority={true} emits <link rel="preload" fetchpriority="high"> in <head>
-              so the browser discovers the image at HTML-parse time, not after JS. */}
+              so the browser discovers the image at HTML-parse time, not after JS.
+              Portrait crop on mobile, horizontal crop on web (md+). */}
           <Image
             src={IMG_HERO_SERVICES}
             alt={locale === 'es'
@@ -59,7 +60,19 @@ export default async function ServicesPage({ params }: { params: Promise<{ lang:
             fetchPriority="high"
             quality={65}
             sizes="100vw"
-            className="object-cover opacity-60"
+            className="object-cover opacity-60 md:hidden"
+          />
+          <Image
+            src={IMG_HERO_SERVICES_H}
+            alt={locale === 'es'
+              ? 'Pareja relajándose durante un masaje en Diamond Spa, El Poblado, Medellín, con iluminación cálida'
+              : 'Couple relaxing during a massage at Diamond Spa in El Poblado, Medellín, with warm lighting'}
+            fill
+            priority
+            fetchPriority="high"
+            quality={65}
+            sizes="100vw"
+            className="object-cover opacity-60 hidden md:block"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-surface via-surface/50 to-transparent" />
         </div>

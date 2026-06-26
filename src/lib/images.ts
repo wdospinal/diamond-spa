@@ -37,6 +37,8 @@ const u = (id: string, w = 1200) =>
 
 export const IMG_HERO_HOME        = '/diamond-wallpaper.png'
 export const IMG_HERO_SERVICES    = '/services-hero.png'
+export const IMG_HERO_SERVICES_H  = '/services-hero-horizontal.png'
+export const IMG_HERO_LOCATION    = '/ubicacion.png'
 export const IMG_LOGO             = '/logo.avif'
 export const IMG_LOGOTIPO         = '/logotipo.avif'
 export const IMG_DEEP_TISSUE      = '/depilacion.avif'

@@ -2,7 +2,9 @@ import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
+import { IMG_HERO_LOCATION } from '@/lib/images'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd } from '@/lib/seo'
 import { ReviewsSection } from '@/components/ReviewsSection'
 import { JsonLd } from '@/components/JsonLd'
@@ -43,8 +45,25 @@ export default async function LocationPage({ params }: { params: Promise<{ lang:
     <>
       <JsonLd data={localBusinessJsonLd()} />
       {/* HERO */}
-      <header className="pt-12 md:pt-16 pb-20 px-6 md:px-12 bg-surface">
-        <div className="max-w-screen-2xl mx-auto">
+      <header className="relative pt-12 md:pt-16 pb-20 px-6 md:px-12 overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          {/* priority={true} emits <link rel="preload" fetchpriority="high"> in <head>
+              so the browser discovers the image at HTML-parse time, not after JS. */}
+          <Image
+            src={IMG_HERO_LOCATION}
+            alt={locale === 'es'
+              ? `Ubicación de Diamond Spa en ${SPA_ADDRESS.full}, El Poblado, Medellín`
+              : `Location of Diamond Spa at ${SPA_ADDRESS.full}, El Poblado, Medellín`}
+            fill
+            priority
+            fetchPriority="high"
+            quality={65}
+            sizes="100vw"
+            className="object-cover opacity-60"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-surface via-surface/50 to-transparent" />
+        </div>
+        <div className="relative z-10 max-w-screen-2xl mx-auto">
           <span className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-6 block">{t.label}</span>
           <h1 className="font-headline text-6xl md:text-8xl text-on-surface font-light leading-tight">
             {t.titleParts[0]}<br /><span className="italic text-primary">{t.titleParts[1]}</span>
