@@ -702,7 +702,7 @@ function STYLES({ dir }: { dir: 1|-1 }) {
       .tap-card:active { transform: scale(0.98); }
       .tap-day:hover   { background: ${C.accent}33 !important; }
       .tap-time:hover  { border-color: ${C.accent} !important; color: ${C.text} !important; }
-      .btn-confirm:hover:not(:disabled) { background: ${C.accentHover} !important; }
+      .btn-confirm:hover:not(:disabled) { background: ${C.accentHov} !important; }
       .inp:focus { border-color: ${C.accent} !important; }
 
       * { -webkit-tap-highlight-color: transparent; }
