@@ -1,17 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { updateBookingStatus, readBookings } from '@/lib/bookings-store'
 import { readSubscriptions } from '@/lib/push-store'
-import webpush from 'web-push'
+import { ensureWebPush, webpush } from '@/lib/web-push'
 import { bookingDisplayName } from '@/lib/booking-types'
-
-// Configurar Web Push con las VAPID keys de entorno
-const vapidPublic = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || ''
-const vapidPrivate = process.env.VAPID_PRIVATE_KEY || ''
-const vapidSubject = process.env.VAPID_SUBJECT || 'mailto:admin@diamondspa.com'
-
-if (vapidPublic && vapidPrivate) {
-  webpush.setVapidDetails(vapidSubject, vapidPublic, vapidPrivate)
-}
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -31,7 +22,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   }
 
   // Enviar Notificación Push si VAPID está configurado
-  if (vapidPublic && vapidPrivate) {
+  if (ensureWebPush()) {
     const subs = await readSubscriptions()
     const name = bookingDisplayName(booking)
     const payload = JSON.stringify({
