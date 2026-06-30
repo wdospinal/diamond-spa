@@ -101,3 +101,25 @@ export async function appendBooking(
   }
   return row
 }
+
+export async function updateBookingStatus(id: string, status: 'pending' | 'arrived'): Promise<boolean> {
+  if (kvConfigured()) {
+    await ensureMigrated()
+    const bookings = await readBookings()
+    const idx = bookings.findIndex(b => b.id === id)
+    if (idx === -1) return false
+    bookings[idx].status = status
+    // KV doesn't have simple LSET for JSON objects natively without replacing entire string.
+    // Easiest is to rewrite the list or use LSET if we know index.
+    // LSET list index value
+    await kvCommand(['LSET', LIST_KEY, idx.toString(), JSON.stringify(bookings[idx])])
+    return true
+  } else {
+    const list = await readFileBookings()
+    const b = list.find(x => x.id === id)
+    if (!b) return false
+    b.status = status
+    await writeFile(FILE, JSON.stringify(list, null, 2), 'utf8')
+    return true
+  }
+}

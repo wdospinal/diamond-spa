@@ -1,654 +1,711 @@
 'use client'
 
-import { Suspense, useEffect, useRef, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
-// Type-only import — erased at compile time, does NOT add i18n to the client bundle.
-// The dict value is computed on the server (book/page.tsx) and passed as a prop.
+import { useState, useRef } from 'react'
 import type { Locale, Dict } from '@/lib/i18n'
-import { SERVICES, formatCop, type DurationMinutes, type ServiceDef } from '@/lib/services'
-import { DAY_NAMES, DURATION_MINUTES } from '@/lib/constants'
-import { randomWhatsAppUrl, SPA_HOURS } from '@/lib/spa'
+import { randomWhatsAppUrl } from '@/lib/spa'
 import { EVENTS, trackEvent } from '@/lib/events'
 
-type DurationService = ServiceDef & { pricingModel: 'duration'; prices: Record<DurationMinutes, number> }
-type FlatService = ServiceDef & { pricingModel: 'flat'; price: number }
-type WaxMachineService = ServiceDef & { pricingModel: 'wax-machine'; waxPrice: number; machinePrice: number }
-
-const MASSAGE_SERVICES = (SERVICES as unknown as ServiceDef[]).filter(
-  (s): s is DurationService => s.pricingModel === 'duration'
-)
-const FACIAL_SERVICES = (SERVICES as unknown as ServiceDef[]).filter(
-  (s): s is FlatService => s.pricingModel === 'flat' && s.categoryId === 'facials'
-)
-const HAIR_REMOVAL_SERVICES = (SERVICES as unknown as ServiceDef[]).filter(
-  (s): s is WaxMachineService => s.pricingModel === 'wax-machine'
-)
-const ALL_BOOKABLE_SERVICES: ServiceDef[] = [...MASSAGE_SERVICES, ...FACIAL_SERVICES, ...HAIR_REMOVAL_SERVICES]
-
-function getTimeSlots(year: number, month: number, day: number, durationMin: number): string[] {
-  const dayName = DAY_NAMES[new Date(year, month, day).getDay()]
-  const schedule = SPA_HOURS.find(h => (h.dayOfWeek as readonly string[]).includes(dayName))
-  if (!schedule) return []
-
-  const [openH, openM] = schedule.opens.split(':').map(Number)
-  const [closeH, closeM] = schedule.closes.split(':').map(Number)
-  const openMinutes = openH * 60 + openM
-  const lastSlot = closeH * 60 + closeM - durationMin
-
-  const now = new Date()
-  const isToday = year === now.getFullYear() && month === now.getMonth() && day === now.getDate()
-  const nowMinutes = isToday ? now.getHours() * 60 + now.getMinutes() + 30 : -1
-
-  const slots: string[] = []
-  for (let m = openMinutes; m <= lastSlot; m += 30) {
-    if (m <= nowMinutes) continue
-    const h = Math.floor(m / 60)
-    const min = m % 60
-    const ampm = h < 12 ? 'AM' : 'PM'
-    const displayH = h === 0 ? 12 : h > 12 ? h - 12 : h
-    slots.push(`${displayH}:${min.toString().padStart(2, '0')} ${ampm}`)
-  }
-  return slots
-}
-
-type CalCell = { key: string; day: number | null }
-
-function buildCalendar(year: number, month: number): CalCell[] {
-  const firstDay = new Date(year, month, 1).getDay()
-  const daysInMonth = new Date(year, month + 1, 0).getDate()
-  const cells: CalCell[] = []
-  for (let p = 0; p < firstDay; p++) cells.push({ key: `pad-${p}`, day: null })
-  for (let d = 1; d <= daysInMonth; d++) cells.push({ key: `day-${d}`, day: d })
-  while (cells.length % 7 !== 0) cells.push({ key: `pad-${cells.length}`, day: null })
-  return cells
-}
-
-function ServicePreloader({ onSelect }: { onSelect: (id: string) => void }) {
-  const searchParams = useSearchParams()
-  useEffect(() => {
-    const svcParam = searchParams.get('service')
-    if (svcParam && ALL_BOOKABLE_SERVICES.find(s => s.id === svcParam)) {
-      onSelect(svcParam)
-    }
-  }, [searchParams, onSelect])
-  return null
-}
-
-export default function BookClient({
-  locale,
-  t,
-}: {
-  locale: string
-  /** Book-section dictionary pre-computed on the server to keep i18n out of the client bundle. */
-  t: Dict['book']
-}) {
-  const lang = (locale === 'en' ? 'en' : 'es') as Locale
-
-  const today = new Date()
-  const [selectedService, setSelectedService] = useState<string | null>(null)
-  const [selectedDuration, setSelectedDuration] = useState<DurationMinutes | null>(null)
-  const [selectedHairMethod, setSelectedHairMethod] = useState<'wax' | 'machine' | null>(null)
-  const [calYear, setCalYear] = useState(() => today.getFullYear())
-  const [calMonth, setCalMonth] = useState(() => today.getMonth())
-  const [selectedDay, setSelectedDay] = useState<number | null>(null)
-  const [selectedTime, setSelectedTime] = useState<string | null>(null)
-  const [confirmed, setConfirmed] = useState(false)
-  const [form, setForm] = useState({ name: '', phone: '', requests: '' })
-
-  // Fire `booking_started` exactly once — on the first real interaction (service
-  // pick), not merely landing on /book, so it reflects genuine intent (funnel "Desire").
-  const bookingStartedRef = useRef(false)
-  function markBookingStarted() {
-    if (bookingStartedRef.current) return
-    bookingStartedRef.current = true
-    trackEvent(EVENTS.BOOKING_STARTED, { locale: lang })
-  }
-
-  const cells = buildCalendar(calYear, calMonth)
-
-  const selectedServiceObj = ALL_BOOKABLE_SERVICES.find(s => s.id === selectedService)
-  const isMassage = selectedServiceObj?.pricingModel === 'duration'
-  const isHairRemoval = selectedServiceObj?.pricingModel === 'wax-machine'
-  const selectedPriceCop = selectedServiceObj
-    ? isMassage
-      ? (selectedDuration ? (selectedServiceObj as DurationService).prices[selectedDuration] : null)
-      : isHairRemoval
-        ? selectedHairMethod === 'wax'
-          ? (selectedServiceObj as WaxMachineService).waxPrice
-          : selectedHairMethod === 'machine'
-            ? (selectedServiceObj as WaxMachineService).machinePrice
-            : null
-        : (selectedServiceObj as FlatService).price
-    : null
-
-  function isPast(day: number) {
-    const d = new Date(calYear, calMonth, day)
-    d.setHours(0, 0, 0, 0)
-    const now = new Date()
-    now.setHours(0, 0, 0, 0)
-    return d < now
-  }
-
-  function prevMonth() {
-    if (calMonth === 0) { setCalYear(y => y - 1); setCalMonth(11) } else setCalMonth(m => m - 1)
-    setSelectedDay(null); setSelectedTime(null)
-  }
-  function nextMonth() {
-    if (calMonth === 11) { setCalYear(y => y + 1); setCalMonth(0) } else setCalMonth(m => m + 1)
-    setSelectedDay(null); setSelectedTime(null)
-  }
-
-  function serviceName(s: ServiceDef) {
-    return lang === 'en' ? s.name.en : s.name.es
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (!selectedService || (isMassage && !selectedDuration) || (isHairRemoval && !selectedHairMethod) || !selectedDay || !selectedTime) return
-
-    const service = selectedServiceObj!
-    const dateStr = `${t.months[calMonth]} ${selectedDay}, ${calYear}`
-    const sName = serviceName(service)
-    const priceCop = selectedPriceCop ?? 0
-    const hairMethodLabel = selectedHairMethod === 'wax'
-      ? (lang === 'es' ? 'Cera' : 'Wax')
-      : selectedHairMethod === 'machine'
-        ? (lang === 'es' ? 'Máquina' : 'Machine')
-        : ''
-    const serviceLabel = isMassage && selectedDuration
-      ? `${sName} (${selectedDuration} min)`
-      : isHairRemoval && selectedHairMethod
-        ? `${sName} (${hairMethodLabel})`
-        : sName
-
-    const waText =
-      `Hola Diamond Spa! Me gustaría reservar una cita:\n\n` +
-      `📋 ${t.serviceLabel}: ${serviceLabel}\n` +
-      `📅 ${t.dateLabel}: ${dateStr}\n` +
-      `⏰ ${t.timeLabel}: ${selectedTime}\n` +
-      `👤 Nombre: ${form.name}\n` +
-      `📱 Tel: ${form.phone}\n` +
-      (form.requests ? `💬 Notas: ${form.requests}\n` : '') +
-      `\n💰 ${t.totalLabel}: ${formatCop(priceCop)}`
-
-    trackEvent(EVENTS.BOOKING_SUBMITTED, {
-      service_id: selectedService ?? '',
-      service_name: sName,
-      category: selectedServiceObj?.categoryId ?? '',
-      duration_minutes: selectedDuration ?? 0,
-      hair_method: selectedHairMethod ?? '',
-      price_cop: priceCop,
-      locale: lang,
-    })
-    // Booking confirmation hands off to WhatsApp — count it as the funnel's final "contact" stage.
-    trackEvent(EVENTS.WHATSAPP_CLICKED, { platform: 'whatsapp', source: 'booking' })
-    window.open(randomWhatsAppUrl(waText), '_blank')
-
-    const smsBody =
-      `[Diamond Spa] Nueva reserva\n` +
-      `Servicio: ${serviceLabel}\n` +
-      `Fecha: ${dateStr}\n` +
-      `Cliente: ${form.name}\n` +
-      `Tel: ${form.phone}` +
-      (form.requests ? `\nNotas: ${form.requests}` : '')
-
-    try { await fetch('/api/send-sms', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: smsBody }) }) } catch { /* non-blocking */ }
-    try {
-      await fetch('/api/bookings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          serviceId: selectedService,
-          durationMinutes: selectedDuration,
-          hairMethod: selectedHairMethod,
-          year: calYear,
-          monthIndex: calMonth,
-          day: selectedDay,
-          timeSlot: selectedTime,
-          locale: lang,
-          name: form.name,
-          phone: form.phone,
-          requests: form.requests,
-        }),
-      })
-    } catch { /* non-blocking */ }
-
-    setConfirmed(true)
-  }
-
-  const sName = selectedServiceObj ? serviceName(selectedServiceObj as ServiceDef) : ''
-  const confirmedHairMethod = selectedHairMethod === 'wax'
-    ? (lang === 'es' ? 'Cera' : 'Wax')
-    : selectedHairMethod === 'machine'
-      ? (lang === 'es' ? 'Máquina' : 'Machine')
-      : ''
-  const confirmedServiceLabel = isMassage && selectedDuration
-    ? `${sName} (${selectedDuration} min)`
-    : isHairRemoval && selectedHairMethod
-      ? `${sName} (${confirmedHairMethod})`
-      : sName
-
-  return confirmed ? (
-    <div className="min-h-screen bg-surface flex items-center justify-center px-6 pt-24">
-      <div className="max-w-lg w-full text-center">
-        <span className="material-symbols-outlined text-primary text-6xl mb-8 block" aria-hidden="true">check_circle</span>
-        <span className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-6 block">{t.confirmedLabel}</span>
-        <h1 className="font-headline text-4xl md:text-5xl text-on-surface mb-6">{t.confirmedTitle}</h1>
-        <p className="font-body text-secondary leading-relaxed mb-4">
-          {t.confirmedBody1} {form.name}. {t.confirmedBody2}
-        </p>
-        <div className="bg-surface-container-high p-8 my-10 text-left flex flex-col gap-3">
-          {[
-            [t.serviceLabel, confirmedServiceLabel],
-            [t.dateLabel, `${t.months[calMonth]} ${selectedDay}, ${calYear}`],
-            [t.totalLabel, selectedPriceCop ? formatCop(selectedPriceCop) : '—'],
-          ].map(([label, value]) => (
-            <div key={label} className="flex justify-between items-center gap-4">
-              <span className="font-label text-outline text-xs uppercase tracking-widest shrink-0">{label}</span>
-              <span className="font-body text-on-surface text-sm text-right">{value}</span>
-            </div>
-          ))}
-        </div>
-        <button
-          onClick={() => {
-            trackEvent(EVENTS.BOOKING_ANOTHER_CLICKED, { locale: lang })
-            setConfirmed(false)
-            setSelectedService(null)
-            setSelectedDuration(null)
-            setSelectedHairMethod(null)
-            setSelectedDay(null)
-            setSelectedTime(null)
-            setForm({ name: '', phone: '', requests: '' })
-          }}
-          className="bg-primary text-on-primary px-10 py-4 font-label font-bold tracking-[0.2em] text-xs uppercase hover:bg-white transition-all"
-        >
-          {t.bookAnother}
-        </button>
-      </div>
-    </div>
-  ) : (
-    <>
-      <Suspense fallback={null}>
-        <ServicePreloader onSelect={setSelectedService} />
-      </Suspense>
-      <header className="pt-12 md:pt-16 pb-16 px-6 md:px-12 bg-surface">
-        <div className="max-w-screen-2xl mx-auto">
-          <span className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-5 block">{t.label}</span>
-          <h1 className="font-headline text-6xl md:text-8xl text-on-surface font-light leading-tight">{t.title}</h1>
-        </div>
-      </header>
-
-      <form onSubmit={handleSubmit} className="pb-32 px-6 md:px-12 bg-surface">
-        <div className="max-w-screen-2xl mx-auto grid grid-cols-1 xl:grid-cols-3 gap-12">
-
-          <div className="xl:col-span-2 flex flex-col gap-16">
-
-            {/* Step 01 — Select service */}
-            <div>
-              <StepLabel n="01" label={t.step1} />
-              <div className="mt-6 flex flex-col gap-6">
-                {/* Massages */}
-                <div>
-                  <p className="font-label text-outline text-[10px] tracking-[0.3em] uppercase mb-3">
-                    {lang === 'es' ? 'Masajes Exclusivos' : 'Exclusive Massages'}
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {MASSAGE_SERVICES.map(s => {
-                      const isSelected = selectedService === s.id
-                      return (
-                        <button
-                          key={s.id}
-                          type="button"
-                          onClick={() => { markBookingStarted(); setSelectedService(s.id); setSelectedDuration(null); setSelectedHairMethod(null); trackEvent(EVENTS.BOOKING_SERVICE_SELECTED, { service_id: s.id, service_name: serviceName(s), category: 'massages', locale: lang }) }}
-                          className={`text-left p-5 transition-all duration-200 ${
-                            isSelected
-                              ? 'bg-surface-container-high border border-primary/40'
-                              : 'bg-surface-container hover:bg-surface-container-high border border-transparent'
-                          }`}
-                        >
-                          <span className="font-headline text-on-surface text-base block mb-3 leading-tight">
-                            {serviceName(s)}
-                          </span>
-                          <span className="font-body text-outline text-xs">
-                            {lang === 'en' ? 'from ' : 'desde '}
-                            <span className="text-primary font-medium">{formatCop(s.prices[30])}</span>
-                          </span>
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-                {/* Facials */}
-                <div>
-                  <p className="font-label text-outline text-[10px] tracking-[0.3em] uppercase mb-3">
-                    {lang === 'es' ? 'Faciales y Cuidado de la Piel' : 'Facials & Skin Care'}
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {FACIAL_SERVICES.map(s => {
-                      const isSelected = selectedService === s.id
-                      return (
-                        <button
-                          key={s.id}
-                          type="button"
-                          onClick={() => { markBookingStarted(); setSelectedService(s.id); setSelectedDuration(null); setSelectedHairMethod(null); trackEvent(EVENTS.BOOKING_SERVICE_SELECTED, { service_id: s.id, service_name: serviceName(s), category: 'facials', locale: lang }) }}
-                          className={`text-left p-5 transition-all duration-200 ${
-                            isSelected
-                              ? 'bg-surface-container-high border border-primary/40'
-                              : 'bg-surface-container hover:bg-surface-container-high border border-transparent'
-                          }`}
-                        >
-                          <span className="font-headline text-on-surface text-base block mb-3 leading-tight">
-                            {serviceName(s)}
-                          </span>
-                          <span className="font-body text-primary text-xs font-medium tabular-nums">
-                            {formatCop(s.price)}
-                          </span>
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-                {/* Hair Removal */}
-                <div>
-                  <p className="font-label text-outline text-[10px] tracking-[0.3em] uppercase mb-3">
-                    {lang === 'es' ? 'Depilación' : 'Hair Removal'}
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {HAIR_REMOVAL_SERVICES.map(s => {
-                      const isSelected = selectedService === s.id
-                      return (
-                        <button
-                          key={s.id}
-                          type="button"
-                          onClick={() => { markBookingStarted(); setSelectedService(s.id); setSelectedDuration(null); setSelectedHairMethod(null); trackEvent(EVENTS.BOOKING_SERVICE_SELECTED, { service_id: s.id, service_name: serviceName(s), category: 'hair-removal', locale: lang }) }}
-                          className={`text-left p-5 transition-all duration-200 ${
-                            isSelected
-                              ? 'bg-surface-container-high border border-primary/40'
-                              : 'bg-surface-container hover:bg-surface-container-high border border-transparent'
-                          }`}
-                        >
-                          <span className="font-headline text-on-surface text-base block mb-3 leading-tight">
-                            {serviceName(s)}
-                          </span>
-                          <span className="font-body text-outline text-xs">
-                            {lang === 'es' ? 'desde ' : 'from '}
-                            <span className="text-primary font-medium">{formatCop(Math.min(s.waxPrice, s.machinePrice))}</span>
-                          </span>
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Step 02 — Select duration (massages) or method (hair removal) */}
-            {selectedService && isMassage && (
-              <div>
-                <StepLabel n="02" label={t.step1b} />
-                <div className="grid grid-cols-3 gap-3 mt-6 max-w-sm">
-                  {DURATION_MINUTES.map(min => {
-                    const svc = MASSAGE_SERVICES.find(s => s.id === selectedService)!
-                    const price = svc.prices[min]
-                    const isActive = selectedDuration === min
-                    return (
-                      <button
-                        key={min}
-                        type="button"
-                        onClick={() => { setSelectedDuration(min); trackEvent(EVENTS.BOOKING_DURATION_SELECTED, { service_id: selectedService ?? '', duration_minutes: min }) }}
-                        className={`p-5 text-left transition-all duration-200 ${
-                          isActive
-                            ? 'bg-surface-container-high border border-primary/40'
-                            : 'bg-surface-container hover:bg-surface-container-high border border-transparent'
-                        }`}
-                      >
-                        <span className="font-label text-on-surface text-sm font-bold block mb-1">
-                          {min} min
-                        </span>
-                        <span className="font-body text-primary text-sm tabular-nums">{formatCop(price)}</span>
-                      </button>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Step 02b — Select method (hair removal only) */}
-            {selectedService && isHairRemoval && (
-              <div>
-                <StepLabel n="02" label={lang === 'es' ? 'Seleccionar Método' : 'Select Method'} />
-                <div className="grid grid-cols-2 gap-3 mt-6 max-w-xs">
-                  {(['wax', 'machine'] as const).map(method => {
-                    const svc = HAIR_REMOVAL_SERVICES.find(s => s.id === selectedService)!
-                    const price = method === 'wax' ? svc.waxPrice : svc.machinePrice
-                    const label = method === 'wax' ? (lang === 'es' ? 'Cera' : 'Wax') : (lang === 'es' ? 'Máquina' : 'Machine')
-                    const isActive = selectedHairMethod === method
-                    return (
-                      <button
-                        key={method}
-                        type="button"
-                        onClick={() => { setSelectedHairMethod(method); trackEvent(EVENTS.BOOKING_HAIR_METHOD_SELECTED, { service_id: selectedService ?? '', method }) }}
-                        className={`p-5 text-left transition-all duration-200 ${
-                          isActive
-                            ? 'bg-surface-container-high border border-primary/40'
-                            : 'bg-surface-container hover:bg-surface-container-high border border-transparent'
-                        }`}
-                      >
-                        <span className="font-label text-on-surface text-sm font-bold block mb-1">{label}</span>
-                        <span className="font-body text-primary text-sm tabular-nums">{formatCop(price)}</span>
-                      </button>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Step 03 — Choose date */}
-            <div>
-              <StepLabel n="03" label={t.step2} />
-              <div
-                className="mt-6 bg-surface-container p-4 max-w-xs"
-                role="group"
-                aria-label={lang === 'es' ? 'Calendario de reservas' : 'Booking calendar'}
-              >
-                <div className="flex justify-between items-center mb-4">
-                  <button
-                    type="button"
-                    onClick={prevMonth}
-                    aria-label={lang === 'es' ? 'Mes anterior' : 'Previous month'}
-                    className="text-outline hover:text-primary transition-colors"
-                  >
-                    <span className="material-symbols-outlined text-base leading-none" aria-hidden="true">chevron_left</span>
-                  </button>
-                  <span
-                    className="font-label text-on-surface text-xs tracking-widest uppercase"
-                    aria-live="polite"
-                  >
-                    {t.months[calMonth]} {calYear}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={nextMonth}
-                    aria-label={lang === 'es' ? 'Mes siguiente' : 'Next month'}
-                    className="text-outline hover:text-primary transition-colors"
-                  >
-                    <span className="material-symbols-outlined text-base leading-none" aria-hidden="true">chevron_right</span>
-                  </button>
-                </div>
-                <div className="grid grid-cols-7 mb-1" aria-hidden="true">
-                  {t.days.map(d => <div key={d} className="text-center font-label text-outline text-[10px] py-0.5">{d}</div>)}
-                </div>
-                <div className="grid grid-cols-7" role="grid">
-                  {cells.map(({ key, day }) => {
-                    if (!day) return <div key={key} role="gridcell" />
-                    const past = isPast(day)
-                    const active = selectedDay === day
-                    const dateLabel = `${t.months[calMonth]} ${day}, ${calYear}`
-                    const fullLabel = past
-                      ? (lang === 'es' ? `${dateLabel} (no disponible)` : `${dateLabel} (unavailable)`)
-                      : dateLabel
-                    return (
-                      <button
-                        key={key}
-                        type="button"
-                        disabled={past}
-                        onClick={() => { setSelectedDay(day); setSelectedTime(null); trackEvent(EVENTS.BOOKING_DATE_SELECTED, { service_id: selectedService ?? '', date: `${calYear}-${String(calMonth + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}` }) }}
-                        role="gridcell"
-                        aria-label={fullLabel}
-                        aria-pressed={active}
-                        aria-disabled={past || undefined}
-                        className={`h-7 w-7 mx-auto flex items-center justify-center font-body text-[11px] transition-all duration-150 ${past ? 'text-outline/30 cursor-not-allowed' : active ? 'bg-primary text-on-primary' : 'text-on-surface hover:bg-surface-container-high'}`}
-                      >
-                        {day}
-                      </button>
-                    )
-                  })}
-                </div>
-              </div>
-            </div>
-
-            {/* Step 04 — Select time slot */}
-            <div>
-              <StepLabel n="04" label={t.step3} />
-              <div className="mt-6">
-                {!selectedDay ? (
-                  <p className="font-body text-outline text-xs">
-                    {lang === 'es' ? 'Selecciona una fecha primero.' : 'Select a date first.'}
-                  </p>
-                ) : (isMassage && !selectedDuration) ? (
-                  <p className="font-body text-outline text-xs">
-                    {lang === 'es' ? 'Selecciona una duración primero.' : 'Select a duration first.'}
-                  </p>
-                ) : (() => {
-                  const slotDuration: DurationMinutes = selectedDuration ?? (isHairRemoval ? 30 : 60)
-                  const slots = getTimeSlots(calYear, calMonth, selectedDay, slotDuration)
-                  return slots.length === 0 ? (
-                    <p className="font-body text-outline text-xs">
-                      {lang === 'es' ? 'No hay horarios disponibles para este día.' : 'No available times for this day.'}
-                    </p>
-                  ) : (
-                    <div
-                      className="flex flex-wrap gap-2 max-w-lg"
-                      role="group"
-                      aria-label={lang === 'es' ? 'Horarios disponibles' : 'Available time slots'}
-                    >
-                      {slots.map(slot => (
-                        <button
-                          key={slot}
-                          type="button"
-                          onClick={() => { setSelectedTime(slot); trackEvent(EVENTS.BOOKING_TIME_SELECTED, { service_id: selectedService ?? '', time_slot: slot }) }}
-                          aria-pressed={selectedTime === slot}
-                          className={`px-4 py-2 font-label text-xs tracking-widest uppercase transition-all duration-150 ${
-                            selectedTime === slot
-                              ? 'bg-primary text-on-primary'
-                              : 'bg-surface-container hover:bg-surface-container-high text-on-surface border border-transparent'
-                          }`}
-                        >
-                          {slot}
-                        </button>
-                      ))}
-                    </div>
-                  )
-                })()}
-              </div>
-            </div>
-
-            {/* Step 05 — Personal details */}
-            <div>
-              <StepLabel n="05" label={t.step4} />
-              <div className="mt-6 flex flex-col gap-5 max-w-xl">
-                {([
-                  { id: 'name', label: t.name, type: 'text' },
-                  { id: 'phone', label: t.phone, type: 'tel' },
-                ] as const).map(({ id, label, type }) => (
-                  <div key={id} className="flex flex-col gap-1">
-                    <label htmlFor={id} className="font-label text-xs text-outline uppercase tracking-widest">{label}</label>
-                    <input id={id} type={type} required value={form[id]} onChange={e => setForm(f => ({ ...f, [id]: e.target.value }))}
-                      className="bg-surface-container-highest border-b border-outline focus:border-primary outline-none py-3 px-0 font-body text-sm text-on-surface placeholder:text-outline/40 transition-colors duration-200" />
-                  </div>
-                ))}
-                <div className="flex flex-col gap-1">
-                  <label htmlFor="requests" className="font-label text-xs text-outline uppercase tracking-widest">{t.specialRequests}</label>
-                  <textarea id="requests" rows={3} value={form.requests} onChange={e => setForm(f => ({ ...f, requests: e.target.value }))} placeholder={t.requestsPlaceholder}
-                    className="bg-surface-container-highest border-b border-outline focus:border-primary outline-none py-3 px-0 font-body text-sm text-on-surface placeholder:text-outline/40 transition-colors duration-200 resize-none" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Summary panel */}
-          <div className="xl:col-span-1">
-            <div className="sticky top-28 bg-surface-container-low p-8 flex flex-col gap-6">
-              <h3 className="font-headline text-xl text-on-surface">{t.summaryTitle}</h3>
-              <div className="flex flex-col gap-4">
-                {[
-                  {
-                    label: t.serviceLabel,
-                    value: selectedServiceObj ? serviceName(selectedServiceObj) : '—',
-                    empty: !selectedService,
-                  },
-                  ...(isMassage ? [{
-                    label: t.durationLabel,
-                    value: selectedDuration ? `${selectedDuration} min` : '—',
-                    empty: !selectedDuration,
-                  }] : isHairRemoval ? [{
-                    label: lang === 'es' ? 'Método' : 'Method',
-                    value: selectedHairMethod === 'wax'
-                      ? (lang === 'es' ? 'Cera' : 'Wax')
-                      : selectedHairMethod === 'machine'
-                        ? (lang === 'es' ? 'Máquina' : 'Machine')
-                        : '—',
-                    empty: !selectedHairMethod,
-                  }] : []),
-                  {
-                    label: t.dateLabel,
-                    value: selectedDay ? `${t.months[calMonth]} ${selectedDay}, ${calYear}` : '—',
-                    empty: !selectedDay,
-                  },
-                  {
-                    label: t.timeLabel,
-                    value: selectedTime ?? '—',
-                    empty: !selectedTime,
-                  },
-                ].map(({ label, value, empty }) => (
-                  <div key={label} className="flex justify-between items-start gap-4">
-                    <span className="font-label text-outline text-xs uppercase tracking-widest shrink-0">{label}</span>
-                    <span className={`font-body text-xs text-right leading-relaxed ${empty ? 'text-outline/40' : 'text-on-surface'}`}>{value}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="border-t border-outline-variant/10 pt-6 flex justify-between items-baseline">
-                <span className="font-label text-outline text-xs uppercase tracking-widest">{t.totalLabel}</span>
-                <div className="text-right">
-                  <span className="font-headline text-2xl text-primary block">
-                    {selectedPriceCop ? formatCop(selectedPriceCop) : '—'}
-                  </span>
-                  {selectedPriceCop && (
-                    <span className="font-label text-outline text-[10px] tracking-widest">{t.totalCopHint}</span>
-                  )}
-                </div>
-              </div>
-              <button
-                type="submit"
-                disabled={!selectedService || (isMassage && !selectedDuration) || (isHairRemoval && !selectedHairMethod) || !selectedDay || !selectedTime}
-                className="w-full bg-primary text-on-primary py-5 font-label font-bold tracking-[0.2em] text-xs uppercase hover:bg-white transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-primary"
-              >
-                {t.confirm}
-              </button>
-              <p className="font-body text-xs text-outline leading-relaxed text-center">{t.privacy}</p>
-            </div>
-          </div>
-        </div>
-      </form>
-    </>
+// ─── Icon helper ─────────────────────────────────────────────────────────────
+// Uses the Material Symbols Outlined font already loaded by MaterialSymbolsLoader
+// (self-hosted, preloaded in <head>, zero extra network request, no CWV impact).
+function Icon({ name, size = 22, style = {} }: { name: string; size?: number; style?: React.CSSProperties }) {
+  return (
+    <span
+      aria-hidden="true"
+      style={{
+        fontFamily: '"Material Symbols Outlined"',
+        fontSize: size,
+        lineHeight: 1,
+        fontVariationSettings: "'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24",
+        display: 'inline-block',
+        verticalAlign: 'middle',
+        userSelect: 'none',
+        ...style,
+      }}
+    >
+      {name}
+    </span>
   )
 }
 
-function StepLabel({ n, label }: { n: string; label: string }) {
+// ─── Palette ──────────────────────────────────────────────────────────────────
+const C = {
+  bg:         '#0a1628',
+  card:       '#0f1f38',
+  cardHov:    '#122440',
+  cardBrd:    '#1e3358',
+  cardSel:    '#0f2a45',
+  cardSelBrd: '#4a9fd4',
+  text:       '#e8eef4',
+  sec:        '#7a9ab8',
+  accent:     '#4a9fd4',
+  accentHov:  '#5eb3e8',
+  div:        '#1a2e4a',
+  success:    '#34d399',
+} as const
+
+// ─── Data ─────────────────────────────────────────────────────────────────────
+type PriceEntry  = { label: string; value: number }
+type Category    = 'masajes' | 'faciales' | 'depilacion'
+type Service = {
+  id: string
+  category: Category
+  name: string
+  desc: string
+  duration: string
+  durationMin: number
+  prices: PriceEntry[]
+}
+
+const CATEGORIES: { id: Category; label: string; icon: string; sub: string }[] = [
+  { id: 'masajes',    label: 'Masajes',    icon: 'self_improvement', sub: '7 opciones · desde $120.000' },
+  { id: 'faciales',  label: 'Faciales',   icon: 'face',             sub: '5 opciones · desde $150.000' },
+  { id: 'depilacion',label: 'Depilación', icon: 'filter_vintage',   sub: '8 zonas · desde $20.000'     },
+]
+
+const SERVICES: Service[] = [
+  { id: 'relaxing',  category: 'masajes',    name: 'Masaje Relajante',         desc: 'Libera tensión y estrés acumulado',         duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 120000 }, { label: '60 min', value: 200000 }, { label: '90 min', value: 260000 }] },
+  { id: 'deep-tissue',       category: 'masajes',    name: 'Deep Tissue',              desc: 'Para tensión muscular profunda',            duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 130000 }, { label: '60 min', value: 220000 }, { label: '90 min', value: 280000 }] },
+  { id: 'four-hands',     category: 'masajes',    name: 'Masaje 4 Manos',           desc: 'Dos terapeutas, doble relajación',         duration: '60 min',      durationMin: 60, prices: [{ label: '30 min', value: 230000 }, { label: '60 min', value: 350000 }, { label: '90 min', value: 480000 }] },
+  { id: 'duo',        category: 'masajes',    name: 'Duo Masaje',               desc: 'Para parejas o acompañantes',              duration: '60 min',      durationMin: 60, prices: [{ label: '30 min', value: 220000 }, { label: '60 min', value: 380000 }, { label: '90 min', value: 500000 }] },
+  { id: 'hot-stones',    category: 'masajes',    name: 'Piedras Volcánicas',       desc: 'Calor profundo y relajación total',       duration: '75 min',      durationMin: 75, prices: [{ label: '30 min', value: 130000 }, { label: '60 min', value: 220000 }, { label: '90 min', value: 280000 }] },
+  { id: 'sports',  category: 'masajes',    name: 'Masaje Deportivo',         desc: 'Recuperación muscular activa',             duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 140000 }, { label: '60 min', value: 240000 }, { label: '90 min', value: 300000 }] },
+  { id: 'sensitive',  category: 'masajes',    name: 'Masaje Sensitivo',         desc: 'Estimulación sensorial suave',             duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 130000 }, { label: '60 min', value: 220000 }, { label: '90 min', value: 280000 }] },
+  { id: 'hidrafacial',      category: 'faciales',   name: 'Hydrafacial',              desc: 'Limpieza profunda con tecnología',         duration: '90 min',      durationMin: 90, prices: [{ label: 'Único', value: 350000 }] },
+  { id: 'limpieza-facial-profunda',   category: 'faciales',   name: 'Limpieza Facial Profunda', desc: 'Extracción y purificación',               duration: '60 min',      durationMin: 60, prices: [{ label: 'Único', value: 250000 }] },
+  { id: 'limpieza-facial-basica',    category: 'faciales',   name: 'Limpieza Facial Básica',   desc: 'Limpieza y tonificación de la piel',      duration: '45 min',      durationMin: 45, prices: [{ label: 'Único', value: 150000 }] },
+  { id: 'hidratacion-facial',    category: 'faciales',   name: 'Hidratación Facial',       desc: 'Nutrición intensa para la piel',          duration: '45 min',      durationMin: 45, prices: [{ label: 'Único', value: 200000 }] },
+  { id: 'limpieza-espalda',category: 'faciales',   name: 'Limpieza de Espalda',      desc: 'Purificación de espalda completa',        duration: '60 min',      durationMin: 60, prices: [{ label: 'Único', value: 200000 }] },
+  { id: 'depilacion-axila',      category: 'depilacion', name: 'Axila',                    desc: '',                                         duration: '20 min',      durationMin: 20, prices: [{ label: 'Cera', value: 30000 }, { label: 'Máquina', value: 20000 }] },
+  { id: 'depilacion-bikini',     category: 'depilacion', name: 'Bikini',                   desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: 'Cera', value: 80000 }, { label: 'Máquina', value: 60000 }] },
+  { id: 'depilacion-media-pierna',   category: 'depilacion', name: 'Media Pierna',             desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: 'Cera', value: 100000 }, { label: 'Máquina', value: 70000 }] },
+  { id: 'depilacion-pierna-completa',   category: 'depilacion', name: 'Pierna Completa',          desc: '',                                         duration: '45 min',      durationMin: 45, prices: [{ label: 'Cera', value: 150000 }, { label: 'Máquina', value: 85000 }] },
+  { id: 'depilacion-pecho',      category: 'depilacion', name: 'Pecho',                    desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: 'Cera', value: 80000 }, { label: 'Máquina', value: 50000 }] },
+  { id: 'depilacion-espalda',    category: 'depilacion', name: 'Espalda',                  desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: 'Cera', value: 60000 }, { label: 'Máquina', value: 40000 }] },
+  { id: 'depilacion-zona-perianal',   category: 'depilacion', name: 'Zona Perianal',            desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: 'Cera', value: 65000 }, { label: 'Máquina', value: 45000 }] },
+  { id: 'depilacion-cuerpo-completo',     category: 'depilacion', name: 'Cuerpo Completo',          desc: '',                                         duration: '2 h',         durationMin: 120,prices: [{ label: 'Cera', value: 400000 }, { label: 'Máquina', value: 250000 }] },
+]
+
+const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
+const DAYS   = ['D','L','M','X','J','V','S']
+const TIMES  = ['10:00 AM','11:00 AM','12:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM','6:00 PM','7:00 PM']
+
+function fmtCop(n: number) {
+  return '$' + n.toLocaleString('es-CO').replace(/,/g, '.')
+}
+
+// ─── Step machine ─────────────────────────────────────────────────────────────
+// Steps: category → service → price → datetime → details
+type StepId = 'category' | 'service' | 'price' | 'datetime' | 'details'
+const STEP_ORDER: StepId[] = ['category','service','price','datetime','details']
+const STEP_LABELS = ['Servicio','Servicio','Duración','Fecha y hora','Confirmar']
+
+function stepIndex(s: StepId) { return STEP_ORDER.indexOf(s) }
+
+// ─── Calendar helpers ─────────────────────────────────────────────────────────
+type Cell = { key: string; day: number | null }
+function buildCal(year: number, month: number): Cell[] {
+  const first = new Date(year, month, 1).getDay()
+  const total = new Date(year, month + 1, 0).getDate()
+  const cells: Cell[] = []
+  for (let i = 0; i < first; i++) cells.push({ key: `p${i}`, day: null })
+  for (let d = 1; d <= total; d++) cells.push({ key: `d${d}`, day: d })
+  while (cells.length % 7 !== 0) cells.push({ key: `e${cells.length}`, day: null })
+  return cells
+}
+
+// ─── Main component ───────────────────────────────────────────────────────────
+export default function BookClient({ locale, t }: { locale: string; t: Dict['book'] }) {
+  const lang = (locale === 'en' ? 'en' : 'es') as Locale
+
+  const [step, setStep]           = useState<StepId>('category')
+  const [dir,  setDir]            = useState<1|-1>(1)
+  const [anim, setAnim]           = useState(true)
+
+  // selections
+  const [category, setCategory]   = useState<Category | null>(null)
+  const [service,  setService]    = useState<Service | null>(null)
+  const [priceIdx, setPriceIdx]   = useState<number>(0)
+
+  // datetime
+  const today = new Date()
+  const [calYear,  setCalYear]    = useState(today.getFullYear())
+  const [calMonth, setCalMonth]   = useState(today.getMonth())
+  const [selDay,   setSelDay]     = useState<number | null>(null)
+  const [selTime,  setSelTime]    = useState<string | null>(null)
+
+  // form
+  const [form, setForm]           = useState({ name: '', phone: '', email: '', notes: '' })
+  const [submitting, setSubmitting] = useState(false)
+  const [confirmed,  setConfirmed]  = useState(false)
+
+  const scrollRef = useRef<HTMLDivElement>(null)
+
+  // Smooth navigate
+  function go(target: StepId, direction: 1|-1 = 1) {
+    setDir(direction)
+    setAnim(false)
+    setTimeout(() => { setStep(target); setAnim(true); scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' }) }, 160)
+  }
+  function goBack() {
+    const idx = stepIndex(step)
+    if (idx <= 0) return
+    // Skip price step going back if not needed
+    let prev = STEP_ORDER[idx - 1]
+    if (prev === 'price' && service && service.prices.length <= 1) {
+      prev = 'service'
+    }
+    go(prev as StepId, -1)
+  }
+
+  // Auto-advance helpers
+  function pickCategory(cat: Category) {
+    setCategory(cat)
+    setService(null)
+    setPriceIdx(0)
+    setSelDay(null)
+    setSelTime(null)
+    trackEvent(EVENTS.BOOKING_STARTED, { locale: lang })
+    go('service')
+  }
+
+  function pickService(svc: Service) {
+    setService(svc)
+    setPriceIdx(0)
+    trackEvent(EVENTS.BOOKING_SERVICE_SELECTED, { service_id: svc.id, service_name: svc.name, category: svc.category, locale: lang })
+    // Skip price step if only one price option
+    if (svc.prices.length <= 1) { go('datetime') }
+    else { go('price') }
+  }
+
+  function pickPrice(idx: number) {
+    setPriceIdx(idx)
+    go('datetime')
+  }
+
+  function pickDay(d: number) {
+    setSelDay(d)
+    setSelTime(null)
+    trackEvent(EVENTS.BOOKING_DATE_SELECTED, { service_id: service?.id ?? '', date: `${calYear}-${calMonth+1}-${d}` })
+  }
+
+  function pickTime(t: string) {
+    setSelTime(t)
+    trackEvent(EVENTS.BOOKING_TIME_SELECTED, { service_id: service?.id ?? '', time_slot: t })
+    setTimeout(() => go('details'), 300)
+  }
+
+  function isPast(day: number) {
+    const d = new Date(calYear, calMonth, day)
+    d.setHours(0,0,0,0)
+    const n = new Date(); n.setHours(0,0,0,0)
+    return d < n
+  }
+
+  const selectedPrice = service ? service.prices[priceIdx] : null
+  const progressStep  = stepIndex(step)    // 0..4
+  // Map to user-visible steps 1..3 (category+service → 1, price+datetime → 2, details → 3)
+  const uiStep = progressStep <= 1 ? 1 : progressStep <= 3 ? 2 : 3
+
+  // ── Submit ────────────────────────────────────────────────────────────────
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!service || !selDay || !selTime || !form.name || !form.phone) return
+    setSubmitting(true)
+
+    const dateStr = `${MONTHS[calMonth]} ${selDay}, ${calYear}`
+    const svcLabel = `${service.name}${service.prices.length > 1 ? ` · ${service.prices[priceIdx].label}` : ''}`
+    const price    = selectedPrice?.value ?? 0
+
+    const waText =
+      `Hola Diamond Spa! Me gustaría reservar:\n\n` +
+      `📋 Servicio: ${svcLabel}\n` +
+      `📅 Fecha: ${dateStr}\n` +
+      `⏰ Hora: ${selTime}\n` +
+      `👤 Nombre: ${form.name}\n` +
+      `📱 Tel: ${form.phone}\n` +
+      (form.email ? `📧 Email: ${form.email}\n` : '') +
+      (form.notes ? `💬 Notas: ${form.notes}\n` : '') +
+      `\n💰 Total: ${fmtCop(price)}`
+
+    trackEvent(EVENTS.BOOKING_SUBMITTED, { service_id: service.id, service_name: service.name, category: service.category, duration_minutes: service.durationMin, price_cop: price, locale: lang })
+    trackEvent(EVENTS.WHATSAPP_CLICKED, { platform: 'whatsapp', source: 'booking' })
+    window.open(randomWhatsAppUrl(waText), '_blank')
+
+    try { await fetch('/api/send-sms', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: `[Diamond] ${svcLabel} · ${dateStr} · ${selTime} · ${form.name} · ${form.phone}` }) }) } catch {}
+    let payloadDuration: number | null = null
+    let hairMethod: 'wax' | 'machine' | undefined = undefined
+
+    if (service.category === 'masajes') {
+      if (selectedPrice?.label.includes('30')) payloadDuration = 30
+      else if (selectedPrice?.label.includes('90')) payloadDuration = 90
+      else payloadDuration = 60
+    }
+    if (service.category === 'depilacion') {
+      hairMethod = selectedPrice?.label === 'Cera' ? 'wax' : 'machine'
+    }
+
+    try { await fetch('/api/bookings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ serviceId: service.id, durationMinutes: payloadDuration, hairMethod: hairMethod, year: calYear, monthIndex: calMonth, day: selDay, timeSlot: selTime, locale: lang, name: form.name, phone: form.phone, requests: form.notes }) }) } catch {}
+
+    setSubmitting(false)
+    setConfirmed(true)
+  }
+
+  // ── Confirmed screen ──────────────────────────────────────────────────────
+  if (confirmed) {
+    return (
+      <div style={{ minHeight:'100vh', background:C.bg, display:'flex', alignItems:'center', justifyContent:'center', padding:'24px', paddingTop:'96px' }}>
+        <div style={{ maxWidth:440, width:'100%', textAlign:'center' }}>
+          <div style={{ marginBottom:20 }}><Icon name="check_circle" size={56} style={{ color:C.success }} /></div>
+          <p style={{ color:C.accent, fontSize:11, letterSpacing:'0.25em', textTransform:'uppercase', marginBottom:12 }}>Reserva confirmada</p>
+          <h1 style={{ color:C.text, fontSize:'clamp(28px,6vw,40px)', fontWeight:300, marginBottom:16 }}>Tu cita está reservada</h1>
+          <p style={{ color:C.sec, lineHeight:1.7, marginBottom:32 }}>Bienvenido/a, <strong style={{ color:C.text }}>{form.name}</strong>. Te esperamos en Diamond Spa.</p>
+          <div style={{ background:C.card, border:`1px solid ${C.cardBrd}`, borderRadius:6, padding:24, marginBottom:32, textAlign:'left' }}>
+            {[
+              ['Servicio', service?.name ?? ''],
+              ['Fecha',    `${MONTHS[calMonth]} ${selDay}, ${calYear}`],
+              ['Hora',     selTime ?? ''],
+              ['Total',    selectedPrice ? fmtCop(selectedPrice.value) : '—'],
+            ].map(([l,v])=>(
+              <div key={l} style={{ display:'flex', justifyContent:'space-between', padding:'10px 0', borderBottom:`1px solid ${C.div}` }}>
+                <span style={{ color:C.sec, fontSize:11, textTransform:'uppercase', letterSpacing:'0.08em' }}>{l}</span>
+                <span style={{ color:C.text, fontSize:13, fontWeight:500 }}>{v}</span>
+              </div>
+            ))}
+          </div>
+          <button onClick={()=>{ setConfirmed(false); setStep('category'); setCategory(null); setService(null); setSelDay(null); setSelTime(null); setForm({name:'',phone:'',email:'',notes:''}) }}
+            style={{ background:'transparent', border:`1px solid ${C.cardBrd}`, color:C.sec, padding:'12px 28px', cursor:'pointer', fontSize:13, borderRadius:4 }}>
+            Hacer otra reserva
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  // ── Layout ────────────────────────────────────────────────────────────────
   return (
-    <div className="flex items-center gap-4">
-      <span className="font-headline text-outline/40 text-4xl leading-none">{n}</span>
-      <span className="font-label text-on-surface text-xs tracking-[0.3em] uppercase">{label}</span>
+    <div style={{ minHeight:'100vh', background:C.bg, fontFamily:'system-ui,-apple-system,sans-serif', display:'flex', flexDirection:'column' }}>
+      <STYLES dir={dir} />
+
+      {/* ── Top bar ──────────────────────────────────────────────────────── */}
+      <div style={{ position:'sticky', top:0, zIndex:40, background:`${C.card}f0`, backdropFilter:'blur(12px)', borderBottom:`1px solid ${C.div}` }}>
+        {/* Progress bar */}
+        <div style={{ height:3, background:C.div }}>
+          <div style={{ height:'100%', background:C.accent, width:`${(progressStep/4)*100}%`, transition:'width 0.4s ease' }} />
+        </div>
+
+        <div style={{ maxWidth:640, margin:'0 auto', padding:'0 16px', display:'flex', alignItems:'center', height:56, gap:0 }}>
+          {/* Back button */}
+          <button
+            onClick={goBack}
+            style={{ background:'none', border:'none', cursor: step==='category' ? 'default' : 'pointer',
+              color: step==='category' ? 'transparent' : C.sec,
+              padding:'8px', marginRight:8, lineHeight:1, flexShrink:0,
+              transition:'color 0.2s', display:'flex', alignItems:'center',
+            }}
+            aria-label="Volver"
+          >
+            <Icon name="chevron_left" size={20} />
+          </button>
+
+          {/* Step indicators */}
+          <div style={{ flex:1, display:'flex', alignItems:'center', gap:6 }}>
+            {(['Categoría','Servicio','Fecha y hora','Confirmar'] as const).map((label, i) => {
+              // Map step index to 4 visible stages
+              const stageMap = [0,1,1,2,3]
+              const curStage = stageMap[progressStep]
+              const isDone   = curStage > i
+              const isNow    = curStage === i
+              return (
+                <div key={label} style={{ display:'flex', alignItems:'center', flex: i<3?1:0 }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:6, flexShrink:0 }}>
+                    <div style={{
+                      width:20, height:20, borderRadius:'50%', flexShrink:0,
+                      background: isDone ? C.accent : isNow ? `${C.accent}28` : 'transparent',
+                      border:`1.5px solid ${isDone||isNow ? C.accent : C.div}`,
+                      display:'flex', alignItems:'center', justifyContent:'center',
+                      fontSize:10, color: isDone?'#fff': isNow?C.accent:C.sec,
+                      fontWeight:700, transition:'all 0.3s',
+                    }}>
+                      {isDone ? '✓' : i+1}
+                    </div>
+                    <span style={{ fontSize:11, color: isNow?C.text:C.sec, fontWeight:isNow?600:400, whiteSpace:'nowrap', transition:'color 0.3s', display: i===1?'none':'block' }}>
+                      {label}
+                    </span>
+                  </div>
+                  {i<3 && <div style={{ flex:1, height:1, background: isDone?C.accent:C.div, margin:'0 8px', transition:'background 0.3s' }} />}
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Step content ─────────────────────────────────────────────────── */}
+      <div ref={scrollRef} style={{ flex:1, overflowY:'auto' }}>
+        <div
+          key={step}
+          className={anim ? 'step-in' : 'step-out'}
+          style={{ maxWidth:640, margin:'0 auto', padding:'32px 16px 120px' }}
+        >
+
+          {/* ── STEP: CATEGORY ─────────────────────────────────────────── */}
+          {step === 'category' && (
+            <div>
+              <StepTitle label="¿Qué servicio deseas?" sub="Selecciona una categoría para comenzar" />
+              <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+                {CATEGORIES.map(cat => (
+                  <button
+                    key={cat.id}
+                    className="tap-card"
+                    onClick={() => pickCategory(cat.id)}
+                    style={{
+                      width:'100%', background:C.card, border:`1.5px solid ${C.cardBrd}`,
+                      borderRadius:10, padding:'20px 20px', textAlign:'left', cursor:'pointer',
+                      display:'flex', alignItems:'center', gap:18, transition:'all 0.18s ease',
+                    }}
+                  >
+                    <span style={{ width:44, height:44, borderRadius:10, background:`${C.accent}18`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                      <Icon name={cat.icon} size={24} style={{ color:C.accent }} />
+                    </span>
+                    <div>
+                      <div style={{ color:C.text, fontSize:18, fontWeight:600, marginBottom:4 }}>{cat.label}</div>
+                      <div style={{ color:C.sec, fontSize:13 }}>{cat.sub}</div>
+                    </div>
+                    <span style={{ marginLeft:'auto', color:C.sec, fontSize:20, flexShrink:0 }}>›</span>
+                  </button>
+                ))}
+              </div>
+
+              {/* Trust badges */}
+              <div style={{ marginTop:32, display:'flex', gap:10, flexWrap:'wrap' }}>
+                {[
+                  { icon:'star',        text:'4.9 en Google' },
+                  { icon:'person',      text:'+320 clientes' },
+                  { icon:'location_on', text:'El Poblado, Medellín' },
+                ].map(b=>(
+                  <span key={b.text} style={{ color:C.sec, fontSize:12, background:`${C.card}88`, border:`1px solid ${C.div}`, padding:'6px 12px', borderRadius:20, display:'flex', alignItems:'center', gap:5 }}>
+                    <Icon name={b.icon} size={14} style={{ color:C.accent }} />{b.text}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── STEP: SERVICE ──────────────────────────────────────────── */}
+          {step === 'service' && category && (
+            <div>
+              <StepTitle
+                label={CATEGORIES.find(c=>c.id===category)?.label ?? ''}
+                sub="Selecciona el servicio que deseas"
+              />
+              <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+                {SERVICES.filter(s=>s.category===category).map(svc => (
+                  <button
+                    key={svc.id}
+                    className="tap-card"
+                    onClick={()=>pickService(svc)}
+                    style={{
+                      width:'100%', background:C.card, border:`1.5px solid ${C.cardBrd}`,
+                      borderRadius:8, padding:'16px 18px', textAlign:'left', cursor:'pointer',
+                      display:'flex', alignItems:'center', gap:14, transition:'all 0.18s ease',
+                    }}
+                  >
+                    <div style={{ flex:1 }}>
+                      <div style={{ color:C.text, fontSize:16, fontWeight:600, marginBottom: svc.desc ? 4 : 0 }}>
+                        {svc.name}
+                      </div>
+                      {svc.desc && <div style={{ color:C.sec, fontSize:13, lineHeight:1.4 }}>{svc.desc}</div>}
+                    </div>
+                    <div style={{ textAlign:'right', flexShrink:0 }}>
+                      <div style={{ color:C.accent, fontSize:14, fontWeight:700 }}>
+                        {svc.prices.length > 1 ? `desde ${fmtCop(Math.min(...svc.prices.map(p=>p.value)))}` : fmtCop(svc.prices[0].value)}
+                      </div>
+                      {svc.duration && <div style={{ color:C.sec, fontSize:11, marginTop:2 }}>{svc.duration}</div>}
+                    </div>
+                    <span style={{ color:C.sec, fontSize:20, flexShrink:0 }}>›</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── STEP: PRICE / DURATION ─────────────────────────────────── */}
+          {step === 'price' && service && (
+            <div>
+              <StepTitle label={service.name} sub="¿Cuánto tiempo quieres?" />
+              <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+                {service.prices.map((p, idx) => (
+                  <button
+                    key={p.label}
+                    className="tap-card"
+                    onClick={()=>pickPrice(idx)}
+                    style={{
+                      width:'100%', background:C.card, border:`1.5px solid ${C.cardBrd}`,
+                      borderRadius:8, padding:'20px 22px', textAlign:'left', cursor:'pointer',
+                      display:'flex', alignItems:'center', justifyContent:'space-between',
+                      transition:'all 0.18s ease',
+                    }}
+                  >
+                    <span style={{ color:C.text, fontSize:17, fontWeight:500 }}>{p.label}</span>
+                    <div style={{ textAlign:'right' }}>
+                      <span style={{ color:C.accent, fontSize:20, fontWeight:700 }}>{fmtCop(p.value)}</span>
+                      <span style={{ color:C.sec, fontSize:11, display:'block', marginTop:2 }}>COP</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── STEP: DATE + TIME ──────────────────────────────────────── */}
+          {step === 'datetime' && (
+            <div>
+              {/* Mini summary chip */}
+              {service && (
+                <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:24, background:C.card, border:`1px solid ${C.cardBrd}`, borderRadius:8, padding:'10px 14px' }}>
+                  <Icon name="spa" size={16} style={{ color:C.accent, flexShrink:0 }} />
+                  <span style={{ color:C.text, fontSize:13, fontWeight:600 }}>{service.name}</span>
+                  {selectedPrice && <span style={{ color:C.accent, fontSize:13, fontWeight:700, marginLeft:'auto' }}>{fmtCop(selectedPrice.value)}</span>}
+                </div>
+              )}
+
+              <StepTitle label="¿Cuándo te gustaría venir?" sub={selDay ? `${MONTHS[calMonth]} ${selDay} — elige tu hora` : "Selecciona el día"} />
+
+              {/* Calendar */}
+              <div style={{ background:C.card, border:`1px solid ${C.cardBrd}`, borderRadius:10, padding:20, marginBottom:24 }}>
+                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
+                  <button onClick={()=>{ if(calMonth===0){setCalYear(y=>y-1);setCalMonth(11)}else setCalMonth(m=>m-1); setSelDay(null);setSelTime(null) }}
+                    style={{ background:'none', border:'none', color:C.sec, cursor:'pointer', padding:'4px 8px', lineHeight:1, display:'flex', alignItems:'center' }}>
+                    <Icon name="chevron_left" size={22} /></button>
+                  <span style={{ color:C.text, fontSize:14, fontWeight:600, textTransform:'uppercase', letterSpacing:'0.08em' }}>
+                    {MONTHS[calMonth]} {calYear}
+                  </span>
+                  <button onClick={()=>{ if(calMonth===11){setCalYear(y=>y+1);setCalMonth(0)}else setCalMonth(m=>m+1); setSelDay(null);setSelTime(null) }}
+                    style={{ background:'none', border:'none', color:C.sec, cursor:'pointer', padding:'4px 8px', lineHeight:1, display:'flex', alignItems:'center' }}>
+                    <Icon name="chevron_right" size={22} /></button>
+                </div>
+                <div style={{ display:'grid', gridTemplateColumns:'repeat(7,1fr)', marginBottom:8 }}>
+                  {DAYS.map(d=>(
+                    <div key={d} style={{ textAlign:'center', color:C.sec, fontSize:11, padding:'4px 0', fontWeight:600 }}>{d}</div>
+                  ))}
+                </div>
+                <div style={{ display:'grid', gridTemplateColumns:'repeat(7,1fr)', gap:4 }}>
+                  {buildCal(calYear, calMonth).map(({key, day})=>{
+                    if(!day) return <div key={key} />
+                    const past   = isPast(day)
+                    const active = selDay === day
+                    return (
+                      <button
+                        key={key}
+                        disabled={past}
+                        onClick={()=>pickDay(day)}
+                        className={past ? '' : 'tap-day'}
+                        style={{
+                          aspectRatio:'1', display:'flex', alignItems:'center', justifyContent:'center',
+                          background: active ? C.accent : 'transparent',
+                          color: past?`${C.div}`:(active?'#fff':C.text),
+                          border: active ? 'none' : `1.5px solid ${active?C.accent:'transparent'}`,
+                          borderRadius:6, cursor: past?'not-allowed':'pointer',
+                          fontSize:13, fontWeight: active?700:400, transition:'all 0.15s',
+                        }}
+                      >{day}</button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Time slots — appear when day is selected */}
+              {selDay && (
+                <div className="slide-up">
+                  <p style={{ color:C.sec, fontSize:11, letterSpacing:'0.15em', textTransform:'uppercase', marginBottom:14 }}>
+                    Horarios disponibles — {MONTHS[calMonth]} {selDay}
+                  </p>
+                  <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10 }}>
+                    {TIMES.map(t=>{
+                      const active = selTime === t
+                      return (
+                        <button
+                          key={t}
+                          onClick={()=>pickTime(t)}
+                          className="tap-time"
+                          style={{
+                            padding:'13px 8px', border:`1.5px solid ${active?C.accent:C.cardBrd}`,
+                            background: active?C.accent:'transparent', color: active?'#fff':C.sec,
+                            borderRadius:7, fontSize:13, fontWeight: active?700:400,
+                            cursor:'pointer', transition:'all 0.18s ease',
+                            display:'flex', alignItems:'center', justifyContent:'center',
+                          }}
+                        >{t}</button>
+                      )
+                    })}
+                  </div>
+                  {selTime && (
+                    <div className="slide-up" style={{ marginTop:16, color:C.success, fontSize:13, display:'flex', alignItems:'center', gap:8 }}>
+                      <Icon name="check_circle" size={16} style={{ color:C.success }} />
+                      <span>Hora seleccionada — cargando siguiente paso…</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ── STEP: DETAILS + CONFIRM ────────────────────────────────── */}
+          {step === 'details' && (
+            <form onSubmit={handleSubmit}>
+              {/* Booking summary card */}
+              <div style={{ background:C.card, border:`1px solid ${C.cardBrd}`, borderRadius:10, padding:'18px 20px', marginBottom:28 }}>
+                <p style={{ color:C.sec, fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase', marginBottom:14 }}>Tu reserva</p>
+                <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+                  {[
+                    { label:'Servicio', val: service?.name ?? '—', icon:'spa' },
+                    { label:'Fecha',    val: selDay ? `${MONTHS[calMonth]} ${selDay}, ${calYear}` : '—', icon:'calendar_month' },
+                    { label:'Hora',     val: selTime ?? '—', icon:'schedule' },
+                  ].map(({label,val,icon})=>(
+                    <div key={label} style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                      <span style={{ color:C.sec, fontSize:12, display:'flex', alignItems:'center', gap:6 }}>
+                        <Icon name={icon} size={14} style={{ color:C.sec }} />{label}
+                      </span>
+                      <span style={{ color:C.text, fontSize:13, fontWeight:500 }}>{val}</span>
+                    </div>
+                  ))}
+                  <div style={{ borderTop:`1px solid ${C.div}`, paddingTop:12, display:'flex', justifyContent:'space-between', alignItems:'baseline' }}>
+                    <span style={{ color:C.sec, fontSize:12 }}>Total</span>
+                    <span style={{ color:C.accent, fontSize:22, fontWeight:700 }}>{selectedPrice ? fmtCop(selectedPrice.value) : '—'}</span>
+                  </div>
+                </div>
+              </div>
+
+              <StepTitle label="Tus datos" sub="Último paso — solo unos datos para confirmar" />
+
+              <div style={{ display:'flex', flexDirection:'column', gap:18, marginBottom:24 }}>
+                {([
+                  { id:'name',  label:'Nombre completo',      type:'text',  required:true },
+                  { id:'phone', label:'Teléfono / WhatsApp',  type:'tel',   required:true },
+                  { id:'email', label:'Email (opcional)',      type:'email', required:false },
+                ] as const).map(f=>(
+                  <div key={f.id}>
+                    <label style={{ display:'block', color:C.sec, fontSize:11, letterSpacing:'0.12em', textTransform:'uppercase', marginBottom:8 }}>
+                      {f.label}{f.required && <span style={{ color:C.accent }}> *</span>}
+                    </label>
+                    <input
+                      id={f.id}
+                      type={f.type}
+                      required={f.required}
+                      value={form[f.id]}
+                      onChange={e=>setForm(p=>({...p,[f.id]:e.target.value}))}
+                      className="inp"
+                      style={{
+                        width:'100%', boxSizing:'border-box',
+                        background:C.card, border:`1.5px solid ${C.cardBrd}`,
+                        color:C.text, padding:'13px 14px', fontSize:15,
+                        borderRadius:7, outline:'none', fontFamily:'inherit',
+                        transition:'border-color 0.2s',
+                      }}
+                    />
+                  </div>
+                ))}
+                <div>
+                  <label style={{ display:'block', color:C.sec, fontSize:11, letterSpacing:'0.12em', textTransform:'uppercase', marginBottom:8 }}>
+                    Solicitudes especiales
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={form.notes}
+                    onChange={e=>setForm(p=>({...p,notes:e.target.value}))}
+                    placeholder="Preferencias, sensibilidades, notas de llegada…"
+                    className="inp"
+                    style={{
+                      width:'100%', boxSizing:'border-box',
+                      background:C.card, border:`1.5px solid ${C.cardBrd}`,
+                      color:C.text, padding:'13px 14px', fontSize:15,
+                      borderRadius:7, outline:'none', fontFamily:'inherit',
+                      resize:'none', transition:'border-color 0.2s',
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Trust row */}
+              <div style={{ display:'flex', gap:14, flexWrap:'wrap', marginBottom:100 }}>
+                {[
+                  { icon:'star',     text:'4.9 en Google' },
+                  { icon:'verified', text:'+320 clientes atendidos' },
+                  { icon:'lock',     text:'Llegada privada 24h antes' },
+                ].map(b=>(
+                  <span key={b.text} style={{ color:C.sec, fontSize:12, display:'flex', alignItems:'center', gap:5 }}>
+                    <Icon name={b.icon} size={14} style={{ color:C.accent }} />{b.text}
+                  </span>
+                ))}
+              </div>
+
+              {/* Sticky confirm */}
+              <div style={{ position:'fixed', bottom:0, left:0, right:0, padding:'14px 16px', background:`${C.bg}f4`, backdropFilter:'blur(10px)', borderTop:`1px solid ${C.div}`, zIndex:50 }}>
+                <div style={{ maxWidth:640, margin:'0 auto', display:'flex', flexDirection:'column', gap:10 }}>
+                  <button
+                    type="submit"
+                    disabled={!form.name.trim()||!form.phone.trim()||submitting}
+                    className="btn-confirm"
+                    style={{
+                      width:'100%', padding:'16px', fontSize:15, fontWeight:700,
+                      background: form.name.trim()&&form.phone.trim() ? C.accent : C.div,
+                      color: form.name.trim()&&form.phone.trim() ? '#fff' : C.sec,
+                      border:'none', borderRadius:8, cursor: form.name.trim()&&form.phone.trim() ? 'pointer':'not-allowed',
+                      transition:'all 0.2s', letterSpacing:'0.03em',
+                    }}
+                  >
+                    {submitting ? 'Enviando…' : `Confirmar reserva${selectedPrice ? ` — ${fmtCop(selectedPrice.value)}` : ''}`}
+                  </button>
+                  <div style={{ textAlign:'center' }}>
+                    <a
+                      href={`https://wa.me/573054541635?text=${encodeURIComponent('Hola Diamond Spa, quisiera reservar una cita.')}`}
+                      target="_blank" rel="noopener noreferrer"
+                      style={{ color:C.sec, fontSize:12, textDecoration:'none' }}
+                    >
+                      ¿Prefieres WhatsApp? Reserva aquí →
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </form>
+          )}
+
+        </div>
+      </div>
     </div>
+  )
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function StepTitle({ label, sub }: { label: string; sub: string }) {
+  return (
+    <div style={{ marginBottom:24 }}>
+      <h2 style={{ color:C.text, fontSize:'clamp(22px,5vw,30px)', fontWeight:300, margin:'0 0 8px', lineHeight:1.2 }}>{label}</h2>
+      <p style={{ color:C.sec, fontSize:14, margin:0 }}>{sub}</p>
+    </div>
+  )
+}
+
+function STYLES({ dir }: { dir: 1|-1 }) {
+  return (
+    <style>{`
+      @keyframes stepIn  { from { opacity:0; transform:translateX(${dir>0?'24px':'-24px'}) } to { opacity:1; transform:translateX(0) } }
+      @keyframes stepOut { from { opacity:1 } to { opacity:0 } }
+      @keyframes slideUp { from { opacity:0; transform:translateY(12px) } to { opacity:1; transform:translateY(0) } }
+
+      .step-in  { animation: stepIn  0.22s ease forwards; }
+      .step-out { animation: stepOut 0.15s ease forwards; }
+      .slide-up { animation: slideUp 0.25s ease forwards; }
+
+      .tap-card:hover  { background: ${C.cardHov} !important; border-color: ${C.cardSelBrd} !important; }
+      .tap-card:active { transform: scale(0.98); }
+      .tap-day:hover   { background: ${C.accent}33 !important; }
+      .tap-time:hover  { border-color: ${C.accent} !important; color: ${C.text} !important; }
+      .btn-confirm:hover:not(:disabled) { background: ${C.accentHov} !important; }
+      .inp:focus { border-color: ${C.accent} !important; }
+
+      * { -webkit-tap-highlight-color: transparent; }
+    `}</style>
   )
 }

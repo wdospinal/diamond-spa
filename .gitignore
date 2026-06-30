@@ -39,3 +39,5 @@ next-env.d.ts
 /data/.seed-expenses-v1
 # funnel counters fallback (local / self-hosted; prod uses Vercel KV)
 /data/funnel-daily.json
+# web-push subscriptions fallback (local / self-hosted; prod uses Vercel KV) — contains user device keys, never commit
+/data/push-subs.json

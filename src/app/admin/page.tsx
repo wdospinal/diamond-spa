@@ -17,6 +17,7 @@ function AdminHeader({ onLogout }: { onLogout: () => void }) {
         <h1 className="font-headline text-3xl md:text-4xl text-[#cfe5fa]">Reservas</h1>
       </div>
       <div className="flex flex-wrap items-center gap-3">
+        <PushManager />
         <Link
           href="/admin/funnel"
           className="bg-[#102a3d] border border-[#a5cce6]/35 text-[#a5cce6] px-5 py-2.5 font-label font-bold tracking-[0.15em] text-[10px] uppercase hover:bg-[#1a3d52] transition-colors"
@@ -35,6 +36,65 @@ function AdminHeader({ onLogout }: { onLogout: () => void }) {
   )
 }
 
+function PushManager() {
+  const [status, setStatus] = useState<'idle'|'loading'|'subscribed'>('idle')
+
+  // Clave pública VAPID (debería venir del entorno, pero para este código cliente la inyectamos)
+  const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+
+  const subscribe = async () => {
+    if (!vapidPublicKey) {
+      alert('VAPID public key no configurada en .env.local')
+      return
+    }
+    try {
+      setStatus('loading')
+      const reg = await navigator.serviceWorker.register('/sw.js')
+      // Esperar a que el service worker esté activo antes de suscribirse
+      const readyReg = await navigator.serviceWorker.ready
+      const sub = await readyReg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: vapidPublicKey
+      })
+      await fetch('/api/push/subscribe', {
+        method: 'POST',
+        body: JSON.stringify(sub)
+      })
+      setStatus('subscribed')
+    } catch (e) {
+      console.error(e)
+      alert('Error al suscribir notificaciones. Asegúrate de dar permisos.')
+      setStatus('idle')
+    }
+  }
+
+  useEffect(() => {
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+      navigator.serviceWorker.getRegistration().then(reg => {
+        if (reg) {
+          reg.pushManager.getSubscription().then(sub => {
+            if (sub) setStatus('subscribed')
+          })
+        }
+      })
+    }
+  }, [])
+
+  if (status === 'subscribed') {
+    return <span className="text-[#34d399] font-label text-[10px] tracking-widest uppercase border border-[#34d399]/30 px-3 py-1.5 rounded-full">Notificaciones Activas</span>
+  }
+
+  return (
+    <button
+      onClick={subscribe}
+      disabled={status === 'loading'}
+      className="bg-[#4a9fd4] text-white px-5 py-2.5 font-label font-bold tracking-[0.15em] text-[10px] uppercase hover:bg-[#5eb3e8] transition-colors rounded-full"
+    >
+      {status === 'loading' ? 'Activando...' : 'Activar Notificaciones'}
+    </button>
+  )
+}
+
 function BookingsTable({ bookings }: { bookings: BookingRecord[] }) {
   return (
     <section>
@@ -49,6 +109,7 @@ function BookingsTable({ bookings }: { bookings: BookingRecord[] }) {
               <th className="py-3 px-4 font-medium">Hora</th>
               <th className="py-3 px-4 font-medium">Servicio</th>
               <th className="py-3 px-4 font-medium">Cliente</th>
+              <th className="py-3 px-4 font-medium">Estado</th>
               <th className="py-3 px-4 font-medium">Contacto</th>
               <th className="py-3 px-4 font-medium text-right">
                 Precio
@@ -75,6 +136,16 @@ function BookingsTable({ bookings }: { bookings: BookingRecord[] }) {
                     <span className="text-[#8a9299] text-xs">{b.duration}</span>
                   </td>
                   <td className="py-3 px-4">{bookingDisplayName(b) || '—'}</td>
+                  <td className="py-3 px-4">
+                    {b.status === 'arrived' ? (
+                      <span className="inline-flex items-center gap-1.5 text-[#34d399] text-xs font-medium bg-[#34d399]/10 px-2.5 py-1 rounded-full">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#34d399] animate-pulse"></span>
+                        Llegó
+                      </span>
+                    ) : (
+                      <span className="text-[#8a9299] text-xs">Pendiente</span>
+                    )}
+                  </td>
                   <td className="py-3 px-4 text-xs text-[#a5cce6]/90">
                     <span className="block">{b.phone}</span>
                     {b.email ? <span className="text-[#8a9299]">{b.email}</span> : null}
