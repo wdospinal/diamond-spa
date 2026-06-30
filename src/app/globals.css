@@ -154,6 +154,24 @@ body {
   -webkit-backdrop-filter: blur(24px);
 }
 
+/* ─── Mobile menu panel ──────────────────────────────────────────────────────
+   Entrance animation for the full-screen nav. The prefers-reduced-motion block
+   below neutralises both keyframes (animation-duration → 0.01ms).            */
+@keyframes menu-panel-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes menu-item-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+.mobile-menu-panel {
+  animation: menu-panel-in 0.22s ease-out;
+}
+.mobile-menu-item {
+  animation: menu-item-in 0.32s ease-out both;
+}
+
 /* ─── Grayscale-to-colour on hover ──────────────────────────────────────── */
 .img-hover-color {
   filter: grayscale(100%) brightness(0.65);

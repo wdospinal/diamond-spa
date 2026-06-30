@@ -65,9 +65,9 @@ export default function NavLinksClient({
         })}
       </div>
 
-      {/* Locale switcher — preserves current path */}
+      {/* Locale switcher — desktop only; on mobile it lives inside the menu panel */}
       <div
-        className="flex items-center border border-outline-variant/20"
+        className="hidden md:flex items-center border border-outline-variant/20"
         role="group"
         aria-label={localeSwitcherLabel}
       >
