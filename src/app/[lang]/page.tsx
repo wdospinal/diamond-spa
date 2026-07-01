@@ -14,7 +14,7 @@ import {
   SPA_GOOGLE_MAPS_URL,
   SPA_GOOGLE_REVIEW_URL,
 } from '@/lib/spa'
-import { fetchPlaceRating } from '@/lib/google-places'
+import { getPlaceRating } from '@/lib/google-places'
 import { STATIC_REVIEWS } from '@/lib/reviews'
 import { JsonLd } from '@/components/JsonLd'
 
@@ -37,7 +37,7 @@ const FEATURED_REVIEWS = STATIC_REVIEWS.slice(0, 3)
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params
   const locale = isLocale(lang) ? lang : 'es'
-  const rating = await fetchPlaceRating()
+  const rating = getPlaceRating()
   const title = locale === 'en'
     ? `Diamond Spa Medellín — Spa for Men and Women | El Poblado ⭐ ${rating.value}`
     : `Diamond Spa Medellín — Masajes y Spa para Hombres y Mujeres | El Poblado ⭐ ${rating.value}`
@@ -425,7 +425,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const { lang } = await params
   if (!isLocale(lang)) notFound()
   const locale = lang as Locale
-  const rating = await fetchPlaceRating()
+  const rating = getPlaceRating()
   return (
     <>
       <JsonLd data={localBusinessJsonLd()} />

@@ -1,4 +1,5 @@
-import { SPA_GOOGLE_PLACES_ID, SPA_RATING } from './spa'
+import { SPA_RATING } from './spa'
+import placeDetails from './place-details.json'
 
 export interface PlaceReview {
   relativePublishTimeDescription: string
@@ -22,31 +23,17 @@ export interface PlaceDetails {
   googleMapsUri?: string
 }
 
-export async function fetchPlaceDetails(): Promise<PlaceDetails> {
-  const key = process.env.GOOGLE_PLACES_API_KEY
-  if (!key) return {}
-  try {
-    const res = await fetch(
-      `https://places.googleapis.com/v1/places/${SPA_GOOGLE_PLACES_ID}`,
-      {
-        headers: {
-          'X-Goog-Api-Key': key,
-          'X-Goog-FieldMask':
-            'rating,userRatingCount,reviews,displayName,shortFormattedAddress,internationalPhoneNumber,primaryTypeDisplayName,googleMapsUri',
-        },
-        next: { revalidate: 3600 },
-      }
-    )
-    if (!res.ok) return {}
-    return (await res.json()) as PlaceDetails
-  } catch {
-    return {}
-  }
+/**
+ * Place details snapshot from the Google Places API, stored in
+ * place-details.json. Re-fetch and update the file to refresh reviews/rating.
+ */
+export function getPlaceDetails(): PlaceDetails {
+  return placeDetails as PlaceDetails
 }
 
-/** Returns live rating + count from Google Places, falling back to SPA_RATING. */
-export async function fetchPlaceRating(): Promise<{ value: string; count: number }> {
-  const place = await fetchPlaceDetails()
+/** Returns the snapshot rating + count, falling back to SPA_RATING. */
+export function getPlaceRating(): { value: string; count: number } {
+  const place = getPlaceDetails()
   if (place.rating && place.userRatingCount) {
     return {
       value: place.rating.toFixed(1),

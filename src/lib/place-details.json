@@ -1,0 +1,73 @@
+{
+  "rating": 4.9,
+  "userRatingCount": 115,
+  "displayName": {
+    "text": "Diamond Spa For Men - En el Poblado Medellín",
+    "languageCode": "es"
+  },
+  "shortFormattedAddress": "Cra 43C #10-42, El Poblado, Medellín",
+  "internationalPhoneNumber": "+57 305 2263648",
+  "primaryTypeDisplayName": {
+    "text": "Spa",
+    "languageCode": "en-US"
+  },
+  "googleMapsUri": "https://maps.google.com/?cid=12663010251108092044&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNlEAIYBCAA",
+  "fetchedAt": "2026-07-01",
+  "reviews": [
+    {
+      "relativePublishTimeDescription": "a month ago",
+      "rating": 5,
+      "text": {
+        "text": "Great spa in El Poblado for relaxing massages. I really liked the atmosphere and the attention was excellent. They also offered me a delicious Nespresso coffee. Very good experience, I’ll definitely come back."
+      },
+      "authorAttribution": {
+        "displayName": "Juan manuel Ortega Ordoñez",
+        "photoUri": "https://lh3.googleusercontent.com/a/ACg8ocKgD3Xg0ztV8pjcndp1hPFlfpwoUPNqZM9tufPIUM-qCW0hmQ=s128-c0x00000000-cc-rp-mo"
+      }
+    },
+    {
+      "relativePublishTimeDescription": "a month ago",
+      "rating": 5,
+      "text": {
+        "text": "This SPA is the best in Medellín. They just opened and have great staff and very professional what these beautiful women do. I have a bad back and legs, soon after having a great massage from Sary, i walked out of there with a new back and my legs felt great and relaxed. Im definitely coming back and rebooking when im town again! Best location!"
+      },
+      "authorAttribution": {
+        "displayName": "Armando Romero",
+        "photoUri": "https://lh3.googleusercontent.com/a/ACg8ocKT0fQuOFynQgkdNeetuuQ8Oo_gyaGsvrAbnjdJiYyTj8R6iQ=s128-c0x00000000-cc-rp-mo"
+      }
+    },
+    {
+      "relativePublishTimeDescription": "a month ago",
+      "rating": 1,
+      "text": {
+        "text": "Make sure you pay before you start. They say one price then at the end tells you a complete other price to get more money. I would avoid this place and don’t believe the other reviews as legitimate"
+      },
+      "authorAttribution": {
+        "displayName": "Seeking Seeking",
+        "photoUri": "https://lh3.googleusercontent.com/a/ACg8ocJUu-Ht7S1ZiIB2nmUZuNC-dtNFIkU14Qn2xvonw1bMaka4tQ=s128-c0x00000000-cc-rp-mo"
+      }
+    },
+    {
+      "relativePublishTimeDescription": "2 months ago",
+      "rating": 5,
+      "text": {
+        "text": "I absolutely love this spa.\nVery Clean, relaxing. Staff is very competent . My therapist Camila was exceptional, very professional, attentive, patient. I highly recommend. Thx Camila. I will be back"
+      },
+      "authorAttribution": {
+        "displayName": "Gene C",
+        "photoUri": "https://lh3.googleusercontent.com/a/ACg8ocJubODzXfpKqirqyRZLO-aPhrc9n1-MdbmbVqjxg-sIvVRgLA=s128-c0x00000000-cc-rp-mo"
+      }
+    },
+    {
+      "relativePublishTimeDescription": "2 months ago",
+      "rating": 5,
+      "text": {
+        "text": "I had an amazing experience at this massage spa in Medellín. From the moment I arrived, the atmosphere was calm, clean, and very welcoming.\n\nCamila was my therapist, and she did an incredible job. She was very professional, attentive, and made sure to adjust the pressure perfectly to what I needed. You can really tell she knows what she’s doing.\n\nI left feeling completely relaxed and refreshed. Highly recommend this place, and if you can, ask for Camila!"
+      },
+      "authorAttribution": {
+        "displayName": "Camilo",
+        "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjUAqmgOMLOCnv9umtJ2H-zFU49CxTU3O8-gSsaWItZZOmHx6KQ=s128-c0x00000000-cc-rp-mo"
+      }
+    }
+  ]
+}
