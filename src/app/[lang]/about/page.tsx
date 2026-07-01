@@ -6,11 +6,11 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph } from '@/lib/seo'
-import { IMG_ABOUT_HERO, IMG_STONE, IMG_LOUNGE, IMG_THERAPISTS, IMG_THERAPISTS_WEBP } from '@/lib/images'
+import { IMG_HERO_ABOUT, IMG_STONE, IMG_LOUNGE, IMG_THERAPISTS, IMG_THERAPISTS_WEBP } from '@/lib/images'
 import { TherapistCard } from '@/components/TherapistCard'
 
 // TODO: Update images
-const HERO_IMG = IMG_ABOUT_HERO
+const HERO_IMG = IMG_HERO_ABOUT
 const STONE_IMG = IMG_STONE
 const LOUNGE_IMG = IMG_LOUNGE
 
@@ -36,32 +36,31 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
   return (
     <>
       {/* HERO */}
-      <section className="relative min-h-[90vh] flex items-center px-6 md:px-12 overflow-hidden bg-surface">
-        <div className="max-w-screen-2xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center pt-24">
-          <div className="lg:col-span-7 z-10">
+      <section className="relative min-h-[90vh] flex items-center px-6 md:px-12 overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          {/* priority={true} emits <link rel="preload" fetchpriority="high"> in <head>
+              so the browser discovers the image at HTML-parse time, not after JS. */}
+          <Image
+            src={HERO_IMG}
+            alt={locale === 'es'
+              ? 'Masaje relajante en Diamond Spa, El Poblado, Medellín'
+              : 'Relaxing massage at Diamond Spa in El Poblado, Medellín'}
+            fill
+            priority
+            fetchPriority="high"
+            quality={65}
+            sizes="100vw"
+            className="object-cover opacity-60"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-surface via-surface/50 to-transparent" />
+        </div>
+        <div className="relative z-10 max-w-screen-2xl mx-auto w-full pt-24">
+          <div className="lg:w-2/3">
             <span className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-6 block">{t.tagline}</span>
             <h1 className="font-headline text-5xl md:text-8xl text-on-surface leading-tight mb-8">
               {t.titleParts[0]} <span className="italic text-primary">{t.titleParts[1]}</span>
             </h1>
             <p className="font-body text-xl md:text-2xl text-secondary max-w-xl leading-relaxed font-light">{t.heroBody}</p>
-          </div>
-          <div className="relative lg:col-span-5">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-sm ring-1 ring-outline-variant/10">
-              <Image
-                src={HERO_IMG}
-                alt={locale === 'es'
-                  ? 'Vista interior de Diamond Spa: ambiente sereno con detalles de lujo, plantas y luz natural'
-                  : 'Interior view of Diamond Spa: serene atmosphere with luxury details, plants and natural light'}
-                fill
-                sizes="(max-width: 1024px) 100vw, 42vw"
-                className="object-cover opacity-80"
-                priority
-              />
-            </div>
-            <div className="absolute -bottom-8 -left-8 w-56 h-72 bg-surface-container-high hidden lg:flex flex-col justify-end p-7">
-              <p className="font-headline text-primary text-2xl mb-3 italic">{t.quietTitle}</p>
-              <p className="font-body text-xs text-secondary leading-relaxed">{t.quietBody}</p>
-            </div>
           </div>
         </div>
       </section>

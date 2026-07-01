@@ -7,7 +7,7 @@ import {
   SPA_NAME_FULL,
   SPA_PHONES,
 } from '@/lib/spa'
-import { fetchPlaceDetails, type PlaceReview, type PlaceDetails } from '@/lib/google-places'
+import { getPlaceDetails } from '@/lib/google-places'
 import { STATIC_REVIEWS } from '@/lib/reviews'
 import { ReviewsGrid } from './ReviewsGrid'
 
@@ -64,8 +64,8 @@ function StarRating({ rating, locale = 'en' }: { rating: number; locale?: Locale
   )
 }
 
-export async function ReviewsSection({ locale }: { locale: Locale }) {
-  const place = await fetchPlaceDetails()
+export function ReviewsSection({ locale }: { locale: Locale }) {
+  const place = getPlaceDetails()
   const t = getDict(locale).location
 
   const apiReviews = place.reviews ?? []

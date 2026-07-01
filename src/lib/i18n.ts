@@ -101,6 +101,14 @@ const dict = {
       location: 'Location',
       contactReceptionist: 'Contact Receptionist',
       bookNow: 'Book Now',
+      // Mobile menu — one-line descriptors under each item
+      menuServicesDesc: 'Massages, facials & rituals',
+      menuAboutDesc: 'Our story & philosophy',
+      menuLocationDesc: 'El Poblado, Medellín',
+      // Mobile menu — quick actions
+      quickReception: 'Reception',
+      quickCall: 'Call',
+      quickDirections: 'Directions',
     },
 
     home: {
@@ -402,6 +410,14 @@ const dict = {
       location: 'Ubicación',
       contactReceptionist: 'Contactar Recepcionista',
       bookNow: 'Reservar',
+      // Mobile menu — one-line descriptors under each item
+      menuServicesDesc: 'Masajes, faciales y rituales',
+      menuAboutDesc: 'Nuestra historia y filosofía',
+      menuLocationDesc: 'El Poblado, Medellín',
+      // Mobile menu — quick actions
+      quickReception: 'Recepción',
+      quickCall: 'Llamar',
+      quickDirections: 'Cómo llegar',
     },
 
     home: {

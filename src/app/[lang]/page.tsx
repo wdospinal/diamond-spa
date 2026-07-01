@@ -11,10 +11,10 @@ import { ServiceCardLink } from '@/components/ServiceCardLink'
 import { getServiceSlug } from '@/lib/services'
 import {
   SPA_ADDRESS,
-  SPA_GOOGLE_PLACES_ID,
+  SPA_GOOGLE_MAPS_URL,
   SPA_GOOGLE_REVIEW_URL,
 } from '@/lib/spa'
-import { fetchPlaceRating } from '@/lib/google-places'
+import { getPlaceRating } from '@/lib/google-places'
 import { STATIC_REVIEWS } from '@/lib/reviews'
 import { JsonLd } from '@/components/JsonLd'
 
@@ -37,7 +37,7 @@ const FEATURED_REVIEWS = STATIC_REVIEWS.slice(0, 3)
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params
   const locale = isLocale(lang) ? lang : 'es'
-  const rating = await fetchPlaceRating()
+  const rating = getPlaceRating()
   const title = locale === 'en'
     ? `Diamond Spa Medellín — Spa for Men and Women | El Poblado ⭐ ${rating.value}`
     : `Diamond Spa Medellín — Masajes y Spa para Hombres y Mujeres | El Poblado ⭐ ${rating.value}`
@@ -56,7 +56,6 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 
 function HomeHero({ locale, rating }: { locale: Locale; rating: { value: string; count: number } }) {
   const h = getDict(locale).home
-  const googleMapsUrl = `https://www.google.com/maps/place/?q=place_id:${SPA_GOOGLE_PLACES_ID}`
 
   return (
     <section className="relative min-h-dvh flex items-center overflow-hidden">
@@ -73,9 +72,9 @@ function HomeHero({ locale, rating }: { locale: Locale; rating: { value: string;
           fetchPriority="high"
           quality={65}
           sizes="(max-width: 640px) 100vw, (max-width: 1280px) 100vw, 1536px"
-          className="object-cover opacity-30"
+          className="object-cover opacity-60"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-surface via-surface/80 to-surface/20" />
+        <div className="absolute inset-0 bg-gradient-to-r from-surface via-surface/50 to-transparent" />
       </div>
       <div className="relative z-10 max-w-screen-2xl mx-auto w-full px-6 md:px-12 pt-10 md:pt-14 pb-24">
         <div className="lg:w-2/3 flex flex-col">
@@ -136,7 +135,7 @@ function HomeHero({ locale, rating }: { locale: Locale; rating: { value: string;
             </div>
             <span className="w-px h-3 bg-outline-variant/30 hidden md:block" aria-hidden="true" />
             <a
-              href={googleMapsUrl}
+              href={SPA_GOOGLE_MAPS_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="hidden md:flex items-center gap-1.5 font-label text-outline text-xs tracking-wider hover:text-primary transition-colors"
@@ -331,7 +330,6 @@ function HomeReviews({ locale, rating }: { locale: Locale; rating: { value: stri
 
 function HomeLocation({ locale }: { locale: Locale }) {
   const { home: h, location: loc } = getDict(locale)
-  const googleMapsUrl = `https://www.google.com/maps/place/?q=place_id:${SPA_GOOGLE_PLACES_ID}`
   return (
     <section className="py-20 px-6 md:px-12 bg-surface-container-low">
       <div className="max-w-screen-2xl mx-auto">
@@ -345,7 +343,7 @@ function HomeLocation({ locale }: { locale: Locale }) {
                 <p className="font-body text-secondary text-sm">{SPA_ADDRESS.neighborhood}, {SPA_ADDRESS.city}</p>
                 <p className="font-body text-secondary text-sm">{SPA_ADDRESS.region}, {SPA_ADDRESS.country}</p>
                 <a
-                  href={googleMapsUrl}
+                  href={SPA_GOOGLE_MAPS_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 mt-4 font-label text-primary text-xs tracking-widest uppercase hover:gap-2 transition-all"
@@ -427,7 +425,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const { lang } = await params
   if (!isLocale(lang)) notFound()
   const locale = lang as Locale
-  const rating = await fetchPlaceRating()
+  const rating = getPlaceRating()
   return (
     <>
       <JsonLd data={localBusinessJsonLd()} />

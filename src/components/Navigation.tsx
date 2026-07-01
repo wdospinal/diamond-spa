@@ -12,9 +12,9 @@ export default function Navigation({ locale }: { locale: Locale }) {
   const waGreeting = SPA_WHATSAPP_GREETING[locale]
 
   const links = [
-    { label: t.services, href: `/${locale}/services` },
-    { label: t.aboutUs,  href: `/${locale}/about`    },
-    { label: t.location, href: `/${locale}/location` },
+    { label: t.services, href: `/${locale}/services`, desc: t.menuServicesDesc, icon: 'spa'         },
+    { label: t.aboutUs,  href: `/${locale}/about`,    desc: t.menuAboutDesc,    icon: 'person'      },
+    { label: t.location, href: `/${locale}/location`, desc: t.menuLocationDesc, icon: 'location_on' },
   ]
 
   const homeLinkLabel = locale === 'es'
@@ -76,6 +76,11 @@ export default function Navigation({ locale }: { locale: Locale }) {
           links={links}
           bookLabel={t.bookNow}
           contactLabel={t.contactReceptionist}
+          quickLabels={{
+            reception:  t.quickReception,
+            call:       t.quickCall,
+            directions: t.quickDirections,
+          }}
         />
       </div>
     </nav>

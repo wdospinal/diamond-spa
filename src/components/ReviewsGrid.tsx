@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import type { Locale } from '@/lib/i18n'
 import { SPA_GOOGLE_REVIEW_URL } from '@/lib/spa'
@@ -105,7 +105,10 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 export function ReviewsGrid({ reviews, reviewUrl, leaveReviewLabel, locale }: ReviewsGridProps) {
-  const [shuffled] = useState(() => shuffle(reviews))
+  // Shuffle only after mount — shuffling during render breaks hydration
+  // because the server and client orders never match.
+  const [shuffled, setShuffled] = useState(reviews)
+  useEffect(() => { setShuffled(shuffle(reviews)) }, [reviews])
   const [showAll, setShowAll] = useState(false)
 
   const visible = showAll ? shuffled : shuffled.slice(0, INITIAL_VISIBLE)

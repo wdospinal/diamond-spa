@@ -7,16 +7,7 @@ import { parseTimeSlot } from '@/lib/parse-time-slot'
 import { copPerUsd } from '@/lib/cop-rate'
 import { SPA_EMAIL } from '@/lib/spa'
 import { readSubscriptions } from '@/lib/push-store'
-import webpush from 'web-push'
-
-// Configurar Web Push
-const vapidPublic = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || ''
-const vapidPrivate = process.env.VAPID_PRIVATE_KEY || ''
-const vapidSubject = process.env.VAPID_SUBJECT || 'mailto:admin@diamondspa.com'
-
-if (vapidPublic && vapidPrivate) {
-  webpush.setVapidDetails(vapidSubject, vapidPublic, vapidPrivate)
-}
+import { ensureWebPush, webpush } from '@/lib/web-push'
 
 function bad(msg: string, status = 400) {
   return NextResponse.json({ error: msg }, { status })
@@ -141,7 +132,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Enviar Notificación Push a los admins si VAPID está configurado
-    if (vapidPublic && vapidPrivate) {
+    if (ensureWebPush()) {
       try {
         const subs = await readSubscriptions()
         const payload = JSON.stringify({

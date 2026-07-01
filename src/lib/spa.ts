@@ -71,7 +71,7 @@ export const SPA_GOOGLE_PLACES_ID = 'ChIJKzwytpApRI4RjIhtXLsMvK8'
 
 export const SPA_GOOGLE_REVIEW_URL = 'https://g.page/r/CYyIbVy7DLyvEAE/review'
 
-export const SPA_GOOGLE_MAPS_URL = 'https://maps.app.goo.gl/RXdWEqniqykodfd56'
+export const SPA_GOOGLE_MAPS_URL = 'https://www.google.com/maps/search/?api=1&query=Google&query_place_id=ChIJKzwytpApRI4RjIhtXLsMvK8'
 
 export const SPA_DIRECTIONS = {
   driving: {

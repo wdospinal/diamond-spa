@@ -28,6 +28,7 @@
  * it must be locale-aware and context-aware. Always supply a meaningful,
  * bilingual `alt` at the call site. Use alt="" + aria-hidden="true" only
  * for purely decorative images already conveyed by adjacent text.
+ * 
  */
 
 const u = (id: string, w = 1200) =>
@@ -35,16 +36,20 @@ const u = (id: string, w = 1200) =>
 
 // ─── Local public assets (AVIF primary, WebP fallback kept alongside) ─────────
 
-export const IMG_HERO_HOME        = '/diamond-wallpaper.avif'
+export const IMG_HERO_HOME        = '/diamond-wallpaper.png'
+export const IMG_HERO_SERVICES    = '/services-hero.png'
+export const IMG_HERO_SERVICES_H  = '/services-hero-horizontal.png'
+export const IMG_HERO_LOCATION    = '/ubicacion.png'
 export const IMG_LOGO             = '/logo.avif'
 export const IMG_LOGOTIPO         = '/logotipo.avif'
 export const IMG_DEEP_TISSUE      = '/depilacion.avif'
 export const IMG_RELAXATION       = '/relaxation.avif'
 export const IMG_FACIAL           = '/skin.avif'
 export const IMG_ABOUT_HERO       = '/filo.avif'
+export const IMG_HERO_ABOUT       = '/about-hero.png'
 
 // WebP fallbacks — used by <picture> srcSet for browsers without AVIF support
-export const IMG_HERO_HOME_WEBP   = '/diamond-wallpaper.webp'
+export const IMG_HERO_HOME_WEBP   = '/diamond-wallpaper.png'
 export const IMG_LOGOTIPO_WEBP    = '/logotipo.webp'
 export const IMG_DEEP_TISSUE_WEBP = '/depilacion.webp'
 export const IMG_RELAXATION_WEBP  = '/relaxation.webp'
