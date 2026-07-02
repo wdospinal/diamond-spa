@@ -57,24 +57,16 @@ export default function AdminBlogPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: C.bg, color: C.text, padding: '32px 20px', fontFamily: 'inherit' }}>
-      <div style={{ maxWidth: 900, margin: '0 auto' }}>
+    <div className="max-w-6xl mx-auto py-8">
+      <div>
 
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 32, gap: 16, flexWrap: 'wrap' }}>
           <div>
-            <span style={{ color: C.accent, fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>
-              Diamond Spa — Admin
-            </span>
             <h1 style={{ fontSize: 28, fontWeight: 300, margin: 0, color: C.text }}>Blog</h1>
+            <p className="text-on-surface/50 text-sm mt-1">Gestiona los artículos de tu sitio.</p>
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
-            <Link
-              href="/admin"
-              style={{ color: C.muted, fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', padding: '10px 16px', border: `1px solid ${C.border}`, textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}
-            >
-              ← Reservas
-            </Link>
             <Link
               href="/admin/blog/new"
               style={{ background: C.accent, color: '#0a0e12', fontSize: 11, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', padding: '10px 20px', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 }}

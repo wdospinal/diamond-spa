@@ -82,9 +82,6 @@ export default function FunnelDashboardPage() {
     <div className="min-h-screen px-6 pt-14 pb-10 md:px-12 md:pt-16 md:pb-12 max-w-5xl mx-auto">
       <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10 mt-2">
         <div>
-          <span className="font-label text-[#a5cce6] tracking-[0.3em] uppercase text-xs block mb-2">
-            Diamond Spa
-          </span>
           <h1 className="font-headline text-3xl md:text-4xl text-[#cfe5fa]">Embudo de ventas</h1>
           {data ? (
             <p className="text-[11px] text-[#5c656d] font-body mt-2">
@@ -109,12 +106,6 @@ export default function FunnelDashboardPage() {
               </button>
             ))}
           </div>
-          <Link
-            href="/admin"
-            className="font-label text-xs uppercase tracking-widest text-[#8a9299] hover:text-[#a5cce6] px-2"
-          >
-            ← Panel
-          </Link>
         </div>
       </header>
 

@@ -89,8 +89,8 @@ export default function NewBlogPostPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: C.bg, color: C.text, padding: '32px 20px', fontFamily: 'inherit' }}>
-      <div style={{ maxWidth: 900, margin: '0 auto' }}>
+    <div className="max-w-5xl mx-auto py-8">
+      <div>
 
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 36, flexWrap: 'wrap' }}>
