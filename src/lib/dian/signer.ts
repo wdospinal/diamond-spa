@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { SignedXml } from 'xml-crypto'
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom'
 

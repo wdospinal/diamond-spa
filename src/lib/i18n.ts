@@ -99,12 +99,14 @@ const dict = {
       services: 'Services',
       aboutUs: 'About us',
       location: 'Location',
+      blog: 'Blog',
       contactReceptionist: 'Contact Receptionist',
       bookNow: 'Book Now',
       // Mobile menu — one-line descriptors under each item
       menuServicesDesc: 'Massages, facials & rituals',
       menuAboutDesc: 'Our story & philosophy',
       menuLocationDesc: 'El Poblado, Medellín',
+      menuBlogDesc: 'Tips and updates',
       // Mobile menu — quick actions
       quickReception: 'Reception',
       quickCall: 'Call',
@@ -408,12 +410,14 @@ const dict = {
       services: 'Servicios',
       aboutUs: 'Sobre nosotros',
       location: 'Ubicación',
+      blog: 'Blog',
       contactReceptionist: 'Contactar Recepcionista',
       bookNow: 'Reservar',
       // Mobile menu — one-line descriptors under each item
       menuServicesDesc: 'Masajes, faciales y rituales',
       menuAboutDesc: 'Nuestra historia y filosofía',
       menuLocationDesc: 'El Poblado, Medellín',
+      menuBlogDesc: 'Consejos y novedades del spa',
       // Mobile menu — quick actions
       quickReception: 'Recepción',
       quickCall: 'Llamar',

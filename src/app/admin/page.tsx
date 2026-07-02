@@ -24,6 +24,12 @@ function AdminHeader({ onLogout }: { onLogout: () => void }) {
         >
           Embudo de ventas
         </Link>
+        <Link
+          href="/admin/blog"
+          className="bg-[#102a3d] border border-[#a5cce6]/35 text-[#a5cce6] px-5 py-2.5 font-label font-bold tracking-[0.15em] text-[10px] uppercase hover:bg-[#1a3d52] transition-colors"
+        >
+          Blog
+        </Link>
         <button
           type="button"
           onClick={onLogout}

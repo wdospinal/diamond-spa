@@ -11,6 +11,7 @@ import { IMG_LOGOTIPO, IMG_LOGOTIPO_WEBP } from '@/lib/images'
 import { randomWhatsAppUrl } from '@/lib/phones'
 import { SPA_PHONES, SPA_WHATSAPP_GREETING, SPA_GOOGLE_MAPS_URL } from '@/lib/spa'
 import { EVENTS, trackEvent } from '@/lib/events'
+import { getLocalizedPath } from '@/lib/routes'
 
 interface NavLink {
   label: string
@@ -36,6 +37,7 @@ export default function MobileMenuClient({
   const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
   const waGreeting = SPA_WHATSAPP_GREETING[locale]
+  const open = () => setMenuOpen(true)
   const close = () => setMenuOpen(false)
 
   // Portal target is only available after mount (avoids SSR `document` access).
@@ -55,9 +57,7 @@ export default function MobileMenuClient({
   }, [menuOpen])
 
   function switchedPath(targetLocale: Locale) {
-    if (!pathname) return `/${targetLocale}`
-    const stripped = pathname.replace(/^\/(en|es)/, '') || '/'
-    return `/${targetLocale}${stripped}`
+    return getLocalizedPath(pathname, targetLocale)
   }
 
   const LOCALE_LABELS: Record<Locale, { switchTo: string }> = {

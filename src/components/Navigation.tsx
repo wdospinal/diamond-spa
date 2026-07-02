@@ -15,6 +15,7 @@ export default function Navigation({ locale }: { locale: Locale }) {
     { label: t.services, href: `/${locale}/services`, desc: t.menuServicesDesc, icon: 'spa'         },
     { label: t.aboutUs,  href: `/${locale}/about`,    desc: t.menuAboutDesc,    icon: 'person'      },
     { label: t.location, href: `/${locale}/location`, desc: t.menuLocationDesc, icon: 'location_on' },
+    { label: t.blog,     href: `/${locale}/blog`,     desc: t.menuBlogDesc,     icon: 'article'     },
   ]
 
   const homeLinkLabel = locale === 'es'

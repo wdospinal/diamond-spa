@@ -229,3 +229,67 @@ body {
 ::-webkit-scrollbar-track { background: #001524; }
 ::-webkit-scrollbar-thumb { background: #42484c; border-radius: 2px; }
 ::-webkit-scrollbar-thumb:hover { background: #a5cce6; }
+
+/* ── RICH EDITOR (Tiptap) ──────────────────────────────────────────────── */
+.rich-editor-content .tiptap {
+  outline: none;
+  min-height: 300px;
+  line-height: 1.75;
+  color: var(--color-on-surface);
+}
+.rich-editor-content .tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: color-mix(in srgb, var(--color-on-surface) 40%, transparent);
+  pointer-events: none;
+  float: left;
+  height: 0;
+}
+.rich-editor-content .tiptap h1,
+.rich-editor-content .tiptap h2,
+.rich-editor-content .tiptap h3,
+.rich-editor-content .tiptap h4 {
+  font-family: var(--font-headline), Georgia, serif;
+  color: var(--color-on-surface);
+  font-weight: 300;
+}
+.rich-editor-content .tiptap h1 { font-size: 2rem; margin: 1.5rem 0 0.5rem; }
+.rich-editor-content .tiptap h2 { font-size: 1.5rem; margin: 1.25rem 0 0.4rem; }
+.rich-editor-content .tiptap h3 { font-size: 1.15rem; color: var(--color-primary); margin: 1rem 0 0.35rem; }
+.rich-editor-content .tiptap h4 { font-size: 1rem; color: var(--color-on-surface-variant); margin: 0.75rem 0 0.3rem; }
+.rich-editor-content .tiptap p { margin: 0.5rem 0; }
+.rich-editor-content .tiptap ul { list-style: disc; padding-left: 1.5rem; margin: 0.75rem 0; }
+.rich-editor-content .tiptap ol { list-style: decimal; padding-left: 1.5rem; margin: 0.75rem 0; }
+.rich-editor-content .tiptap li { margin: 0.25rem 0; color: color-mix(in srgb, var(--color-on-surface) 80%, transparent); }
+.rich-editor-content .tiptap blockquote {
+  border-left: 2px solid var(--color-primary);
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  background: color-mix(in srgb, var(--color-primary) 5%, transparent);
+  font-style: italic;
+  color: color-mix(in srgb, var(--color-on-surface) 70%, transparent);
+}
+.rich-editor-content .tiptap code {
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  color: var(--color-primary);
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.85em;
+  font-family: monospace;
+}
+.rich-editor-content .tiptap pre {
+  background: var(--color-surface-container);
+  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 30%, transparent);
+  border-radius: 0.25rem;
+  padding: 1rem;
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+.rich-editor-content .tiptap pre code { background: transparent; padding: 0; color: var(--color-primary); }
+.rich-editor-content .tiptap hr { border: none; border-top: 1px solid color-mix(in srgb, var(--color-outline-variant) 30%, transparent); margin: 1.5rem 0; }
+.rich-editor-content .tiptap img { max-width: 100%; border-radius: 0.25rem; margin: 0.75rem 0; border: 1px solid color-mix(in srgb, var(--color-outline-variant) 30%, transparent); }
+.rich-editor-content .tiptap img.ProseMirror-selectednode { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.rich-editor-content .tiptap a { color: var(--color-primary); text-decoration: underline; text-underline-offset: 3px; }
+.rich-editor-content .tiptap a:hover { filter: brightness(1.2); }
+.rich-editor-content .tiptap strong { color: var(--color-on-surface); font-weight: 600; }
+.rich-editor-content .tiptap em { color: var(--color-primary); font-style: italic; }
+.rich-editor-content .tiptap s { color: var(--color-on-surface-variant); text-decoration: line-through; }
