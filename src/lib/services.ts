@@ -133,8 +133,8 @@ export const SERVICES = [
       es: 'Donde la delicadeza se vuelve placer. Disfruta de movimientos lentos y una caricia sensorial con plumas diseñada para despertar tus sentidos sin prisas. Ideal para tu primera vez en Diamond o para dejarte llevar por una calma profundamente seductora.',
     },
     description: {
-      en: 'A carefully adapted massage for clients with sensitive skin, heightened nervous system reactivity, or conditions that require a gentler approach. Uses hypoallergenic oils, very light pressure, and slow deliberate movements to provide genuine therapeutic relief without overstimulation. Equally suitable as an introduction for first-time massage clients.',
-      es: 'Masaje adaptado con cuidado para clientes con piel sensible, reactividad elevada del sistema nervioso o condiciones que requieren un enfoque más suave. Utiliza aceites hipoalergénicos, presión muy ligera y movimientos lentos y deliberados para brindar un alivio terapéutico real sin sobreestimulación. También es ideal como introducción para quienes reciben un masaje por primera vez.',
+      en: 'A massage designed to promote deep relaxation through gentle movements and carefully applied sensory stimulation. Ideal for reducing stress, improving mental disconnection, and fostering a holistic sense of well-being.',
+      es: 'Un masaje diseñado para favorecer la relajación profunda mediante movimientos suaves y estímulos sensoriales cuidadosamente aplicados. Ideal para reducir el estrés, mejorar la desconexión mental y promover una sensación de bienestar integral.',
     },
     prices: { 30: 130_000, 60: 220_000, 90: 280_000 },
   },
