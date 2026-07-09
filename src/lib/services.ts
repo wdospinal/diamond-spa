@@ -122,9 +122,9 @@ export const SERVICES = [
     prices: { 30: 140_000, 60: 240_000, 90: 300_000 },
   },
   {
-    id: 'sensitive',
-    slugEn: 'sensitive',
-    name: { en: 'Sensitive massage', es: 'Masaje Sensitivo' },
+    id: 'sensorial',
+    slugEn: 'sensory',
+    name: { en: 'Sensory massage', es: 'Masaje Sensorial' },
     category: { en: 'Exclusive Massages', es: 'Masajes Exclusivos' },
     categoryId: 'massages' as const,
     pricingModel: 'duration' as const,

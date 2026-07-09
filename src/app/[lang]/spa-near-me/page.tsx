@@ -69,7 +69,7 @@ const FAQ_EN = [
   },
   {
     q: 'What types of services do you offer?',
-    a: 'We offer exclusive massages (relaxing, deep tissue, four-hands, duo, volcanic stones, sports, sensitive), facials & skin care (HydraFacial, deep cleansing, hydration), and professional hair removal (underarm, bikini, half leg, full leg, chest, back, full body) — all in private rooms.',
+    a: 'We offer exclusive massages (relaxing, deep tissue, four-hands, duo, volcanic stones, sports, sensory), facials & skin care (HydraFacial, deep cleansing, hydration), and professional hair removal (underarm, bikini, half leg, full leg, chest, back, full body) — all in private rooms.',
   },
   {
     q: 'Do you speak English?',
@@ -108,7 +108,7 @@ const FAQ_ES = [
   },
   {
     q: '¿Qué servicios ofrecen?',
-    a: 'Ofrecemos masajes exclusivos (relajante, deep tissue, cuatro manos, duo, piedras volcánicas, deportivo, sensitivo), faciales y cuidado de la piel (Hidrafacial, limpieza profunda, hidratación), y depilación profesional (axila, bikini, media pierna, pierna completa, pecho, espalda, cuerpo completo) — todo en salas privadas.',
+    a: 'Ofrecemos masajes exclusivos (relajante, deep tissue, cuatro manos, duo, piedras volcánicas, deportivo, sensorial), faciales y cuidado de la piel (Hidrafacial, limpieza profunda, hidratación), y depilación profesional (axila, bikini, media pierna, pierna completa, pecho, espalda, cuerpo completo) — todo en salas privadas.',
   },
   {
     q: '¿Hablan inglés?',
