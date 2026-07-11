@@ -25,7 +25,11 @@ export type BookingRecord = {
   phone: string
   requests?: string
   /** Booking status, e.g. for arrivals */
-  status?: 'pending' | 'arrived'
+  status?: 'pending' | 'arrived' | 'cancelled' | 'completed'
+  /** Payment status */
+  paymentStatus?: 'pending' | 'paid'
+  /** Origin of the booking */
+  source?: 'organic' | 'ads'
 }
 
 /** Display name for a booking — uses the single `name` field, falling back to legacy first/last. */

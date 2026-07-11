@@ -64,18 +64,18 @@ const CATEGORIES = (lang: string): { id: Category; label: string; icon: string; 
 ]
 
 const SERVICES = (lang: string): Service[] => [
-  { id: 'relaxing',  category: 'masajes',    name: lang==='en'?'Relaxing Massage':'Masaje Relajante',         desc: lang==='en'?'Release tension and accumulated stress':'Libera tensión y estrés acumulado',         duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 120000 }, { label: '60 min', value: 200000 }, { label: '90 min', value: 260000 }] },
-  { id: 'deep-tissue',       category: 'masajes',    name: 'Deep Tissue',              desc: lang==='en'?'For deep muscle tension':'Para tensión muscular profunda',            duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 130000 }, { label: '60 min', value: 220000 }, { label: '90 min', value: 280000 }] },
-  { id: 'four-hands',     category: 'masajes',    name: lang==='en'?'4 Hands Massage':'Masaje 4 Manos',           desc: lang==='en'?'Two therapists, double relaxation':'Dos terapeutas, doble relajación',         duration: '60 min',      durationMin: 60, prices: [{ label: '30 min', value: 230000 }, { label: '60 min', value: 350000 }, { label: '90 min', value: 480000 }] },
-  { id: 'duo',        category: 'masajes',    name: lang==='en'?'Duo Massage':'Duo Masaje',               desc: lang==='en'?'For couples or companions':'Para parejas o acompañantes',              duration: '60 min',      durationMin: 60, prices: [{ label: '30 min', value: 220000 }, { label: '60 min', value: 380000 }, { label: '90 min', value: 500000 }] },
-  { id: 'hot-stones',    category: 'masajes',    name: lang==='en'?'Hot Stones':'Piedras Volcánicas',       desc: lang==='en'?'Deep heat and total relaxation':'Calor profundo y relajación total',       duration: '75 min',      durationMin: 75, prices: [{ label: '30 min', value: 130000 }, { label: '60 min', value: 220000 }, { label: '90 min', value: 280000 }] },
-  { id: 'sports',  category: 'masajes',    name: lang==='en'?'Sports Massage':'Masaje Deportivo',         desc: lang==='en'?'Active muscle recovery':'Recuperación muscular activa',             duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 140000 }, { label: '60 min', value: 240000 }, { label: '90 min', value: 300000 }] },
-  { id: 'sensitive',  category: 'masajes',    name: lang==='en'?'Sensitive Massage':'Masaje Sensitivo',         desc: lang==='en'?'Soft sensory stimulation':'Estimulación sensorial suave',             duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 130000 }, { label: '60 min', value: 220000 }, { label: '90 min', value: 280000 }] },
-  { id: 'hidrafacial',      category: 'faciales',   name: 'Hydrafacial',              desc: lang==='en'?'Deep cleansing with technology':'Limpieza profunda con tecnología',         duration: '90 min',      durationMin: 90, prices: [{ label: lang==='en'?'Unique':'Único', value: 350000 }] },
-  { id: 'limpieza-facial-profunda',   category: 'faciales',   name: lang==='en'?'Deep Facial Cleansing':'Limpieza Facial Profunda', desc: lang==='en'?'Extraction and purification':'Extracción y purificación',               duration: '60 min',      durationMin: 60, prices: [{ label: lang==='en'?'Unique':'Único', value: 250000 }] },
-  { id: 'limpieza-facial-basica',    category: 'faciales',   name: lang==='en'?'Basic Facial Cleansing':'Limpieza Facial Básica',   desc: lang==='en'?'Cleansing and skin toning':'Limpieza y tonificación de la piel',      duration: '45 min',      durationMin: 45, prices: [{ label: lang==='en'?'Unique':'Único', value: 150000 }] },
-  { id: 'hidratacion-facial',    category: 'faciales',   name: lang==='en'?'Facial Hydration':'Hidratación Facial',       desc: lang==='en'?'Intense skin nutrition':'Nutrición intensa para la piel',          duration: '45 min',      durationMin: 45, prices: [{ label: lang==='en'?'Unique':'Único', value: 200000 }] },
-  { id: 'limpieza-espalda',category: 'faciales',   name: lang==='en'?'Back Cleansing':'Limpieza de Espalda',      desc: lang==='en'?'Complete back purification':'Purificación de espalda completa',        duration: '60 min',      durationMin: 60, prices: [{ label: lang==='en'?'Unique':'Único', value: 200000 }] },
+  { id: 'relaxing',  category: 'masajes',    name: lang==='en'?'Relaxing massage':'Masaje Relajante',         desc: lang==='en'?'Gentle strokes to release tension and restore calm.':'Movimientos suaves para liberar tensión y restaurar la calma.',         duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 120000 }, { label: '60 min', value: 200000 }, { label: '90 min', value: 260000 }] },
+  { id: 'deep-tissue',       category: 'masajes',    name: lang==='en'?'Deep tissue':'Tejido Profundo',              desc: lang==='en'?'For those seeking real therapeutic relief, especially with high physical activity or work-related stress.':'Para quienes buscan un alivio terapéutico real, especialmente en una zona con mucha actividad física o estrés laboral.',            duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 130000 }, { label: '60 min', value: 220000 }, { label: '90 min', value: 280000 }] },
+  { id: 'four-hands',     category: 'masajes',    name: lang==='en'?'Four hands':'4 Manos',           desc: lang==='en'?'Two therapists working in synchrony for double the benefit.':'Dos terapeutas trabajando en sincronía para el doble del beneficio.',         duration: '30 – 90 min',      durationMin: 60, prices: [{ label: '30 min', value: 230000 }, { label: '60 min', value: 350000 }, { label: '90 min', value: 480000 }] },
+  { id: 'duo',        category: 'masajes',    name: lang==='en'?'Duo massage':'Duo Masaje',               desc: lang==='en'?'Shared session for two — perfect for couples or friends.':'Sesión compartida para dos personas — perfecta para parejas o amigos.',              duration: '30 – 90 min',      durationMin: 60, prices: [{ label: '30 min', value: 220000 }, { label: '60 min', value: 380000 }, { label: '90 min', value: 500000 }] },
+  { id: 'hot-stones',    category: 'masajes',    name: lang==='en'?'Volcanic stone massage':'Con Piedras Volcánicas',       desc: lang==='en'?'Feel the healing power of the earth — combines manual massage with volcanic stones heated and placed on key energy points.':'Siente el poder curativo de la tierra. Combina un masaje manual con piedras volcánicas que se calientan y se colocan sobre puntos energéticos clave.',       duration: '30 – 90 min',      durationMin: 75, prices: [{ label: '30 min', value: 130000 }, { label: '60 min', value: 220000 }, { label: '90 min', value: 280000 }] },
+  { id: 'sports',  category: 'masajes',    name: lang==='en'?'Sports massage':'Masaje Deportivo',         desc: lang==='en'?'A perfect combination of strong manual therapy and percussion technology to reach deep muscles and release tension.':'Una combinación perfecta de terapia manual fuerte y tecnología de percusión, para llegar a los músculos profundos y relajarlos.',             duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 140000 }, { label: '60 min', value: 240000 }, { label: '90 min', value: 300000 }] },
+  { id: 'sensitive',  category: 'masajes',    name: lang==='en'?'Sensitive massage':'Masaje Sensitivo',         desc: lang==='en'?'Light-touch technique using gentle pressure and feather strokes designed to calm the nervous system. Suitable for clients with reactive skin or as a first massage experience.':'Técnica de contacto suave con presión ligera y movimientos de plumas, diseñada para calmar el sistema nervioso. Indicada para piel reactiva o como primera experiencia de masaje.',             duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 130000 }, { label: '60 min', value: 220000 }, { label: '90 min', value: 280000 }] },
+  { id: 'hidrafacial',      category: 'faciales',   name: 'HydraFacial',              desc: lang==='en'?'Deep cleansing, extraction, and intensive hydration in one treatment.':'Limpieza profunda, extracción e hidratación intensiva en un solo tratamiento.',         duration: '90 min',      durationMin: 90, prices: [{ label: lang==='en'?'Unique':'Único', value: 350000 }] },
+  { id: 'limpieza-facial-profunda',   category: 'faciales',   name: lang==='en'?'Deep Facial Cleansing':'Limpieza Facial Profunda', desc: lang==='en'?'Professional extraction and exfoliation for congested skin.':'Extracción y exfoliación profesional para piel congestionada.',               duration: '60 min',      durationMin: 60, prices: [{ label: lang==='en'?'Unique':'Único', value: 250000 }] },
+  { id: 'limpieza-facial-basica',    category: 'faciales',   name: lang==='en'?'Basic Facial Cleansing':'Limpieza Facial Básica',   desc: lang==='en'?'Gentle cleansing to refresh and purify the skin.':'Limpieza suave para refrescar y purificar la piel.',      duration: '45 min',      durationMin: 45, prices: [{ label: lang==='en'?'Unique':'Único', value: 150000 }] },
+  { id: 'hidratacion-facial',    category: 'faciales',   name: lang==='en'?'Facial Hydration':'Hidratación Facial',       desc: lang==='en'?'Intensive moisture restoration for dehydrated or dull skin.':'Restauración intensiva de humedad para piel deshidratada o apagada.',          duration: '45 min',      durationMin: 45, prices: [{ label: lang==='en'?'Unique':'Único', value: 200000 }] },
+  { id: 'limpieza-espalda',category: 'faciales',   name: lang==='en'?'Back Cleansing':'Limpieza de Espalda',      desc: lang==='en'?'Professional back treatment targeting pores and blemishes.':'Tratamiento profesional para la espalda, dirigido a poros e imperfecciones.',        duration: '60 min',      durationMin: 60, prices: [{ label: lang==='en'?'Unique':'Único', value: 200000 }] },
   { id: 'depilacion-axila',      category: 'depilacion', name: lang==='en'?'Underarm':'Axila',                    desc: '',                                         duration: '20 min',      durationMin: 20, prices: [{ label: lang==='en'?'Wax':'Cera', value: 30000 }, { label: lang==='en'?'Machine':'Máquina', value: 20000 }] },
   { id: 'depilacion-bikini',     category: 'depilacion', name: 'Bikini',                   desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: lang==='en'?'Wax':'Cera', value: 80000 }, { label: lang==='en'?'Machine':'Máquina', value: 60000 }] },
   { id: 'depilacion-media-pierna',   category: 'depilacion', name: lang==='en'?'Half Leg':'Media Pierna',             desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: lang==='en'?'Wax':'Cera', value: 100000 }, { label: lang==='en'?'Machine':'Máquina', value: 70000 }] },
@@ -115,15 +115,19 @@ function buildCal(year: number, month: number): Cell[] {
 }
 
 // ─── Main component ───────────────────────────────────────────────────────────
-export default function BookClient({ locale, t }: { locale: string; t: Dict['book'] }) {
+export default function BookClient({ locale, t, allowedServiceIds, onClose }: { locale: string; t: Dict['book']; allowedServiceIds?: string[]; onClose?: () => void }) {
   const lang = (locale === 'en' ? 'en' : 'es') as Locale
 
-  const [step, setStep]           = useState<StepId>('category')
+  const initialCategory = allowedServiceIds 
+    ? SERVICES(lang).find(s => allowedServiceIds.includes(s.id))?.category ?? null 
+    : null;
+
+  const [step, setStep]           = useState<StepId>(allowedServiceIds ? 'service' : 'category')
   const [dir,  setDir]            = useState<1|-1>(1)
   const [anim, setAnim]           = useState(true)
 
   // selections
-  const [category, setCategory]   = useState<Category | null>(null)
+  const [category, setCategory]   = useState<Category | null>(initialCategory)
   const [service,  setService]    = useState<Service | null>(null)
   const [priceIdx, setPriceIdx]   = useState<number>(0)
 
@@ -149,6 +153,14 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
   }
   function goBack() {
     const idx = stepIndex(step)
+    if (step === 'category') {
+      if (onClose) onClose()
+      return
+    }
+    if (step === 'service' && allowedServiceIds) {
+      if (onClose) onClose()
+      return
+    }
     if (idx <= 0) return
     // Skip price step going back if not needed
     let prev = STEP_ORDER[idx - 1]
@@ -245,7 +257,15 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
       hairMethod = selectedPrice?.label === 'Cera' ? 'wax' : 'machine'
     }
 
-    try { await fetch('/api/bookings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ serviceId: service.id, durationMinutes: payloadDuration, hairMethod: hairMethod, year: calYear, monthIndex: calMonth, day: selDay, timeSlot: selTime, locale: lang, name: form.name, phone: form.phone, requests: form.notes }) }) } catch {}
+    let bookingSource = 'organic'
+    try {
+      const p = new URLSearchParams(window.location.search)
+      if (p.get('utm_source') === 'ads' || sessionStorage.getItem('sem_trigger_value') === 'ads' || document.documentElement.classList.contains('is-ads')) {
+        bookingSource = 'ads'
+      }
+    } catch(e) {}
+
+    try { await fetch('/api/bookings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ serviceId: service.id, durationMinutes: payloadDuration, hairMethod: hairMethod, year: calYear, monthIndex: calMonth, day: selDay, timeSlot: selTime, locale: lang, name: form.name, phone: form.phone, requests: form.notes, source: bookingSource }) }) } catch {}
 
     setSubmitting(false)
     setConfirmed(true)
@@ -284,7 +304,7 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
 
   // ── Layout ────────────────────────────────────────────────────────────────
   return (
-    <div style={{ minHeight:'100vh', background:C.bg, fontFamily:'system-ui,-apple-system,sans-serif', display:'flex', flexDirection:'column' }}>
+    <div style={{ minHeight: onClose ? '100%' : '100vh', background:C.bg, fontFamily:'system-ui,-apple-system,sans-serif', display:'flex', flexDirection:'column' }}>
       <STYLES dir={dir} />
 
       {/* ── Top bar ──────────────────────────────────────────────────────── */}
@@ -298,14 +318,14 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
           {/* Back button */}
           <button
             onClick={goBack}
-            style={{ background:'none', border:'none', cursor: step==='category' ? 'default' : 'pointer',
-              color: step==='category' ? 'transparent' : C.sec,
+            style={{ background:'none', border:'none', cursor: (step==='category' && !onClose) ? 'default' : 'pointer',
+              color: (step==='category' && !onClose) ? 'transparent' : C.sec,
               padding:'8px', marginRight:8, lineHeight:1, flexShrink:0,
               transition:'color 0.2s', display:'flex', alignItems:'center',
             }}
             aria-label="Volver"
           >
-            <Icon name="chevron_left" size={20} />
+            <Icon name={(step === 'category' && onClose) || (step === 'service' && allowedServiceIds && onClose) ? 'close' : 'chevron_left'} size={20} />
           </button>
 
           {/* Step indicators */}
@@ -396,11 +416,11 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
           {step === 'service' && category && (
             <div>
               <StepTitle
-                label={CATEGORIES(lang).find(c=>c.id===category)?.label ?? ''}
+                label={allowedServiceIds ? (lang === 'en' ? 'Select your massage' : 'Selecciona tu masaje') : CATEGORIES(lang).find(c=>c.id===category)?.label ?? ''}
                 sub={lang === 'en' ? 'Select the service you want' : 'Selecciona el servicio que deseas'}
               />
               <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-                {SERVICES(lang).filter(s=>s.category===category).map(svc => (
+                {SERVICES(lang).filter(s => allowedServiceIds ? allowedServiceIds.includes(s.id) : s.category === category).map(svc => (
                   <button
                     key={svc.id}
                     className="tap-card"

@@ -129,8 +129,8 @@ export const SERVICES = [
     categoryId: 'massages' as const,
     pricingModel: 'duration' as const,
     shortDesc: {
-      en: 'Where delicacy becomes pleasure. Enjoy slow movements and a sensory caress with feathers designed to awaken your senses without haste. Ideal for your first time at Diamond or to let yourself be carried away by a deeply seductive calm.',
-      es: 'Donde la delicadeza se vuelve placer. Disfruta de movimientos lentos y una caricia sensorial con plumas diseñada para despertar tus sentidos sin prisas. Ideal para tu primera vez en Diamond o para dejarte llevar por una calma profundamente seductora.',
+      en: 'Light-touch technique using gentle pressure and feather strokes designed to calm the peripheral nervous system and reduce skin hypersensitivity. Suitable for clients with reactive skin, heightened nervous system sensitivity, or as a first massage experience.',
+      es: 'Técnica de contacto suave con presión ligera y movimientos de plumas, diseñada para calmar el sistema nervioso periférico y reducir la hipersensibilidad cutánea. Indicada para clientes con piel reactiva, sensibilidad elevada del sistema nervioso o como primera experiencia de masaje.',
     },
     description: {
       en: 'A carefully adapted massage for clients with sensitive skin, heightened nervous system reactivity, or conditions that require a gentler approach. Uses hypoallergenic oils, very light pressure, and slow deliberate movements to provide genuine therapeutic relief without overstimulation. Equally suitable as an introduction for first-time massage clients.',

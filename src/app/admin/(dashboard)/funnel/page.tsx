@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import DualCurrency from '@/components/DualCurrency'
 
 type Stage = {
   key: string
@@ -12,6 +13,8 @@ type Stage = {
   count: number
   pctOfTop: number
   pctOfPrev: number
+  revenueUsd?: number
+  revenueCop?: number
 }
 
 type FunnelResponse = {
@@ -76,7 +79,7 @@ export default function FunnelDashboardPage() {
   }
 
   const stages = data?.stages ?? []
-  const hasData = (stages[0]?.count ?? 0) > 0
+  const hasData = stages.some(s => s.count > 0)
 
   return (
     <div className="min-h-screen px-6 pt-14 pb-10 md:px-12 md:pt-16 md:pb-12 max-w-5xl mx-auto">
@@ -142,9 +145,9 @@ export default function FunnelDashboardPage() {
                         {s.label}
                       </span>
                     </div>
-                    <div className="flex-1 flex justify-center">
+                    <div className="flex-1 flex flex-col items-center justify-center">
                       <div
-                        className="h-12 md:h-14 flex items-center justify-center rounded-sm transition-all"
+                        className="h-12 md:h-14 flex items-center justify-center rounded-sm transition-all w-full"
                         style={{ width: `${Math.max(s.pctOfTop * 100, 6)}%`, backgroundColor: s.color }}
                         title={`${s.count} sesiones`}
                       >
@@ -152,6 +155,11 @@ export default function FunnelDashboardPage() {
                           {s.count.toLocaleString('es-CO')}
                         </span>
                       </div>
+                      {s.revenueUsd !== undefined && (
+                        <div className="mt-2 text-center">
+                          <DualCurrency usd={s.revenueUsd} copOverride={s.revenueCop} tone="income" align="left" />
+                        </div>
+                      )}
                     </div>
                     <div className="w-20 md:w-24 shrink-0 text-right">
                       <span className="block text-[#cfe5fa] text-sm tabular-nums">

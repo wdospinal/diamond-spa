@@ -1,0 +1,269 @@
+[
+  {
+    "id": "18f538f4-4435-405a-9f25-9012d47a8def",
+    "name": "Masajes en Medellín",
+    "path": "/massage-medellin",
+    "seo": {
+      "es": {
+        "metaTitle": "",
+        "metaDescription": "",
+        "jsonLd": ""
+      }
+    },
+    "sem": {
+      "hideChrome": false,
+      "semTriggerKey": "utm_source",
+      "semTriggerValue": "ads"
+    },
+    "isActive": true,
+    "createdAt": "2026-07-09T04:04:12.719Z",
+    "updatedAt": "2026-07-09T04:11:59.946Z"
+  },
+  {
+    "id": "02dcc468-fc2b-4cc1-9d9a-e66bb74fbc04",
+    "name": "Spa El Poblado",
+    "path": "/spa-el-poblado",
+    "seo": {
+      "es": {
+        "metaTitle": "",
+        "metaDescription": "",
+        "jsonLd": ""
+      }
+    },
+    "sem": {
+      "hideChrome": false,
+      "semTriggerKey": "utm_source",
+      "semTriggerValue": "ads"
+    },
+    "isActive": true,
+    "createdAt": "2026-07-09T04:12:22.603Z",
+    "updatedAt": "2026-07-09T04:12:22.603Z"
+  },
+  {
+    "id": "dummy-landing-1234",
+    "name": "Landing Masajes Ads",
+    "path": "/l/oferta-masajes",
+    "seo": {
+      "es": {
+        "metaTitle": "Masajes para Hombres en Medellín | Diamond Spa El Poblado",
+        "metaDescription": "Masajes para hombres desde $120.000 en El Poblado, Medellín. Terapeutas certificadas, salas privadas. Lun–Sáb 10AM–10PM. Reserva en línea.",
+        "jsonLd": ""
+      },
+      "en": {
+        "metaTitle": "Massages for Men in Medellín | Diamond Spa El Poblado",
+        "metaDescription": "Professional massages for men from $120,000 COP in El Poblado, Medellín. Certified therapists, private rooms. Mon–Sat 10AM–10PM. Book online.",
+        "jsonLd": ""
+      }
+    },
+    "sem": {
+      "hideChrome": true,
+      "semTriggerKey": "utm_source",
+      "semTriggerValue": "ads"
+    },
+    "isActive": true,
+    "content": {
+      "hero": {
+        "h1": "Masajes para Hombres en Medellín",
+        "subtitle": "Desde $120.000 · Terapeutas certificadas · Salas privadas en El Poblado.",
+        "bgImage": "https://images.unsplash.com/photo-1540555700478-4be289fbecef",
+        "primaryCtaText": "Reservar Ahora",
+        "secondaryCtaText": "Ver Servicios"
+      },
+      "trustBar": {
+        "location": "Cra 43C #10-42, El Poblado",
+        "hours": "Lun–Sáb 10AM–10PM",
+        "certified": "Terapeutas Certificadas",
+        "response": "Atención Inmediata"
+      },
+      "services": {
+        "title": "Nuestros Masajes para ti",
+        "serviceIds": ["relaxing", "deep-tissue", "hot-stones", "sports"]
+      },
+      "whyUs": {
+        "title": "¿Por qué elegirnos?",
+        "pillars": [
+          {
+            "title": "Experiencia Premium",
+            "body": "Instalaciones de lujo en el corazón de El Poblado, diseñadas para garantizar total privacidad, silencio y confort durante tu sesión.",
+            "icon": "star"
+          },
+          {
+            "title": "Terapeutas Certificadas",
+            "body": "Cosmetólogas y masoterapeutas con más de 3 años de experiencia en técnicas terapéuticas avanzadas. Formación certificada, resultados garantizados.",
+            "icon": "verified_user"
+          },
+          {
+            "title": "Privacidad y Confort",
+            "body": "Salas individuales con acceso privado, camillas profesionales y temperatura controlada. Tu espacio, solo para ti.",
+            "icon": "privacy_tip"
+          }
+        ]
+      },
+      "gallery": {
+        "images": [
+          { "url": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874", "title": "Masaje Relajante" },
+          { "url": "https://images.unsplash.com/photo-1515377905703-c4788e51af15", "title": "Tejido Profundo" },
+          { "url": "https://images.unsplash.com/photo-1552693673-1bf958298935", "title": "Piedras Volcánicas" },
+          { "url": "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2", "title": "Masaje Deportivo" }
+        ]
+      },
+      "testimonials": {
+        "title": "Lo que dicen nuestros clientes",
+        "items": [
+          {
+            "name": "Andrés Gómez",
+            "text": "Soy médico y tengo estándares muy altos cuando se trata de tratamientos corporales. Diamond Spa cumplió con todos ellos. La terapeuta del masaje de tejido profundo demostró un conocimiento anatómico serio — supo exactamente dónde aplicar presión y cuándo modularla. El espacio cumple con estándares de higiene impecables. Es un lugar donde se nota que el personal tiene formación real.",
+            "rating": 5,
+            "date": "hace 2 meses"
+          },
+          {
+            "name": "James Carter",
+            "text": "As a frequent traveler to Medellín for business, I have tried several spas in El Poblado. Diamond Spa stands out for its attention to detail and genuine commitment to quality. The deep tissue massage addressed my chronic lower back issues with technique I have only experienced at luxury resorts abroad. The therapist asked thorough questions about pressure preferences before starting — that level of care is rare.",
+            "rating": 5,
+            "date": "3 weeks ago"
+          },
+          {
+            "name": "Tom Brennan",
+            "text": "Came here on a recommendation from my hotel concierge and I am so glad I listened. The sports massage was exactly what I needed after a long week of hiking around Antioquia. The therapist worked methodically through muscle groups and the pressure was perfectly calibrated — therapeutic without being painful. Bilingual staff made everything effortless. Already planning my next visit.",
+            "rating": 5,
+            "date": "2 months ago"
+          }
+        ]
+      },
+      "location": {
+        "address": "Cra 43C #10-42, El Poblado, Medellín, Antioquia",
+        "hours": "Lun – Sáb: 10:00 AM – 10:00 PM\nDom: 10:00 AM – 7:00 PM",
+        "mapEmbedUrl": "https://maps.google.com/maps?q=6.211541,-75.5716917&output=embed&z=17"
+      },
+      "faqs": {
+        "title": "Preguntas Frecuentes",
+        "items": [
+          {
+            "question": "¿Es necesario hacer reserva con anticipación?",
+            "answer": "Recomendamos reservar con al menos 1 hora de anticipación para garantizar disponibilidad en tu horario preferido. También atendemos visitas sin cita previa sujeto a disponibilidad."
+          },
+          {
+            "question": "¿Cuánto dura una sesión de masaje?",
+            "answer": "Nuestras sesiones están disponibles en 30, 60 y 90 minutos. El masaje relajante de 30 minutos es ideal si es tu primera visita. Para una recuperación muscular completa, recomendamos 60 minutos."
+          },
+          {
+            "question": "¿Las salas son completamente privadas?",
+            "answer": "Sí. Cada sala es individual con acceso privado. Durante toda la sesión, solo estarás tú y la terapeuta asignada. No compartimos espacios de tratamiento con otros clientes."
+          },
+          {
+            "question": "¿Cómo llego desde el centro de El Poblado?",
+            "answer": "Estamos en Cra 43C #10-42, a pocas cuadras del Parque El Poblado. Contamos con zona de parqueo disponible frente al local y en la misma cuadra. En taxi o app de transporte, el viaje desde el parque es de 3–5 minutos."
+          }
+        ]
+      },
+      "finalCta": {
+        "title": "Tu cuerpo lo merece. Reserva hoy en El Poblado.",
+        "buttonText": "Reservar Ahora",
+        "phoneText": "+57 305 4541635"
+      }
+    },
+    "createdAt": "2026-07-10T19:00:00.000Z",
+    "updatedAt": "2026-07-11T23:34:00.000Z",
+    "content_en": {
+      "hero": {
+        "h1": "Massages for Men in Medellín",
+        "subtitle": "From $120,000 COP · Certified therapists · Private rooms in El Poblado.",
+        "bgImage": "https://images.unsplash.com/photo-1540555700478-4be289fbecef",
+        "primaryCtaText": "Book Now",
+        "secondaryCtaText": "View Services"
+      },
+      "trustBar": {
+        "location": "Cra 43C #10-42, El Poblado",
+        "hours": "Mon–Sat 10AM–10PM",
+        "certified": "Certified Therapists",
+        "response": "Immediate Availability"
+      },
+      "services": {
+        "title": "Our Massages for You",
+        "serviceIds": ["relaxing", "deep-tissue", "hot-stones", "sports"]
+      },
+      "whyUs": {
+        "title": "Why Choose Us?",
+        "pillars": [
+          {
+            "title": "Premium Experience",
+            "body": "Luxury facilities in the heart of El Poblado, designed to guarantee complete privacy, silence and comfort throughout your session.",
+            "icon": "star"
+          },
+          {
+            "title": "Certified Therapists",
+            "body": "Cosmetologists and massage therapists with over 3 years of experience in advanced therapeutic techniques. Certified training, guaranteed results.",
+            "icon": "verified_user"
+          },
+          {
+            "title": "Privacy & Comfort",
+            "body": "Individual rooms with private access, professional treatment tables and controlled temperature. Your space, just for you.",
+            "icon": "privacy_tip"
+          }
+        ]
+      },
+      "gallery": {
+        "images": [
+          { "url": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874", "title": "Relaxing Massage" },
+          { "url": "https://images.unsplash.com/photo-1515377905703-c4788e51af15", "title": "Deep Tissue" },
+          { "url": "https://images.unsplash.com/photo-1552693673-1bf958298935", "title": "Hot Stones" },
+          { "url": "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2", "title": "Sports Massage" }
+        ]
+      },
+      "testimonials": {
+        "title": "What our clients say",
+        "items": [
+          {
+            "name": "James Carter",
+            "text": "As a frequent traveler to Medellín for business, I have tried several spas in El Poblado. Diamond Spa stands out for its attention to detail and genuine commitment to quality. The deep tissue massage addressed my chronic lower back issues with technique I have only experienced at luxury resorts abroad. The therapist asked thorough questions about pressure preferences before starting — that level of care is rare.",
+            "rating": 5,
+            "date": "3 weeks ago"
+          },
+          {
+            "name": "Tom Brennan",
+            "text": "Came here on a recommendation from my hotel concierge and I am so glad I listened. The sports massage was exactly what I needed after a long week of hiking around Antioquia. The therapist worked methodically through muscle groups and the pressure was perfectly calibrated — therapeutic without being painful. Bilingual staff made everything effortless. Already planning my next visit.",
+            "rating": 5,
+            "date": "2 months ago"
+          },
+          {
+            "name": "Michael Torres",
+            "text": "My wife and I celebrated our anniversary with the spa day package and it was genuinely one of the best experiences we've had together. The relaxing massages were deeply soothing. The staff were warm, professional and never intrusive. It felt like a private retreat right in the middle of El Poblado. Highly recommend.",
+            "rating": 5,
+            "date": "6 weeks ago"
+          }
+        ]
+      },
+      "location": {
+        "address": "Cra 43C #10-42, El Poblado, Medellín, Antioquia",
+        "hours": "Mon – Sat: 10:00 AM – 10:00 PM\nSun: 10:00 AM – 7:00 PM",
+        "mapEmbedUrl": "https://maps.google.com/maps?q=6.211541,-75.5716917&output=embed&z=17"
+      },
+      "faqs": {
+        "title": "Frequently Asked Questions",
+        "items": [
+          {
+            "question": "Do I need to book in advance?",
+            "answer": "We recommend booking at least 1 hour in advance to guarantee availability at your preferred time. Walk-ins are also welcome, subject to availability."
+          },
+          {
+            "question": "How long is a massage session?",
+            "answer": "Sessions are available in 30, 60 and 90 minutes. The 30-minute relaxing massage is ideal for a first visit. For full muscle recovery, we recommend 60 minutes."
+          },
+          {
+            "question": "Are the rooms completely private?",
+            "answer": "Yes. Each room is individual with private access. Throughout the session, only you and your assigned therapist will be present. We do not share treatment spaces with other clients."
+          },
+          {
+            "question": "How do I get there from El Poblado?",
+            "answer": "We are located at Cra 43C #10-42, a few blocks from Parque El Poblado. Parking is available in front of the premises and in the same block. By taxi or rideshare, the trip from the park takes 3–5 minutes."
+          }
+        ]
+      },
+      "finalCta": {
+        "title": "Your body deserves it. Book today in El Poblado.",
+        "buttonText": "Book Now",
+        "phoneText": "+57 305 4541635"
+      }
+    }
+  }
+]

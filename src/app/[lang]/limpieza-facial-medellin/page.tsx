@@ -5,8 +5,10 @@ import { isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
 import { SPA_ADDRESS, SPA_RATING } from '@/lib/spa'
 import { JsonLd } from '@/components/JsonLd'
+import LandingHead from '@/components/LandingHead'
+import { mergeLandingMetadata } from '@/lib/landing-meta'
 
-export const dynamic = 'force-static'
+export const revalidate = 3600
 
 const content = {
   en: {
@@ -133,12 +135,15 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   const { lang } = await params
   const locale = (isLocale(lang) ? lang : 'es') as Locale
   const c = content[locale]
-  return {
-    title: c.metaTitle,
-    description: c.metaDesc,
-    alternates: buildAlternates('/limpieza-facial-medellin', locale),
-    openGraph: buildOpenGraph({ title: c.metaTitle, description: c.metaDesc, path: '/limpieza-facial-medellin', locale }),
-  }
+  return mergeLandingMetadata(
+    '/limpieza-facial-medellin',
+    locale,
+    { title: c.metaTitle, description: c.metaDesc },
+    {
+      alternates: buildAlternates('/limpieza-facial-medellin', locale),
+      openGraph: buildOpenGraph({ title: c.metaTitle, description: c.metaDesc, path: '/limpieza-facial-medellin', locale }),
+    },
+  )
 }
 
 export default async function LimpiezaFacialPage({ params }: { params: Promise<{ lang: string }> }) {
@@ -151,6 +156,7 @@ export default async function LimpiezaFacialPage({ params }: { params: Promise<{
     <>
       <JsonLd data={localBusinessJsonLd()} />
       <JsonLd data={faqJsonLd([...c.faqs])} />
+      <LandingHead path="/limpieza-facial-medellin" locale={locale} />
 
       <main className="max-w-screen-xl mx-auto px-6 md:px-12 pt-32 pb-24">
 

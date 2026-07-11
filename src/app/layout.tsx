@@ -2,6 +2,9 @@ import type { Metadata } from 'next'
 import { Manrope, Playfair_Display } from 'next/font/google'
 import './globals.css'
 import ClientProviders from '@/components/ClientProviders'
+import Script from 'next/script'
+import GlobalFloatingWhatsApp from '@/components/GlobalFloatingWhatsApp'
+import { readAllLandings } from '@/lib/landing-store'
 
 /**
  * next/font/google self-hosts both fonts from /_next/static/media/ (same origin,
@@ -43,9 +46,14 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const landings = await readAllLandings()
+  const disabledPaths = landings
+    .filter(l => l.sem && l.sem.showFloatingWa === false)
+    .map(l => l.path)
+
   return (
-    <html lang="es" className={`dark ${playfairDisplay.variable} ${manrope.variable}`}>
+    <html lang="es" className={`dark ${playfairDisplay.variable} ${manrope.variable}`} suppressHydrationWarning>
       <head>
         {/* DNS prefetch for lazy-loaded third-party content */}
         <link rel="dns-prefetch" href="https://lh3.googleusercontent.com" />
@@ -53,10 +61,39 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="dns-prefetch" href="https://api.dicebear.com" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#0a1628" />
+        {/*
+          Anti-FOUC SEM script — runs synchronously before first paint.
+          Reads URL params and adds .is-ads to <html> when the trigger matches.
+          This hides the global nav + footer for Google Ads landing pages without
+          any visible flash. The canonical URL (without params) is always the one
+          Googlebot indexes for SEO — no cloaking concerns.
+          Default trigger: ?utm_source=ads  (configurable per-page from the admin).
+        {/* Script moved to body */}
       </head>
       <body className="bg-surface text-on-surface font-body antialiased">
         {children}
         <ClientProviders />
+        
+        <GlobalFloatingWhatsApp disabledPaths={disabledPaths} />
+
+        {/* Anti-FOUC script for SEM/Ads mode */}
+        <Script
+          id="sem-anti-fouc"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(function(){
+  try {
+    var p = new URLSearchParams(window.location.search);
+    // If this page explicitly disabled SEM chrome-hiding, do nothing.
+    if (sessionStorage.getItem('sem_hide_chrome') === 'false') return;
+    // Read per-page trigger key/value set by LandingSemInit on previous visit.
+    var k = sessionStorage.getItem('sem_trigger_key') || 'utm_source';
+    var v = sessionStorage.getItem('sem_trigger_value') || 'ads';
+    if (p.get(k) === v) document.documentElement.classList.add('is-ads');
+  } catch(e) {}
+})();`,
+          }}
+        />
       </body>
     </html>
   )

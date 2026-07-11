@@ -56,9 +56,19 @@ export default function DashboardHome() {
   const todayBookings = bookings.filter(b => b.dateKey === todayStr)
   const upcomingBookings = bookings.filter(b => !b.status || b.status === 'pending')
   
-  // Total Revenue
-  const totalRevenueUsd = bookings.reduce((sum, b) => sum + (b.price || 0), 0)
-  const totalRevenueCop = bookings.reduce((sum, b) => sum + (b.priceCop || 0), 0)
+  // Revenue calculation
+  const organicBookings = bookings.filter(b => b.source !== 'ads' && b.status !== 'cancelled')
+  const adsBookings = bookings.filter(b => b.source === 'ads' && b.status !== 'cancelled')
+  
+  const organicUsd = organicBookings.reduce((sum, b) => sum + (b.price || 0), 0)
+  const organicCop = organicBookings.reduce((sum, b) => sum + (b.priceCop || 0), 0)
+  
+  const adsUsd = adsBookings.reduce((sum, b) => sum + (b.price || 0), 0)
+  const adsCop = adsBookings.reduce((sum, b) => sum + (b.priceCop || 0), 0)
+
+  const paidBookings = bookings.filter(b => b.paymentStatus === 'paid' && b.status !== 'cancelled')
+  const paidCop = paidBookings.reduce((sum, b) => sum + (b.priceCop || 0), 0)
+  const paidUsd = paidBookings.reduce((sum, b) => sum + (b.price || 0), 0)
 
   // Recent 5 bookings
   const recentBookings = [...bookings]
@@ -74,7 +84,7 @@ export default function DashboardHome() {
       </header>
 
       {/* Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
         {/* Metric 1 */}
         <div className="bg-surface-container border border-outline-variant/20 p-6 rounded">
           <div className="flex items-center gap-3 mb-4 text-on-surface/60">
@@ -87,20 +97,33 @@ export default function DashboardHome() {
         {/* Metric 2 */}
         <div className="bg-surface-container border border-outline-variant/20 p-6 rounded">
           <div className="flex items-center gap-3 mb-4 text-on-surface/60">
-            <span className="material-symbols-outlined text-tertiary" aria-hidden="true">pending_actions</span>
-            <span className="font-label text-[10px] tracking-widest uppercase">Próximas Citas</span>
+            <span className="material-symbols-outlined text-[#34d399]" aria-hidden="true">payments</span>
+            <span className="font-label text-[10px] tracking-widest uppercase">Pagos Recibidos</span>
           </div>
-          <p className="font-headline text-4xl text-on-surface">{upcomingBookings.length}</p>
+          <div className="font-headline text-2xl text-[#34d399]">
+            <DualCurrency usd={paidUsd} copOverride={paidCop} />
+          </div>
         </div>
 
         {/* Metric 3 */}
         <div className="bg-surface-container border border-outline-variant/20 p-6 rounded">
           <div className="flex items-center gap-3 mb-4 text-on-surface/60">
-            <span className="material-symbols-outlined text-[#34d399]" aria-hidden="true">payments</span>
-            <span className="font-label text-[10px] tracking-widest uppercase">Ingresos Proyectados</span>
+            <span className="material-symbols-outlined text-on-surface/50" aria-hidden="true">eco</span>
+            <span className="font-label text-[10px] tracking-widest uppercase">Valor Orgánico</span>
           </div>
-          <div className="font-headline text-2xl text-on-surface">
-            <DualCurrency usd={totalRevenueUsd} copOverride={totalRevenueCop} />
+          <div className="font-headline text-xl text-on-surface">
+            <DualCurrency usd={organicUsd} copOverride={organicCop} />
+          </div>
+        </div>
+
+        {/* Metric 4 */}
+        <div className="bg-[#4a9fd4]/5 border border-[#4a9fd4]/20 p-6 rounded">
+          <div className="flex items-center gap-3 mb-4 text-[#4a9fd4]/80">
+            <span className="material-symbols-outlined text-[#4a9fd4]" aria-hidden="true">campaign</span>
+            <span className="font-label text-[10px] tracking-widest uppercase">Valor por Ads</span>
+          </div>
+          <div className="font-headline text-xl text-on-surface">
+            <DualCurrency usd={adsUsd} copOverride={adsCop} />
           </div>
         </div>
       </div>
@@ -147,8 +170,16 @@ export default function DashboardHome() {
                         (!b.status || b.status === 'pending') ? 'bg-tertiary/10 text-tertiary border border-tertiary/20' :
                         'bg-[#34d399]/10 text-[#34d399] border border-[#34d399]/20'
                       }`}>
-                        {(!b.status || b.status === 'pending') ? 'Pendiente' : 'Llegó'}
+                        {(!b.status || b.status === 'pending') ? 'Pendiente' :
+                        b.status === 'arrived' ? 'Llegó' :
+                        b.status === 'completed' ? 'Completado' : 'Cancelado'
+                        }
                       </span>
+                      {b.source === 'ads' && (
+                        <span className="ml-2 inline-flex items-center px-2 py-1 rounded text-[10px] font-label uppercase tracking-wider bg-[#4a9fd4]/10 text-[#4a9fd4] border border-[#4a9fd4]/20">
+                          Ads
+                        </span>
+                      )}
                     </td>
                   </tr>
                 ))

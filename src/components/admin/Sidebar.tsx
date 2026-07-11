@@ -5,12 +5,14 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 const NAV_ITEMS = [
-  { href: '/admin', icon: 'dashboard', label: 'Inicio' },
-  { href: '/admin/bookings', icon: 'calendar_month', label: 'Reservas' },
-  { href: '/admin/blog', icon: 'article', label: 'Blog' },
-  { href: '/admin/funnel', icon: 'filter_alt', label: 'Embudo' },
-  { href: '/admin/settings', icon: 'settings', label: 'Configuración' },
+  { href: '/admin',          icon: 'dashboard',      label: 'Inicio'      },
+  { href: '/admin/bookings', icon: 'calendar_month', label: 'Reservas'    },
+  { href: '/admin/blog',     icon: 'article',        label: 'Blog'        },
+  { href: '/admin/landings', icon: 'rocket_launch',  label: 'Landings'    },
+  { href: '/admin/funnel',   icon: 'filter_alt',     label: 'Embudo'      },
+  { href: '/admin/settings', icon: 'settings',       label: 'Configuración' },
 ]
+
 
 export default function Sidebar() {
   const pathname = usePathname()

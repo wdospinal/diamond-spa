@@ -8,8 +8,10 @@ import { buildAlternates, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from 
 import { SPA_ADDRESS, SPA_PHONES, SPA_RATING } from '@/lib/spa'
 import { JsonLd } from '@/components/JsonLd'
 import { ServiceCardLink } from '@/components/ServiceCardLink'
+import LandingHead from '@/components/LandingHead'
+import { mergeLandingMetadata } from '@/lib/landing-meta'
 
-export const dynamic = 'force-static'
+export const revalidate = 3600
 
 const content = {
   en: {
@@ -116,12 +118,15 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   const { lang } = await params
   const locale = (isLocale(lang) ? lang : 'es') as Locale
   const c = content[locale]
-  return {
-    title: c.metaTitle,
-    description: c.metaDesc,
-    alternates: buildAlternates('/masajes-para-mujeres', locale),
-    openGraph: buildOpenGraph({ title: c.metaTitle, description: c.metaDesc, path: '/masajes-para-mujeres', locale, imageAlt: c.ogImageAlt }),
-  }
+  return mergeLandingMetadata(
+    '/masajes-para-mujeres',
+    locale,
+    { title: c.metaTitle, description: c.metaDesc },
+    {
+      alternates: buildAlternates('/masajes-para-mujeres', locale),
+      openGraph: buildOpenGraph({ title: c.metaTitle, description: c.metaDesc, path: '/masajes-para-mujeres', locale, imageAlt: c.ogImageAlt }),
+    },
+  )
 }
 
 export default async function MasajesParaMujeresPage({ params }: { params: Promise<{ lang: string }> }) {
@@ -137,6 +142,7 @@ export default async function MasajesParaMujeresPage({ params }: { params: Promi
     <>
       <JsonLd data={localBusinessJsonLd()} />
       <JsonLd data={faqJsonLd([...c.faqs])} />
+      <LandingHead path="/masajes-para-mujeres" locale={locale} />
 
       <main className="max-w-screen-xl mx-auto px-6 md:px-12 pt-32 pb-24">
 
