@@ -18,9 +18,14 @@ export interface SupabaseConn {
 }
 
 export function supabaseEnv(): SupabaseConn | null {
-  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
-  return url && key ? { url: url.replace(/\/$/, ''), key } : null
+  const rawUrl = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()
+  if (!rawUrl || !key) return null
+  // Normalize common misconfigurations that make PostgREST return
+  // PGRST125 "Invalid path": stray whitespace, trailing slashes, or a value
+  // that already includes the /rest/v1 (or /auth/v1, /storage/v1) suffix.
+  const url = rawUrl.trim().replace(/\/+$/, '').replace(/\/(rest|auth|storage)\/v1$/, '')
+  return url ? { url, key } : null
 }
 
 export function supabaseConfigured(): boolean {
