@@ -57,37 +57,37 @@ type Service = {
   prices: PriceEntry[]
 }
 
-const CATEGORIES: { id: Category; label: string; icon: string; sub: string }[] = [
-  { id: 'masajes',    label: 'Masajes',    icon: 'self_improvement', sub: '7 opciones · desde $120.000' },
-  { id: 'faciales',  label: 'Faciales',   icon: 'face',             sub: '5 opciones · desde $150.000' },
-  { id: 'depilacion',label: 'Depilación', icon: 'filter_vintage',   sub: '8 zonas · desde $20.000'     },
+const CATEGORIES = (lang: string): { id: Category; label: string; icon: string; sub: string }[] => [
+  { id: 'masajes',    label: lang==='en'?'Massages':'Masajes',    icon: 'self_improvement', sub: lang==='en'?'7 options · from $120.000':'7 opciones · desde $120.000' },
+  { id: 'faciales',  label: lang==='en'?'Facials':'Faciales',   icon: 'face',             sub: lang==='en'?'5 options · from $150.000':'5 opciones · desde $150.000' },
+  { id: 'depilacion',label: lang==='en'?'Hair Removal':'Depilación', icon: 'filter_vintage',   sub: lang==='en'?'8 areas · from $20.000':'8 zonas · desde $20.000'     },
 ]
 
-const SERVICES: Service[] = [
-  { id: 'relaxing',  category: 'masajes',    name: 'Masaje Relajante',         desc: 'Libera tensión y estrés acumulado',         duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 120000 }, { label: '60 min', value: 200000 }, { label: '90 min', value: 260000 }] },
-  { id: 'deep-tissue',       category: 'masajes',    name: 'Deep Tissue',              desc: 'Para tensión muscular profunda',            duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 130000 }, { label: '60 min', value: 220000 }, { label: '90 min', value: 280000 }] },
-  { id: 'four-hands',     category: 'masajes',    name: 'Masaje 4 Manos',           desc: 'Dos terapeutas, doble relajación',         duration: '60 min',      durationMin: 60, prices: [{ label: '30 min', value: 230000 }, { label: '60 min', value: 350000 }, { label: '90 min', value: 480000 }] },
-  { id: 'duo',        category: 'masajes',    name: 'Duo Masaje',               desc: 'Para parejas o acompañantes',              duration: '60 min',      durationMin: 60, prices: [{ label: '30 min', value: 220000 }, { label: '60 min', value: 380000 }, { label: '90 min', value: 500000 }] },
-  { id: 'hot-stones',    category: 'masajes',    name: 'Piedras Volcánicas',       desc: 'Calor profundo y relajación total',       duration: '75 min',      durationMin: 75, prices: [{ label: '30 min', value: 130000 }, { label: '60 min', value: 220000 }, { label: '90 min', value: 280000 }] },
-  { id: 'sports',  category: 'masajes',    name: 'Masaje Deportivo',         desc: 'Recuperación muscular activa',             duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 140000 }, { label: '60 min', value: 240000 }, { label: '90 min', value: 300000 }] },
-  { id: 'sensorial',  category: 'masajes',    name: 'Masaje Sensorial',         desc: 'Relajación profunda con estímulos sensoriales', duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 130000 }, { label: '60 min', value: 220000 }, { label: '90 min', value: 280000 }] },
-  { id: 'hidrafacial',      category: 'faciales',   name: 'Hydrafacial',              desc: 'Limpieza profunda con tecnología',         duration: '90 min',      durationMin: 90, prices: [{ label: 'Único', value: 350000 }] },
-  { id: 'limpieza-facial-profunda',   category: 'faciales',   name: 'Limpieza Facial Profunda', desc: 'Extracción y purificación',               duration: '60 min',      durationMin: 60, prices: [{ label: 'Único', value: 250000 }] },
-  { id: 'limpieza-facial-basica',    category: 'faciales',   name: 'Limpieza Facial Básica',   desc: 'Limpieza y tonificación de la piel',      duration: '45 min',      durationMin: 45, prices: [{ label: 'Único', value: 150000 }] },
-  { id: 'hidratacion-facial',    category: 'faciales',   name: 'Hidratación Facial',       desc: 'Nutrición intensa para la piel',          duration: '45 min',      durationMin: 45, prices: [{ label: 'Único', value: 200000 }] },
-  { id: 'limpieza-espalda',category: 'faciales',   name: 'Limpieza de Espalda',      desc: 'Purificación de espalda completa',        duration: '60 min',      durationMin: 60, prices: [{ label: 'Único', value: 200000 }] },
-  { id: 'depilacion-axila',      category: 'depilacion', name: 'Axila',                    desc: '',                                         duration: '20 min',      durationMin: 20, prices: [{ label: 'Cera', value: 30000 }, { label: 'Máquina', value: 20000 }] },
-  { id: 'depilacion-bikini',     category: 'depilacion', name: 'Bikini',                   desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: 'Cera', value: 80000 }, { label: 'Máquina', value: 60000 }] },
-  { id: 'depilacion-media-pierna',   category: 'depilacion', name: 'Media Pierna',             desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: 'Cera', value: 100000 }, { label: 'Máquina', value: 70000 }] },
-  { id: 'depilacion-pierna-completa',   category: 'depilacion', name: 'Pierna Completa',          desc: '',                                         duration: '45 min',      durationMin: 45, prices: [{ label: 'Cera', value: 150000 }, { label: 'Máquina', value: 85000 }] },
-  { id: 'depilacion-pecho',      category: 'depilacion', name: 'Pecho',                    desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: 'Cera', value: 80000 }, { label: 'Máquina', value: 50000 }] },
-  { id: 'depilacion-espalda',    category: 'depilacion', name: 'Espalda',                  desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: 'Cera', value: 60000 }, { label: 'Máquina', value: 40000 }] },
-  { id: 'depilacion-zona-perianal',   category: 'depilacion', name: 'Zona Perianal',            desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: 'Cera', value: 65000 }, { label: 'Máquina', value: 45000 }] },
-  { id: 'depilacion-cuerpo-completo',     category: 'depilacion', name: 'Cuerpo Completo',          desc: '',                                         duration: '2 h',         durationMin: 120,prices: [{ label: 'Cera', value: 400000 }, { label: 'Máquina', value: 250000 }] },
+const SERVICES = (lang: string): Service[] => [
+  { id: 'relaxing',  category: 'masajes',    name: lang==='en'?'Relaxing massage':'Masaje Relajante',         desc: lang==='en'?'Gentle strokes to release tension and restore calm.':'Movimientos suaves para liberar tensión y restaurar la calma.',         duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 120000 }, { label: '60 min', value: 200000 }, { label: '90 min', value: 260000 }] },
+  { id: 'deep-tissue',       category: 'masajes',    name: lang==='en'?'Deep tissue':'Tejido Profundo',              desc: lang==='en'?'For those seeking real therapeutic relief, especially with high physical activity or work-related stress.':'Es para quienes buscan un alivio terapéutico real, especialmente en una zona con mucha actividad física o estrés laboral.',            duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 130000 }, { label: '60 min', value: 220000 }, { label: '90 min', value: 280000 }] },
+  { id: 'four-hands',     category: 'masajes',    name: lang==='en'?'Four hands':'4 Manos',           desc: lang==='en'?'Two therapists working in synchrony for double the benefit.':'Dos terapeutas trabajando en sincronía para el doble del beneficio.',         duration: '30 – 90 min',      durationMin: 60, prices: [{ label: '30 min', value: 230000 }, { label: '60 min', value: 350000 }, { label: '90 min', value: 480000 }] },
+  { id: 'duo',        category: 'masajes',    name: lang==='en'?'Duo massage':'Duo Masaje',               desc: lang==='en'?'Shared session for two — perfect for couples or friends.':'Sesión compartida para dos personas — perfecta para parejas o amigos.',              duration: '30 – 90 min',      durationMin: 60, prices: [{ label: '30 min', value: 220000 }, { label: '60 min', value: 380000 }, { label: '90 min', value: 500000 }] },
+  { id: 'hot-stones',    category: 'masajes',    name: lang==='en'?'Volcanic stone massage':'Con Piedras Volcánicas',       desc: lang==='en'?'Feel the healing power of the earth — combines manual massage with volcanic stones heated and placed on key energy points.':'Siente el poder curativo de la tierra combina un masaje manual con piedras volcánicas que se calientan y se colocan sobre puntos energéticos clave.',       duration: '30 – 90 min',      durationMin: 75, prices: [{ label: '30 min', value: 130000 }, { label: '60 min', value: 220000 }, { label: '90 min', value: 280000 }] },
+  { id: 'sports',  category: 'masajes',    name: lang==='en'?'Sports massage':'Masaje Deportivo',         desc: lang==='en'?'A perfect combination of strong manual therapy and percussion technology to reach deep muscles and release tension.':'Es una combinación perfecta de terapia manual fuerte y tecnología de percusión, para llegar a los músculos profundos y relajarlos.',             duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 140000 }, { label: '60 min', value: 240000 }, { label: '90 min', value: 300000 }] },
+  { id: 'sensitive',  category: 'masajes',    name: lang==='en'?'Sensitive massage':'Masaje Sensitivo',         desc: lang==='en'?'Where delicacy becomes pleasure. Enjoy slow movements and a sensory caress with feathers designed to awaken your senses without haste. Ideal for your first time at Diamond or to let yourself be carried away by a deeply seductive calm.':'Donde la delicadeza se vuelve placer. Disfruta de movimientos lentos y una caricia sensorial con plumas diseñada para despertar tus sentidos sin prisas. Ideal para tu primera vez en Diamond o para dejarte llevar por una calma profundamente seductora.',             duration: '30 – 90 min', durationMin: 60, prices: [{ label: '30 min', value: 130000 }, { label: '60 min', value: 220000 }, { label: '90 min', value: 280000 }] },
+  { id: 'hidrafacial',      category: 'faciales',   name: 'HydraFacial',              desc: lang==='en'?'Deep cleansing, extraction, and intensive hydration in one treatment.':'Limpieza profunda, extracción e hidratación intensiva en un solo tratamiento.',         duration: '90 min',      durationMin: 90, prices: [{ label: lang==='en'?'Unique':'Único', value: 350000 }] },
+  { id: 'limpieza-facial-profunda',   category: 'faciales',   name: lang==='en'?'Deep Facial Cleansing':'Limpieza Facial Profunda', desc: lang==='en'?'Professional extraction and exfoliation for congested skin.':'Extracción y exfoliación profesional para piel congestionada.',               duration: '60 min',      durationMin: 60, prices: [{ label: lang==='en'?'Unique':'Único', value: 250000 }] },
+  { id: 'limpieza-facial-basica',    category: 'faciales',   name: lang==='en'?'Basic Facial Cleansing':'Limpieza Facial Básica',   desc: lang==='en'?'Gentle daily cleansing to refresh and purify the skin.':'Limpieza suave para refrescar y purificar la piel.',      duration: '45 min',      durationMin: 45, prices: [{ label: lang==='en'?'Unique':'Único', value: 150000 }] },
+  { id: 'hidratacion-facial',    category: 'faciales',   name: lang==='en'?'Facial Hydration':'Hidratación Facial',       desc: lang==='en'?'Intensive moisture restoration for dehydrated or dull skin.':'Restauración intensiva de humedad para piel deshidratada o apagada.',          duration: '45 min',      durationMin: 45, prices: [{ label: lang==='en'?'Unique':'Único', value: 200000 }] },
+  { id: 'limpieza-espalda',category: 'faciales',   name: lang==='en'?'Back Cleansing':'Limpieza de Espalda',      desc: lang==='en'?'Professional back treatment targeting pores and blemishes.':'Tratamiento profesional para la espalda, dirigido a poros e imperfecciones.',        duration: '60 min',      durationMin: 60, prices: [{ label: lang==='en'?'Unique':'Único', value: 200000 }] },
+  { id: 'depilacion-axila',      category: 'depilacion', name: lang==='en'?'Underarm':'Axila',                    desc: '',                                         duration: '20 min',      durationMin: 20, prices: [{ label: lang==='en'?'Wax':'Cera', value: 30000 }, { label: lang==='en'?'Machine':'Máquina', value: 20000 }] },
+  { id: 'depilacion-bikini',     category: 'depilacion', name: 'Bikini',                   desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: lang==='en'?'Wax':'Cera', value: 80000 }, { label: lang==='en'?'Machine':'Máquina', value: 60000 }] },
+  { id: 'depilacion-media-pierna',   category: 'depilacion', name: lang==='en'?'Half Leg':'Media Pierna',             desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: lang==='en'?'Wax':'Cera', value: 100000 }, { label: lang==='en'?'Machine':'Máquina', value: 70000 }] },
+  { id: 'depilacion-pierna-completa',   category: 'depilacion', name: lang==='en'?'Full Leg':'Pierna Completa',          desc: '',                                         duration: '45 min',      durationMin: 45, prices: [{ label: lang==='en'?'Wax':'Cera', value: 150000 }, { label: lang==='en'?'Machine':'Máquina', value: 85000 }] },
+  { id: 'depilacion-pecho',      category: 'depilacion', name: lang==='en'?'Chest':'Pecho',                    desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: lang==='en'?'Wax':'Cera', value: 80000 }, { label: lang==='en'?'Machine':'Máquina', value: 50000 }] },
+  { id: 'depilacion-espalda',    category: 'depilacion', name: lang==='en'?'Back':'Espalda',                  desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: lang==='en'?'Wax':'Cera', value: 60000 }, { label: lang==='en'?'Machine':'Máquina', value: 40000 }] },
+  { id: 'depilacion-zona-perianal',   category: 'depilacion', name: lang==='en'?'Perianal Zone':'Zona Perianal',            desc: '',                                         duration: '30 min',      durationMin: 30, prices: [{ label: lang==='en'?'Wax':'Cera', value: 65000 }, { label: lang==='en'?'Machine':'Máquina', value: 45000 }] },
+  { id: 'depilacion-cuerpo-completo',     category: 'depilacion', name: lang==='en'?'Full Body':'Cuerpo Completo',          desc: '',                                         duration: '2 h',         durationMin: 120,prices: [{ label: lang==='en'?'Wax':'Cera', value: 400000 }, { label: lang==='en'?'Machine':'Máquina', value: 250000 }] },
 ]
 
-const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
-const DAYS   = ['D','L','M','X','J','V','S']
+const MONTHS = (lang: string) => lang === 'en' ? ['January','February','March','April','May','June','July','August','September','October','November','December'] : ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
+const DAYS   = (lang: string) => lang === 'en' ? ['S','M','T','W','T','F','S'] : ['D','L','M','X','J','V','S']
 const TIMES  = ['10:00 AM','11:00 AM','12:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM','6:00 PM','7:00 PM']
 
 function fmtCop(n: number) {
@@ -115,16 +115,31 @@ function buildCal(year: number, month: number): Cell[] {
 }
 
 // ─── Main component ───────────────────────────────────────────────────────────
-export default function BookClient({ locale, t }: { locale: string; t: Dict['book'] }) {
+export default function BookClient({ locale, t, allowedServiceIds, initialServiceId, onClose }: { locale: string; t: Dict['book']; allowedServiceIds?: string[]; initialServiceId?: string; onClose?: () => void }) {
   const lang = (locale === 'en' ? 'en' : 'es') as Locale
 
-  const [step, setStep]           = useState<StepId>('category')
+  const initialSvc = initialServiceId 
+    ? SERVICES(lang).find(s => s.id === initialServiceId) ?? null 
+    : null;
+
+  const initialCategory = initialSvc 
+    ? initialSvc.category 
+    : (allowedServiceIds 
+      ? SERVICES(lang).find(s => allowedServiceIds.includes(s.id))?.category ?? null 
+      : null);
+
+  let initialStep: StepId = allowedServiceIds ? 'service' : 'category';
+  if (initialSvc) {
+     initialStep = initialSvc.prices.length > 1 ? 'price' : 'datetime';
+  }
+
+  const [step, setStep]           = useState<StepId>(initialStep)
   const [dir,  setDir]            = useState<1|-1>(1)
   const [anim, setAnim]           = useState(true)
 
   // selections
-  const [category, setCategory]   = useState<Category | null>(null)
-  const [service,  setService]    = useState<Service | null>(null)
+  const [category, setCategory]   = useState<Category | null>(initialCategory)
+  const [service,  setService]    = useState<Service | null>(initialSvc)
   const [priceIdx, setPriceIdx]   = useState<number>(0)
 
   // datetime
@@ -149,7 +164,9 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
   }
   function goBack() {
     const idx = stepIndex(step)
-    if (idx <= 0) return
+    if (step === 'category') return
+    if (step === 'service' && allowedServiceIds && !initialSvc) return
+    if (idx <= 0 || (initialSvc && step === initialStep)) return
     // Skip price step going back if not needed
     let prev = STEP_ORDER[idx - 1]
     if (prev === 'price' && service && service.prices.length <= 1) {
@@ -213,7 +230,7 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
     if (!service || !selDay || !selTime || !form.name || !form.phone) return
     setSubmitting(true)
 
-    const dateStr = `${MONTHS[calMonth]} ${selDay}, ${calYear}`
+    const dateStr = `${MONTHS(lang)[calMonth]} ${selDay}, ${calYear}`
     const svcLabel = `${service.name}${service.prices.length > 1 ? ` · ${service.prices[priceIdx].label}` : ''}`
     const price    = selectedPrice?.value ?? 0
 
@@ -245,7 +262,15 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
       hairMethod = selectedPrice?.label === 'Cera' ? 'wax' : 'machine'
     }
 
-    try { await fetch('/api/bookings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ serviceId: service.id, durationMinutes: payloadDuration, hairMethod: hairMethod, year: calYear, monthIndex: calMonth, day: selDay, timeSlot: selTime, locale: lang, name: form.name, phone: form.phone, requests: form.notes }) }) } catch {}
+    let bookingSource = 'organic'
+    try {
+      const p = new URLSearchParams(window.location.search)
+      if (p.get('utm_source') === 'ads' || sessionStorage.getItem('sem_trigger_value') === 'ads' || document.documentElement.classList.contains('is-ads')) {
+        bookingSource = 'ads'
+      }
+    } catch(e) {}
+
+    try { await fetch('/api/bookings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ serviceId: service.id, durationMinutes: payloadDuration, hairMethod: hairMethod, year: calYear, monthIndex: calMonth, day: selDay, timeSlot: selTime, locale: lang, name: form.name, phone: form.phone, requests: form.notes, source: bookingSource }) }) } catch {}
 
     setSubmitting(false)
     setConfirmed(true)
@@ -257,14 +282,14 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
       <div style={{ minHeight:'100vh', background:C.bg, display:'flex', alignItems:'center', justifyContent:'center', padding:'24px', paddingTop:'96px' }}>
         <div style={{ maxWidth:440, width:'100%', textAlign:'center' }}>
           <div style={{ marginBottom:20 }}><Icon name="check_circle" size={56} style={{ color:C.success }} /></div>
-          <p style={{ color:C.accent, fontSize:11, letterSpacing:'0.25em', textTransform:'uppercase', marginBottom:12 }}>Reserva confirmada</p>
-          <h1 style={{ color:C.text, fontSize:'clamp(28px,6vw,40px)', fontWeight:300, marginBottom:16 }}>Tu cita está reservada</h1>
-          <p style={{ color:C.sec, lineHeight:1.7, marginBottom:32 }}>Bienvenido/a, <strong style={{ color:C.text }}>{form.name}</strong>. Te esperamos en Diamond Spa.</p>
+          <p style={{ color:C.accent, fontSize:11, letterSpacing:'0.25em', textTransform:'uppercase', marginBottom:12 }}>{lang === 'en' ? 'Booking confirmed' : 'Reserva confirmada'}</p>
+          <h1 style={{ color:C.text, fontSize:'clamp(28px,6vw,40px)', fontWeight:300, marginBottom:16 }}>{lang === 'en' ? 'Your appointment is booked' : 'Tu cita está reservada'}</h1>
+          <p style={{ color:C.sec, lineHeight:1.7, marginBottom:32 }}>{lang === 'en' ? 'Welcome' : 'Bienvenido/a'}, <strong style={{ color:C.text }}>{form.name}</strong>. {lang === 'en' ? 'We look forward to seeing you at Diamond Spa.' : 'Te esperamos en Diamond Spa.'}</p>
           <div style={{ background:C.card, border:`1px solid ${C.cardBrd}`, borderRadius:6, padding:24, marginBottom:32, textAlign:'left' }}>
             {[
-              ['Servicio', service?.name ?? ''],
-              ['Fecha',    `${MONTHS[calMonth]} ${selDay}, ${calYear}`],
-              ['Hora',     selTime ?? ''],
+              [lang==='en'?'Service':'Servicio', service?.name ?? ''],
+              [lang==='en'?'Date':'Fecha',    `${MONTHS(lang)[calMonth]} ${selDay}, ${calYear}`],
+              [lang==='en'?'Time':'Hora',     selTime ?? ''],
               ['Total',    selectedPrice ? fmtCop(selectedPrice.value) : '—'],
             ].map(([l,v])=>(
               <div key={l} style={{ display:'flex', justifyContent:'space-between', padding:'10px 0', borderBottom:`1px solid ${C.div}` }}>
@@ -275,7 +300,7 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
           </div>
           <button onClick={()=>{ setConfirmed(false); setStep('category'); setCategory(null); setService(null); setSelDay(null); setSelTime(null); setForm({name:'',phone:'',email:'',notes:''}) }}
             style={{ background:'transparent', border:`1px solid ${C.cardBrd}`, color:C.sec, padding:'12px 28px', cursor:'pointer', fontSize:13, borderRadius:4 }}>
-            Hacer otra reserva
+            {lang === 'en' ? 'Make another booking' : 'Hacer otra reserva'}
           </button>
         </div>
       </div>
@@ -284,7 +309,7 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
 
   // ── Layout ────────────────────────────────────────────────────────────────
   return (
-    <div style={{ minHeight:'100vh', background:C.bg, fontFamily:'system-ui,-apple-system,sans-serif', display:'flex', flexDirection:'column' }}>
+    <div style={{ minHeight: onClose ? '100%' : '100vh', background:C.bg, fontFamily:'system-ui,-apple-system,sans-serif', display:'flex', flexDirection:'column' }}>
       <STYLES dir={dir} />
 
       {/* ── Top bar ──────────────────────────────────────────────────────── */}
@@ -298,8 +323,8 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
           {/* Back button */}
           <button
             onClick={goBack}
-            style={{ background:'none', border:'none', cursor: step==='category' ? 'default' : 'pointer',
-              color: step==='category' ? 'transparent' : C.sec,
+            style={{ background:'none', border:'none', cursor: (step==='category' || (step==='service' && allowedServiceIds && !initialSvc) || (initialSvc && step===initialStep)) ? 'default' : 'pointer',
+              color: (step==='category' || (step==='service' && allowedServiceIds && !initialSvc) || (initialSvc && step===initialStep)) ? 'transparent' : C.sec,
               padding:'8px', marginRight:8, lineHeight:1, flexShrink:0,
               transition:'color 0.2s', display:'flex', alignItems:'center',
             }}
@@ -310,7 +335,7 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
 
           {/* Step indicators */}
           <div style={{ flex:1, display:'flex', alignItems:'center', gap:6 }}>
-            {(['Categoría','Servicio','Fecha y hora','Confirmar'] as const).map((label, i) => {
+            {(lang === 'en' ? ['Category','Service','Date & time','Confirm'] : ['Categoría','Servicio','Fecha y hora','Confirmar']).map((label, i) => {
               // Map step index to 4 visible stages
               const stageMap = [0,1,1,2,3]
               const curStage = stageMap[progressStep]
@@ -338,6 +363,17 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
               )
             })}
           </div>
+
+          {/* Close button (Right) */}
+          {onClose && (
+            <button
+              onClick={onClose}
+              style={{ background:'none', border:'none', color:C.sec, padding:'8px', marginLeft:8, cursor:'pointer', display:'flex', alignItems:'center' }}
+              aria-label="Cerrar"
+            >
+              <Icon name="close" size={24} />
+            </button>
+          )}
         </div>
       </div>
 
@@ -352,9 +388,9 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
           {/* ── STEP: CATEGORY ─────────────────────────────────────────── */}
           {step === 'category' && (
             <div>
-              <StepTitle label="¿Qué servicio deseas?" sub="Selecciona una categoría para comenzar" />
+              <StepTitle label={lang === 'en' ? 'What service do you want?' : '¿Qué servicio deseas?'} sub={lang === 'en' ? 'Select a category to start' : 'Selecciona una categoría para comenzar'} />
               <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
-                {CATEGORIES.map(cat => (
+                {CATEGORIES(lang).map(cat => (
                   <button
                     key={cat.id}
                     className="tap-card"
@@ -380,8 +416,8 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
               {/* Trust badges */}
               <div style={{ marginTop:32, display:'flex', gap:10, flexWrap:'wrap' }}>
                 {[
-                  { icon:'star',        text:'4.9 en Google' },
-                  { icon:'person',      text:'+320 clientes' },
+                  { icon:'star',        text:lang === 'en' ? '4.9 on Google' : '4.9 en Google' },
+                  { icon:'person',      text:lang === 'en' ? '320+ clients' : '+320 clientes' },
                   { icon:'location_on', text:'El Poblado, Medellín' },
                 ].map(b=>(
                   <span key={b.text} style={{ color:C.sec, fontSize:12, background:`${C.card}88`, border:`1px solid ${C.div}`, padding:'6px 12px', borderRadius:20, display:'flex', alignItems:'center', gap:5 }}>
@@ -396,11 +432,11 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
           {step === 'service' && category && (
             <div>
               <StepTitle
-                label={CATEGORIES.find(c=>c.id===category)?.label ?? ''}
-                sub="Selecciona el servicio que deseas"
+                label={allowedServiceIds ? (lang === 'en' ? 'Select your massage' : 'Selecciona tu masaje') : CATEGORIES(lang).find(c=>c.id===category)?.label ?? ''}
+                sub={lang === 'en' ? 'Select the service you want' : 'Selecciona el servicio que deseas'}
               />
               <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-                {SERVICES.filter(s=>s.category===category).map(svc => (
+                {SERVICES(lang).filter(s => allowedServiceIds ? allowedServiceIds.includes(s.id) : s.category === category).map(svc => (
                   <button
                     key={svc.id}
                     className="tap-card"
@@ -419,7 +455,7 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
                     </div>
                     <div style={{ textAlign:'right', flexShrink:0 }}>
                       <div style={{ color:C.accent, fontSize:14, fontWeight:700 }}>
-                        {svc.prices.length > 1 ? `desde ${fmtCop(Math.min(...svc.prices.map(p=>p.value)))}` : fmtCop(svc.prices[0].value)}
+                        {svc.prices.length > 1 ? `${lang === 'en' ? 'from' : 'desde'} ${fmtCop(Math.min(...svc.prices.map(p=>p.value)))}` : fmtCop(svc.prices[0].value)}
                       </div>
                       {svc.duration && <div style={{ color:C.sec, fontSize:11, marginTop:2 }}>{svc.duration}</div>}
                     </div>
@@ -433,7 +469,7 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
           {/* ── STEP: PRICE / DURATION ─────────────────────────────────── */}
           {step === 'price' && service && (
             <div>
-              <StepTitle label={service.name} sub="¿Cuánto tiempo quieres?" />
+              <StepTitle label={service.name} sub={lang === 'en' ? 'How much time do you want?' : '¿Cuánto tiempo quieres?'} />
               <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
                 {service.prices.map((p, idx) => (
                   <button
@@ -470,7 +506,7 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
                 </div>
               )}
 
-              <StepTitle label="¿Cuándo te gustaría venir?" sub={selDay ? `${MONTHS[calMonth]} ${selDay} — elige tu hora` : "Selecciona el día"} />
+              <StepTitle label={lang === 'en' ? 'When would you like to come?' : '¿Cuándo te gustaría venir?'} sub={selDay ? `${MONTHS(lang)[calMonth]} ${selDay} — ${lang === 'en' ? 'choose your time' : 'elige tu hora'}` : (lang === 'en' ? 'Select the day' : 'Selecciona el día')} />
 
               {/* Calendar */}
               <div style={{ background:C.card, border:`1px solid ${C.cardBrd}`, borderRadius:10, padding:20, marginBottom:24 }}>
@@ -479,15 +515,15 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
                     style={{ background:'none', border:'none', color:C.sec, cursor:'pointer', padding:'4px 8px', lineHeight:1, display:'flex', alignItems:'center' }}>
                     <Icon name="chevron_left" size={22} /></button>
                   <span style={{ color:C.text, fontSize:14, fontWeight:600, textTransform:'uppercase', letterSpacing:'0.08em' }}>
-                    {MONTHS[calMonth]} {calYear}
+                    {MONTHS(lang)[calMonth]} {calYear}
                   </span>
                   <button onClick={()=>{ if(calMonth===11){setCalYear(y=>y+1);setCalMonth(0)}else setCalMonth(m=>m+1); setSelDay(null);setSelTime(null) }}
                     style={{ background:'none', border:'none', color:C.sec, cursor:'pointer', padding:'4px 8px', lineHeight:1, display:'flex', alignItems:'center' }}>
                     <Icon name="chevron_right" size={22} /></button>
                 </div>
                 <div style={{ display:'grid', gridTemplateColumns:'repeat(7,1fr)', marginBottom:8 }}>
-                  {DAYS.map(d=>(
-                    <div key={d} style={{ textAlign:'center', color:C.sec, fontSize:11, padding:'4px 0', fontWeight:600 }}>{d}</div>
+                  {DAYS(lang).map((d, i) =>(
+                    <div key={`day-${i}`} style={{ textAlign:'center', color:C.sec, fontSize:11, padding:'4px 0', fontWeight:600 }}>{d}</div>
                   ))}
                 </div>
                 <div style={{ display:'grid', gridTemplateColumns:'repeat(7,1fr)', gap:4 }}>
@@ -519,7 +555,7 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
               {selDay && (
                 <div className="slide-up">
                   <p style={{ color:C.sec, fontSize:11, letterSpacing:'0.15em', textTransform:'uppercase', marginBottom:14 }}>
-                    Horarios disponibles — {MONTHS[calMonth]} {selDay}
+                    {lang === 'en' ? 'Available times — ' : 'Horarios disponibles — '}{MONTHS(lang)[calMonth]} {selDay}
                   </p>
                   <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10 }}>
                     {TIMES.map(t=>{
@@ -543,7 +579,7 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
                   {selTime && (
                     <div className="slide-up" style={{ marginTop:16, color:C.success, fontSize:13, display:'flex', alignItems:'center', gap:8 }}>
                       <Icon name="check_circle" size={16} style={{ color:C.success }} />
-                      <span>Hora seleccionada — cargando siguiente paso…</span>
+                      <span>{lang === 'en' ? 'Time selected — loading next step...' : 'Hora seleccionada — cargando siguiente paso…'}</span>
                     </div>
                   )}
                 </div>
@@ -556,12 +592,12 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
             <form onSubmit={handleSubmit}>
               {/* Booking summary card */}
               <div style={{ background:C.card, border:`1px solid ${C.cardBrd}`, borderRadius:10, padding:'18px 20px', marginBottom:28 }}>
-                <p style={{ color:C.sec, fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase', marginBottom:14 }}>Tu reserva</p>
+                <p style={{ color:C.sec, fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase', marginBottom:14 }}>{lang === 'en' ? 'Your booking' : 'Tu reserva'}</p>
                 <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
                   {[
-                    { label:'Servicio', val: service?.name ?? '—', icon:'spa' },
-                    { label:'Fecha',    val: selDay ? `${MONTHS[calMonth]} ${selDay}, ${calYear}` : '—', icon:'calendar_month' },
-                    { label:'Hora',     val: selTime ?? '—', icon:'schedule' },
+                    { label: lang === 'en' ? 'Service' : 'Servicio', val: service?.name ?? '—', icon:'spa' },
+                    { label: lang === 'en' ? 'Date' : 'Fecha',    val: selDay ? `${MONTHS(lang)[calMonth]} ${selDay}, ${calYear}` : '—', icon:'calendar_month' },
+                    { label: lang === 'en' ? 'Time' : 'Hora',     val: selTime ?? '—', icon:'schedule' },
                   ].map(({label,val,icon})=>(
                     <div key={label} style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
                       <span style={{ color:C.sec, fontSize:12, display:'flex', alignItems:'center', gap:6 }}>
@@ -577,13 +613,13 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
                 </div>
               </div>
 
-              <StepTitle label="Tus datos" sub="Último paso — solo unos datos para confirmar" />
+              <StepTitle label={lang === 'en' ? 'Your details' : 'Tus datos'} sub={lang === 'en' ? 'Last step — just a few details to confirm' : 'Último paso — solo unos datos para confirmar'} />
 
               <div style={{ display:'flex', flexDirection:'column', gap:18, marginBottom:24 }}>
                 {([
-                  { id:'name',  label:'Nombre completo',      type:'text',  required:true },
-                  { id:'phone', label:'Teléfono / WhatsApp',  type:'tel',   required:true },
-                  { id:'email', label:'Email (opcional)',      type:'email', required:false },
+                  { id:'name',  label: lang === 'en' ? 'Full name' : 'Nombre completo',      type:'text',  required:true },
+                  { id:'phone', label: lang === 'en' ? 'Phone / WhatsApp' : 'Teléfono / WhatsApp',  type:'tel',   required:true },
+                  { id:'email', label: lang === 'en' ? 'Email (optional)' : 'Email (opcional)',      type:'email', required:false },
                 ] as const).map(f=>(
                   <div key={f.id}>
                     <label style={{ display:'block', color:C.sec, fontSize:11, letterSpacing:'0.12em', textTransform:'uppercase', marginBottom:8 }}>
@@ -608,13 +644,13 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
                 ))}
                 <div>
                   <label style={{ display:'block', color:C.sec, fontSize:11, letterSpacing:'0.12em', textTransform:'uppercase', marginBottom:8 }}>
-                    Solicitudes especiales
+                    {lang === 'en' ? 'Special requests' : 'Solicitudes especiales'}
                   </label>
                   <textarea
                     rows={3}
                     value={form.notes}
                     onChange={e=>setForm(p=>({...p,notes:e.target.value}))}
-                    placeholder="Preferencias, sensibilidades, notas de llegada…"
+                    placeholder={lang === 'en' ? 'Preferences, sensitivities, arrival notes...' : 'Preferencias, sensibilidades, notas de llegada…'}
                     className="inp"
                     style={{
                       width:'100%', boxSizing:'border-box',
@@ -631,8 +667,8 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
               <div style={{ display:'flex', gap:14, flexWrap:'wrap', marginBottom:100 }}>
                 {[
                   { icon:'star',     text:'4.9 en Google' },
-                  { icon:'verified', text:'+320 clientes atendidos' },
-                  { icon:'lock',     text:'Llegada privada 24h antes' },
+                  { icon:'verified', text:lang === 'en' ? '320+ clients served' : '+320 clientes atendidos' },
+                  { icon:'lock',     text:lang === 'en' ? 'Private arrival instructions 24h before' : 'Llegada privada 24h antes' },
                 ].map(b=>(
                   <span key={b.text} style={{ color:C.sec, fontSize:12, display:'flex', alignItems:'center', gap:5 }}>
                     <Icon name={b.icon} size={14} style={{ color:C.accent }} />{b.text}
@@ -655,7 +691,7 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
                       transition:'all 0.2s', letterSpacing:'0.03em',
                     }}
                   >
-                    {submitting ? 'Enviando…' : `Confirmar reserva${selectedPrice ? ` — ${fmtCop(selectedPrice.value)}` : ''}`}
+                    {submitting ? (lang === 'en' ? 'Sending...' : 'Enviando…') : `${lang === 'en' ? 'Confirm booking' : 'Confirmar reserva'}${selectedPrice ? ` — ${fmtCop(selectedPrice.value)}` : ''}`}
                   </button>
                   <div style={{ textAlign:'center' }}>
                     <a
@@ -663,7 +699,7 @@ export default function BookClient({ locale, t }: { locale: string; t: Dict['boo
                       target="_blank" rel="noopener noreferrer"
                       style={{ color:C.sec, fontSize:12, textDecoration:'none' }}
                     >
-                      ¿Prefieres WhatsApp? Reserva aquí →
+                      {lang === 'en' ? 'Prefer WhatsApp? Book here →' : '¿Prefieres WhatsApp? Reserva aquí →'}
                     </a>
                   </div>
                 </div>

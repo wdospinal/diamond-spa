@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { updateBookingStatus, readBookings } from '@/lib/bookings-store'
+import { updateBooking, readBookings } from '@/lib/bookings-store'
 import { readSubscriptions } from '@/lib/push-store'
 import { ensureWebPush, webpush } from '@/lib/web-push'
 import { bookingDisplayName } from '@/lib/booking-types'
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   }
 
   // Actualizar estado
-  const ok = await updateBookingStatus(id, 'arrived')
+  const ok = await updateBooking(id, { status: 'arrived' })
   if (!ok) {
     return NextResponse.json({ error: 'No se pudo actualizar' }, { status: 500 })
   }

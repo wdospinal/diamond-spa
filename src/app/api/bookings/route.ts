@@ -57,6 +57,7 @@ export async function POST(req: NextRequest) {
   const phone = typeof body.phone === 'string' ? body.phone.trim() : ''
   const requests = typeof body.requests === 'string' ? body.requests.trim() : ''
   const bookingLocale = body.locale === 'en' ? 'en' : 'es'
+  const source = body.source === 'ads' ? 'ads' : 'organic'
 
   const service = getServiceById(serviceId)
   if (!service) return bad('Invalid service')
@@ -97,6 +98,9 @@ export async function POST(req: NextRequest) {
       email: email || undefined,
       phone,
       requests: requests || undefined,
+      source,
+      status: 'pending',
+      paymentStatus: 'pending',
     })
 
     // Fire-and-forget email notification via Resend

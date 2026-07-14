@@ -5,8 +5,10 @@ import { isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
 import { SPA_ADDRESS, SPA_PHONES, SPA_RATING } from '@/lib/spa'
 import { JsonLd } from '@/components/JsonLd'
+import LandingHead from '@/components/LandingHead'
+import { mergeLandingMetadata } from '@/lib/landing-meta'
 
-export const dynamic = 'force-static'
+export const revalidate = 3600
 
 const content = {
   en: {
@@ -163,12 +165,15 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   const { lang } = await params
   const locale = (isLocale(lang) ? lang : 'es') as Locale
   const c = content[locale]
-  return {
-    title: c.metaTitle,
-    description: c.metaDesc,
-    alternates: buildAlternates('/dia-de-spa', locale),
-    openGraph: buildOpenGraph({ title: c.metaTitle, description: c.metaDesc, path: '/dia-de-spa', locale }),
-  }
+  return mergeLandingMetadata(
+    '/dia-de-spa',
+    locale,
+    { title: c.metaTitle, description: c.metaDesc },
+    {
+      alternates: buildAlternates('/dia-de-spa', locale),
+      openGraph: buildOpenGraph({ title: c.metaTitle, description: c.metaDesc, path: '/dia-de-spa', locale }),
+    },
+  )
 }
 
 export default async function DiaDeSpaPage({ params }: { params: Promise<{ lang: string }> }) {
@@ -182,6 +187,7 @@ export default async function DiaDeSpaPage({ params }: { params: Promise<{ lang:
     <>
       <JsonLd data={localBusinessJsonLd()} />
       <JsonLd data={faqJsonLd(faqs)} />
+      <LandingHead path="/dia-de-spa" locale={locale} />
 
       <main className="max-w-screen-xl mx-auto px-6 md:px-12 pt-32 pb-24">
 

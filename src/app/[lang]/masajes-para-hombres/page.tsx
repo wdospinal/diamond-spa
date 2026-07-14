@@ -8,19 +8,24 @@ import { getServiceSlug } from '@/lib/services'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
 import { JsonLd } from '@/components/JsonLd'
 import { ServiceCardLink } from '@/components/ServiceCardLink'
+import LandingHead from '@/components/LandingHead'
+import { mergeLandingMetadata } from '@/lib/landing-meta'
 
-export const dynamic = 'force-static'
+export const revalidate = 3600
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params
   const locale = (isLocale(lang) ? lang : 'es') as Locale
   const { metaTitle: title, metaDesc: description, ogImageAlt: imageAlt } = getDict(locale).masajesParaHombres
-  return {
-    title,
-    description,
-    alternates: buildAlternates('/masajes-para-hombres', locale),
-    openGraph: buildOpenGraph({ title, description, path: '/masajes-para-hombres', locale, imageAlt }),
-  }
+  return mergeLandingMetadata(
+    '/masajes-para-hombres',
+    locale,
+    { title, description },
+    {
+      alternates: buildAlternates('/masajes-para-hombres', locale),
+      openGraph: buildOpenGraph({ title, description, path: '/masajes-para-hombres', locale, imageAlt }),
+    },
+  )
 }
 
 export default async function MasajesParaHombresPage({ params }: { params: Promise<{ lang: string }> }) {
@@ -34,6 +39,7 @@ export default async function MasajesParaHombresPage({ params }: { params: Promi
     <>
       <JsonLd data={localBusinessJsonLd()} />
       <JsonLd data={faqJsonLd(p.faqs)} />
+      <LandingHead path="/masajes-para-hombres" locale={locale} />
 
       <main className="max-w-screen-xl mx-auto px-6 md:px-12 pt-32 pb-24">
 

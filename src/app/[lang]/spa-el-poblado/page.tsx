@@ -5,8 +5,10 @@ import { isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
 import { SPA_ADDRESS, SPA_HOURS, SPA_RATING, SPA_GOOGLE_MAPS_URL } from '@/lib/spa'
 import { JsonLd } from '@/components/JsonLd'
+import LandingHead from '@/components/LandingHead'
+import { mergeLandingMetadata } from '@/lib/landing-meta'
 
-export const dynamic = 'force-static'
+export const revalidate = 3600
 
 const content = {
   en: {
@@ -123,12 +125,15 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   const { lang } = await params
   const locale = (isLocale(lang) ? lang : 'es') as Locale
   const c = content[locale]
-  return {
-    title: c.metaTitle,
-    description: c.metaDesc,
-    alternates: buildAlternates('/spa-el-poblado', locale),
-    openGraph: buildOpenGraph({ title: c.metaTitle, description: c.metaDesc, path: '/spa-el-poblado', locale }),
-  }
+  return mergeLandingMetadata(
+    '/spa-el-poblado',
+    locale,
+    { title: c.metaTitle, description: c.metaDesc },
+    {
+      alternates: buildAlternates('/spa-el-poblado', locale),
+      openGraph: buildOpenGraph({ title: c.metaTitle, description: c.metaDesc, path: '/spa-el-poblado', locale }),
+    },
+  )
 }
 
 export default async function SpaElPobladoPage({ params }: { params: Promise<{ lang: string }> }) {
@@ -141,6 +146,7 @@ export default async function SpaElPobladoPage({ params }: { params: Promise<{ l
     <>
       <JsonLd data={localBusinessJsonLd()} />
       <JsonLd data={faqJsonLd([...c.faqs])} />
+      <LandingHead path="/spa-el-poblado" locale={locale} />
 
       <main className="max-w-screen-xl mx-auto px-6 md:px-12 pt-32 pb-24">
 

@@ -25,11 +25,16 @@ export type BookingRecord = {
   phone: string
   requests?: string
   /** Booking status, e.g. for arrivals */
-  status?: 'pending' | 'arrived'
+  status?: 'pending' | 'arrived' | 'cancelled' | 'completed'
+  /** Payment status */
+  paymentStatus?: 'pending' | 'paid'
+  /** Origin of the booking */
+  source?: 'organic' | 'ads'
 }
 
 /** Display name for a booking — uses the single `name` field, falling back to legacy first/last. */
-export function bookingDisplayName(b: BookingRecord): string {
-  if (b.name && b.name.trim()) return b.name.trim()
-  return [b.firstName, b.lastName].filter(Boolean).join(' ').trim()
+export function bookingDisplayName(b: BookingRecord | undefined | null): string {
+  if (!b) return 'Desconocido'
+  if (b.name && typeof b.name === 'string' && b.name.trim()) return b.name.trim()
+  return [b.firstName, b.lastName].filter(Boolean).join(' ').trim() || 'Desconocido'
 }

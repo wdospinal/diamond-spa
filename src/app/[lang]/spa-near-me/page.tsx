@@ -19,8 +19,10 @@ import { STATIC_REVIEWS } from '@/lib/reviews'
 import { ReviewsGrid } from '@/components/ReviewsGrid'
 import MapEmbed from '@/components/MapEmbed'
 import { JsonLd } from '@/components/JsonLd'
+import LandingHead from '@/components/LandingHead'
+import { mergeLandingMetadata } from '@/lib/landing-meta'
 
-export const dynamic = 'force-static'
+export const revalidate = 3600
 
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
@@ -35,12 +37,15 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     ? 'Looking for a luxury spa near you in Medellín? Diamond Spa is located in El Poblado, offering massages, facials, and hair removal in private rooms. Rated 4.9 ★ on Google.'
     : '¿Buscas un spa de lujo cerca de ti en Medellín? Diamond Spa está en El Poblado, con masajes, faciales y depilación en salas privadas. Calificado 4.9 ★ en Google.'
 
-  return {
-    title,
-    description,
-    alternates: buildAlternates('/spa-near-me', locale),
-    openGraph: buildOpenGraph({ title, description, path: '/spa-near-me', locale }),
-  }
+  return mergeLandingMetadata(
+    '/spa-near-me',
+    locale,
+    { title, description },
+    {
+      alternates: buildAlternates('/spa-near-me', locale),
+      openGraph: buildOpenGraph({ title, description, path: '/spa-near-me', locale }),
+    },
+  )
 }
 
 const serviceList = SERVICES as unknown as ServiceDef[]
@@ -108,7 +113,7 @@ const FAQ_ES = [
   },
   {
     q: '¿Qué servicios ofrecen?',
-    a: 'Ofrecemos masajes exclusivos (relajante, deep tissue, cuatro manos, duo, piedras volcánicas, deportivo, sensorial), faciales y cuidado de la piel (Hidrafacial, limpieza profunda, hidratación), y depilación profesional (axila, bikini, media pierna, pierna completa, pecho, espalda, cuerpo completo) — todo en salas privadas.',
+    a: 'Ofrecemos masajes exclusivos (relajante, deep tissue, cuatro manos, duo, piedras volcánicas, deportivo, sensitive), faciales y cuidado de la piel (Hidrafacial, limpieza profunda, hidratación), y depilación profesional (axila, bikini, media pierna, pierna completa, pecho, espalda, cuerpo completo) — todo en salas privadas.',
   },
   {
     q: '¿Hablan inglés?',
@@ -163,6 +168,7 @@ export default async function SpaNearMePage({ params }: { params: Promise<{ lang
     <>
       <JsonLd data={localBusinessJsonLd()} />
       <JsonLd data={faqJsonLd(faq.map(({ q, a }) => ({ question: q, answer: a })))} />
+      <LandingHead path="/spa-near-me" locale={locale} />
       <JsonLd data={breadcrumbJsonLd} />
 
       {/* Hero */}

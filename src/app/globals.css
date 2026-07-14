@@ -229,3 +229,281 @@ body {
 ::-webkit-scrollbar-track { background: #001524; }
 ::-webkit-scrollbar-thumb { background: #42484c; border-radius: 2px; }
 ::-webkit-scrollbar-thumb:hover { background: #a5cce6; }
+
+/* ── RICH EDITOR (Tiptap) ──────────────────────────────────────────────── */
+.rich-editor-content .tiptap {
+  outline: none;
+  min-height: 300px;
+  line-height: 1.75;
+  color: var(--color-on-surface);
+}
+.rich-editor-content .tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: color-mix(in srgb, var(--color-on-surface) 40%, transparent);
+  pointer-events: none;
+  float: left;
+  height: 0;
+}
+.rich-editor-content .tiptap h1,
+.rich-editor-content .tiptap h2,
+.rich-editor-content .tiptap h3,
+.rich-editor-content .tiptap h4 {
+  font-family: var(--font-headline), Georgia, serif;
+  color: var(--color-on-surface);
+  font-weight: 300;
+}
+.rich-editor-content .tiptap h1 { font-size: 2rem; margin: 1.5rem 0 0.5rem; }
+.rich-editor-content .tiptap h2 { font-size: 1.5rem; margin: 1.25rem 0 0.4rem; }
+.rich-editor-content .tiptap h3 { font-size: 1.15rem; color: var(--color-primary); margin: 1rem 0 0.35rem; }
+.rich-editor-content .tiptap h4 { font-size: 1rem; color: var(--color-on-surface-variant); margin: 0.75rem 0 0.3rem; }
+.rich-editor-content .tiptap p { margin: 0.5rem 0; }
+.rich-editor-content .tiptap ul { list-style: disc; padding-left: 1.5rem; margin: 0.75rem 0; }
+.rich-editor-content .tiptap ol { list-style: decimal; padding-left: 1.5rem; margin: 0.75rem 0; }
+.rich-editor-content .tiptap li { margin: 0.25rem 0; color: color-mix(in srgb, var(--color-on-surface) 80%, transparent); }
+.rich-editor-content .tiptap blockquote {
+  border-left: 2px solid var(--color-primary);
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  background: color-mix(in srgb, var(--color-primary) 5%, transparent);
+  font-style: italic;
+  color: color-mix(in srgb, var(--color-on-surface) 70%, transparent);
+}
+.rich-editor-content .tiptap code {
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  color: var(--color-primary);
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.85em;
+  font-family: monospace;
+}
+.rich-editor-content .tiptap pre {
+  background: var(--color-surface-container);
+  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 30%, transparent);
+  border-radius: 0.25rem;
+  padding: 1rem;
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+.rich-editor-content .tiptap pre code { background: transparent; padding: 0; color: var(--color-primary); }
+.rich-editor-content .tiptap hr { border: none; border-top: 1px solid color-mix(in srgb, var(--color-outline-variant) 30%, transparent); margin: 1.5rem 0; }
+.rich-editor-content .tiptap img { max-width: 100%; border-radius: 0.25rem; margin: 0.75rem 0; border: 1px solid color-mix(in srgb, var(--color-outline-variant) 30%, transparent); }
+.rich-editor-content .tiptap img.ProseMirror-selectednode { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.rich-editor-content .tiptap a { color: var(--color-primary); text-decoration: underline; text-underline-offset: 3px; }
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #001524;
+  color: #cfe5fa;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: rgba(165, 204, 230, 0.25);
+  color: #cfe5fa;
+}
+
+/* ─── Material Symbols ───────────────────────────────────────────────────── */
+/*
+ * Self-hosted: /fonts/material-symbols-outlined.woff2 (8.7 KB, our icon subset).
+ * Served from Vercel CDN with 1-year immutable cache — no Google Fonts round-trip.
+ * Subset contains only the icons listed in src/lib/material-symbols.ts.
+ * To update: re-download from the URL in material-symbols.ts and replace the file.
+ */
+@font-face {
+  font-family: 'Material Symbols Outlined';
+  font-style: normal;
+  font-weight: 100 700;
+  font-display: swap;
+  src: url('/fonts/material-symbols-outlined.woff2') format('woff2');
+}
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+  /* Reserve exact 1em × 1em — prevents layout shift when icon font swaps in */
+  width: 1em;
+  height: 1em;
+  overflow: hidden;
+  vertical-align: middle;
+}
+
+/* ─── Glass nav ──────────────────────────────────────────────────────────── */
+.glass-nav {
+  background: rgba(0, 21, 36, 0.82);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+/* ─── Mobile menu panel ──────────────────────────────────────────────────────
+   Entrance animation for the full-screen nav. The prefers-reduced-motion block
+   below neutralises both keyframes (animation-duration → 0.01ms).            */
+@keyframes menu-panel-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes menu-item-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+.mobile-menu-panel {
+  animation: menu-panel-in 0.22s ease-out;
+}
+.mobile-menu-item {
+  animation: menu-item-in 0.32s ease-out both;
+}
+
+/* ─── Grayscale-to-colour on hover ──────────────────────────────────────── */
+.img-hover-color {
+  filter: grayscale(100%) brightness(0.65);
+  transition: filter 0.4s ease-out, transform 0.4s ease-out;
+}
+.group:hover .img-hover-color {
+  filter: grayscale(0%) brightness(0.9);
+  transform: scale(1.04);
+}
+
+/* ─── Focus ring ─────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid #a5cce6;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/*
+ * Touch devices: hover never fires (and tap triggers a sticky :hover that
+ * "lights up" the image). Pin the image to its default, full-colour state with
+ * no filter and kill the hover transition/transform so tapping never changes it.
+ */
+@media (hover: none) and (pointer: coarse) {
+  .img-hover-color,
+  .group:hover .img-hover-color {
+    transition: none;
+    filter: none;
+    transform: none;
+  }
+}
+
+/* ─── Reduced motion ─────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .img-hover-color {
+    filter: grayscale(0%) brightness(0.9);
+    transition: none;
+  }
+  .group:hover .img-hover-color {
+    transform: none;
+  }
+}
+
+/* ─── Custom scrollbar ───────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #001524; }
+::-webkit-scrollbar-thumb { background: #42484c; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #a5cce6; }
+
+/* ── RICH EDITOR (Tiptap) ──────────────────────────────────────────────── */
+.rich-editor-content .tiptap {
+  outline: none;
+  min-height: 300px;
+  line-height: 1.75;
+  color: var(--color-on-surface);
+}
+.rich-editor-content .tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: color-mix(in srgb, var(--color-on-surface) 40%, transparent);
+  pointer-events: none;
+  float: left;
+  height: 0;
+}
+.rich-editor-content .tiptap h1,
+.rich-editor-content .tiptap h2,
+.rich-editor-content .tiptap h3,
+.rich-editor-content .tiptap h4 {
+  font-family: var(--font-headline), Georgia, serif;
+  color: var(--color-on-surface);
+  font-weight: 300;
+}
+.rich-editor-content .tiptap h1 { font-size: 2rem; margin: 1.5rem 0 0.5rem; }
+.rich-editor-content .tiptap h2 { font-size: 1.5rem; margin: 1.25rem 0 0.4rem; }
+.rich-editor-content .tiptap h3 { font-size: 1.15rem; color: var(--color-primary); margin: 1rem 0 0.35rem; }
+.rich-editor-content .tiptap h4 { font-size: 1rem; color: var(--color-on-surface-variant); margin: 0.75rem 0 0.3rem; }
+.rich-editor-content .tiptap p { margin: 0.5rem 0; }
+.rich-editor-content .tiptap ul { list-style: disc; padding-left: 1.5rem; margin: 0.75rem 0; }
+.rich-editor-content .tiptap ol { list-style: decimal; padding-left: 1.5rem; margin: 0.75rem 0; }
+.rich-editor-content .tiptap li { margin: 0.25rem 0; color: color-mix(in srgb, var(--color-on-surface) 80%, transparent); }
+.rich-editor-content .tiptap blockquote {
+  border-left: 2px solid var(--color-primary);
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  background: color-mix(in srgb, var(--color-primary) 5%, transparent);
+  font-style: italic;
+  color: color-mix(in srgb, var(--color-on-surface) 70%, transparent);
+}
+.rich-editor-content .tiptap code {
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  color: var(--color-primary);
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.85em;
+  font-family: monospace;
+}
+.rich-editor-content .tiptap pre {
+  background: var(--color-surface-container);
+  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 30%, transparent);
+  border-radius: 0.25rem;
+  padding: 1rem;
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+.rich-editor-content .tiptap pre code { background: transparent; padding: 0; color: var(--color-primary); }
+.rich-editor-content .tiptap hr { border: none; border-top: 1px solid color-mix(in srgb, var(--color-outline-variant) 30%, transparent); margin: 1.5rem 0; }
+.rich-editor-content .tiptap img { max-width: 100%; border-radius: 0.25rem; margin: 0.75rem 0; border: 1px solid color-mix(in srgb, var(--color-outline-variant) 30%, transparent); }
+.rich-editor-content .tiptap img.ProseMirror-selectednode { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.rich-editor-content .tiptap a { color: var(--color-primary); text-decoration: underline; text-underline-offset: 3px; }
+.rich-editor-content .tiptap a:hover { filter: brightness(1.2); }
+.rich-editor-content .tiptap strong { color: var(--color-on-surface); font-weight: 600; }
+.rich-editor-content .tiptap em { color: var(--color-primary); font-style: italic; }
+.rich-editor-content .tiptap s { color: var(--color-on-surface-variant); text-decoration: line-through; }
+
+/* ─── SEM / Google Ads mode (.is-ads) ───────────────────────────────────────
+   Applied by the inline script in layout.tsx when the URL contains the SEM
+   trigger param (default: ?utm_source=ads).
+   The nav and footer are hidden so paid-traffic visitors cannot navigate away,
+   maximising conversion rate for the campaign. Googlebot always crawls the
+   clean URL (no params), so SEO is unaffected.
+
+   NOTE: Landing pages under /l/[slug] have their own layout.tsx that does NOT
+   render the global nav/footer, so .is-ads CSS is NOT needed there.
+   These rules apply to any other page that may use SEM mode.
+*/
+.is-ads #global-nav,
+.is-ads footer {
+  display: none !important;
+}
+/* Remove the top padding-top that compensates for the fixed nav */
+.is-ads main {
+  padding-top: 0 !important;
+}

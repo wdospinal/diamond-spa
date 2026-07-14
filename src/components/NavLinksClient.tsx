@@ -5,6 +5,8 @@ import { usePathname } from 'next/navigation'
 import { type Locale } from '@/lib/i18n'
 import { LOCALES_DISPLAY_ORDER } from '@/lib/constants'
 
+import { getLocalizedPath } from '@/lib/routes'
+
 interface NavLink {
   label: string
   href: string
@@ -20,9 +22,7 @@ export default function NavLinksClient({
   const pathname = usePathname()
 
   function switchedPath(targetLocale: Locale) {
-    if (!pathname) return `/${targetLocale}`
-    const stripped = pathname.replace(/^\/(en|es)/, '') || '/'
-    return `/${targetLocale}${stripped}`
+    return getLocalizedPath(pathname, targetLocale)
   }
 
   function isActive(href: string) {

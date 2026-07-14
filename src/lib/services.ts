@@ -45,7 +45,7 @@ export const SERVICES = [
     pricingModel: 'duration' as const,
     shortDesc: {
       en: 'For those seeking real therapeutic relief, especially with high physical activity or work-related stress.',
-      es: 'Es para quienes buscan un alivio terapéutico real, especialmente en una zona con mucha actividad física o estres laboral.',
+      es: 'Es para quienes buscan un alivio terapéutico real, especialmente en una zona con mucha actividad física o estrés laboral.',
     },
     description: {
       en: 'A targeted technique using slow, firm strokes and focused pressure to release deep-seated muscle tension, chronic knots, and postural imbalances. Particularly effective for people with demanding physical routines, desk-based posture issues, or after intense athletic activity.',
@@ -113,7 +113,7 @@ export const SERVICES = [
     pricingModel: 'duration' as const,
     shortDesc: {
       en: 'A perfect combination of strong manual therapy and percussion technology to reach deep muscles and release tension.',
-      es: 'Es una combinación perfecta de terapia manual fuerte y tecnologia de percusion, para llegar a los músculos profundos y relajarlos.',
+      es: 'Es una combinación perfecta de terapia manual fuerte y tecnología de percusión, para llegar a los músculos profundos y relajarlos.',
     },
     description: {
       en: 'Take your recovery to the next level. We combine deep tissue therapy with percussion gun and assisted stretching to eliminate fatigue and prevent injuries. The essential maintenance in El Poblado.',
@@ -122,9 +122,9 @@ export const SERVICES = [
     prices: { 30: 140_000, 60: 240_000, 90: 300_000 },
   },
   {
-    id: 'sensorial',
-    slugEn: 'sensory',
-    name: { en: 'Sensory massage', es: 'Masaje Sensorial' },
+    id: 'sensitive',
+    slugEn: 'sensitive',
+    name: { en: 'Sensitive massage', es: 'Masaje Sensitivo' },
     category: { en: 'Exclusive Massages', es: 'Masajes Exclusivos' },
     categoryId: 'massages' as const,
     pricingModel: 'duration' as const,

@@ -6,8 +6,10 @@ import { SERVICES, formatCop } from '@/lib/services'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
 import { SPA_ADDRESS, SPA_PHONES, SPA_RATING } from '@/lib/spa'
 import { JsonLd } from '@/components/JsonLd'
+import LandingHead from '@/components/LandingHead'
+import { mergeLandingMetadata } from '@/lib/landing-meta'
 
-export const dynamic = 'force-static'
+export const revalidate = 3600
 
 const hairRemovalServices = (SERVICES as unknown as { id: string; name: { en: string; es: string }; shortDesc: { en: string; es: string }; waxPrice: number; machinePrice: number; categoryId: string }[]).filter(s => s.categoryId === 'hair-removal')
 
@@ -134,12 +136,15 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   const { lang } = await params
   const locale = (isLocale(lang) ? lang : 'es') as Locale
   const c = content[locale]
-  return {
-    title: c.metaTitle,
-    description: c.metaDesc,
-    alternates: buildAlternates('/depilacion-medellin', locale),
-    openGraph: buildOpenGraph({ title: c.metaTitle, description: c.metaDesc, path: '/depilacion-medellin', locale, imageAlt: c.ogImageAlt }),
-  }
+  return mergeLandingMetadata(
+    '/depilacion-medellin',
+    locale,
+    { title: c.metaTitle, description: c.metaDesc },
+    {
+      alternates: buildAlternates('/depilacion-medellin', locale),
+      openGraph: buildOpenGraph({ title: c.metaTitle, description: c.metaDesc, path: '/depilacion-medellin', locale, imageAlt: c.ogImageAlt }),
+    },
+  )
 }
 
 export default async function DepilacionMedellinPage({ params }: { params: Promise<{ lang: string }> }) {
@@ -152,6 +157,7 @@ export default async function DepilacionMedellinPage({ params }: { params: Promi
     <>
       <JsonLd data={localBusinessJsonLd()} />
       <JsonLd data={faqJsonLd([...c.faqs])} />
+      <LandingHead path="/depilacion-medellin" locale={locale} />
 
       <main className="max-w-screen-xl mx-auto px-6 md:px-12 pt-32 pb-24">
 

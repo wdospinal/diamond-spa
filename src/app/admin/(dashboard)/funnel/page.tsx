@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import DualCurrency from '@/components/DualCurrency'
 
 type Stage = {
   key: string
@@ -12,6 +13,8 @@ type Stage = {
   count: number
   pctOfTop: number
   pctOfPrev: number
+  revenueUsd?: number
+  revenueCop?: number
 }
 
 type FunnelResponse = {
@@ -76,15 +79,12 @@ export default function FunnelDashboardPage() {
   }
 
   const stages = data?.stages ?? []
-  const hasData = (stages[0]?.count ?? 0) > 0
+  const hasData = stages.some(s => s.count > 0)
 
   return (
     <div className="min-h-screen px-6 pt-14 pb-10 md:px-12 md:pt-16 md:pb-12 max-w-5xl mx-auto">
       <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10 mt-2">
         <div>
-          <span className="font-label text-[#a5cce6] tracking-[0.3em] uppercase text-xs block mb-2">
-            Diamond Spa
-          </span>
           <h1 className="font-headline text-3xl md:text-4xl text-[#cfe5fa]">Embudo de ventas</h1>
           {data ? (
             <p className="text-[11px] text-[#5c656d] font-body mt-2">
@@ -109,12 +109,6 @@ export default function FunnelDashboardPage() {
               </button>
             ))}
           </div>
-          <Link
-            href="/admin"
-            className="font-label text-xs uppercase tracking-widest text-[#8a9299] hover:text-[#a5cce6] px-2"
-          >
-            ← Panel
-          </Link>
         </div>
       </header>
 
@@ -151,9 +145,9 @@ export default function FunnelDashboardPage() {
                         {s.label}
                       </span>
                     </div>
-                    <div className="flex-1 flex justify-center">
+                    <div className="flex-1 flex flex-col items-center justify-center">
                       <div
-                        className="h-12 md:h-14 flex items-center justify-center rounded-sm transition-all"
+                        className="h-12 md:h-14 flex items-center justify-center rounded-sm transition-all w-full"
                         style={{ width: `${Math.max(s.pctOfTop * 100, 6)}%`, backgroundColor: s.color }}
                         title={`${s.count} sesiones`}
                       >
@@ -161,6 +155,11 @@ export default function FunnelDashboardPage() {
                           {s.count.toLocaleString('es-CO')}
                         </span>
                       </div>
+                      {s.revenueUsd !== undefined && (
+                        <div className="mt-2 text-center">
+                          <DualCurrency usd={s.revenueUsd} copOverride={s.revenueCop} tone="income" align="left" />
+                        </div>
+                      )}
                     </div>
                     <div className="w-20 md:w-24 shrink-0 text-right">
                       <span className="block text-[#cfe5fa] text-sm tabular-nums">
