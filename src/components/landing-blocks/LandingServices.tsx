@@ -3,18 +3,16 @@
 import { getServiceById, serviceDisplayName, serviceShortDesc } from '@/lib/services'
 import { Locale } from '@/lib/i18n'
 import { formatCopValue } from '@/lib/format-currency'
+import { pushEvent } from '@/lib/gtm'
 
 
 
 function trackAdsClick(source: string, serviceSlug?: string) {
-  if (typeof window !== 'undefined' && (window as any).gtag) {
-    ;(window as any).gtag("event", "booking_click", {
-      event_category: "engagement",
-      event_label: serviceSlug ?? "general",
-      source,
-      campaign: "nucleo_hombres",
-    })
-  }
+  pushEvent('booking_click', {
+    event_label: serviceSlug ?? 'general',
+    source,
+    campaign: 'masajes_ads',
+  })
 }
 
 export function LandingServices({
@@ -68,7 +66,7 @@ export function LandingServices({
                   <p className="text-lg font-semibold text-[#0a1628]">{formatCopValue(basePrice)}</p>
                 </div>
                 <a
-                  href="#reservar"
+                  href={`#reservar-${id}`}
                   rel="noopener noreferrer"
                   onClick={() => trackAdsClick('service_card', id)}
                   className="text-center bg-[#0a1628] text-white text-sm font-medium py-2.5 rounded-full hover:bg-[#132540] transition-colors"

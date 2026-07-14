@@ -115,20 +115,31 @@ function buildCal(year: number, month: number): Cell[] {
 }
 
 // ─── Main component ───────────────────────────────────────────────────────────
-export default function BookClient({ locale, t, allowedServiceIds, onClose }: { locale: string; t: Dict['book']; allowedServiceIds?: string[]; onClose?: () => void }) {
+export default function BookClient({ locale, t, allowedServiceIds, initialServiceId, onClose }: { locale: string; t: Dict['book']; allowedServiceIds?: string[]; initialServiceId?: string; onClose?: () => void }) {
   const lang = (locale === 'en' ? 'en' : 'es') as Locale
 
-  const initialCategory = allowedServiceIds 
-    ? SERVICES(lang).find(s => allowedServiceIds.includes(s.id))?.category ?? null 
+  const initialSvc = initialServiceId 
+    ? SERVICES(lang).find(s => s.id === initialServiceId) ?? null 
     : null;
 
-  const [step, setStep]           = useState<StepId>(allowedServiceIds ? 'service' : 'category')
+  const initialCategory = initialSvc 
+    ? initialSvc.category 
+    : (allowedServiceIds 
+      ? SERVICES(lang).find(s => allowedServiceIds.includes(s.id))?.category ?? null 
+      : null);
+
+  let initialStep: StepId = allowedServiceIds ? 'service' : 'category';
+  if (initialSvc) {
+     initialStep = initialSvc.prices.length > 1 ? 'price' : 'datetime';
+  }
+
+  const [step, setStep]           = useState<StepId>(initialStep)
   const [dir,  setDir]            = useState<1|-1>(1)
   const [anim, setAnim]           = useState(true)
 
   // selections
   const [category, setCategory]   = useState<Category | null>(initialCategory)
-  const [service,  setService]    = useState<Service | null>(null)
+  const [service,  setService]    = useState<Service | null>(initialSvc)
   const [priceIdx, setPriceIdx]   = useState<number>(0)
 
   // datetime
@@ -153,15 +164,9 @@ export default function BookClient({ locale, t, allowedServiceIds, onClose }: { 
   }
   function goBack() {
     const idx = stepIndex(step)
-    if (step === 'category') {
-      if (onClose) onClose()
-      return
-    }
-    if (step === 'service' && allowedServiceIds) {
-      if (onClose) onClose()
-      return
-    }
-    if (idx <= 0) return
+    if (step === 'category') return
+    if (step === 'service' && allowedServiceIds && !initialSvc) return
+    if (idx <= 0 || (initialSvc && step === initialStep)) return
     // Skip price step going back if not needed
     let prev = STEP_ORDER[idx - 1]
     if (prev === 'price' && service && service.prices.length <= 1) {
@@ -318,14 +323,14 @@ export default function BookClient({ locale, t, allowedServiceIds, onClose }: { 
           {/* Back button */}
           <button
             onClick={goBack}
-            style={{ background:'none', border:'none', cursor: (step==='category' && !onClose) ? 'default' : 'pointer',
-              color: (step==='category' && !onClose) ? 'transparent' : C.sec,
+            style={{ background:'none', border:'none', cursor: (step==='category' || (step==='service' && allowedServiceIds && !initialSvc) || (initialSvc && step===initialStep)) ? 'default' : 'pointer',
+              color: (step==='category' || (step==='service' && allowedServiceIds && !initialSvc) || (initialSvc && step===initialStep)) ? 'transparent' : C.sec,
               padding:'8px', marginRight:8, lineHeight:1, flexShrink:0,
               transition:'color 0.2s', display:'flex', alignItems:'center',
             }}
             aria-label="Volver"
           >
-            <Icon name={(step === 'category' && onClose) || (step === 'service' && allowedServiceIds && onClose) ? 'close' : 'chevron_left'} size={20} />
+            <Icon name="chevron_left" size={20} />
           </button>
 
           {/* Step indicators */}
@@ -358,6 +363,17 @@ export default function BookClient({ locale, t, allowedServiceIds, onClose }: { 
               )
             })}
           </div>
+
+          {/* Close button (Right) */}
+          {onClose && (
+            <button
+              onClick={onClose}
+              style={{ background:'none', border:'none', color:C.sec, padding:'8px', marginLeft:8, cursor:'pointer', display:'flex', alignItems:'center' }}
+              aria-label="Cerrar"
+            >
+              <Icon name="close" size={24} />
+            </button>
+          )}
         </div>
       </div>
 

@@ -1,14 +1,13 @@
 'use client'
 
+import { pushEvent } from '@/lib/gtm'
+
 function trackAdsClick(source: string) {
-  if (typeof window !== 'undefined' && (window as any).gtag) {
-    ;(window as any).gtag("event", "booking_click", {
-      event_category: "engagement",
-      event_label: "general",
-      source,
-      campaign: "nucleo_hombres",
-    })
-  }
+  pushEvent('booking_click', {
+    event_label: 'general',
+    source,
+    campaign: 'masajes_ads',
+  })
 }
 
 export function LandingFinalCTA({

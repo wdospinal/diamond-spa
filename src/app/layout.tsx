@@ -61,6 +61,21 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="dns-prefetch" href="https://api.dicebear.com" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#0a1628" />
+
+        {/* Google Tag Manager */}
+        <Script
+          id="gtm-script"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-W3WCSFP4');`,
+          }}
+        />
+        {/* End Google Tag Manager */}
+
         {/*
           Anti-FOUC SEM script — runs synchronously before first paint.
           Reads URL params and adds .is-ads to <html> when the trigger matches.
@@ -68,9 +83,21 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           any visible flash. The canonical URL (without params) is always the one
           Googlebot indexes for SEO — no cloaking concerns.
           Default trigger: ?utm_source=ads  (configurable per-page from the admin).
+        */}
         {/* Script moved to body */}
       </head>
       <body className="bg-surface text-on-surface font-body antialiased">
+        {/* Google Tag Manager (noscript) */}
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-W3WCSFP4"
+            height="0"
+            width="0"
+            style={{ display: 'none', visibility: 'hidden' }}
+          />
+        </noscript>
+        {/* End Google Tag Manager (noscript) */}
+
         {children}
         <ClientProviders />
         
