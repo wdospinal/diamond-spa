@@ -45,7 +45,7 @@ export const SERVICES = [
     pricingModel: 'duration' as const,
     shortDesc: {
       en: 'For those seeking real therapeutic relief, especially with high physical activity or work-related stress.',
-      es: 'Es para quienes buscan un alivio terapéutico real, especialmente en una zona con mucha actividad física o estres laboral.',
+      es: 'Es para quienes buscan un alivio terapéutico real, especialmente en una zona con mucha actividad física o estrés laboral.',
     },
     description: {
       en: 'A targeted technique using slow, firm strokes and focused pressure to release deep-seated muscle tension, chronic knots, and postural imbalances. Particularly effective for people with demanding physical routines, desk-based posture issues, or after intense athletic activity.',
@@ -113,7 +113,7 @@ export const SERVICES = [
     pricingModel: 'duration' as const,
     shortDesc: {
       en: 'A perfect combination of strong manual therapy and percussion technology to reach deep muscles and release tension.',
-      es: 'Es una combinación perfecta de terapia manual fuerte y tecnologia de percusion, para llegar a los músculos profundos y relajarlos.',
+      es: 'Es una combinación perfecta de terapia manual fuerte y tecnología de percusión, para llegar a los músculos profundos y relajarlos.',
     },
     description: {
       en: 'Take your recovery to the next level. We combine deep tissue therapy with percussion gun and assisted stretching to eliminate fatigue and prevent injuries. The essential maintenance in El Poblado.',
@@ -129,12 +129,12 @@ export const SERVICES = [
     categoryId: 'massages' as const,
     pricingModel: 'duration' as const,
     shortDesc: {
-      en: 'Light-touch technique using gentle pressure and feather strokes designed to calm the peripheral nervous system and reduce skin hypersensitivity. Suitable for clients with reactive skin, heightened nervous system sensitivity, or as a first massage experience.',
-      es: 'Técnica de contacto suave con presión ligera y movimientos de plumas, diseñada para calmar el sistema nervioso periférico y reducir la hipersensibilidad cutánea. Indicada para clientes con piel reactiva, sensibilidad elevada del sistema nervioso o como primera experiencia de masaje.',
+      en: 'Where delicacy becomes pleasure. Enjoy slow movements and a sensory caress with feathers designed to awaken your senses without haste. Ideal for your first time at Diamond or to let yourself be carried away by a deeply seductive calm.',
+      es: 'Donde la delicadeza se vuelve placer. Disfruta de movimientos lentos y una caricia sensorial con plumas diseñada para despertar tus sentidos sin prisas. Ideal para tu primera vez en Diamond o para dejarte llevar por una calma profundamente seductora.',
     },
     description: {
-      en: 'A carefully adapted massage for clients with sensitive skin, heightened nervous system reactivity, or conditions that require a gentler approach. Uses hypoallergenic oils, very light pressure, and slow deliberate movements to provide genuine therapeutic relief without overstimulation. Equally suitable as an introduction for first-time massage clients.',
-      es: 'Masaje adaptado con cuidado para clientes con piel sensible, reactividad elevada del sistema nervioso o condiciones que requieren un enfoque más suave. Utiliza aceites hipoalergénicos, presión muy ligera y movimientos lentos y deliberados para brindar un alivio terapéutico real sin sobreestimulación. También es ideal como introducción para quienes reciben un masaje por primera vez.',
+      en: 'A massage designed to promote deep relaxation through gentle movements and carefully applied sensory stimulation. Ideal for reducing stress, improving mental disconnection, and fostering a holistic sense of well-being.',
+      es: 'Un masaje diseñado para favorecer la relajación profunda mediante movimientos suaves y estímulos sensoriales cuidadosamente aplicados. Ideal para reducir el estrés, mejorar la desconexión mental y promover una sensación de bienestar integral.',
     },
     prices: { 30: 130_000, 60: 220_000, 90: 280_000 },
   },

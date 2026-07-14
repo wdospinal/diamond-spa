@@ -154,7 +154,7 @@ function HomeServices({ locale }: { locale: Locale }) {
   const h = getDict(locale).home
   const deepTissueDesc = locale === 'en' ? FEATURED_SERVICES.deepTissue.shortDesc.en : FEATURED_SERVICES.deepTissue.shortDesc.es
   const facialDesc = locale === 'en' ? FEATURED_SERVICES.facial.shortDesc.en : FEATURED_SERVICES.facial.shortDesc.es
-  const relaxDesc = locale === 'en' ? FEATURED_SERVICES.sensitive.shortDesc.en : FEATURED_SERVICES.sensitive.shortDesc.es
+  const sensitiveDesc = locale === 'en' ? FEATURED_SERVICES.sensitive.shortDesc.en : FEATURED_SERVICES.sensitive.shortDesc.es
   return (
     <section className="py-28 px-6 md:px-12 bg-surface-container-low">
       <div className="max-w-screen-2xl mx-auto">
@@ -223,7 +223,7 @@ function HomeServices({ locale }: { locale: Locale }) {
             <div className="relative z-10 p-10 max-w-2xl">
               <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-3 block">{h.relaxLabel}</span>
               <h3 className="font-headline text-3xl text-on-surface mb-3">{h.relaxTitle}</h3>
-              <p className="font-body text-secondary text-sm leading-relaxed mb-5">{relaxDesc}</p>
+              <p className="font-body text-secondary text-sm leading-relaxed mb-5">{sensitiveDesc}</p>
               <ServiceCardLink href={`/${locale}/services/${getServiceSlug(FEATURED_SERVICES.sensitive, locale)}`} from={SERVICE_DETAIL_FROM_HOME} aria-label={locale === 'es' ? `Ver detalles: ${h.relaxTitle}` : `View details: ${h.relaxTitle}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
                 {h.viewDetails} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
               </ServiceCardLink>

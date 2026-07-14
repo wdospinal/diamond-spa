@@ -79,7 +79,7 @@ export const IMG_THERAPISTS = [
   '/therapists/daniela.avif',  // Daniela Salina
   '/therapists/sary.avif',     // Sary Paez
   '/therapists/camila.avif',   // Camila Mazo
-  '/therapists/juliana.avif',  // Juliana Piedrahita Roldán
+  '/therapists/ana-maria.avif',  // Ana Maria
   '/therapists/sheila.avif',   // Sheila
 ]
 
@@ -88,6 +88,6 @@ export const IMG_THERAPISTS_WEBP = [
   '/therapists/daniela.webp',
   '/therapists/sary.webp',
   '/therapists/camila.webp',
-  '/therapists/juliana.webp',
+  '/therapists/ana-maria.webp',
   '/therapists/sheila.webp',
 ]
