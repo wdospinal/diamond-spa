@@ -1,7 +1,11 @@
 import { mkdir, readFile, writeFile } from 'fs/promises'
 import { dirname, join } from 'path'
 import { kvCommand, kvConfigured } from '@/lib/kv'
+import { sbDelete, sbSelect, sbUpsert, supabaseConfigured } from '@/lib/supabase'
 import type { PushSubscription } from 'web-push'
+
+// Backend preference: Supabase (`push_subscriptions` table, keyed by endpoint)
+// → Vercel KV → data/push-subs.json. Schema: supabase/migrations/0001_init.sql.
 
 const FILE = join(process.cwd(), 'data', 'push-subs.json')
 const LIST_KEY = 'push_subscriptions'
@@ -22,6 +26,10 @@ async function saveFileSubs(list: PushSubscription[]): Promise<void> {
 }
 
 export async function readSubscriptions(): Promise<PushSubscription[]> {
+  if (supabaseConfigured()) {
+    const rows = await sbSelect<{ data: PushSubscription }>('push_subscriptions', 'select=data')
+    return rows.map(r => r.data)
+  }
   if (kvConfigured()) {
     const raw = await kvCommand(['LRANGE', LIST_KEY, 0, -1])
     if (!Array.isArray(raw)) return []
@@ -37,6 +45,11 @@ export async function readSubscriptions(): Promise<PushSubscription[]> {
 }
 
 export async function addSubscription(sub: PushSubscription): Promise<void> {
+  if (supabaseConfigured()) {
+    // Endpoint is the primary key, so re-subscribing just overwrites the row.
+    await sbUpsert('push_subscriptions', { endpoint: sub.endpoint, data: sub })
+    return
+  }
   if (kvConfigured()) {
     // Avoid exact duplicates (simple check by endpoint)
     const existing = await readSubscriptions()
@@ -53,6 +66,10 @@ export async function addSubscription(sub: PushSubscription): Promise<void> {
 }
 
 export async function removeSubscription(endpoint: string): Promise<void> {
+  if (supabaseConfigured()) {
+    await sbDelete('push_subscriptions', `endpoint=eq.${encodeURIComponent(endpoint)}`)
+    return
+  }
   if (kvConfigured()) {
     // Read all, filter, and rewrite the list
     const existing = await readSubscriptions()

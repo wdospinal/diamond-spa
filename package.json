@@ -9,6 +9,7 @@
     "lint": "next lint",
     "clean": "rm -rf .next node_modules/.cache",
     "refresh-reviews": "node scripts/fetch-place-details.mjs",
+    "migrate-to-supabase": "node scripts/migrate-to-supabase.mjs",
     "postinstall": "node -e \"require('fs').writeFileSync('node_modules/next/dist/build/polyfills/polyfill-module.js','// intentionally emptied — all polyfilled APIs are natively supported by Chrome 92+, FF 90+, Safari 15.4+');\" && echo 'Polyfill-module patched.'"
   },
   "dependencies": {

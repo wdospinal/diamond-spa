@@ -2,6 +2,10 @@ import { mkdir, readFile, writeFile } from 'fs/promises'
 import { dirname, join } from 'path'
 import { randomUUID } from 'crypto'
 import { kvCommand, kvConfigured } from '@/lib/kv'
+import { sbDelete, sbSelect, sbUpsert, supabaseConfigured } from '@/lib/supabase'
+
+// Backend preference: Supabase (`blog_posts` table, full post in a jsonb `data`
+// column) → Vercel KV → data/posts.json. Schema: supabase/migrations/0001_init.sql.
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -59,6 +63,10 @@ function parseKvPosts(raw: unknown): BlogPost[] {
 // ─── Public API ──────────────────────────────────────────────────────────────
 
 export async function readAllPosts(): Promise<BlogPost[]> {
+  if (supabaseConfigured()) {
+    const rows = await sbSelect<{ data: BlogPost }>('blog_posts', 'select=data&order=published_at.asc')
+    return rows.map(r => r.data)
+  }
   if (kvConfigured()) {
     const raw = await kvCommand(['LRANGE', KV_KEY, 0, -1])
     return parseKvPosts(raw)
@@ -99,7 +107,9 @@ export async function savePost(data: Omit<BlogPost, 'id'> & { id?: string }): Pr
     all.splice(existing, 1)
   }
 
-  if (kvConfigured()) {
+  if (supabaseConfigured()) {
+    await sbUpsert('blog_posts', { id: post.id, data: post })
+  } else if (kvConfigured()) {
     if (existing >= 0) {
       // Rebuild list: LRANGE → filter out old → push all + new
       const filtered = all.filter(p => p.id !== post.id)
@@ -119,6 +129,11 @@ export async function savePost(data: Omit<BlogPost, 'id'> & { id?: string }): Pr
 }
 
 export async function deletePost(id: string): Promise<void> {
+  if (supabaseConfigured()) {
+    await sbDelete('blog_posts', `id=eq.${id}`)
+    return
+  }
+
   const all = await readAllPosts()
   const filtered = all.filter(p => p.id !== id)
 
