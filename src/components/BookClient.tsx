@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import { pushEvent } from '@/lib/gtm'
 import type { Locale, Dict } from '@/lib/i18n'
 import { randomWhatsAppUrl } from '@/lib/spa'
 import { EVENTS, trackEvent } from '@/lib/events'
@@ -272,6 +273,15 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
     } catch(e) {}
 
     try { await fetch('/api/bookings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ serviceId: service.id, durationMinutes: payloadDuration, hairMethod: hairMethod, year: calYear, monthIndex: calMonth, day: selDay, timeSlot: selTime, locale: lang, name: form.name, phone: form.phone, requests: form.notes, source: bookingSource }) }) } catch {}
+
+    pushEvent('booking_submit', {
+      service_id: service.id,
+      service_name: service.name,
+      category: service.category,
+      price_cop: price,
+      source: bookingSource,
+      campaign: 'masajes_ads'
+    })
 
     setSubmitting(false)
     setConfirmed(true)
