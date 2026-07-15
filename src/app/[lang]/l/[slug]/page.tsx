@@ -86,7 +86,7 @@ export default async function DynamicLandingPage({ params }: Props) {
       */}
       <div className="landing-page-container bg-surface min-h-screen flex flex-col font-body">
         
-        <LandingHeader phoneText={phoneText} />
+        <LandingHeader phoneText={phoneText} locale={locale} />
         
         <main className="flex-1">
           <LandingHero {...content.hero} locale={locale} />
