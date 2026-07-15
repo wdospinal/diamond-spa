@@ -500,7 +500,9 @@ body {
    These rules apply to any other page that may use SEM mode.
 */
 .is-ads #global-nav,
-.is-ads footer {
+.is-ads footer,
+.is-ads #landing-header,
+.is-ads #landing-footer {
   display: none !important;
 }
 /* Remove the top padding-top that compensates for the fixed nav */
