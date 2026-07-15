@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { Menu, X, Globe } from 'lucide-react'
 import type { Locale } from '@/lib/i18n'
 
@@ -13,7 +13,8 @@ const LABELS = {
     location: 'Location',
     bookNow: 'Book Now',
     book: 'Book',
-    langName: 'Español'
+    langName: 'Español',
+    switchTo: 'Switch to Español'
   },
   es: {
     services: 'Servicios',
@@ -21,19 +22,43 @@ const LABELS = {
     location: 'Ubicación',
     bookNow: 'Reservar Ahora',
     book: 'Reservar',
-    langName: 'English'
+    langName: 'English',
+    switchTo: 'Cambiar a English'
   }
+}
+
+// useSearchParams requires a Suspense boundary on statically rendered routes,
+// so the switcher lives in its own component wrapped in <Suspense>.
+function LanguageSwitcher({ locale, t }: { locale: Locale, t: (typeof LABELS)['es'] }) {
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  const targetLocale = locale === 'es' ? 'en' : 'es'
+  let basePath = `/${targetLocale}`
+  if (pathname === `/${locale}`) basePath = `/${targetLocale}`
+  else if (pathname?.startsWith(`/${locale}/`)) basePath = `/${targetLocale}${pathname.slice(locale.length + 1)}`
+
+  // Preserve query params (utm_* attribution) across the language switch
+  const search = searchParams?.toString()
+  const toggleLanguageUrl = search ? `${basePath}?${search}` : basePath
+
+  return (
+    <Link
+      href={toggleLanguageUrl}
+      className="flex items-center gap-1.5 text-zinc-400 hover:text-primary transition-colors text-sm font-label tracking-widest uppercase"
+      aria-label={t.switchTo}
+    >
+      <Globe size={16} />
+      <span className="hidden sm:inline">{t.langName}</span>
+      <span className="sm:hidden">{targetLocale.toUpperCase()}</span>
+    </Link>
+  )
 }
 
 export function LandingHeader({ phoneText, locale = 'es' }: { phoneText: string, locale?: Locale }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const pathname = usePathname()
-  
+
   const t = LABELS[locale] || LABELS['es']
-  
-  // Language switcher logic
-  const targetLocale = locale === 'es' ? 'en' : 'es'
-  const toggleLanguageUrl = pathname ? pathname.replace(`/${locale}/`, `/${targetLocale}/`) : `/${targetLocale}/`
 
   return (
     <header id="landing-header" className="fixed top-0 left-0 right-0 z-50 bg-surface/90 backdrop-blur-md border-b border-outline-variant/20">
@@ -55,15 +80,9 @@ export function LandingHeader({ phoneText, locale = 'es' }: { phoneText: string,
         {/* Right Actions */}
         <div className="flex items-center gap-4">
           {/* Language Switcher */}
-          <Link 
-            href={toggleLanguageUrl} 
-            className="flex items-center gap-1.5 text-zinc-400 hover:text-primary transition-colors text-sm font-label tracking-widest uppercase"
-            aria-label={`Switch to ${t.langName}`}
-          >
-            <Globe size={16} />
-            <span className="hidden sm:inline">{t.langName}</span>
-            <span className="sm:hidden">{targetLocale.toUpperCase()}</span>
-          </Link>
+          <Suspense fallback={null}>
+            <LanguageSwitcher locale={locale} t={t} />
+          </Suspense>
 
           <a 
             href="#reservar"

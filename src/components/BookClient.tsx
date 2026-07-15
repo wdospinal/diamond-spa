@@ -265,10 +265,12 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
     }
 
     let bookingSource = 'organic'
+    let campaign = ''
     try {
       const p = new URLSearchParams(window.location.search)
       if (p.get('utm_source') === 'ads' || sessionStorage.getItem('sem_trigger_value') === 'ads' || document.documentElement.classList.contains('is-ads')) {
         bookingSource = 'ads'
+        campaign = p.get('utm_campaign') || 'masajes_ads'
       }
     } catch(e) {}
 
@@ -280,7 +282,7 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
       category: service.category,
       price_cop: price,
       source: bookingSource,
-      campaign: 'masajes_ads'
+      ...(campaign ? { campaign } : {})
     })
 
     setSubmitting(false)
