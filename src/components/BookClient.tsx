@@ -266,12 +266,14 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
 
     let bookingSource = 'organic'
     let campaignName = ''
+    let adgroup = ''
     try {
       const p = new URLSearchParams(window.location.search)
       if (p.get('utm_source') === 'ads' || sessionStorage.getItem('sem_trigger_value') === 'ads' || document.documentElement.classList.contains('is-ads')) {
         bookingSource = 'ads'
         campaignName = p.get('utm_campaign') || sessionStorage.getItem('sem_campaign') || 'general_ads'
       }
+      adgroup = p.get('adgroup') || ''
     } catch (e) { }
 
     try { await fetch('/api/bookings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ serviceId: service.id, durationMinutes: payloadDuration, hairMethod: hairMethod, year: calYear, monthIndex: calMonth, day: selDay, timeSlot: selTime, locale: lang, name: form.name, phone: form.phone, requests: form.notes, source: bookingSource }) }) } catch { }
@@ -285,6 +287,9 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
     }
     if (bookingSource === 'ads' && campaignName) {
       submitPayload.campaign = campaignName
+    }
+    if (adgroup) {
+      submitPayload.adgroup = adgroup
     }
 
     pushEvent('booking_submit', submitPayload)

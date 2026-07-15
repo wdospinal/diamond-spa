@@ -9,11 +9,13 @@ import { pushEvent } from '@/lib/gtm'
 
 function trackAdsClick(source: string, serviceSlug?: string) {
   const campaign = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('sem_campaign') : null
+  const adgroup  = typeof window     !== 'undefined' ? new URLSearchParams(window.location.search).get('adgroup') : null
   const payload: Record<string, string> = {
     event_label: serviceSlug ?? 'general',
     source,
   }
   if (campaign) payload.campaign = campaign
+  if (adgroup)  payload.adgroup  = adgroup
   
   pushEvent('booking_click', payload)
 }
