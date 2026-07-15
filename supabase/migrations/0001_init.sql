@@ -34,7 +34,9 @@ create table if not exists public.bookings (
   requests         text,
   status           text check (status in ('pending', 'arrived', 'cancelled', 'completed')),
   payment_status   text check (payment_status in ('pending', 'paid')),
-  source           text check (source in ('organic', 'ads'))
+  source           text check (source in ('organic', 'ads')),
+  gclid            text,
+  adgroup          text
 );
 
 create index if not exists bookings_date_key_idx     on public.bookings (date_key);

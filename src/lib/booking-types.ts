@@ -30,6 +30,10 @@ export type BookingRecord = {
   paymentStatus?: 'pending' | 'paid'
   /** Origin of the booking */
   source?: 'organic' | 'ads'
+  /** Google Click ID — captured from ?gclid= on landing. Used for offline conversion import. */
+  gclid?: string
+  /** Google Ads ad group — captured from ?adgroup= on landing. */
+  adgroup?: string
 }
 
 /** Display name for a booking — uses the single `name` field, falling back to legacy first/last. */

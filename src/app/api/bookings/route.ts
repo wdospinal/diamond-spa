@@ -58,6 +58,9 @@ export async function POST(req: NextRequest) {
   const requests = typeof body.requests === 'string' ? body.requests.trim() : ''
   const bookingLocale = body.locale === 'en' ? 'en' : 'es'
   const source = body.source === 'ads' ? 'ads' : 'organic'
+  // Attribution fields — only present when the user arrived via a Google Ads click
+  const gclid   = typeof body.gclid   === 'string' && body.gclid   ? body.gclid   : undefined
+  const adgroup = typeof body.adgroup === 'string' && body.adgroup ? body.adgroup : undefined
 
   const service = getServiceById(serviceId)
   if (!service) return bad('Invalid service')
@@ -101,6 +104,8 @@ export async function POST(req: NextRequest) {
       source,
       status: 'pending',
       paymentStatus: 'pending',
+      ...(gclid   ? { gclid }   : {}),
+      ...(adgroup ? { adgroup } : {}),
     })
 
     // Fire-and-forget email notification via Resend

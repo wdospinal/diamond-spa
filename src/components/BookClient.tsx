@@ -267,6 +267,7 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
     let bookingSource = 'organic'
     let campaignName = ''
     let adgroup = ''
+    let gclid = ''
     try {
       const p = new URLSearchParams(window.location.search)
       if (p.get('utm_source') === 'ads' || sessionStorage.getItem('sem_trigger_value') === 'ads' || document.documentElement.classList.contains('is-ads')) {
@@ -274,9 +275,17 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
         campaignName = p.get('utm_campaign') || sessionStorage.getItem('sem_campaign') || 'general_ads'
       }
       adgroup = p.get('adgroup') || ''
+      // GCLID: read from URL first, fall back to sessionStorage (persisted on first visit)
+      const gclidFromUrl = p.get('gclid')
+      if (gclidFromUrl) {
+        gclid = gclidFromUrl
+        sessionStorage.setItem('gclid', gclidFromUrl) // persist across SPA navigation
+      } else {
+        gclid = sessionStorage.getItem('gclid') || ''
+      }
     } catch (e) { }
 
-    try { await fetch('/api/bookings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ serviceId: service.id, durationMinutes: payloadDuration, hairMethod: hairMethod, year: calYear, monthIndex: calMonth, day: selDay, timeSlot: selTime, locale: lang, name: form.name, phone: form.phone, requests: form.notes, source: bookingSource }) }) } catch { }
+    try { await fetch('/api/bookings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ serviceId: service.id, durationMinutes: payloadDuration, hairMethod: hairMethod, year: calYear, monthIndex: calMonth, day: selDay, timeSlot: selTime, locale: lang, name: form.name, phone: form.phone, requests: form.notes, source: bookingSource, ...(gclid ? { gclid } : {}), ...(adgroup ? { adgroup } : {}) }) }) } catch { }
 
     const submitPayload: Record<string, string | number> = {
       service_id: service.id,

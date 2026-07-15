@@ -69,6 +69,8 @@ type BookingRow = {
   status: BookingRecord['status'] | null
   payment_status: BookingRecord['paymentStatus'] | null
   source: BookingRecord['source'] | null
+  gclid: string | null
+  adgroup: string | null
 }
 
 function toRow(b: BookingRecord): BookingRow {
@@ -94,6 +96,8 @@ function toRow(b: BookingRecord): BookingRow {
     status: b.status ?? null,
     payment_status: b.paymentStatus ?? null,
     source: b.source ?? null,
+    gclid: b.gclid ?? null,
+    adgroup: b.adgroup ?? null,
   }
 }
 
@@ -120,6 +124,8 @@ function fromRow(r: BookingRow): BookingRecord {
     ...(r.status ? { status: r.status } : {}),
     ...(r.payment_status ? { paymentStatus: r.payment_status } : {}),
     ...(r.source ? { source: r.source } : {}),
+    ...(r.gclid ? { gclid: r.gclid } : {}),
+    ...(r.adgroup ? { adgroup: r.adgroup } : {}),
   }
 }
 
