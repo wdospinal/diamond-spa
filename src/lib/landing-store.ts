@@ -2,6 +2,10 @@ import { mkdir, readFile, writeFile } from 'fs/promises'
 import { dirname, join } from 'path'
 import { randomUUID } from 'crypto'
 import { kvCommand, kvConfigured } from '@/lib/kv'
+import { sbDelete, sbSelect, sbUpsert, supabaseConfigured } from '@/lib/supabase'
+
+// Backend preference: Supabase (`landings` table, full page in a jsonb `data`
+// column) → Vercel KV → data/landings.json. Schema: supabase/migrations/0001_init.sql.
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -157,6 +161,10 @@ function parseKvLandings(raw: unknown): LandingPage[] {
 // ─── Public API ──────────────────────────────────────────────────────────────
 
 export async function readAllLandings(): Promise<LandingPage[]> {
+  if (supabaseConfigured()) {
+    const rows = await sbSelect<{ data: LandingPage }>('landings', 'select=data&order=updated_at.asc')
+    return rows.map(r => r.data)
+  }
   if (kvConfigured()) {
     const raw = await kvCommand(['LRANGE', KV_KEY, 0, -1])
     return parseKvLandings(raw)
@@ -192,7 +200,9 @@ export async function saveLanding(
     updatedAt: now,
   }
 
-  if (kvConfigured()) {
+  if (supabaseConfigured()) {
+    await sbUpsert('landings', { id: page.id, data: page })
+  } else if (kvConfigured()) {
     if (existingIdx >= 0) {
       const filtered = all.filter(p => p.id !== page.id)
       await kvCommand(['DEL', KV_KEY])
@@ -213,6 +223,11 @@ export async function saveLanding(
 }
 
 export async function deleteLanding(id: string): Promise<void> {
+  if (supabaseConfigured()) {
+    await sbDelete('landings', `id=eq.${id}`)
+    return
+  }
+
   const all = await readAllLandings()
   const filtered = all.filter(p => p.id !== id)
 
