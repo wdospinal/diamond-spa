@@ -83,18 +83,18 @@
         "title": "¿Por qué elegirnos?",
         "pillars": [
           {
-            "title": "Experiencia Premium",
-            "body": "Instalaciones de lujo en el corazón de El Poblado, diseñadas para garantizar total privacidad, silencio y confort durante tu sesión.",
-            "icon": "star"
+            "title": "Private Spa Rooms",
+            "body": "Instalaciones de lujo en el corazón de El Poblado. Como un spa exclusivo para caballeros, diseñamos cada espacio para garantizar total privacidad durante tus masajes relajantes para hombres.",
+            "icon": "meeting_room"
           },
           {
-            "title": "Terapeutas Certificadas",
-            "body": "Cosmetólogas y masoterapeutas con más de 3 años de experiencia en técnicas terapéuticas avanzadas. Formación certificada, resultados garantizados.",
+            "title": "Certified Therapists",
+            "body": "Cosmetólogas y masajistas para hombres en Medellín con más de 3 años de experiencia. Formación certificada y resultados garantizados en cada terapia muscular.",
             "icon": "verified_user"
           },
           {
-            "title": "Privacidad y Confort",
-            "body": "Salas individuales con acceso privado, camillas profesionales y temperatura controlada. Tu espacio, solo para ti.",
+            "title": "Luxury Experience",
+            "body": "El único spa solo para hombres en Medellín con salas individuales de acceso privado, camillas profesionales y temperatura ideal. Tu espacio seguro.",
             "icon": "privacy_tip"
           }
         ]
@@ -111,14 +111,14 @@
         "title": "Lo que dicen nuestros clientes",
         "items": [
           {
-            "name": "Andrés Gómez",
-            "text": "Soy médico y tengo estándares muy altos cuando se trata de tratamientos corporales. Diamond Spa cumplió con todos ellos. La terapeuta del masaje de tejido profundo demostró un conocimiento anatómico serio — supo exactamente dónde aplicar presión y cuándo modularla. El espacio cumple con estándares de higiene impecables. Es un lugar donde se nota que el personal tiene formación real.",
+            "name": "David",
+            "text": "Buscaba masajes Medellín para hombres y encontré este spa. La masoterapeuta fue excelente, el nivel de profesionalismo es altísimo.",
             "rating": 5,
             "date": "hace 2 meses"
           },
           {
-            "name": "James Carter",
-            "text": "As a frequent traveler to Medellín for business, I have tried several spas in El Poblado. Diamond Spa stands out for its attention to detail and genuine commitment to quality. The deep tissue massage addressed my chronic lower back issues with technique I have only experienced at luxury resorts abroad. The therapist asked thorough questions about pressure preferences before starting — that level of care is rare.",
+            "name": "Roberto",
+            "text": "El mejor spa para hombres en Medellín sin lugar a dudas. La técnica de tejido profundo y el nivel de higiene son de primera calidad.",
             "rating": 5,
             "date": "3 weeks ago"
           },
@@ -187,17 +187,17 @@
         "pillars": [
           {
             "title": "Premium Experience",
-            "body": "Luxury facilities in the heart of El Poblado, designed to guarantee complete privacy, silence and comfort throughout your session.",
+            "body": "Luxury facilities in the heart of El Poblado, designed to guarantee complete privacy, silence and comfort. A premium spa for men seeking massage therapy in Medellín.",
             "icon": "star"
           },
           {
             "title": "Certified Therapists",
-            "body": "Cosmetologists and massage therapists with over 3 years of experience in advanced therapeutic techniques. Certified training, guaranteed results.",
+            "body": "Professional massages for men by certified therapists with over 3 years of experience. Whether you need a relaxing session or deep tissue massage Medellín Poblado, we guarantee results.",
             "icon": "verified_user"
           },
           {
             "title": "Privacy & Comfort",
-            "body": "Individual rooms with private access, professional treatment tables and controlled temperature. Your space, just for you.",
+            "body": "Individual rooms with private access, professional treatment tables and controlled temperature. The best massage El Poblado Medellín has to offer, just for you.",
             "icon": "privacy_tip"
           }
         ]
@@ -215,13 +215,13 @@
         "items": [
           {
             "name": "James Carter",
-            "text": "As a frequent traveler to Medellín for business, I have tried several spas in El Poblado. Diamond Spa stands out for its attention to detail and genuine commitment to quality. The deep tissue massage addressed my chronic lower back issues with technique I have only experienced at luxury resorts abroad. The therapist asked thorough questions about pressure preferences before starting — that level of care is rare.",
+            "text": "As a frequent traveler to Medellín for business, I was looking for the best massages Medellín has. Diamond Spa stands out for its attention to detail. The deep tissue massage addressed my chronic lower back issues perfectly.",
             "rating": 5,
             "date": "3 weeks ago"
           },
           {
             "name": "Tom Brennan",
-            "text": "Came here on a recommendation from my hotel concierge and I am so glad I listened. The sports massage was exactly what I needed after a long week of hiking around Antioquia. The therapist worked methodically through muscle groups and the pressure was perfectly calibrated — therapeutic without being painful. Bilingual staff made everything effortless. Already planning my next visit.",
+            "text": "Came here on a recommendation from my hotel concierge and I am so glad I listened. The sports massage was exactly what I needed after a long week. Easily the best massage Medellín Poblado experience.",
             "rating": 5,
             "date": "2 months ago"
           },

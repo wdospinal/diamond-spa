@@ -3,11 +3,14 @@
 import { pushEvent } from '@/lib/gtm'
 
 function trackAdsClick(source: string) {
-  pushEvent('booking_click', {
+  const campaign = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('sem_campaign') : null
+  const payload: Record<string, string> = {
     event_label: 'general',
     source,
-    campaign: 'masajes_ads',
-  })
+  }
+  if (campaign) payload.campaign = campaign
+
+  pushEvent('booking_click', payload)
 }
 
 export function LandingFinalCTA({

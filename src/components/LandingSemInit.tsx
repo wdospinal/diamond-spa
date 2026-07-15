@@ -48,11 +48,16 @@ export default function LandingSemInit({ triggerKey, triggerValue, hideChrome }:
         // Clear the trigger keys so they don't bleed into other pages.
         sessionStorage.removeItem('sem_trigger_key')
         sessionStorage.removeItem('sem_trigger_value')
+        sessionStorage.removeItem('sem_campaign')
       } else {
         // Store the custom trigger config for future hard navigations.
         sessionStorage.removeItem('sem_hide_chrome')
         sessionStorage.setItem('sem_trigger_key',   triggerKey)
         sessionStorage.setItem('sem_trigger_value', triggerValue)
+        const utmCampaign = params.get('utm_campaign')
+        if (utmCampaign) {
+          sessionStorage.setItem('sem_campaign', utmCampaign)
+        }
       }
     } catch {
       // sessionStorage unavailable (private browsing with storage blocked, etc.)
