@@ -100,6 +100,8 @@
         ]
       },
       "gallery": {
+        "title": "Nuestros Masajes Especializados",
+        "subtitle": "Relajación profunda y recuperación muscular diseñada exclusivamente para ti. Elige la terapia perfecta para tus necesidades.",
         "images": [
           { "url": "/images-ads/masaje relajante.jpg", "title": "Masaje Relajante" },
           { "url": "/masaje.webp", "title": "Tejido Profundo" },
@@ -203,6 +205,8 @@
         ]
       },
       "gallery": {
+        "title": "Our Specialized Massages",
+        "subtitle": "Deep relaxation and muscle recovery designed exclusively for you. Choose the perfect therapy for your needs.",
         "images": [
           { "url": "/images-ads/masaje relajante.jpg", "title": "Relaxing Massage" },
           { "url": "/masaje.webp", "title": "Deep Tissue" },

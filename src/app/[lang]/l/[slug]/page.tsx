@@ -103,7 +103,11 @@ export default async function DynamicLandingPage({ params }: Props) {
           <LandingFacilities locale={locale} />
           
           {content.gallery && content.gallery.images && (
-            <LandingGallery images={content.gallery.images} />
+            <LandingGallery 
+              images={content.gallery.images} 
+              title={content.gallery.title}
+              subtitle={content.gallery.subtitle}
+            />
           )}
           
           {content.testimonials && (
