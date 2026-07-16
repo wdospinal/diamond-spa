@@ -56,9 +56,9 @@ export function LandingTestimonials({
         </h2>
 
         <div 
-          className="-mx-6 px-6 md:mx-0 md:px-0 flex overflow-x-auto md:grid md:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12 pb-4 md:pb-0 snap-x snap-mandatory md:snap-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+          className="-mx-6 px-6 md:-mx-12 md:px-12 flex overflow-x-auto gap-4 md:gap-6 mb-8 md:mb-12 pb-4 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
           onScroll={(e) => {
-            if (window.innerWidth < 768) {
+            if (window.innerWidth < 1024) {
               const el = e.currentTarget
               // Calculate which card is most visible
               const cardWidth = el.scrollWidth / (hasManualItems ? items.length : allReviews.length)
@@ -69,7 +69,7 @@ export function LandingTestimonials({
         >
           {hasManualItems ? (
             items.map((item, idx) => (
-              <div key={idx} className="shrink-0 w-[85vw] sm:w-[60vw] md:w-auto snap-center bg-white/5 p-6 md:p-8 rounded-2xl flex flex-col gap-5 hover:bg-white/10 transition-colors border border-white/5 shadow-lg relative">
+              <div key={idx} className="shrink-0 w-[85vw] sm:w-[60vw] md:w-[400px] snap-center bg-white/5 p-6 md:p-8 rounded-2xl flex flex-col gap-5 hover:bg-white/10 transition-colors border border-white/5 shadow-lg relative">
                 <div className="absolute top-6 right-6 opacity-20">
                   <span className="material-symbols-outlined text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>format_quote</span>
                 </div>
@@ -89,7 +89,7 @@ export function LandingTestimonials({
                     </span>
                   </div>
                   <div className="flex flex-col">
-                    <p className="font-serif text-lg tracking-tight">
+                    <p className="font-serif text-base tracking-tight">
                       {item.name}
                     </p>
                     <div className="flex items-center gap-2 text-white/50 font-body text-xs mt-0.5">
@@ -107,7 +107,7 @@ export function LandingTestimonials({
             ))
           ) : (
             allReviews.map((review, idx) => (
-              <div key={idx} className="shrink-0 w-[85vw] sm:w-[60vw] md:w-auto snap-center bg-white/5 p-6 md:p-8 rounded-2xl flex flex-col gap-5 hover:bg-white/10 transition-colors border border-white/5 shadow-lg relative">
+              <div key={idx} className="shrink-0 w-[85vw] sm:w-[60vw] md:w-[400px] snap-center bg-white/5 p-6 md:p-8 rounded-2xl flex flex-col gap-5 hover:bg-white/10 transition-colors border border-white/5 shadow-lg relative">
                 <div className="absolute top-6 right-6 opacity-20">
                   <span className="material-symbols-outlined text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>format_quote</span>
                 </div>
@@ -145,8 +145,8 @@ export function LandingTestimonials({
           )}
         </div>
 
-        {/* Mobile carousel indicators */}
-        <div className="flex md:hidden justify-center gap-2 mb-10">
+        {/* Carousel indicators */}
+        <div className="flex justify-center gap-2 mb-10">
           {(hasManualItems ? items : allReviews).map((_, i) => (
             <span
               key={i}

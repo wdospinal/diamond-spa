@@ -113,13 +113,13 @@
         "title": "Lo que dicen nuestros clientes",
         "items": [
           {
-            "name": "David",
+            "name": "David M.",
             "text": "Buscaba masajes Medellín para hombres y encontré este spa. La masoterapeuta fue excelente, el nivel de profesionalismo es altísimo.",
             "rating": 5,
             "date": "hace 2 meses"
           },
           {
-            "name": "Roberto",
+            "name": "Roberto G.",
             "text": "El mejor spa para hombres en Medellín sin lugar a dudas. La técnica de tejido profundo y el nivel de higiene son de primera calidad.",
             "rating": 5,
             "date": "3 weeks ago"
@@ -230,7 +230,7 @@
         "title": "What our clients say",
         "items": [
           {
-            "name": "James Carter",
+            "name": "James C.",
             "text": "As a frequent traveler to Medellín for business, I was looking for the best massages Medellín has. Diamond Spa stands out for its attention to detail. The deep tissue massage addressed my chronic lower back issues perfectly.",
             "rating": 5,
             "date": "3 weeks ago"
