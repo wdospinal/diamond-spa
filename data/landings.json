@@ -101,10 +101,10 @@
       },
       "gallery": {
         "images": [
-          { "url": "/images-ads/galeria/galeria1.png", "title": "Sala de Bienvenida" },
-          { "url": "/images-ads/galeria/galeria2.png", "title": "Suite Para Dos" },
-          { "url": "/images-ads/galeria/galeria3.png", "title": "Sala Zen" },
-          { "url": "/images-ads/galeria/galeria4.png", "title": "Suite Privada" }
+          { "url": "/images-ads/masaje relajante.jpg", "title": "Masaje Relajante" },
+          { "url": "/images-ads/tejido-profundo.jpg", "title": "Tejido Profundo" },
+          { "url": "/images-ads/piedras-volcanicas.jpg", "title": "Piedras Volcánicas" },
+          { "url": "/images-ads/masaje-deportivo.png", "title": "Masaje Deportivo" }
         ]
       },
       "testimonials": {
@@ -204,10 +204,10 @@
       },
       "gallery": {
         "images": [
-          { "url": "/images-ads/galeria/galeria1.png", "title": "Welcome Lounge" },
-          { "url": "/images-ads/galeria/galeria2.png", "title": "Couples Suite" },
-          { "url": "/images-ads/galeria/galeria3.png", "title": "Zen Room" },
-          { "url": "/images-ads/galeria/galeria4.png", "title": "Private Suite" }
+          { "url": "/images-ads/masaje relajante.jpg", "title": "Relaxing Massage" },
+          { "url": "/images-ads/tejido-profundo.jpg", "title": "Deep Tissue" },
+          { "url": "/images-ads/piedras-volcanicas.jpg", "title": "Hot Stones" },
+          { "url": "/images-ads/masaje-deportivo.png", "title": "Sports Massage" }
         ]
       },
       "testimonials": {
