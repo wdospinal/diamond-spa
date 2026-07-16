@@ -11,6 +11,7 @@ import { JsonLd } from '@/components/JsonLd'
 import MapEmbed from '@/components/MapEmbed'
 import { PHONES } from '@/lib/phones'
 import { SPA_ADDRESS, SPA_EMAIL, SPA_MAP_EMBED_SRC } from '@/lib/spa'
+import SemTracker from '@/components/SemTracker'
 
 export const revalidate = 3600
 
@@ -44,6 +45,7 @@ export default async function LocationPage({ params }: { params: Promise<{ lang:
   return (
     <>
       <JsonLd data={localBusinessJsonLd()} />
+      <SemTracker />
       {/* HERO */}
       <header className="relative pt-12 md:pt-16 pb-20 px-6 md:px-12 overflow-hidden">
         <div className="absolute inset-0 z-0">

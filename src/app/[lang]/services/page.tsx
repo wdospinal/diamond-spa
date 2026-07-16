@@ -8,6 +8,7 @@ import { SERVICES, formatCop, getServiceSlug, type DurationMinutes, type Service
 import { DURATION_MINUTES } from '@/lib/constants'
 import { buildAlternates, buildOpenGraph } from '@/lib/seo'
 import { SPA_WHATSAPP_GREETING, randomWhatsAppUrl } from '@/lib/spa'
+import SemTracker from '@/components/SemTracker'
 
 export const dynamic = 'force-static'
 
@@ -44,6 +45,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ lang:
 
   return (
     <>
+      <SemTracker />
       {/* HERO */}
       <header className="relative pt-40 pb-24 px-6 md:px-12 overflow-hidden">
         <div className="absolute inset-0 z-0">
