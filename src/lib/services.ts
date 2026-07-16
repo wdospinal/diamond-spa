@@ -129,12 +129,12 @@ export const SERVICES = [
     categoryId: 'massages' as const,
     pricingModel: 'duration' as const,
     shortDesc: {
-      en: 'Where delicacy becomes pleasure. Enjoy slow movements and a sensory caress with feathers designed to awaken your senses without haste. Ideal for your first time at Diamond or to let yourself be carried away by a deeply seductive calm.',
-      es: 'Donde la delicadeza se vuelve placer. Disfruta de movimientos lentos y una caricia sensorial con plumas diseñada para despertar tus sentidos sin prisas. Ideal para tu primera vez en Diamond o para dejarte llevar por una calma profundamente seductora.',
+      en: 'Discover a relaxation experience designed to stimulate your senses through gentle movements and textured elements. Ideal for releasing stress, promoting calm, and enjoying a moment of well-being in an exclusive atmosphere.',
+      es: 'Descubre una experiencia de relajación diseñada para estimular los sentidos mediante movimientos suaves y elementos de textura. Ideal para liberar el estrés, promover la calma y disfrutar de un momento de bienestar en un ambiente exclusivo.',
     },
     description: {
-      en: 'A massage designed to promote deep relaxation through gentle movements and carefully applied sensory stimulation. Ideal for reducing stress, improving mental disconnection, and fostering a holistic sense of well-being.',
-      es: 'Un masaje diseñado para favorecer la relajación profunda mediante movimientos suaves y estímulos sensoriales cuidadosamente aplicados. Ideal para reducir el estrés, mejorar la desconexión mental y promover una sensación de bienestar integral.',
+      en: 'Discover a relaxation experience designed to stimulate your senses through gentle movements and textured elements. Ideal for releasing stress, promoting calm, and enjoying a moment of well-being in an exclusive atmosphere.',
+      es: 'Descubre una experiencia de relajación diseñada para estimular los sentidos mediante movimientos suaves y elementos de textura. Ideal para liberar el estrés, promover la calma y disfrutar de un momento de bienestar en un ambiente exclusivo.',
     },
     prices: { 30: 130_000, 60: 220_000, 90: 280_000 },
   },
