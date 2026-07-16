@@ -102,7 +102,7 @@
       "gallery": {
         "images": [
           { "url": "/images-ads/masaje relajante.jpg", "title": "Masaje Relajante" },
-          { "url": "/images-ads/tejido-profundo.jpg", "title": "Tejido Profundo" },
+          { "url": "/masaje.webp", "title": "Tejido Profundo" },
           { "url": "/images-ads/piedras-volcanicas.jpg", "title": "Piedras Volcánicas" },
           { "url": "/images-ads/masaje-deportivo.png", "title": "Masaje Deportivo" }
         ]
@@ -205,7 +205,7 @@
       "gallery": {
         "images": [
           { "url": "/images-ads/masaje relajante.jpg", "title": "Relaxing Massage" },
-          { "url": "/images-ads/tejido-profundo.jpg", "title": "Deep Tissue" },
+          { "url": "/masaje.webp", "title": "Deep Tissue" },
           { "url": "/images-ads/piedras-volcanicas.jpg", "title": "Hot Stones" },
           { "url": "/images-ads/masaje-deportivo.png", "title": "Sports Massage" }
         ]
