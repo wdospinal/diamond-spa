@@ -11,6 +11,7 @@ import { IMG_LOGOTIPO, IMG_LOGOTIPO_WEBP } from '@/lib/images'
 import { randomWhatsAppUrl } from '@/lib/phones'
 import { SPA_PHONES, SPA_WHATSAPP_GREETING, SPA_GOOGLE_MAPS_URL } from '@/lib/spa'
 import { EVENTS, trackEvent } from '@/lib/events'
+import { pushEvent } from '@/lib/gtm'
 import { getLocalizedPath } from '@/lib/routes'
 
 interface NavLink {
@@ -72,6 +73,18 @@ export default function MobileMenuClient({
 
   function openReception() {
     trackEvent(EVENTS.WHATSAPP_CLICKED, { platform: 'whatsapp', source: 'mobile-menu' })
+    // Also push to GTM dataLayer for GA4 / Google Ads tracking
+    try {
+      const p = new URLSearchParams(window.location.search)
+      const campaign = p.get('utm_campaign') || sessionStorage.getItem('sem_campaign') || ''
+      const adgroup  = p.get('adgroup') || ''
+      pushEvent('whatsapp_click', {
+        source: 'mobile_menu',
+        button: 'mobile_menu',
+        ...(campaign ? { campaign } : {}),
+        ...(adgroup  ? { adgroup }  : {}),
+      })
+    } catch { /* analytics must never crash the app */ }
     close()
     window.open(randomWhatsAppUrl(waGreeting), '_blank', 'noopener,noreferrer')
   }
