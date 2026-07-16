@@ -21,6 +21,7 @@ import { LandingFAQ } from '@/components/landing-blocks/LandingFAQ'
 import { LandingFinalCTA } from '@/components/landing-blocks/LandingFinalCTA'
 import { LandingFooter } from '@/components/landing-blocks/LandingFooter'
 import { LandingTeam } from '@/components/landing-blocks/LandingTeam'
+import { LandingFacilities } from '@/components/landing-blocks/LandingFacilities'
 import { LandingBookingModal } from '@/components/landing-blocks/LandingBookingModal'
 
 export const revalidate = 3600
@@ -98,6 +99,8 @@ export default async function DynamicLandingPage({ params }: Props) {
           <LandingWhyUs {...content.whyUs} />
 
           <LandingTeam locale={locale} />
+          
+          <LandingFacilities locale={locale} />
           
           {content.gallery && content.gallery.images && (
             <LandingGallery images={content.gallery.images} />
