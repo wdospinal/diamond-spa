@@ -26,9 +26,9 @@ export default async function LandingJsonLd({ path, locale }: Props) {
   return (
     <script
       type="application/ld+json"
-      // The admin already validated the JSON before saving,
-      // but we wrap in try/catch just in case of corrupt data.
-      dangerouslySetInnerHTML={{ __html: raw }}
+      dangerouslySetInnerHTML={{
+        __html: raw.replace(/</g, '\\u003c'),
+      }}
     />
   )
 }

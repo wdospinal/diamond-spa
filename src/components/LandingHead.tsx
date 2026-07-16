@@ -29,7 +29,9 @@ export default async function LandingHead({ path, locale }: Props) {
       {jsonLdRaw && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: jsonLdRaw }}
+          dangerouslySetInnerHTML={{
+            __html: jsonLdRaw.replace(/</g, '\\u003c'),
+          }}
         />
       )}
 

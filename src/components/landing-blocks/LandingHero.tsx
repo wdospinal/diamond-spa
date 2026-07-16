@@ -78,7 +78,7 @@ function HeroContent({
           fill
           priority
           fetchPriority="high"
-          quality={70}
+          quality={75}
           sizes="100vw"
           className="object-cover"
           unoptimized={bgImage.startsWith('https://images.unsplash.com')}
@@ -155,7 +155,7 @@ export function LandingHero(props: {
             fill
             priority
             fetchPriority="high"
-            quality={70}
+            quality={75}
             sizes="100vw"
             className="object-cover"
             unoptimized={props.bgImage.startsWith('https://images.unsplash.com')}

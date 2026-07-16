@@ -78,13 +78,24 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
         {/*
           Anti-FOUC SEM script — runs synchronously before first paint.
-          Reads URL params and adds .is-ads to <html> when the trigger matches.
-          This hides the global nav + footer for Google Ads landing pages without
-          any visible flash. The canonical URL (without params) is always the one
-          Googlebot indexes for SEO — no cloaking concerns.
-          Default trigger: ?utm_source=ads  (configurable per-page from the admin).
+          Must be a raw <script> in this Server Component <head>, NOT next/script
+          with beforeInteractive: that Client Component re-renders a <script> on
+          the client and triggers React 19's "Encountered a script tag" warning.
+          Default trigger: ?utm_source=ads (configurable per-page from the admin).
         */}
-        {/* Script moved to body */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){
+  try {
+    var p = new URLSearchParams(window.location.search);
+    if (sessionStorage.getItem('sem_hide_chrome') === 'false') return;
+    var k = sessionStorage.getItem('sem_trigger_key') || 'utm_source';
+    var v = sessionStorage.getItem('sem_trigger_value') || 'ads';
+    if (p.get(k) === v) document.documentElement.classList.add('is-ads');
+  } catch(e) {}
+})();`,
+          }}
+        />
       </head>
       <body className="bg-surface text-on-surface font-body antialiased">
         {/* Google Tag Manager (noscript) */}
@@ -100,27 +111,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
         {children}
         <ClientProviders />
-        
-        <GlobalFloatingWhatsApp disabledPaths={disabledPaths} />
 
-        {/* Anti-FOUC script for SEM/Ads mode */}
-        <Script
-          id="sem-anti-fouc"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `(function(){
-  try {
-    var p = new URLSearchParams(window.location.search);
-    // If this page explicitly disabled SEM chrome-hiding, do nothing.
-    if (sessionStorage.getItem('sem_hide_chrome') === 'false') return;
-    // Read per-page trigger key/value set by LandingSemInit on previous visit.
-    var k = sessionStorage.getItem('sem_trigger_key') || 'utm_source';
-    var v = sessionStorage.getItem('sem_trigger_value') || 'ads';
-    if (p.get(k) === v) document.documentElement.classList.add('is-ads');
-  } catch(e) {}
-})();`,
-          }}
-        />
+        <GlobalFloatingWhatsApp disabledPaths={disabledPaths} />
       </body>
     </html>
   )

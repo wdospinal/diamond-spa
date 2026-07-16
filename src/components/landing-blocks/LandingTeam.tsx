@@ -3,8 +3,11 @@
 import Image from 'next/image'
 import { useState } from 'react'
 import { THERAPISTS } from '@/lib/i18n'
-import { IMG_THERAPISTS, IMG_THERAPISTS_WEBP } from '@/lib/images'
+import { IMG_THERAPISTS_WEBP } from '@/lib/images'
 import type { Locale } from '@/lib/i18n'
+
+const TEAM_GRID_CLASS =
+  'flex md:grid md:grid-cols-4 gap-4 md:gap-6 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-6 md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
 
 export function LandingTeam({ locale }: { locale: Locale }) {
   const label = locale === 'es' ? 'Talento Diamond' : 'Diamond Talent'
@@ -13,14 +16,12 @@ export function LandingTeam({ locale }: { locale: Locale }) {
     ? 'Cosmetólogas certificadas con años de experiencia en el corazón de El Poblado.'
     : 'Certified cosmetologists with years of experience in the heart of El Poblado.'
 
-  // Dot indicator for mobile carousel
   const [activeIdx, setActiveIdx] = useState(0)
 
   return (
     <section className="py-24 bg-surface-container-lowest text-on-surface overflow-hidden">
       <div className="max-w-6xl mx-auto px-6">
 
-        {/* Header */}
         <div className="text-center mb-12">
           <span className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-4 block">
             {label}
@@ -34,11 +35,10 @@ export function LandingTeam({ locale }: { locale: Locale }) {
           </p>
         </div>
 
-        {/* Cards Container: Carousel on mobile, Grid of 5 on desktop */}
-        <div 
-          className="flex md:grid md:grid-cols-5 gap-4 md:gap-6 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-6 md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+        {/* Carousel on mobile, 4-column grid on desktop (matches THERAPISTS length) */}
+        <div
+          className={TEAM_GRID_CLASS}
           onScroll={(e) => {
-            // Only update dots if we are in flex/scroll mode
             if (window.innerWidth < 768) {
               const el = e.currentTarget
               const idx = Math.round(el.scrollLeft / (el.scrollWidth / THERAPISTS.length))
@@ -51,11 +51,9 @@ export function LandingTeam({ locale }: { locale: Locale }) {
             const roleText = locale === 'es' ? therapist.es.role : therapist.en.role
 
             return (
-              <div 
-                key={therapist.name} 
-                className={`shrink-0 w-[60vw] sm:w-[40vw] md:w-auto snap-center group transition-transform duration-300 ${
-                  i % 2 !== 0 ? 'md:translate-y-6' : ''
-                }`}
+              <div
+                key={therapist.name}
+                className="shrink-0 w-[60vw] sm:w-[40vw] md:w-auto snap-center group transition-transform duration-300"
               >
                 <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-surface-container/50 ring-1 ring-outline/10 mb-4 shadow-sm">
                   <Image
@@ -68,8 +66,7 @@ export function LandingTeam({ locale }: { locale: Locale }) {
                     className="object-cover opacity-90 group-hover:opacity-100 transition-all duration-500 md:group-hover:scale-105"
                     unoptimized
                   />
-                  
-                  {/* Badge de certificación siempre visible pero discreto */}
+
                   <div className="absolute top-3 right-3">
                     <div className="bg-surface/90 backdrop-blur-sm rounded-full p-1.5 shadow-sm border border-outline/10">
                       <span
@@ -80,8 +77,7 @@ export function LandingTeam({ locale }: { locale: Locale }) {
                       </span>
                     </div>
                   </div>
-                  
-                  {/* Gradiente sutil para legibilidad si quisieras texto sobre la foto, o simplemente un viñeteado */}
+
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
                 </div>
 
@@ -94,7 +90,6 @@ export function LandingTeam({ locale }: { locale: Locale }) {
           })}
         </div>
 
-        {/* Dot indicators (Mobile only) */}
         <div className="flex md:hidden justify-center gap-2 mt-2">
           {THERAPISTS.map((_, i) => (
             <span
@@ -108,7 +103,6 @@ export function LandingTeam({ locale }: { locale: Locale }) {
           ))}
         </div>
 
-        {/* Bottom trust line */}
         <p className="text-outline text-xs text-center mt-12 tracking-wide font-body">
           {locale === 'es'
             ? '100% del equipo con certificación profesional · El Poblado, Medellín'
