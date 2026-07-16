@@ -78,7 +78,6 @@ export const IMG_HISTORY_INTERIOR = '/history-interior-1.jpg'
 export const IMG_THERAPISTS = [
   '/therapists/daniela.avif',  // Daniela Salina
   '/therapists/sary.avif',     // Sary Paez
-  '/therapists/camila.avif',   // Camila Mazo
   '/therapists/ana-maria.avif',  // Ana Maria
   '/therapists/sheila.avif',   // Sheila
 ]
@@ -87,7 +86,6 @@ export const IMG_THERAPISTS = [
 export const IMG_THERAPISTS_WEBP = [
   '/therapists/daniela.webp',
   '/therapists/sary.webp',
-  '/therapists/camila.webp',
   '/therapists/ana-maria.webp',
   '/therapists/sheila.webp',
 ]

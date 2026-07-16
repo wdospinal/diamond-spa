@@ -114,7 +114,7 @@ body {
 
 /* ─── Material Symbols ───────────────────────────────────────────────────── */
 /*
- * Self-hosted: /fonts/material-symbols-outlined.woff2 (8.7 KB, our icon subset).
+ * Self-hosted: /fonts/material-symbols-outlined.woff2 (~12 KB, our icon subset).
  * Served from Vercel CDN with 1-year immutable cache — no Google Fonts round-trip.
  * Subset contains only the icons listed in src/lib/material-symbols.ts.
  * To update: re-download from the URL in material-symbols.ts and replace the file.
@@ -124,7 +124,8 @@ body {
   font-style: normal;
   font-weight: 100 700;
   font-display: swap;
-  src: url('/fonts/material-symbols-outlined.woff2') format('woff2');
+  /* ?v=2 busts the immutable 1-year cache — bump it whenever the subset file changes */
+  src: url('/fonts/material-symbols-outlined.woff2?v=2') format('woff2');
 }
 
 .material-symbols-outlined {
@@ -308,7 +309,7 @@ body {
 
 /* ─── Material Symbols ───────────────────────────────────────────────────── */
 /*
- * Self-hosted: /fonts/material-symbols-outlined.woff2 (8.7 KB, our icon subset).
+ * Self-hosted: /fonts/material-symbols-outlined.woff2 (~12 KB, our icon subset).
  * Served from Vercel CDN with 1-year immutable cache — no Google Fonts round-trip.
  * Subset contains only the icons listed in src/lib/material-symbols.ts.
  * To update: re-download from the URL in material-symbols.ts and replace the file.
@@ -318,7 +319,8 @@ body {
   font-style: normal;
   font-weight: 100 700;
   font-display: swap;
-  src: url('/fonts/material-symbols-outlined.woff2') format('woff2');
+  /* ?v=2 busts the immutable 1-year cache — bump it whenever the subset file changes */
+  src: url('/fonts/material-symbols-outlined.woff2?v=2') format('woff2');
 }
 
 .material-symbols-outlined {
