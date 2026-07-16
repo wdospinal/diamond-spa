@@ -23,6 +23,8 @@ function StarRating({ rating }: { rating: number }) {
   )
 }
 
+import { useState } from 'react'
+
 export function LandingTestimonials({
   title,
   items
@@ -31,6 +33,7 @@ export function LandingTestimonials({
   items?: { name: string; city?: string; text: string; rating?: number; date?: string }[]
 }) {
   const hasManualItems = items && items.length > 0
+  const [activeIdx, setActiveIdx] = useState(0)
   
   const place = getPlaceDetails()
   const apiReviews = place.reviews ?? []
@@ -50,10 +53,21 @@ export function LandingTestimonials({
           {title || "Lo que dicen nuestros clientes"}
         </h2>
 
-        <div className="flex overflow-x-auto md:grid md:grid-cols-3 gap-6 mb-12 pb-6 md:pb-0 snap-x snap-mandatory md:snap-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <div 
+          className="-mx-6 px-6 md:mx-0 md:px-0 flex overflow-x-auto md:grid md:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12 pb-4 md:pb-0 snap-x snap-mandatory md:snap-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+          onScroll={(e) => {
+            if (window.innerWidth < 768) {
+              const el = e.currentTarget
+              // Calculate which card is most visible
+              const cardWidth = el.scrollWidth / (hasManualItems ? items.length : allReviews.length)
+              const idx = Math.round(el.scrollLeft / cardWidth)
+              setActiveIdx(idx)
+            }
+          }}
+        >
           {hasManualItems ? (
             items.map((item, idx) => (
-              <div key={idx} className="shrink-0 w-[85vw] md:w-auto snap-center bg-white/5 p-8 rounded-2xl flex flex-col gap-6 hover:bg-white/10 transition-colors border border-white/5 shadow-lg relative">
+              <div key={idx} className="shrink-0 w-[85vw] sm:w-[60vw] md:w-auto snap-center bg-white/5 p-6 md:p-8 rounded-2xl flex flex-col gap-5 hover:bg-white/10 transition-colors border border-white/5 shadow-lg relative">
                 <div className="absolute top-6 right-6 opacity-20">
                   <span className="material-symbols-outlined text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>format_quote</span>
                 </div>
@@ -91,8 +105,11 @@ export function LandingTestimonials({
             ))
           ) : (
             allReviews.map((review, idx) => (
-              <div key={idx} className="bg-white/5 p-8 rounded-2xl flex flex-col gap-6 hover:bg-white/10 transition-colors">
-                <div className="flex justify-between items-start">
+              <div key={idx} className="shrink-0 w-[85vw] sm:w-[60vw] md:w-auto snap-center bg-white/5 p-6 md:p-8 rounded-2xl flex flex-col gap-5 hover:bg-white/10 transition-colors border border-white/5 shadow-lg relative">
+                <div className="absolute top-6 right-6 opacity-20">
+                  <span className="material-symbols-outlined text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>format_quote</span>
+                </div>
+                <div className="flex justify-between items-start relative z-10">
                   <StarRating rating={review.rating} />
                 </div>
                 <p className="text-white/80 font-body text-sm leading-relaxed italic flex-1 line-clamp-4 hover:line-clamp-none transition-all">
@@ -124,6 +141,20 @@ export function LandingTestimonials({
               </div>
             ))
           )}
+        </div>
+
+        {/* Mobile carousel indicators */}
+        <div className="flex md:hidden justify-center gap-2 mb-10">
+          {(hasManualItems ? items : allReviews).map((_, i) => (
+            <span
+              key={i}
+              className={`block rounded-full transition-all duration-300 ${
+                i === activeIdx
+                  ? 'w-6 h-1.5 bg-[#C9A876]'
+                  : 'w-1.5 h-1.5 bg-white/20'
+              }`}
+            />
+          ))}
         </div>
 
         <div className="text-center">
