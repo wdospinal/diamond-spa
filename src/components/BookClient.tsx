@@ -386,7 +386,8 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
                     }}>
                       {isDone ? '✓' : i + 1}
                     </div>
-                    <span style={{ fontSize: 11, color: isNow ? C.text : C.sec, fontWeight: isNow ? 600 : 400, whiteSpace: 'nowrap', transition: 'color 0.3s', display: i === 1 ? 'none' : 'block' }}>
+                    {/* Hide step labels on small screens so the close button doesn't get pushed out */}
+                    <span className="hidden sm:block" style={{ fontSize: 11, color: isNow ? C.text : C.sec, fontWeight: isNow ? 600 : 400, whiteSpace: 'nowrap', transition: 'color 0.3s' }}>
                       {label}
                     </span>
                   </div>
