@@ -7,7 +7,6 @@ import { randomWhatsAppUrl } from '@/lib/spa'
 import { EVENTS, trackEvent } from '@/lib/events'
 
 // ─── Icon helper ─────────────────────────────────────────────────────────────
-// ICONS
 // Uses the Material Symbols Outlined font already loaded by MaterialSymbolsLoader
 // (self-hosted, preloaded in <head>, zero extra network request, no CWV impact).
 function Icon({ name, size = 22, style = {} }: { name: string; size?: number; style?: React.CSSProperties }) {
