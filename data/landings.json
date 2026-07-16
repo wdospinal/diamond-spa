@@ -128,7 +128,19 @@
             "name": "Tom Brennan",
             "text": "Came here on a recommendation from my hotel concierge and I am so glad I listened. The sports massage was exactly what I needed after a long week of hiking around Antioquia. The therapist worked methodically through muscle groups and the pressure was perfectly calibrated — therapeutic without being painful. Bilingual staff made everything effortless. Already planning my next visit.",
             "rating": 5,
-            "date": "2 months ago"
+            "date": "hace 1 mes"
+          },
+          {
+            "name": "Carlos Arango",
+            "text": "Excelente atención y privacidad. Las instalaciones son de lujo y el trato es inmejorable. Recomendado al 100% para quienes buscan relajarse de verdad en Medellín.",
+            "rating": 5,
+            "date": "hace 2 semanas"
+          },
+          {
+            "name": "Mateo S.",
+            "text": "Muy buen servicio, las masajistas muy profesionales y el ambiente es perfecto para desconectarse. Las piedras calientes me ayudaron muchísimo con el estrés de la semana.",
+            "rating": 5,
+            "date": "hace 3 días"
           }
         ]
       },
@@ -234,6 +246,18 @@
             "text": "My wife and I celebrated our anniversary with the spa day package and it was genuinely one of the best experiences we've had together. The relaxing massages were deeply soothing. The staff were warm, professional and never intrusive. It felt like a private retreat right in the middle of El Poblado. Highly recommend.",
             "rating": 5,
             "date": "6 weeks ago"
+          },
+          {
+            "name": "Carlos Arango",
+            "text": "Excellent service and privacy. The facilities are luxurious and the treatment is unbeatable. 100% recommended for those looking to truly relax in Medellín.",
+            "rating": 5,
+            "date": "2 weeks ago"
+          },
+          {
+            "name": "Mateo S.",
+            "text": "Very good service, the therapists are highly professional and the atmosphere is perfect to disconnect. The hot stones helped me a lot with the stress of the week.",
+            "rating": 5,
+            "date": "3 days ago"
           }
         ]
       },

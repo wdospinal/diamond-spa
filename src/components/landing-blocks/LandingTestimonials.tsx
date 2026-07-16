@@ -28,7 +28,7 @@ export function LandingTestimonials({
   items
 }: {
   title?: string
-  items?: { name: string; city: string; text: string }[]
+  items?: { name: string; city?: string; text: string; rating?: number; date?: string }[]
 }) {
   const hasManualItems = items && items.length > 0
   
@@ -50,20 +50,42 @@ export function LandingTestimonials({
           {title || "Lo que dicen nuestros clientes"}
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div className="flex overflow-x-auto md:grid md:grid-cols-3 gap-6 mb-12 pb-6 md:pb-0 snap-x snap-mandatory md:snap-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {hasManualItems ? (
             items.map((item, idx) => (
-              <div key={idx} className="bg-white/5 p-8 rounded-2xl flex flex-col gap-6 hover:bg-white/10 transition-colors">
-                <p className="text-white/80 font-body text-sm leading-relaxed italic flex-1">
+              <div key={idx} className="shrink-0 w-[85vw] md:w-auto snap-center bg-white/5 p-8 rounded-2xl flex flex-col gap-6 hover:bg-white/10 transition-colors border border-white/5 shadow-lg relative">
+                <div className="absolute top-6 right-6 opacity-20">
+                  <span className="material-symbols-outlined text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>format_quote</span>
+                </div>
+                
+                <div className="flex justify-between items-start">
+                  <StarRating rating={item.rating ?? 5} />
+                </div>
+                
+                <p className="text-white/90 font-body text-[15px] leading-relaxed italic flex-1 relative z-10">
                   "{item.text}"
                 </p>
-                <div className="pt-6 border-t border-white/10">
-                  <p className="font-serif text-lg tracking-tight">
-                    {item.name}
-                  </p>
-                  <p className="text-[#C9A876] font-label text-xs uppercase tracking-widest mt-1">
-                    {item.city}
-                  </p>
+                
+                <div className="pt-6 border-t border-white/10 flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-[#C9A876]/20 flex items-center justify-center shrink-0">
+                    <span className="text-[#C9A876] font-serif text-lg">
+                      {item.name.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="font-serif text-lg tracking-tight">
+                      {item.name}
+                    </p>
+                    <div className="flex items-center gap-2 text-white/50 font-body text-xs mt-0.5">
+                      {item.date && <span>{item.date}</span>}
+                      {item.city && (
+                        <>
+                          {item.date && <span>•</span>}
+                          <span className="text-[#C9A876] uppercase tracking-wider">{item.city}</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             ))
