@@ -65,7 +65,7 @@
       "hero": {
         "h1": "Masajes para Hombres en Medellín",
         "subtitle": "Desde $120.000 · Terapeutas certificadas · Salas privadas en El Poblado.",
-        "bgImage": "https://images.unsplash.com/photo-1540555700478-4be289fbecef",
+        "bgImage": "/images-ads/portada-ads.png",
         "primaryCtaText": "Reservar Ahora",
         "secondaryCtaText": "Ver Servicios"
       },
@@ -101,10 +101,10 @@
       },
       "gallery": {
         "images": [
-          { "url": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874", "title": "Masaje Relajante" },
-          { "url": "https://images.unsplash.com/photo-1515377905703-c4788e51af15", "title": "Tejido Profundo" },
-          { "url": "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2", "title": "Piedras Volcánicas" },
-          { "url": "https://images.unsplash.com/photo-1552693673-1bf958298935", "title": "Masaje Deportivo" }
+          { "url": "/images-ads/galeria/galeria1.png", "title": "Sala de Bienvenida" },
+          { "url": "/images-ads/galeria/galeria2.png", "title": "Suite Para Dos" },
+          { "url": "/images-ads/galeria/galeria3.png", "title": "Sala Zen" },
+          { "url": "/images-ads/galeria/galeria4.png", "title": "Suite Privada" }
         ]
       },
       "testimonials": {
@@ -168,7 +168,7 @@
       "hero": {
         "h1": "Massages for Men in Medellín",
         "subtitle": "From $120,000 COP · Certified therapists · Private rooms in El Poblado.",
-        "bgImage": "https://images.unsplash.com/photo-1540555700478-4be289fbecef",
+        "bgImage": "/images-ads/portada-ads.png",
         "primaryCtaText": "Book Now",
         "secondaryCtaText": "View Services"
       },
@@ -204,10 +204,10 @@
       },
       "gallery": {
         "images": [
-          { "url": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874", "title": "Relaxing Massage" },
-          { "url": "https://images.unsplash.com/photo-1515377905703-c4788e51af15", "title": "Deep Tissue" },
-          { "url": "https://images.unsplash.com/photo-1552693673-1bf958298935", "title": "Hot Stones" },
-          { "url": "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2", "title": "Sports Massage" }
+          { "url": "/images-ads/galeria/galeria1.png", "title": "Welcome Lounge" },
+          { "url": "/images-ads/galeria/galeria2.png", "title": "Couples Suite" },
+          { "url": "/images-ads/galeria/galeria3.png", "title": "Zen Room" },
+          { "url": "/images-ads/galeria/galeria4.png", "title": "Private Suite" }
         ]
       },
       "testimonials": {
