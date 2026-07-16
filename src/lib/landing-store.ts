@@ -70,6 +70,8 @@ export type LandingContent = {
     pillars: { icon: string; title: string; body: string }[]
   }
   gallery: {
+    title?: string
+    subtitle?: string
     images: { url: string; title?: string }[] | string[]
   }
   testimonials: {
