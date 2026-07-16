@@ -1,3 +1,5 @@
+'use client'
+
 import { getPlaceDetails } from '@/lib/google-places'
 import { STATIC_REVIEWS } from '@/lib/reviews'
 import { SPA_GOOGLE_REVIEW_URL } from '@/lib/spa'
