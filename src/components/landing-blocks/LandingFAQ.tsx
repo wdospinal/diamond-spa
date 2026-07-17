@@ -10,7 +10,7 @@ export function LandingFAQ({
   if (!items || items.length === 0) return null
 
   return (
-    <section className="py-24 bg-surface-container">
+    <section id="faq" className="py-24 bg-surface-container">
       <div className="max-w-screen-md mx-auto px-6 md:px-12">
         <h2 className="font-headline text-3xl md:text-4xl text-on-surface tracking-tighter mb-12 text-center">
           {title}
