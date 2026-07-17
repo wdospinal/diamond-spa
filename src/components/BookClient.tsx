@@ -6,6 +6,11 @@ import type { Locale, Dict } from '@/lib/i18n'
 import { randomWhatsAppUrl } from '@/lib/spa'
 import { EVENTS, trackEvent } from '@/lib/events'
 
+// ─── BookClient ───────────────────────────────────────────────────────────────
+// This component is used to book a client for a service.
+// It is used in the client page and the admin page.
+// It is used to book a client for a service.
+// It is used in the client page and the admin page.
 // ─── Icon helper ─────────────────────────────────────────────────────────────
 // Uses the Material Symbols Outlined font already loaded by MaterialSymbolsLoader
 // (self-hosted, preloaded in <head>, zero extra network request, no CWV impact).
