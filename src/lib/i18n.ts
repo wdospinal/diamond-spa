@@ -63,6 +63,11 @@ export const THERAPISTS: BilingualTherapist[] = [
     en: { role: 'Cosmetologist & Massage Therapist', years: '3+ years experience' },
     es: { role: 'Cosmetóloga & Masajista', years: '4+ años de experiencia' },
   },
+  {
+    name: 'Tatiana',
+    en: { role: 'Cosmetologist & Massage Therapist', years: '3+ years experience' },
+    es: { role: 'Cosmetóloga & Masajista', years: '3+ años de experiencia' },
+  },
 ]
 
 /** Trust highlights on the Home page ("The International Standard" section). */

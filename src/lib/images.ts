@@ -80,6 +80,7 @@ export const IMG_THERAPISTS = [
   '/therapists/sary.avif',     // Sary Paez
   '/therapists/ana-maria.avif',  // Ana Maria
   '/therapists/sheila.avif',   // Sheila
+  '/therapists/tatiana.avif',  // Tatiana
 ]
 
 // WebP fallbacks for therapist <picture> elements
@@ -88,4 +89,5 @@ export const IMG_THERAPISTS_WEBP = [
   '/therapists/sary.webp',
   '/therapists/ana-maria.webp',
   '/therapists/sheila.webp',
+  '/therapists/tatiana.webp',
 ]

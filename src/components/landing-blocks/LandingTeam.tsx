@@ -7,7 +7,7 @@ import { IMG_THERAPISTS_WEBP } from '@/lib/images'
 import type { Locale } from '@/lib/i18n'
 
 const TEAM_GRID_CLASS =
-  'flex md:grid md:grid-cols-4 gap-4 md:gap-6 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-6 md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+  'flex md:grid md:grid-cols-5 gap-4 md:gap-6 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-6 md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
 
 export function LandingTeam({ locale }: { locale: Locale }) {
   const label = locale === 'es' ? 'Talento Diamond' : 'Diamond Talent'
@@ -35,7 +35,7 @@ export function LandingTeam({ locale }: { locale: Locale }) {
           </p>
         </div>
 
-        {/* Carousel on mobile, 4-column grid on desktop (matches THERAPISTS length) */}
+        {/* Carousel on mobile, 5-column grid on desktop (matches THERAPISTS length) */}
         <div
           className={TEAM_GRID_CLASS}
           onScroll={(e) => {
