@@ -21,6 +21,9 @@ export default function SemTracker() {
         const adgroup = p.get('adgroup') || p.get('utm_content')
         if (adgroup) sessionStorage.setItem('sem_adgroup', adgroup)
       }
+      // Always persist gclid if present — needed for offline conversion import in Google Ads
+      const gclid = p.get('gclid')
+      if (gclid) sessionStorage.setItem('gclid', gclid)
     } catch {
       // sessionStorage not available (private mode with storage blocked)
     }
