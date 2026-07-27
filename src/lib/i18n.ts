@@ -59,7 +59,7 @@ export const THERAPISTS: BilingualTherapist[] = [
     es: { role: 'Cosmetóloga & Masajista', years: '3+ años de experiencia' },
   },
   {
-    name: 'Sheila',
+    name: 'Sheyla Tinoco',
     en: { role: 'Cosmetologist & Massage Therapist', years: '3+ years experience' },
     es: { role: 'Cosmetóloga & Masajista', years: '4+ años de experiencia' },
   },
