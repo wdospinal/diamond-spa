@@ -255,7 +255,7 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
     trackEvent(EVENTS.WHATSAPP_CLICKED, { platform: 'whatsapp', source: 'booking' })
     window.open(randomWhatsAppUrl(waText), '_blank')
 
-    try { await fetch('/api/send-sms', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: `[Diamond] ${svcLabel} · ${dateStr} · ${selTime} · ${form.name} · ${form.phone}` }) }) } catch { }
+    // El SMS a la recepción lo dispara /api/bookings tras validar la reserva.
     let payloadDuration: number | null = null
     let hairMethod: 'wax' | 'machine' | undefined = undefined
 

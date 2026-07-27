@@ -5,8 +5,15 @@ import {
   signSession,
   verifyAdminPassword,
 } from '@/lib/admin-session'
+import { clientIp, rateLimit, tooManyRequests } from '@/lib/rate-limit'
 
 export async function POST(req: NextRequest) {
+  // Without a throttle here ADMIN_PASSWORD is guessable at full request rate.
+  const limit = await rateLimit('admin-login', clientIp(req), 8, 900)
+  if (!limit.ok) {
+    return tooManyRequests(limit.retryAfter, 'Demasiados intentos. Espera unos minutos.')
+  }
+
   let body: { username?: string; password?: string }
   try {
     body = await req.json()

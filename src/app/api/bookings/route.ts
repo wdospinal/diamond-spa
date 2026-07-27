@@ -8,6 +8,8 @@ import { copPerUsd } from '@/lib/cop-rate'
 import { SPA_EMAIL } from '@/lib/spa'
 import { readSubscriptions } from '@/lib/push-store'
 import { ensureWebPush, webpush } from '@/lib/web-push'
+import { sendBusinessSms } from '@/lib/twilio-sms'
+import { clientIp, rateLimit, tooManyRequests } from '@/lib/rate-limit'
 
 function bad(msg: string, status = 400) {
   return NextResponse.json({ error: msg }, { status })
@@ -29,6 +31,11 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  // Each accepted booking fans out to an SMS (billed), an email and a push
+  // broadcast, so cap how fast one client can trigger that.
+  const limit = await rateLimit('booking', clientIp(req), 5, 600)
+  if (!limit.ok) return tooManyRequests(limit.retryAfter, 'Demasiadas reservas. Intenta de nuevo en unos minutos.')
+
   let body: Record<string, unknown>
   try {
     body = await req.json()
@@ -139,6 +146,16 @@ export async function POST(req: NextRequest) {
         }),
       }).catch(err => console.error('Resend email error:', err))
     }
+
+    // SMS a la línea del spa — el mensaje se arma aquí con datos ya validados,
+    // nunca con texto enviado por el cliente.
+    // Se espera a propósito: en serverless el trabajo disparado y olvidado
+    // puede morir al devolver la respuesta. sendBusinessSms nunca lanza.
+    await sendBusinessSms(
+      `[Diamond] ${serviceDisplayName(service, bookingLocale)}` +
+      `${durationMinutes ? ` (${durationMinutes} min)` : ''}` +
+      ` · ${dateKey} ${timeSlot} · ${name} · ${phone}`
+    )
 
     // Enviar Notificación Push a los admins si VAPID está configurado
     if (ensureWebPush()) {
