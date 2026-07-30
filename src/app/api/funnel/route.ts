@@ -17,6 +17,18 @@ const BOGOTA_DAY = new Intl.DateTimeFormat('fr-CA', {
 
 const DAY_RE = /^\d{4}-\d{2}-\d{2}$/
 
+interface FunnelStageResponse {
+  key: string
+  label: string
+  phase: string
+  color: string
+  count: number
+  pctOfTop: number
+  pctOfPrev: number
+  revenueUsd?: number
+  revenueCop?: number
+}
+
 function bogotaToday(): string {
   return BOGOTA_DAY.format(new Date())
 }
@@ -54,27 +66,28 @@ export async function GET(req: NextRequest) {
 
   const { days, byDay, totals } = await readFunnel(from, to)
 
-  // -- Inject Actual Bookings data for the final phase --
+  // -- Confirmed payments close the funnel, straight from the bookings store --
+  // These are real records, unlike the measured stages above, which come from
+  // anonymous session tracking. The two are never mixed: a stage with no data
+  // reports 0 so the dashboard can show its empty state honestly.
   const allBookings = await readBookings()
   const fromDate = new Date(`${from}T00:00:00Z`)
   const toDate = new Date(`${to}T23:59:59Z`)
-  
+
   let paidCount = 0
-  let createdCount = 0
   let revenueUsd = 0
   let revenueCop = 0
-  
+
   const byDayPaid: Record<string, number> = {}
-  
+
   for (const b of allBookings) {
     const bDate = new Date(b.createdAt)
     if (bDate >= fromDate && bDate <= toDate) {
-      createdCount++
       if (b.paymentStatus === 'paid' && b.status !== 'cancelled') {
         paidCount++
         revenueUsd += b.price || 0
         revenueCop += b.priceCop || 0
-        
+
         const bDay = b.createdAt.slice(0, 10)
         byDayPaid[bDay] = (byDayPaid[bDay] || 0) + 1
       }
@@ -86,16 +99,9 @@ export async function GET(req: NextRequest) {
     byDay[d]['pagos_confirmados'] = byDayPaid[d] || 0
   }
 
-  // Ensure 'visit' and 'booking_submit' are at least createdCount so the funnel isn't empty
-  totals['visit'] = Math.max(totals['visit'] ?? 0, createdCount)
-  totals['booking_submit'] = Math.max(totals['booking_submit'] ?? 0, createdCount)
-  // Ensure intermediate steps aren't smaller than the end steps to make the funnel visually logical
-  totals['booking_start'] = Math.max(totals['booking_start'] ?? 0, totals['booking_submit'])
-  totals['service_view'] = Math.max(totals['service_view'] ?? 0, totals['booking_start'])
-
   const top = totals[FUNNEL_STAGES[0].key] || 0
   let prev = 0
-  const stages: any[] = FUNNEL_STAGES.map((s, idx) => {
+  const stages: FunnelStageResponse[] = FUNNEL_STAGES.map((s, idx) => {
     const count = totals[s.key] ?? 0
     const pctOfTop = top > 0 ? count / top : 0
     const pctOfPrev = idx === 0 ? 1 : prev > 0 ? count / prev : 0

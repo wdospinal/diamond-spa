@@ -6,22 +6,27 @@
  * doesn't inflate the top of the funnel). The count for a stage/day is the
  * cardinality of that set.
  *
- * Backends (chosen at runtime):
- *  - Production: Vercel KV / Upstash Redis over its REST API via `fetch` — no
- *    npm dependency (this project deliberately keeps deps minimal). Uses Redis
- *    sets (SADD / SCARD) with a ~100-day TTL so old days auto-expire.
- *  - Local/dev fallback: a JSON file (data/funnel-daily.json), same pattern as
- *    bookings-store.ts. Lets the whole pipeline be tested with zero infra.
+ * Backend preference — Supabase → Vercel KV → JSON file, matching every other
+ * store in the app (bookings, blog, landings, push):
+ *  - Supabase: `funnel_hits`, one row per (day, stage, session); uniqueness is
+ *    the primary key, so re-inserting a session is a no-op. Counts are read
+ *    from the `funnel_daily` view. Schema: supabase/migrations/0004_funnel_hits.sql.
+ *  - Vercel KV / Upstash Redis over its REST API via `fetch` — no npm
+ *    dependency (this project deliberately keeps deps minimal). Uses Redis sets
+ *    (SADD / SCARD) with a ~100-day TTL so old days auto-expire.
+ *  - Local/dev fallback: a JSON file (data/funnel-daily.json). Lets the whole
+ *    pipeline be tested with zero infra.
  *
- * The KV backend is used whenever its env vars are present; otherwise the JSON
- * file is used. On Vercel the filesystem is ephemeral, so production REQUIRES a
- * connected KV store — see .env.local.example.
+ * On Vercel the filesystem is ephemeral, so production REQUIRES either Supabase
+ * or a connected KV store — the JSON fallback would be wiped on every deploy.
+ * See .env.local.example.
  */
 
 import { mkdir, readFile, writeFile } from 'fs/promises'
 import { dirname, join } from 'path'
 import { FUNNEL_STAGE_KEYS, type FunnelStageKey } from '@/lib/funnel-stages'
 import { kvConfigured, kvPipeline } from '@/lib/kv'
+import { sbSelect, sbUpsert, supabaseConfigured } from '@/lib/supabase'
 
 export interface FunnelHit {
   /** YYYY-MM-DD, Bogota-aligned. */
@@ -89,6 +94,22 @@ function enumerateDays(fromDay: string, toDay: string): string[] {
 
 export async function recordFunnelHits(hits: FunnelHit[]): Promise<void> {
   if (hits.length === 0) return
+  if (supabaseConfigured()) {
+    // Upsert on the (day, stage, session_id) primary key: a repeat hit from the
+    // same session collapses into the existing row instead of double-counting.
+    // Postgres rejects an ON CONFLICT batch that touches the same row twice, so
+    // duplicates within this batch have to be dropped first.
+    const seen = new Set<string>()
+    const rows: { day: string; stage: string; session_id: string }[] = []
+    for (const h of hits) {
+      const k = `${h.day}|${h.stage}|${h.sessionId}`
+      if (seen.has(k)) continue
+      seen.add(k)
+      rows.push({ day: h.day, stage: h.stage, session_id: h.sessionId })
+    }
+    await sbUpsert('funnel_hits', rows)
+    return
+  }
   if (kvConfigured()) {
     const commands: (string | number)[][] = []
     const expired = new Set<string>()
@@ -114,7 +135,20 @@ export async function readFunnel(fromDay: string, toDay: string): Promise<Funnel
     return { days, byDay, totals: Object.fromEntries(FUNNEL_STAGE_KEYS.map(s => [s, 0])) }
   }
 
-  if (kvConfigured()) {
+  if (supabaseConfigured()) {
+    for (const d of days) {
+      byDay[d] = Object.fromEntries(FUNNEL_STAGE_KEYS.map(s => [s, 0]))
+    }
+    const rows = await sbSelect<{ day: string; stage: string; count: number }>(
+      'funnel_daily',
+      `day=gte.${days[0]}&day=lte.${days[days.length - 1]}`,
+    )
+    for (const r of rows) {
+      // PostgREST renders `date` as YYYY-MM-DD, but slice defensively anyway.
+      const d = String(r.day).slice(0, 10)
+      if (byDay[d] && r.stage in byDay[d]) byDay[d][r.stage] = Number(r.count) || 0
+    }
+  } else if (kvConfigured()) {
     const commands = days.flatMap(d => FUNNEL_STAGE_KEYS.map(s => ['SCARD', keyFor(d, s)]))
     const results = await kvPipeline(commands)
     let i = 0
