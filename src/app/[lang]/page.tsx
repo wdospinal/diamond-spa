@@ -8,6 +8,7 @@ import { IMG_HERO_HOME, IMG_DEEP_TISSUE, IMG_FACIAL, IMG_RELAXATION, IMG_BOUTIQU
 import { getServiceById } from '@/lib/services'
 import { SERVICE_DETAIL_FROM_HOME } from '@/lib/service-detail-nav'
 import { ServiceCardLink } from '@/components/ServiceCardLink'
+import { LandingTeam } from '@/components/landing-blocks/LandingTeam'
 import { getServiceSlug } from '@/lib/services'
 import {
   SPA_ADDRESS,
@@ -431,6 +432,9 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       <JsonLd data={localBusinessJsonLd()} />
       <HomeHero locale={locale} rating={rating} />
       <HomeServices locale={locale} />
+      {/* Same "Talento Diamond" block used by the landing pages — the team is the
+          strongest trust signal we have, so it runs right before the reviews. */}
+      <LandingTeam locale={locale} />
       <HomeReviews locale={locale} rating={rating} />
       <HomeLocation locale={locale} />
       <HomeCta locale={locale} />
