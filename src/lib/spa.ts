@@ -103,7 +103,7 @@ export const SPA_HOURS = [
   {
     days: { en: 'Sunday', es: 'Domingo' },
     opens: '10:00',
-    closes: '18:00',
+    closes: '19:00',
     display: '10:00 AM – 7:00 PM',
     dayOfWeek: ['Sunday'],
   },
