@@ -103,7 +103,7 @@ export const SPA_HOURS = [
   {
     days: { en: 'Sunday', es: 'Domingo' },
     opens: '10:00',
-    closes: '18:00',
+    closes: '19:00',
     display: '10:00 AM – 7:00 PM',
     dayOfWeek: ['Sunday'],
   },
@@ -111,7 +111,7 @@ export const SPA_HOURS = [
 
 // ─── SEO / URLs ───────────────────────────────────────────────────────────────
 
-export const SPA_RATING = { value: '4.9', count: 111 } as const
+export const SPA_RATING = { value: '4.9', count: 125 } as const
 
 export const SPA_BASE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ?? 'https://diamondspa.com.co'

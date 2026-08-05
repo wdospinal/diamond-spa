@@ -13,12 +13,14 @@
  * - Analytics       → Vercel already injects its script lazily; the React
  *                     wrapper is dead weight in the critical path.
  * - SpeedInsights   → same reasoning as Analytics.
+ * - FunnelPageview  → renders null and only fires an effect after hydration.
  */
 import dynamic from 'next/dynamic'
 
 const Analytics     = dynamic(() => import('@vercel/analytics/react').then(m => ({ default: m.Analytics })),         { ssr: false })
 const SpeedInsights = dynamic(() => import('@vercel/speed-insights/next').then(m => ({ default: m.SpeedInsights })), { ssr: false })
 const CookieConsent = dynamic(() => import('@/components/CookieConsent'),                                            { ssr: false })
+const FunnelPageview = dynamic(() => import('@/components/FunnelPageview'),                                          { ssr: false })
 
 export default function ClientProviders() {
   return (
@@ -26,6 +28,7 @@ export default function ClientProviders() {
       <Analytics />
       <SpeedInsights />
       <CookieConsent />
+      <FunnelPageview />
     </>
   )
 }

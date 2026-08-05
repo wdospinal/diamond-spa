@@ -47,5 +47,14 @@ export function verifyAdminPassword(username: string, password: string): boolean
     console.warn('ADMIN_PASSWORD is not set — admin login disabled')
     return false
   }
-  return username === u && password === p
+  // Compare via fixed-length HMAC digests so neither the comparison time nor an
+  // early length mismatch leaks anything about the credentials.
+  return safeEqual(username, u) && safeEqual(password, p)
+}
+
+/** Constant-time string compare, tolerant of differing lengths. */
+function safeEqual(a: string, b: string): boolean {
+  const ha = createHmac('sha256', secret()).update(a).digest()
+  const hb = createHmac('sha256', secret()).update(b).digest()
+  return timingSafeEqual(ha, hb)
 }

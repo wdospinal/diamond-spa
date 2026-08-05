@@ -21,7 +21,10 @@ export default function Sidebar() {
 
   const handleLogout = async () => {
     await fetch('/api/admin/logout', { method: 'POST' })
-    router.push('/admin/login')
+    // replace + refresh so the back button and the router cache can't resurrect
+    // the authenticated dashboard after the cookie is gone.
+    router.replace('/admin/login')
+    router.refresh()
   }
 
   return (

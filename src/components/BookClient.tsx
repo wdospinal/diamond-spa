@@ -6,6 +6,11 @@ import type { Locale, Dict } from '@/lib/i18n'
 import { randomWhatsAppUrl } from '@/lib/spa'
 import { EVENTS, trackEvent } from '@/lib/events'
 
+// ─── BookClient ───────────────────────────────────────────────────────────────
+// This component is used to book a client for a service.
+// It is used in the client page and the admin page.
+// It is used to book a client for a service.
+// It is used in the client page and the admin page.
 // ─── Icon helper ─────────────────────────────────────────────────────────────
 // Uses the Material Symbols Outlined font already loaded by MaterialSymbolsLoader
 // (self-hosted, preloaded in <head>, zero extra network request, no CWV impact).
@@ -250,7 +255,7 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
     trackEvent(EVENTS.WHATSAPP_CLICKED, { platform: 'whatsapp', source: 'booking' })
     window.open(randomWhatsAppUrl(waText), '_blank')
 
-    try { await fetch('/api/send-sms', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: `[Diamond] ${svcLabel} · ${dateStr} · ${selTime} · ${form.name} · ${form.phone}` }) }) } catch { }
+    // El SMS a la recepción lo dispara /api/bookings tras validar la reserva.
     let payloadDuration: number | null = null
     let hairMethod: 'wax' | 'machine' | undefined = undefined
 

@@ -10,8 +10,18 @@ import { JsonLd } from '@/components/JsonLd'
 import { ServiceCardLink } from '@/components/ServiceCardLink'
 import LandingHead from '@/components/LandingHead'
 import { mergeLandingMetadata } from '@/lib/landing-meta'
+import { getFaqCategories, getFaqItems, type FaqCategoryId } from '@/lib/faqs'
 
 export const revalidate = 3600
+
+/** Slices of the shared FAQ library that matter to a male visitor. */
+const MEN_FAQ_CATEGORIES: readonly FaqCategoryId[] = [
+  'men',
+  'experiences',
+  'booking',
+  'payments',
+  'trust',
+]
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params
@@ -34,11 +44,12 @@ export default async function MasajesParaHombresPage({ params }: { params: Promi
   const locale = lang as Locale
   const p = getDict(locale).masajesParaHombres
   const massageServices = getMassageServices()
+  const faqCategories = getFaqCategories(locale, MEN_FAQ_CATEGORIES)
 
   return (
     <>
       <JsonLd data={localBusinessJsonLd()} />
-      <JsonLd data={faqJsonLd(p.faqs)} />
+      <JsonLd data={faqJsonLd(getFaqItems(locale, MEN_FAQ_CATEGORIES))} />
       <LandingHead path="/masajes-para-hombres" locale={locale} />
 
       <main className="max-w-screen-xl mx-auto px-6 md:px-12 pt-32 pb-24">
@@ -124,20 +135,32 @@ export default async function MasajesParaHombresPage({ params }: { params: Promi
           </div>
         </section>
 
-        {/* FAQ */}
+        {/* FAQ — pulled from the shared library so the copy and the FAQPage
+            structured data below can never drift apart. */}
         <section className="mb-20">
           <h2 className="font-headline text-2xl md:text-3xl text-on-surface tracking-tighter mb-10">
             {p.faqTitle}
           </h2>
-          <div className="flex flex-col divide-y divide-outline-variant/20">
-            {p.faqs.map((faq) => (
-              <details key={faq.question} className="group py-6">
-                <summary className="font-label text-on-surface text-sm tracking-wide cursor-pointer list-none flex justify-between items-center gap-4">
-                  {faq.question}
-                  <span className="material-symbols-outlined text-primary text-xl shrink-0 group-open:rotate-180 transition-transform" aria-hidden="true">expand_more</span>
-                </summary>
-                <p className="mt-4 text-zinc-400 font-body text-sm leading-relaxed">{faq.answer}</p>
-              </details>
+          <div className="flex flex-col gap-12">
+            {faqCategories.map(({ id, icon, label, items }) => (
+              <div key={id}>
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="material-symbols-outlined text-primary text-lg shrink-0" aria-hidden="true">{icon}</span>
+                  <h3 className="font-label text-on-surface text-xs tracking-[0.25em] uppercase">{label}</h3>
+                  <span className="h-px flex-1 bg-outline-variant/20" aria-hidden="true" />
+                </div>
+                <div className="flex flex-col divide-y divide-outline-variant/20 border-t border-outline-variant/20">
+                  {items.map((faq) => (
+                    <details key={faq.question} className="group py-5">
+                      <summary className="font-label text-on-surface text-sm tracking-wide cursor-pointer list-none flex justify-between items-center gap-4">
+                        {faq.question}
+                        <span className="material-symbols-outlined text-primary text-xl shrink-0 group-open:rotate-180 transition-transform" aria-hidden="true">expand_more</span>
+                      </summary>
+                      <p className="mt-4 text-zinc-400 font-body text-sm leading-relaxed">{faq.answer}</p>
+                    </details>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </section>

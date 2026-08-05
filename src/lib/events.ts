@@ -6,6 +6,7 @@
  */
 
 import { track } from '@vercel/analytics'
+import { trackFunnelEvent } from '@/lib/funnel-client'
 
 // ─── Event names ─────────────────────────────────────────────────────────────
 
@@ -123,4 +124,7 @@ export function trackEvent<K extends keyof EventPayloadMap>(
   } catch {
     // Never let analytics crash the app
   }
+  // Mirror funnel-relevant events into our own store, so the admin dashboard
+  // works without depending on a Vercel Analytics Drain (see funnel-client.ts).
+  trackFunnelEvent(name)
 }

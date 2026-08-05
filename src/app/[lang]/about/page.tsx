@@ -5,9 +5,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
-import { buildAlternates, buildOpenGraph } from '@/lib/seo'
+import { buildAlternates, buildOpenGraph, faqJsonLd } from '@/lib/seo'
 import { IMG_HERO_ABOUT, IMG_STONE, IMG_LOUNGE, IMG_THERAPISTS, IMG_THERAPISTS_WEBP } from '@/lib/images'
 import { TherapistCard } from '@/components/TherapistCard'
+import { FaqSection } from '@/components/FaqSection'
+import { getFaqCategories, getFaqItems } from '@/lib/faqs'
+import { JsonLd } from '@/components/JsonLd'
 
 // TODO: Update images
 const HERO_IMG = IMG_HERO_ABOUT
@@ -170,6 +173,17 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
           </div>
         </div>
       </section>
+
+      {/* FAQ — the full library, every category */}
+      <JsonLd data={faqJsonLd(getFaqItems(locale))} />
+      <FaqSection
+        categories={getFaqCategories(locale)}
+        label={locale === 'es' ? 'Preguntas frecuentes' : 'FAQ'}
+        title={locale === 'es' ? 'Todo lo que sueles preguntar' : 'Everything you usually ask'}
+        intro={locale === 'es'
+          ? 'Precios, reservas, higiene, depilación, faciales y cómo llegar. Si algo no está aquí, escríbenos por WhatsApp y te respondemos.'
+          : 'Prices, bookings, hygiene, waxing, facials and how to find us. If something is missing, message us on WhatsApp and we will answer.'}
+      />
 
       {/* CTA */}
       <section className="py-40 px-6 md:px-12 bg-surface text-center">
