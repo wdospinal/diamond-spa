@@ -30,13 +30,20 @@ export default function WhatsAppLink({
         try {
           const p = new URLSearchParams(window.location.search)
           const campaign = p.get('utm_campaign') || sessionStorage.getItem('sem_campaign') || ''
-          const adgroup  = p.get('adgroup') || ''
-          pushEvent('whatsapp_click', {
+          const adgroup  = p.get('adgroup') || sessionStorage.getItem('sem_adgroup') || ''
+          
+          const payload = {
             source,
             button: 'inline',
             ...(campaign ? { campaign } : {}),
             ...(adgroup  ? { adgroup }  : {}),
-          })
+          }
+          
+          pushEvent('whatsapp_click', payload)
+          
+          if (campaign || adgroup || sessionStorage.getItem('sem_trigger_key')) {
+            pushEvent('whatsapp_lead_ads', payload)
+          }
         } catch { /* analytics must never crash the app */ }
         window.open(randomWhatsAppUrl(text), '_blank', 'noopener,noreferrer')
       }}
