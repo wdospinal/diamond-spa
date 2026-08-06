@@ -49,6 +49,7 @@ export default function LandingSemInit({ triggerKey, triggerValue, hideChrome }:
         sessionStorage.removeItem('sem_trigger_key')
         sessionStorage.removeItem('sem_trigger_value')
         sessionStorage.removeItem('sem_campaign')
+        sessionStorage.removeItem('sem_adgroup')
       } else {
         // Store the custom trigger config for future hard navigations.
         sessionStorage.removeItem('sem_hide_chrome')
@@ -57,6 +58,10 @@ export default function LandingSemInit({ triggerKey, triggerValue, hideChrome }:
         const utmCampaign = params.get('utm_campaign')
         if (utmCampaign) {
           sessionStorage.setItem('sem_campaign', utmCampaign)
+        }
+        const utmAdgroup = params.get('adgroup')
+        if (utmAdgroup) {
+          sessionStorage.setItem('sem_adgroup', utmAdgroup)
         }
       }
     } catch {
