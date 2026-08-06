@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { randomWhatsAppUrl } from '@/lib/phones'
 import { pushEvent } from '@/lib/gtm'
 
 export default function GlobalFloatingWhatsApp({ disabledPaths }: { disabledPaths: string[] }) {
@@ -22,19 +23,44 @@ export default function GlobalFloatingWhatsApp({ disabledPaths }: { disabledPath
   }
 
   function handleClick() {
+    let isAds = false
     try {
       const p = new URLSearchParams(window.location.search)
       const campaign = p.get('utm_campaign') || sessionStorage.getItem('sem_campaign') || ''
-      const adgroup  = p.get('adgroup') || ''
-      pushEvent('whatsapp_click', {
+      const adgroup  = p.get('adgroup') || sessionStorage.getItem('sem_adgroup') || ''
+      
+      if (campaign || adgroup || sessionStorage.getItem('sem_trigger_key')) {
+        isAds = true
+      }
+      
+      const payload = {
         source: 'floating_button',
         button: 'floating',
         ...(campaign ? { campaign } : {}),
         ...(adgroup  ? { adgroup }  : {}),
-      })
+      }
+      
+      pushEvent('whatsapp_click', payload)
+      
+      // Si el usuario viene de Ads, disparamos un evento exclusivo para GTM
+      if (isAds) {
+        pushEvent('whatsapp_lead_ads', payload)
+      }
     } catch { /* analytics must never crash the app */ }
+    
+    const isEnglish = pathname.startsWith('/en')
+    let message = isEnglish 
+      ? 'Hello, I would like to book an appointment.' 
+      : 'Hola, me gustaría agendar una cita.'
+      
+    if (isAds) {
+      message = isEnglish 
+        ? 'Hello, I saw your Google ad and would like more information to book.'
+        : 'Hola, vi su anuncio en Google y me gustaría más información para reservar.'
+    }
+
     window.open(
-      'https://wa.me/573138383838?text=Hola,%20me%20gustaría%20agendar%20una%20cita',
+      randomWhatsAppUrl(message),
       '_blank',
       'noopener,noreferrer',
     )
