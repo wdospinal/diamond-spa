@@ -6,6 +6,28 @@ import { bookingDisplayName } from '@/lib/booking-types'
 import DualCurrency from '@/components/DualCurrency'
 import Link from 'next/link'
 
+function StatusBadge({ booking }: { booking: BookingRecord }) {
+  const isPending = !booking.status || booking.status === 'pending'
+  return (
+    <>
+      <span className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-label uppercase tracking-wider ${
+        isPending
+          ? 'bg-tertiary/10 text-tertiary border border-tertiary/20'
+          : 'bg-[#34d399]/10 text-[#34d399] border border-[#34d399]/20'
+      }`}>
+        {isPending ? 'Pendiente' :
+         booking.status === 'arrived' ? 'Llegó' :
+         booking.status === 'completed' ? 'Completado' : 'Cancelado'}
+      </span>
+      {booking.source === 'ads' && (
+        <span className="ml-2 inline-flex items-center px-2 py-1 rounded text-[10px] font-label uppercase tracking-wider bg-[#4a9fd4]/10 text-[#4a9fd4] border border-[#4a9fd4]/20">
+          Ads
+        </span>
+      )}
+    </>
+  )
+}
+
 export default function DashboardHome() {
   const [bookings, setBookings] = useState<BookingRecord[]>([])
   const [loading, setLoading] = useState(true)
@@ -76,17 +98,17 @@ export default function DashboardHome() {
     .slice(0, 5)
 
   return (
-    <div className="max-w-6xl mx-auto py-8">
+    <div className="max-w-6xl mx-auto">
       {/* Header */}
-      <header className="mb-10">
+      <header className="mb-8 md:mb-10">
         <h1 className="font-headline text-3xl md:text-4xl text-on-surface mb-2">Resumen</h1>
         <p className="text-on-surface/50 text-sm">Hola, aquí tienes el estado general de Diamond Spa.</p>
       </header>
 
       {/* Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6 mb-10 md:mb-12">
         {/* Metric 1 */}
-        <div className="bg-surface-container border border-outline-variant/20 p-6 rounded">
+        <div className="bg-surface-container border border-outline-variant/20 p-5 md:p-6 rounded">
           <div className="flex items-center gap-3 mb-4 text-on-surface/60">
             <span className="material-symbols-outlined text-primary" aria-hidden="true">today</span>
             <span className="font-label text-[10px] tracking-widest uppercase">Citas Hoy</span>
@@ -95,48 +117,80 @@ export default function DashboardHome() {
         </div>
 
         {/* Metric 2 */}
-        <div className="bg-surface-container border border-outline-variant/20 p-6 rounded">
+        <div className="bg-surface-container border border-outline-variant/20 p-5 md:p-6 rounded">
           <div className="flex items-center gap-3 mb-4 text-on-surface/60">
             <span className="material-symbols-outlined text-[#34d399]" aria-hidden="true">payments</span>
             <span className="font-label text-[10px] tracking-widest uppercase">Pagos Recibidos</span>
           </div>
           <div className="font-headline text-2xl text-[#34d399]">
-            <DualCurrency usd={paidUsd} copOverride={paidCop} />
+            <DualCurrency usd={paidUsd} copOverride={paidCop} align="left" />
           </div>
         </div>
 
         {/* Metric 3 */}
-        <div className="bg-surface-container border border-outline-variant/20 p-6 rounded">
+        <div className="bg-surface-container border border-outline-variant/20 p-5 md:p-6 rounded">
           <div className="flex items-center gap-3 mb-4 text-on-surface/60">
             <span className="material-symbols-outlined text-on-surface/50" aria-hidden="true">eco</span>
             <span className="font-label text-[10px] tracking-widest uppercase">Valor Orgánico</span>
           </div>
           <div className="font-headline text-xl text-on-surface">
-            <DualCurrency usd={organicUsd} copOverride={organicCop} />
+            <DualCurrency usd={organicUsd} copOverride={organicCop} align="left" />
           </div>
         </div>
 
         {/* Metric 4 */}
-        <div className="bg-[#4a9fd4]/5 border border-[#4a9fd4]/20 p-6 rounded">
+        <div className="bg-[#4a9fd4]/5 border border-[#4a9fd4]/20 p-5 md:p-6 rounded">
           <div className="flex items-center gap-3 mb-4 text-[#4a9fd4]/80">
             <span className="material-symbols-outlined text-[#4a9fd4]" aria-hidden="true">campaign</span>
             <span className="font-label text-[10px] tracking-widest uppercase">Valor por Ads</span>
           </div>
           <div className="font-headline text-xl text-on-surface">
-            <DualCurrency usd={adsUsd} copOverride={adsCop} />
+            <DualCurrency usd={adsUsd} copOverride={adsCop} align="left" />
           </div>
         </div>
       </div>
 
       {/* Recent Bookings */}
       <section className="bg-surface-container border border-outline-variant/20 rounded overflow-hidden">
-        <div className="p-6 border-b border-outline-variant/20 flex items-center justify-between">
+        <div className="p-5 md:p-6 border-b border-outline-variant/20 flex items-center justify-between gap-3">
           <h2 className="font-headline text-xl text-on-surface">Citas Recientes</h2>
-          <Link href="/admin/bookings" className="text-primary font-label text-[10px] tracking-widest uppercase hover:underline">
+          <Link href="/admin/bookings" className="text-primary font-label text-[10px] tracking-widest uppercase hover:underline shrink-0">
             Ver todas
           </Link>
         </div>
-        <div className="overflow-x-auto">
+
+        {/* Mobile: stacked cards. A four-column table forces horizontal
+            scrolling on a phone, which hides the status column entirely. */}
+        <div className="md:hidden">
+          {recentBookings.length === 0 ? (
+            <p className="p-8 text-center text-on-surface/30 font-label text-xs uppercase tracking-widest">
+              No hay reservas
+            </p>
+          ) : (
+            <ul className="divide-y divide-outline-variant/10">
+              {recentBookings.map(b => (
+                <li key={b.id} className="p-5 flex flex-col gap-2">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-on-surface font-medium truncate">{bookingDisplayName(b)}</p>
+                      <p className="text-on-surface/50 text-xs truncate">{b.email}</p>
+                    </div>
+                    <div className="shrink-0 text-right">
+                      <p className="text-on-surface text-sm tabular-nums">{b.dateKey}</p>
+                      <p className="text-on-surface/50 text-xs tabular-nums">{b.timeSlot}</p>
+                    </div>
+                  </div>
+                  <p className="text-on-surface/80 text-sm">{b.serviceName}</p>
+                  <div className="flex flex-wrap items-center gap-y-2">
+                    <StatusBadge booking={b} />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-surface-variant/30 text-on-surface/50 font-label text-[10px] uppercase tracking-[0.2em]">
@@ -166,20 +220,7 @@ export default function DashboardHome() {
                       <p className="text-on-surface/50 text-xs">{b.timeSlot}</p>
                     </td>
                     <td className="p-4">
-                      <span className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-label uppercase tracking-wider ${
-                        (!b.status || b.status === 'pending') ? 'bg-tertiary/10 text-tertiary border border-tertiary/20' :
-                        'bg-[#34d399]/10 text-[#34d399] border border-[#34d399]/20'
-                      }`}>
-                        {(!b.status || b.status === 'pending') ? 'Pendiente' :
-                        b.status === 'arrived' ? 'Llegó' :
-                        b.status === 'completed' ? 'Completado' : 'Cancelado'
-                        }
-                      </span>
-                      {b.source === 'ads' && (
-                        <span className="ml-2 inline-flex items-center px-2 py-1 rounded text-[10px] font-label uppercase tracking-wider bg-[#4a9fd4]/10 text-[#4a9fd4] border border-[#4a9fd4]/20">
-                          Ads
-                        </span>
-                      )}
+                      <StatusBadge booking={b} />
                     </td>
                   </tr>
                 ))

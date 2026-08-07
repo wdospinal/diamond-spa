@@ -8,28 +8,14 @@ import type { BlogPost } from '@/lib/blog-store'
 
 const RichEditor = dynamic(() => import('@/components/RichEditor'), { ssr: false })
 
-const C = {
-  bg:     '#0a0e12',
-  card:   '#111820',
-  border: '#1e2a35',
-  accent: '#a5cce6',
-  text:   '#cfe5fa',
-  muted:  '#6b8299',
-  error:  '#f87171',
-}
+// text-base below sm: iOS Safari zooms the viewport when focusing an input
+// whose font-size is under 16px.
+const inputCls =
+  'w-full bg-[#111820] border border-[#1e2a35] text-[#cfe5fa] px-3.5 py-3 text-base sm:text-sm rounded-none outline-none transition-colors focus:border-[#a5cce6]/60 placeholder:text-[#6b8299]'
 
-const inputStyle: React.CSSProperties = {
-  width: '100%', boxSizing: 'border-box',
-  background: C.card, border: `1px solid ${C.border}`,
-  color: C.text, padding: '12px 14px', fontSize: 14,
-  outline: 'none', fontFamily: 'inherit', borderRadius: 0,
-  transition: 'border-color 0.2s',
-}
+const labelCls = 'block text-[#6b8299] text-[10px] tracking-[0.2em] uppercase'
 
-const labelStyle: React.CSSProperties = {
-  display: 'block', color: C.muted, fontSize: 10,
-  letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: 8,
-}
+const tabCls = 'flex-1 px-2 py-3.5 sm:p-4 border-b-2 text-[11px] sm:text-xs tracking-[0.15em] uppercase transition-all'
 
 export default function EditBlogPostPage({
   params,
@@ -121,7 +107,7 @@ export default function EditBlogPostPage({
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', background: C.bg, color: C.muted, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, letterSpacing: '0.2em', textTransform: 'uppercase' }}>
+      <div className="min-h-[40vh] flex items-center justify-center text-[#6b8299] text-xs tracking-[0.2em] uppercase">
         Cargando…
       </div>
     )
@@ -129,228 +115,233 @@ export default function EditBlogPostPage({
 
   if (notFound) {
     return (
-      <div style={{ minHeight: '100vh', background: C.bg, color: C.text, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
+      <div className="min-h-[40vh] flex flex-col items-center justify-center gap-4 text-center text-[#cfe5fa]">
         <p>Artículo no encontrado.</p>
-        <Link href="/admin/blog" style={{ color: C.accent, textDecoration: 'underline', fontSize: 13 }}>← Volver al blog</Link>
+        <Link href="/admin/blog" className="text-[#a5cce6] underline text-[13px]">← Volver al blog</Link>
       </div>
     )
   }
 
   return (
-    <div className="max-w-5xl mx-auto py-8">
-      <div>
+    <div className="max-w-5xl mx-auto">
+      {/* Header */}
+      <div className="flex items-center gap-4 mb-8 md:mb-9 flex-wrap">
+        <Link href="/admin/blog" className="text-[#6b8299] text-[11px] tracking-[0.15em] uppercase hover:text-[#a5cce6] transition-colors">
+          ← Blog
+        </Link>
+        <h1 className="font-headline text-2xl sm:text-3xl text-[#cfe5fa]">Editar artículo</h1>
+      </div>
 
-        {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 36, flexWrap: 'wrap' }}>
-          <Link href="/admin/blog" style={{ color: C.muted, fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', textDecoration: 'none' }}>
-            ← Blog
-          </Link>
-          <h1 style={{ fontSize: 24, fontWeight: 300, margin: 0, color: C.text }}>Editar artículo</h1>
+      {error && (
+        <div className="bg-[#f87171]/10 border border-[#f87171]/30 text-[#f87171] px-4 py-3 mb-6 text-[13px]">
+          {error}
         </div>
+      )}
 
-        {error && (
-          <div style={{ background: `${C.error}18`, border: `1px solid ${C.error}50`, color: C.error, padding: '12px 16px', marginBottom: 24, fontSize: 13 }}>
-            {error}
+      <form onSubmit={handleSubmit} className="flex flex-col gap-7">
+
+        {/* ── EDITOR DE CONTENIDO CON TABS ── */}
+        <section className="bg-[#111820] border border-[#1e2a35]">
+
+          {/* Tabs header */}
+          <div className="flex border-b border-[#1e2a35]">
+            <button
+              type="button"
+              onClick={() => setActiveTab('es')}
+              aria-pressed={activeTab === 'es'}
+              className={`${tabCls} ${
+                activeTab === 'es'
+                  ? 'bg-[#a5cce6]/[0.06] border-[#a5cce6] text-[#cfe5fa]'
+                  : 'border-transparent text-[#6b8299]'
+              }`}
+            >
+              <span className="sm:hidden">Español</span>
+              <span className="hidden sm:inline">Contenido en Español</span>
+              {!locales.includes('es') && ' (Inactivo)'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('en')}
+              aria-pressed={activeTab === 'en'}
+              className={`${tabCls} ${
+                activeTab === 'en'
+                  ? 'bg-[#a5cce6]/[0.06] border-[#a5cce6] text-[#cfe5fa]'
+                  : 'border-transparent text-[#6b8299]'
+              }`}
+            >
+              <span className="sm:hidden">Inglés</span>
+              <span className="hidden sm:inline">Contenido en Inglés</span>
+              {!locales.includes('en') && ' (Inactivo)'}
+            </button>
           </div>
-        )}
 
-        <form onSubmit={handleSubmit}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
-
-            {/* ── EDITOR DE CONTENIDO CON TABS ── */}
-            <section style={{ background: C.card, border: `1px solid ${C.border}` }}>
-              
-              {/* Tabs header */}
-              <div style={{ display: 'flex', borderBottom: `1px solid ${C.border}` }}>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('es')}
-                  style={{
-                    flex: 1, padding: '16px', background: activeTab === 'es' ? `${C.accent}10` : 'transparent',
-                    border: 'none', borderBottom: activeTab === 'es' ? `2px solid ${C.accent}` : '2px solid transparent',
-                    color: activeTab === 'es' ? C.text : C.muted, fontSize: 12, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.2s'
-                  }}
-                >
-                  Contenido en Español
-                  {!locales.includes('es') && ' (Inactivo)'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('en')}
-                  style={{
-                    flex: 1, padding: '16px', background: activeTab === 'en' ? `${C.accent}10` : 'transparent',
-                    border: 'none', borderBottom: activeTab === 'en' ? `2px solid ${C.accent}` : '2px solid transparent',
-                    color: activeTab === 'en' ? C.text : C.muted, fontSize: 12, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.2s'
-                  }}
-                >
-                  Contenido en Inglés
-                  {!locales.includes('en') && ' (Inactivo)'}
-                </button>
-              </div>
-
-              {/* Editor body */}
-              <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 20 }}>
-                {activeTab === 'es' ? (
-                  <>
-                    <div>
-                      <label style={labelStyle}>Título (ES) *</label>
-                      <input value={titleEs} onChange={e => setTitleEs(e.target.value)} required={locales.includes('es')} style={inputStyle} placeholder="Ej: Beneficios del masaje..." />
-                    </div>
-                    <div>
-                      <label style={labelStyle}>Extracto (ES) *</label>
-                      <textarea value={excerptEs} onChange={e => setExcerptEs(e.target.value)} required={locales.includes('es')} rows={2} style={{ ...inputStyle, resize: 'vertical' }} placeholder="Descripción corta..." />
-                    </div>
-                    <div>
-                      <label style={labelStyle}>Contenido (ES) *</label>
-                      <RichEditor value={contentEs} onChange={setContentEs} placeholder="Escribe el cuerpo del artículo en español..." />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                      <label style={{ ...labelStyle, marginBottom: 0 }}>Título (EN) {locales.includes('en') ? '*' : ''}</label>
-                      <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', userSelect: 'none' }}>
-                        <input type="checkbox" checked={locales.includes('en')} onChange={() => toggleLocale('en')} style={{ accentColor: C.accent, width: 15, height: 15 }} />
-                        <span style={{ fontSize: 11, color: C.accent, letterSpacing: '0.1em', textTransform: 'uppercase' }}>Publicar en /en/blog</span>
-                      </label>
-                    </div>
-                    <div>
-                      <input value={titleEn} onChange={e => setTitleEn(e.target.value)} required={locales.includes('en')} style={{ ...inputStyle, opacity: locales.includes('en') ? 1 : 0.5 }} placeholder="Ej: Benefits of a massage..." />
-                    </div>
-                    <div>
-                      <label style={labelStyle}>Extracto (EN) {locales.includes('en') ? '*' : ''}</label>
-                      <textarea value={excerptEn} onChange={e => setExcerptEn(e.target.value)} required={locales.includes('en')} rows={2} style={{ ...inputStyle, resize: 'vertical', opacity: locales.includes('en') ? 1 : 0.5 }} placeholder="Short description..." />
-                    </div>
-                    <div>
-                      <label style={labelStyle}>Contenido (EN) {locales.includes('en') ? '*' : ''}</label>
-                      <div style={{ opacity: locales.includes('en') ? 1 : 0.5, transition: 'opacity 0.2s' }}>
-                        <RichEditor value={contentEn} onChange={setContentEn} placeholder="Write the article body in english..." />
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-            </section>
-
-            {/* ── SETTINGS ── */}
-            <section style={{ background: C.card, border: `1px solid ${C.border}`, padding: 24 }}>
-              <p style={{ ...labelStyle, marginBottom: 20 }}>Configuración de la publicación</p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
-
+          {/* Editor body */}
+          <div className="p-4 sm:p-6 flex flex-col gap-5">
+            {activeTab === 'es' ? (
+              <>
                 <div>
-                  <label style={labelStyle}>Imagen de portada</label>
-                  <div style={{ display: 'flex', gap: 8 }}>
-                    <input value={coverUrl} onChange={e => setCoverUrl(e.target.value)} style={{ ...inputStyle, flex: 1 }} placeholder="URL (https://...) o subir" />
-                    <button
-                      type="button"
-                      onClick={() => document.getElementById('cover-upload')?.click()}
-                      style={{
-                        background: `${C.accent}15`, border: `1px solid ${C.accent}40`, color: C.accent,
-                        padding: '0 16px', fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer'
-                      }}
-                    >
-                      Subir
-                    </button>
-                    <input
-                      id="cover-upload"
-                      type="file"
-                      accept="image/*"
-                      style={{ display: 'none' }}
-                      onChange={async (e) => {
-                        const file = e.target.files?.[0]
-                        if (!file) return
-                        try {
-                          const { compressImageToWebP } = await import('@/lib/image-optimizer')
-                          const b64 = await compressImageToWebP(file, 1200, 0.8)
-                          setCoverUrl(b64)
-                        } catch (err) { alert('Error subiendo imagen') }
-                      }}
-                    />
-                  </div>
+                  <label className={`${labelCls} mb-2`}>Título (ES) *</label>
+                  <input value={titleEs} onChange={e => setTitleEs(e.target.value)} required={locales.includes('es')} className={inputCls} placeholder="Ej: Beneficios del masaje..." />
                 </div>
-
                 <div>
-                  <label style={labelStyle}>Categoría *</label>
-                  <select value={category} onChange={e => setCategory(e.target.value)} required style={{ ...inputStyle, cursor: 'pointer' }}>
-                    <option value="bienestar">Bienestar</option>
-                    <option value="novedades">Novedades</option>
-                    <option value="servicios">Servicios</option>
-                  </select>
+                  <label className={`${labelCls} mb-2`}>Extracto (ES) *</label>
+                  <textarea value={excerptEs} onChange={e => setExcerptEs(e.target.value)} required={locales.includes('es')} rows={2} className={`${inputCls} resize-y`} placeholder="Descripción corta..." />
                 </div>
-
                 <div>
-                  <label style={labelStyle}>Slug URL <span style={{ color: C.muted, fontSize: 9 }}>(auto si se deja vacío)</span></label>
-                  <input value={slug} onChange={e => setSlug(e.target.value)} style={inputStyle} placeholder="ejemplo-mi-post" />
+                  <label className={`${labelCls} mb-2`}>Contenido (ES) *</label>
+                  <RichEditor value={contentEs} onChange={setContentEs} placeholder="Escribe el cuerpo del artículo en español..." />
                 </div>
-
-                <div>
-                  <label style={labelStyle}>Autor</label>
-                  <input value={author} onChange={e => setAuthor(e.target.value)} style={inputStyle} placeholder="Diamond Spa" />
-                </div>
-
-                <div style={{ gridColumn: '1 / -1' }}>
-                  <label style={{ ...labelStyle, marginBottom: 12 }}>Idiomas a publicar</label>
-                  <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                    {(['es', 'en'] as const).map(l => (
-                      <label key={l} style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', userSelect: 'none' }}>
-                        <input type="checkbox" checked={locales.includes(l)} onChange={() => toggleLocale(l)} style={{ accentColor: C.accent, width: 15, height: 15 }} />
-                        <span style={{ fontSize: 12, color: C.text }}>
-                          {l === 'es' ? '🇨🇴 Español (/es)' : '🇺🇸 Inglés (/en)'}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                <div style={{ gridColumn: '1 / -1', marginTop: 8, paddingTop: 16, borderTop: `1px solid ${C.border}` }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', userSelect: 'none' }}>
-                    <input type="checkbox" checked={isDraft} onChange={e => setIsDraft(e.target.checked)} style={{ accentColor: C.accent, width: 15, height: 15 }} />
-                    <span style={{ fontSize: 13, color: C.text }}>Guardar como borrador <span style={{ color: C.muted }}>(no será visible en la web pública)</span></span>
+              </>
+            ) : (
+              <>
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                  <label className={labelCls}>Título (EN) {locales.includes('en') ? '*' : ''}</label>
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <input type="checkbox" checked={locales.includes('en')} onChange={() => toggleLocale('en')} className="w-4 h-4 accent-[#a5cce6]" />
+                    <span className="text-[11px] text-[#a5cce6] tracking-[0.1em] uppercase">Publicar en /en/blog</span>
                   </label>
                 </div>
-              </div>
-            </section>
+                <div>
+                  <input value={titleEn} onChange={e => setTitleEn(e.target.value)} required={locales.includes('en')} className={`${inputCls} ${locales.includes('en') ? '' : 'opacity-50'}`} placeholder="Ej: Benefits of a massage..." />
+                </div>
+                <div>
+                  <label className={`${labelCls} mb-2`}>Extracto (EN) {locales.includes('en') ? '*' : ''}</label>
+                  <textarea value={excerptEn} onChange={e => setExcerptEn(e.target.value)} required={locales.includes('en')} rows={2} className={`${inputCls} resize-y ${locales.includes('en') ? '' : 'opacity-50'}`} placeholder="Short description..." />
+                </div>
+                <div>
+                  <label className={`${labelCls} mb-2`}>Contenido (EN) {locales.includes('en') ? '*' : ''}</label>
+                  <div className={`transition-opacity ${locales.includes('en') ? '' : 'opacity-50'}`}>
+                    <RichEditor value={contentEn} onChange={setContentEn} placeholder="Write the article body in english..." />
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </section>
 
-            {/* Submit */}
-            <div style={{ display: 'flex', gap: 12, alignItems: 'center', justifySelf: 'flex-end', marginLeft: 'auto', paddingBottom: 48 }}>
-              <button
-                type="button"
-                onClick={() => setShowPreview(true)}
-                style={{ fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: C.text, border: `1px solid ${C.text}40`, padding: '12px 24px', background: 'transparent', cursor: 'pointer' }}
-              >
-                Vista Previa
-              </button>
-              <Link href="/admin/blog" style={{ fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: C.muted, textDecoration: 'none', marginRight: 16, marginLeft: 16 }}>
-                Cancelar
-              </Link>
-              <button
-                type="submit"
-                disabled={saving}
-                style={{
-                  background: saving ? C.border : C.accent, color: '#0a0e12',
-                  border: 'none', padding: '13px 32px', fontSize: 11,
-                  letterSpacing: '0.2em', textTransform: 'uppercase',
-                  fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer',
-                  transition: 'all 0.2s', fontFamily: 'inherit',
-                }}
-              >
-                {saving ? 'Guardando…' : 'Guardar cambios'}
-              </button>
+        {/* ── SETTINGS ── */}
+        <section className="bg-[#111820] border border-[#1e2a35] p-4 sm:p-6">
+          <p className={`${labelCls} mb-5`}>Configuración de la publicación</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <div>
+              <label className={`${labelCls} mb-2`}>Imagen de portada</label>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <input value={coverUrl} onChange={e => setCoverUrl(e.target.value)} className={`${inputCls} sm:flex-1`} placeholder="URL (https://...) o subir" />
+                <button
+                  type="button"
+                  onClick={() => document.getElementById('cover-upload')?.click()}
+                  className="bg-[#a5cce6]/10 border border-[#a5cce6]/25 text-[#a5cce6] px-4 py-3 sm:py-0 text-[11px] tracking-[0.1em] uppercase hover:bg-[#a5cce6]/20 transition-colors shrink-0"
+                >
+                  Subir
+                </button>
+                <input
+                  id="cover-upload"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0]
+                    if (!file) return
+                    try {
+                      const { compressImageToWebP } = await import('@/lib/image-optimizer')
+                      const b64 = await compressImageToWebP(file, 1200, 0.8)
+                      setCoverUrl(b64)
+                    } catch (err) { alert('Error subiendo imagen') }
+                  }}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className={`${labelCls} mb-2`}>Categoría *</label>
+              <select value={category} onChange={e => setCategory(e.target.value)} required className={`${inputCls} cursor-pointer`}>
+                <option value="bienestar">Bienestar</option>
+                <option value="novedades">Novedades</option>
+                <option value="servicios">Servicios</option>
+              </select>
+            </div>
+
+            <div>
+              <label className={`${labelCls} mb-2`}>Slug URL <span className="text-[9px] normal-case tracking-normal">(auto si se deja vacío)</span></label>
+              <input value={slug} onChange={e => setSlug(e.target.value)} className={inputCls} placeholder="ejemplo-mi-post" />
+            </div>
+
+            <div>
+              <label className={`${labelCls} mb-2`}>Autor</label>
+              <input value={author} onChange={e => setAuthor(e.target.value)} className={inputCls} placeholder="Diamond Spa" />
+            </div>
+
+            <div className="md:col-span-2">
+              <label className={`${labelCls} mb-3`}>Idiomas a publicar</label>
+              <div className="flex flex-wrap gap-3">
+                {(['es', 'en'] as const).map(l => (
+                  <label key={l} className="flex items-center gap-2 cursor-pointer select-none min-h-11">
+                    <input type="checkbox" checked={locales.includes(l)} onChange={() => toggleLocale(l)} className="w-4 h-4 accent-[#a5cce6]" />
+                    <span className="text-xs text-[#cfe5fa]">
+                      {l === 'es' ? '🇨🇴 Español (/es)' : '🇺🇸 Inglés (/en)'}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="md:col-span-2 mt-2 pt-4 border-t border-[#1e2a35]">
+              <label className="flex items-start gap-2.5 cursor-pointer select-none min-h-11">
+                <input type="checkbox" checked={isDraft} onChange={e => setIsDraft(e.target.checked)} className="w-4 h-4 mt-0.5 accent-[#a5cce6]" />
+                <span className="text-[13px] text-[#cfe5fa]">
+                  Guardar como borrador <span className="text-[#6b8299]">(no será visible en la web pública)</span>
+                </span>
+              </label>
             </div>
           </div>
-        </form>
-      </div>
+        </section>
+
+        {/* Submit */}
+        <div className="flex flex-col-reverse gap-3 pb-12 sm:flex-row sm:items-center sm:justify-end sm:gap-4">
+          <button
+            type="button"
+            onClick={() => setShowPreview(true)}
+            className="w-full sm:w-auto text-[11px] tracking-[0.15em] uppercase text-[#cfe5fa] border border-[#cfe5fa]/25 hover:border-[#cfe5fa]/60 px-6 py-3 transition-colors"
+          >
+            Vista Previa
+          </button>
+          <Link
+            href="/admin/blog"
+            className="w-full sm:w-auto text-center text-[11px] tracking-[0.15em] uppercase text-[#6b8299] hover:text-[#cfe5fa] px-6 py-3 transition-colors"
+          >
+            Cancelar
+          </Link>
+          <button
+            type="submit"
+            disabled={saving}
+            className="w-full sm:w-auto bg-[#a5cce6] text-[#0a0e12] px-8 py-3.5 text-[11px] font-bold tracking-[0.2em] uppercase transition-opacity hover:opacity-90 disabled:bg-[#1e2a35] disabled:cursor-not-allowed"
+          >
+            {saving ? 'Guardando…' : 'Guardar cambios'}
+          </button>
+        </div>
+      </form>
 
       {/* Preview Modal */}
       {showPreview && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.8)', display: 'flex', flexDirection: 'column', backdropFilter: 'blur(4px)' }}>
-          <div style={{ padding: '16px 24px', background: C.bg, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
-            <span style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.2em', color: C.accent }}>Vista Previa — {activeTab === 'es' ? 'Español' : 'Inglés'}</span>
-            <button onClick={() => setShowPreview(false)} style={{ background: 'none', border: 'none', color: C.text, cursor: 'pointer', fontSize: 24 }}>×</button>
+        <div className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm flex flex-col">
+          <div className="admin-topbar flex items-center justify-between gap-3 px-4 sm:px-6 bg-[#0a0e12] border-b border-[#1e2a35]">
+            <span className="text-[11px] sm:text-xs uppercase tracking-[0.2em] text-[#a5cce6] truncate">
+              Vista Previa — {activeTab === 'es' ? 'Español' : 'Inglés'}
+            </span>
+            <button
+              onClick={() => setShowPreview(false)}
+              aria-label="Cerrar vista previa"
+              className="-mr-2 flex h-11 w-11 shrink-0 items-center justify-center text-2xl text-[#cfe5fa] hover:text-[#a5cce6] transition-colors"
+            >
+              ×
+            </button>
           </div>
-          <div style={{ flex: 1, overflowY: 'auto', background: C.bg, padding: '40px 20px' }}>
-            <div style={{ maxWidth: 768, margin: '0 auto' }}>
-              <h1 style={{ fontSize: 40, fontWeight: 300, marginBottom: 40, color: C.text }}>{activeTab === 'es' ? (titleEs || 'Sin título') : (titleEn || 'Sin título')}</h1>
+          <div className="flex-1 overflow-y-auto bg-[#0a0e12] px-5 py-8 sm:px-6 sm:py-10 pb-[calc(2rem+env(safe-area-inset-bottom))]">
+            <div className="max-w-3xl mx-auto">
+              <h1 className="font-headline text-2xl sm:text-4xl font-light mb-8 sm:mb-10 text-[#cfe5fa]">
+                {activeTab === 'es' ? (titleEs || 'Sin título') : (titleEn || 'Sin título')}
+              </h1>
               <div className="rich-editor-content max-w-none">
                 <div className="tiptap" dangerouslySetInnerHTML={{ __html: activeTab === 'es' ? contentEs : contentEn }} />
               </div>

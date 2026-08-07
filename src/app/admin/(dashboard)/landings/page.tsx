@@ -42,6 +42,31 @@ function StatusBadge({ config }: { config: LandingPage | null }) {
 
 // ─── Single page row ──────────────────────────────────────────────────────────
 
+function SeoChips({ config }: { config: LandingPage | null }) {
+  if (!config) return null
+  const chips = [
+    config.seo.es.metaTitle && { label: 'SEO ES',  cls: 'bg-primary/10 text-primary' },
+    config.seo.en?.metaTitle && { label: 'SEO EN',  cls: 'bg-primary/10 text-primary' },
+    config.seo.es.jsonLd     && { label: 'JSON-LD', cls: 'bg-tertiary/10 text-tertiary' },
+    config.sem.hideChrome    && { label: 'SEM',     cls: 'bg-[#34d399]/10 text-[#34d399]' },
+  ].filter(Boolean) as { label: string; cls: string }[]
+
+  if (chips.length === 0) return null
+
+  return (
+    <div className="flex flex-wrap items-center gap-1.5 sm:shrink-0">
+      {chips.map(chip => (
+        <span
+          key={chip.label}
+          className={`px-2 py-0.5 rounded text-[10px] font-label tracking-wider uppercase ${chip.cls}`}
+        >
+          {chip.label}
+        </span>
+      ))}
+    </div>
+  )
+}
+
 function PageRow({
   entry,
   onDelete,
@@ -57,47 +82,37 @@ function PageRow({
   const editHref      = config ? `/admin/landings/${config.id}` : `/admin/landings/new?path=${encodeURIComponent(displayPath)}&label=${encodeURIComponent(displayLabel)}`
 
   return (
-    <div className="flex items-center gap-4 py-4 px-5 border-b border-outline-variant/10 last:border-0 hover:bg-surface-variant/10 transition-colors">
-      {/* Status dot */}
-      <div className={`w-2 h-2 rounded-full shrink-0 ${
-        config?.isActive ? 'bg-[#34d399]' : config ? 'bg-on-surface/20' : 'bg-outline-variant/30'
-      }`} />
-
+    <div className="flex flex-col gap-3 py-4 px-4 sm:px-5 border-b border-outline-variant/10 last:border-0 hover:bg-surface-variant/10 transition-colors sm:flex-row sm:items-center sm:gap-4">
       {/* Main info */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 flex-wrap mb-0.5">
-          <StatusBadge config={config} />
-          <span className="font-label text-sm text-on-surface truncate">{displayLabel}</span>
+      <div className="flex items-start gap-3 min-w-0 flex-1">
+        {/* Status dot */}
+        <div className={`w-2 h-2 mt-2 rounded-full shrink-0 ${
+          config?.isActive ? 'bg-[#34d399]' : config ? 'bg-on-surface/20' : 'bg-outline-variant/30'
+        }`} />
+
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2 flex-wrap mb-0.5">
+            <StatusBadge config={config} />
+            <span className="font-label text-sm text-on-surface truncate">{displayLabel}</span>
+          </div>
+          <code className="text-[11px] text-primary/60 truncate block">{displayPath}</code>
+          {config?.seo.es.metaTitle && (
+            <p className="text-[11px] text-on-surface/40 truncate mt-0.5">
+              ES: {config.seo.es.metaTitle}
+            </p>
+          )}
         </div>
-        <code className="text-[11px] text-primary/60 truncate block">{displayPath}</code>
-        {config?.seo.es.metaTitle && (
-          <p className="text-[11px] text-on-surface/40 truncate mt-0.5">
-            ES: {config.seo.es.metaTitle}
-          </p>
-        )}
       </div>
 
-      {/* SEO / SEM chips */}
-      <div className="hidden md:flex items-center gap-1.5 shrink-0">
-        {config?.seo.es.metaTitle && (
-          <span className="px-2 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-label tracking-wider uppercase">SEO ES</span>
-        )}
-        {config?.seo.en?.metaTitle && (
-          <span className="px-2 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-label tracking-wider uppercase">SEO EN</span>
-        )}
-        {config?.seo.es.jsonLd && (
-          <span className="px-2 py-0.5 rounded bg-tertiary/10 text-tertiary text-[10px] font-label tracking-wider uppercase">JSON-LD</span>
-        )}
-        {config?.sem.hideChrome && (
-          <span className="px-2 py-0.5 rounded bg-[#34d399]/10 text-[#34d399] text-[10px] font-label tracking-wider uppercase">SEM</span>
-        )}
-      </div>
+      {/* SEO / SEM chips — wrap under the info block on phones instead of
+          disappearing, since they are the only at-a-glance config summary. */}
+      <SeoChips config={config} />
 
       {/* Actions */}
-      <div className="flex items-center gap-2 shrink-0">
+      <div className="flex items-center gap-2 sm:shrink-0">
         <Link
           href={editHref}
-          className="flex items-center gap-1 border border-outline-variant/30 text-on-surface/60 hover:border-primary/50 hover:text-primary px-3 py-1.5 rounded transition-colors font-label text-[10px] uppercase tracking-widest"
+          className="flex flex-1 sm:flex-initial items-center justify-center gap-1 border border-outline-variant/30 text-on-surface/60 hover:border-primary/50 hover:text-primary px-3 min-h-11 sm:min-h-0 sm:py-1.5 rounded transition-colors font-label text-[10px] uppercase tracking-widest"
         >
           <span className="material-symbols-outlined text-[14px]" aria-hidden="true">
             {config ? 'edit' : 'add'}
@@ -108,7 +123,8 @@ function PageRow({
           <button
             onClick={() => onDelete(config.id, config.name)}
             disabled={deleting === config.id}
-            className="flex items-center gap-1 border border-error/20 text-error/50 hover:border-error/50 hover:text-error px-3 py-1.5 rounded transition-colors font-label text-[10px] uppercase tracking-widest disabled:opacity-40"
+            aria-label={`Eliminar configuración de ${config.name}`}
+            className="flex items-center justify-center gap-1 border border-error/20 text-error/50 hover:border-error/50 hover:text-error px-3 min-h-11 min-w-11 sm:min-h-0 sm:min-w-0 sm:py-1.5 rounded transition-colors font-label text-[10px] uppercase tracking-widest disabled:opacity-40"
           >
             <span className="material-symbols-outlined text-[14px]" aria-hidden="true">
               {deleting === config.id ? 'sync' : 'delete'}
@@ -142,13 +158,14 @@ function CategorySection({
 
   return (
     <section className="bg-surface-container border border-outline-variant/20 rounded overflow-hidden">
-      <div className="flex items-center justify-between px-5 py-3 border-b border-outline-variant/20 bg-surface-container-high/50">
-        <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-primary text-[18px]" aria-hidden="true">{icon}</span>
-          <h2 className="font-label text-sm tracking-wide text-on-surface">{label}</h2>
+      <div className="flex items-center justify-between gap-3 px-4 sm:px-5 py-3 border-b border-outline-variant/20 bg-surface-container-high/50">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="material-symbols-outlined text-primary text-[18px] shrink-0" aria-hidden="true">{icon}</span>
+          <h2 className="font-label text-sm tracking-wide text-on-surface truncate">{label}</h2>
         </div>
-        <span className="font-label text-[10px] tracking-widest uppercase text-on-surface/40">
-          {configured}/{entries.length} configuradas
+        <span className="font-label text-[10px] tracking-widest uppercase text-on-surface/40 text-right shrink-0">
+          {configured}/{entries.length}
+          <span className="hidden sm:inline"> configuradas</span>
         </span>
       </div>
       <div>
@@ -227,7 +244,7 @@ export default function LandingsAdminPage() {
   return (
     <div className="max-w-5xl mx-auto">
       {/* Header */}
-      <header className="mb-8 flex items-start justify-between gap-4 flex-wrap">
+      <header className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-start">
         <div>
           <h1 className="font-headline text-3xl md:text-4xl text-on-surface mb-2">
             SEO &amp; Landing Pages
@@ -238,7 +255,7 @@ export default function LandingsAdminPage() {
         </div>
         <Link
           href="/admin/landings/new"
-          className="flex items-center gap-2 bg-primary text-on-primary px-5 py-2.5 font-label text-xs font-bold tracking-widest uppercase hover:opacity-90 transition-opacity shrink-0"
+          className="flex w-full sm:w-auto items-center justify-center gap-2 bg-primary text-on-primary px-5 py-3.5 sm:py-2.5 font-label text-xs font-bold tracking-widest uppercase hover:opacity-90 transition-opacity shrink-0"
         >
           <span className="material-symbols-outlined text-[18px]" aria-hidden="true">add</span>
           Página Personalizada
@@ -247,7 +264,7 @@ export default function LandingsAdminPage() {
 
       {/* Stats strip */}
       {!loading && !error && (
-        <div className="grid grid-cols-3 gap-3 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
           {[
             { label: 'Páginas totales', value: total,      icon: 'layers'          },
             { label: 'Con config SEO',  value: configured, icon: 'manage_search'   },
