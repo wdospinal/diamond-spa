@@ -166,7 +166,7 @@ export default async function SpaNearMePage({ params }: { params: Promise<{ lang
 
   return (
     <>
-      <JsonLd data={localBusinessJsonLd()} />
+      <JsonLd data={localBusinessJsonLd(locale)} />
       <JsonLd data={faqJsonLd(faq.map(({ q, a }) => ({ question: q, answer: a })))} />
       <LandingHead path="/spa-near-me" locale={locale} />
       <JsonLd data={breadcrumbJsonLd} />

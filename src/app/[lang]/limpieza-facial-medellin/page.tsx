@@ -154,7 +154,7 @@ export default async function LimpiezaFacialPage({ params }: { params: Promise<{
 
   return (
     <>
-      <JsonLd data={localBusinessJsonLd()} />
+      <JsonLd data={localBusinessJsonLd(locale)} />
       <JsonLd data={faqJsonLd([...c.faqs])} />
       <LandingHead path="/limpieza-facial-medellin" locale={locale} />
 

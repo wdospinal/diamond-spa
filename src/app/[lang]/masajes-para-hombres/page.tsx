@@ -48,7 +48,7 @@ export default async function MasajesParaHombresPage({ params }: { params: Promi
 
   return (
     <>
-      <JsonLd data={localBusinessJsonLd()} />
+      <JsonLd data={localBusinessJsonLd(locale)} />
       <JsonLd data={faqJsonLd(getFaqItems(locale, MEN_FAQ_CATEGORIES))} />
       <LandingHead path="/masajes-para-hombres" locale={locale} />
 

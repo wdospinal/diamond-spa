@@ -146,7 +146,7 @@ export default async function HydraFacialMedellinPage({ params }: { params: Prom
 
   return (
     <>
-      <JsonLd data={localBusinessJsonLd()} />
+      <JsonLd data={localBusinessJsonLd(locale)} />
       <JsonLd data={faqJsonLd([...c.faqs])} />
       <LandingHead path="/hydrafacial-medellin" locale={locale} />
 

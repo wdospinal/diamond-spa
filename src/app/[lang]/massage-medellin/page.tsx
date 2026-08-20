@@ -189,7 +189,7 @@ export default async function MassageMedellinPage({ params }: { params: Promise<
 
   return (
     <>
-      <JsonLd data={localBusinessJsonLd()} />
+      <JsonLd data={localBusinessJsonLd(locale)} />
       <JsonLd data={faqJsonLd([...c.faqs])} />
       {/* Admin-managed JSON-LD + SEM trigger init */}
       <LandingHead path="/massage-medellin" locale={locale} />

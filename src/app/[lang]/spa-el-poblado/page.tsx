@@ -144,7 +144,7 @@ export default async function SpaElPobladoPage({ params }: { params: Promise<{ l
 
   return (
     <>
-      <JsonLd data={localBusinessJsonLd()} />
+      <JsonLd data={localBusinessJsonLd(locale)} />
       <JsonLd data={faqJsonLd([...c.faqs])} />
       <LandingHead path="/spa-el-poblado" locale={locale} />
 

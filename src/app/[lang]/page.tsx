@@ -429,7 +429,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const rating = getPlaceRating()
   return (
     <>
-      <JsonLd data={localBusinessJsonLd()} />
+      <JsonLd data={localBusinessJsonLd(locale)} />
       <HomeHero locale={locale} rating={rating} />
       <HomeServices locale={locale} />
       {/* Same "Talento Diamond" block used by the landing pages — the team is the
