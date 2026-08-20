@@ -307,6 +307,16 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
 
     pushEvent('booking_submit', submitPayload)
 
+    // WhatsApp tracking — mismo patrón que WhatsAppLink.tsx, para que GTM
+    // capture esta reserva (la ruta principal del wizard) como evento real.
+    const waTrackPayload: Record<string, string> = { source: 'booking_wizard', button: 'confirm' }
+    if (bookingSource === 'ads' && campaignName) waTrackPayload.campaign = campaignName
+    if (adgroup) waTrackPayload.adgroup = adgroup
+    pushEvent('whatsapp_click', waTrackPayload)
+    if (bookingSource === 'ads' || adgroup || sessionStorage.getItem('sem_trigger_key')) {
+      pushEvent('whatsapp_lead_ads', waTrackPayload)
+    }
+
     setSubmitting(false)
     setConfirmed(true)
   }
@@ -734,6 +744,20 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
                     <a
                       href={`https://wa.me/573054541635?text=${encodeURIComponent('Hola Diamond Spa, quisiera reservar una cita.')}`}
                       target="_blank" rel="noopener noreferrer"
+                      onClick={() => {
+                        try {
+                          const p = new URLSearchParams(window.location.search)
+                          const campaign = p.get('utm_campaign') || sessionStorage.getItem('sem_campaign') || ''
+                          const adgroupFallback = p.get('adgroup') || sessionStorage.getItem('sem_adgroup') || ''
+                          const payload: Record<string, string> = { source: 'booking_wizard', button: 'fallback_link' }
+                          if (campaign) payload.campaign = campaign
+                          if (adgroupFallback) payload.adgroup = adgroupFallback
+                          pushEvent('whatsapp_click', payload)
+                          if (campaign || adgroupFallback || sessionStorage.getItem('sem_trigger_key')) {
+                            pushEvent('whatsapp_lead_ads', payload)
+                          }
+                        } catch { /* sessionStorage unavailable */ }
+                      }}
                       style={{ color: C.sec, fontSize: 12, textDecoration: 'none' }}
                     >
                       {lang === 'en' ? 'Prefer WhatsApp? Book here →' : '¿Prefieres WhatsApp? Reserva aquí →'}

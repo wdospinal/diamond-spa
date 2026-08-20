@@ -131,6 +131,7 @@ export async function POST(req: NextRequest) {
     sem: semConfig,
     isActive: body.isActive !== false,
     ...(existingPage && existingPage.content ? { content: existingPage.content } : {}),
+    ...(existingPage && existingPage.content_en ? { content_en: existingPage.content_en } : {}),
   })
 
   return NextResponse.json({ page }, { status: existingId ? 200 : 201 })
