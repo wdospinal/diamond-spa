@@ -30,7 +30,7 @@ function ToolBtn({
       onClick={onClick}
       disabled={disabled}
       title={title}
-      className={`p-2 text-xs transition-all flex items-center justify-center border
+      className={`p-2.5 sm:p-2 min-w-9 min-h-9 text-xs transition-all flex items-center justify-center border
         ${active
           ? 'bg-primary/20 text-primary border-primary/40'
           : 'text-on-surface-variant hover:text-on-surface hover:bg-surface border-transparent'}
@@ -215,7 +215,7 @@ export default function RichEditor({ value, onChange, placeholder = 'Escribe el 
           onClick={() => fileInputRef.current?.click()}
           disabled={isHtmlMode || uploading}
           title="Subir imagen desde el equipo"
-          className={`p-2 text-xs transition-all flex items-center gap-1 border border-transparent
+          className={`p-2.5 sm:p-2 min-h-9 text-xs transition-all flex items-center gap-1 border border-transparent
             ${uploading ? 'opacity-50 cursor-not-allowed text-primary' : 'text-on-surface-variant hover:text-primary hover:bg-primary/10'}`}
         >
           <ImageIcon className="w-3.5 h-3.5" />
@@ -237,7 +237,7 @@ export default function RichEditor({ value, onChange, placeholder = 'Escribe el 
       </div>
 
       {/* ── EDITOR CONTENT ────────────────────────────────────────────────── */}
-      <div className="p-4 md:p-6 rich-editor-content overflow-y-auto" style={{ maxHeight: '500px' }}>
+      <div className="p-4 md:p-6 rich-editor-content overflow-y-auto max-h-[60vh] md:max-h-[500px]">
         {isHtmlMode ? (
           <textarea
             className="w-full h-[300px] min-h-[300px] bg-transparent text-primary font-mono text-[13px] outline-none resize-y leading-relaxed"

@@ -15,6 +15,10 @@ export default function GlobalFloatingWhatsApp({ disabledPaths }: { disabledPath
 
   if (!mounted) return null
 
+  // The admin panel is staff-only; a "contact us on WhatsApp" button there just
+  // floats over the content.
+  if (pathname.startsWith('/admin')) return null
+
   // Remove the locale prefix to match against the paths in the database
   const normalizedPath = pathname.replace(/^\/(es|en)/, '') || '/'
 

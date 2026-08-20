@@ -29,22 +29,28 @@ function Field({
   )
 }
 
-const inputCls =
-  'w-full bg-surface-container border border-outline-variant/30 text-on-surface text-sm px-4 py-3 rounded focus:outline-none focus:border-primary/60 placeholder:text-on-surface/30 transition-colors'
+const fieldBase =
+  'w-full bg-surface-container border border-outline-variant/30 text-on-surface px-4 py-3 rounded focus:outline-none focus:border-primary/60 placeholder:text-on-surface/30 transition-colors'
 
-const textareaCls =
-  'w-full bg-surface-container border border-outline-variant/30 text-on-surface text-sm px-4 py-3 rounded focus:outline-none focus:border-primary/60 placeholder:text-on-surface/30 transition-colors resize-y font-mono leading-relaxed'
+// Every field keeps text-base below sm: iOS Safari zooms the viewport when
+// focusing a control whose font-size is under 16px. Each class string carries
+// exactly one font-size utility so the responsive pair is never overridden.
+const inputCls = `${fieldBase} text-base sm:text-sm`
+
+const textareaCls = `${fieldBase} text-base sm:text-sm resize-y font-mono leading-relaxed`
+
+const jsonLdCls = `${fieldBase} text-base sm:text-xs resize-y font-mono leading-relaxed text-primary/80`
 
 // ─── Section wrapper ──────────────────────────────────────────────────────────
 
 function Section({ title, icon, children }: { title: string; icon: string; children: React.ReactNode }) {
   return (
     <section className="bg-surface-container border border-outline-variant/20 rounded overflow-hidden">
-      <div className="flex items-center gap-3 px-6 py-4 border-b border-outline-variant/20">
-        <span className="material-symbols-outlined text-primary text-[20px]" aria-hidden="true">{icon}</span>
+      <div className="flex items-center gap-3 px-4 sm:px-6 py-4 border-b border-outline-variant/20">
+        <span className="material-symbols-outlined text-primary text-[20px] shrink-0" aria-hidden="true">{icon}</span>
         <h2 className="font-headline text-lg text-on-surface">{title}</h2>
       </div>
-      <div className="p-6 flex flex-col gap-6">{children}</div>
+      <div className="p-4 sm:p-6 flex flex-col gap-6">{children}</div>
     </section>
   )
 }
@@ -69,7 +75,7 @@ function SeoLocalePanel({
   const flagEmoji = locale === 'ES' ? '🇨🇴' : '🇺🇸'
 
   return (
-    <div className="border border-outline-variant/20 rounded p-5 flex flex-col gap-5">
+    <div className="border border-outline-variant/20 rounded p-4 sm:p-5 flex flex-col gap-5">
       <p className="font-label text-xs tracking-[0.2em] uppercase text-on-surface/50">
         {flagEmoji} Versión {locale}
       </p>
@@ -113,7 +119,7 @@ function SeoLocalePanel({
         hint='Pega aquí un objeto o array JSON válido con el schema.org que quieres inyectar en <head>. Ej: { "@context": "https://schema.org", "@type": "FAQPage", ... }'
       >
         <textarea
-          className={`${textareaCls} text-xs text-primary/80`}
+          className={jsonLdCls}
           rows={10}
           spellCheck={false}
           placeholder={'{\n  "@context": "https://schema.org",\n  "@type": "FAQPage",\n  "mainEntity": []\n}'}
@@ -297,16 +303,16 @@ function LandingEditorPageInner() {
   return (
     <div className="max-w-4xl mx-auto">
       {/* Header */}
-      <header className="mb-8 flex items-start justify-between gap-4">
-        <div>
+      <header className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row">
+        <div className="min-w-0">
           <button
             onClick={() => router.push('/admin/landings')}
             className="flex items-center gap-1 text-on-surface/40 hover:text-primary font-label text-[10px] uppercase tracking-widest mb-3 transition-colors"
           >
-            <span className="material-symbols-outlined text-[14px]">arrow_back</span>
+            <span className="material-symbols-outlined text-[14px]" aria-hidden="true">arrow_back</span>
             Volver
           </button>
-          <h1 className="font-headline text-3xl text-on-surface">
+          <h1 className="font-headline text-2xl sm:text-3xl text-on-surface break-words">
             {isNew ? 'Nueva Landing Page' : `Editar: ${name || 'Sin nombre'}`}
           </h1>
         </div>
@@ -315,7 +321,7 @@ function LandingEditorPageInner() {
         <button
           type="button"
           onClick={() => setIsActive(v => !v)}
-          className={`flex items-center gap-2 border px-4 py-2 rounded font-label text-[10px] uppercase tracking-widest transition-colors shrink-0 ${
+          className={`flex items-center gap-2 border px-4 min-h-11 sm:min-h-0 sm:py-2 rounded font-label text-[10px] uppercase tracking-widest transition-colors shrink-0 ${
             isActive
               ? 'border-[#34d399]/30 text-[#34d399] bg-[#34d399]/5'
               : 'border-outline-variant/30 text-on-surface/40'
@@ -502,20 +508,20 @@ function LandingEditorPageInner() {
         )}
 
         {/* ── Submit ── */}
-        <div className="flex items-center justify-between gap-4 pb-12">
+        <div className="flex flex-col-reverse gap-3 pb-12 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <button
             type="button"
             onClick={() => router.push('/admin/landings')}
-            className="border border-outline-variant/30 text-on-surface/60 hover:text-on-surface px-6 py-3 rounded font-label text-xs uppercase tracking-widest transition-colors"
+            className="w-full sm:w-auto border border-outline-variant/30 text-on-surface/60 hover:text-on-surface px-6 py-3 rounded font-label text-xs uppercase tracking-widest transition-colors"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="flex items-center gap-2 bg-primary text-on-primary px-8 py-3 rounded font-label font-bold text-xs uppercase tracking-widest hover:opacity-90 transition-opacity disabled:opacity-50"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 bg-primary text-on-primary px-8 py-3 rounded font-label font-bold text-xs uppercase tracking-widest hover:opacity-90 transition-opacity disabled:opacity-50"
           >
-            <span className="material-symbols-outlined text-[18px]">
+            <span className="material-symbols-outlined text-[18px]" aria-hidden="true">
               {saving ? 'sync' : 'save'}
             </span>
             {saving ? 'Guardando…' : 'Guardar Configuración'}

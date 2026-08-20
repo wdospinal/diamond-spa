@@ -511,3 +511,26 @@ body {
 .is-ads main {
   padding-top: 0 !important;
 }
+
+/* ─── Admin shell ────────────────────────────────────────────────────────────
+   Below lg the dashboard uses a fixed top bar plus an off-canvas drawer. These
+   classes keep the bar height in one place and carry the iOS safe-area insets
+   (notch / home indicator) that Tailwind utilities cannot express. */
+.admin-topbar {
+  height: calc(3.5rem + env(safe-area-inset-top));
+  padding-top: env(safe-area-inset-top);
+}
+.admin-main {
+  padding-top: calc(3.5rem + env(safe-area-inset-top));
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.admin-drawer {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+@media (min-width: 1024px) {
+  .admin-main,
+  .admin-drawer {
+    padding-top: 0;
+  }
+}

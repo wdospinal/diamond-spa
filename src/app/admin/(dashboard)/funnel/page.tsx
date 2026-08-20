@@ -72,7 +72,7 @@ export default function FunnelDashboardPage() {
 
   if (data === undefined && !error) {
     return (
-      <div className="min-h-screen flex items-center justify-center font-body text-[#8a9299]">
+      <div className="min-h-[40vh] flex items-center justify-center font-body text-[#8a9299]">
         Cargando…
       </div>
     )
@@ -82,8 +82,8 @@ export default function FunnelDashboardPage() {
   const hasData = stages.some(s => s.count > 0)
 
   return (
-    <div className="min-h-screen px-6 pt-14 pb-10 md:px-12 md:pt-16 md:pb-12 max-w-5xl mx-auto">
-      <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10 mt-2">
+    <div className="max-w-5xl mx-auto">
+      <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-8 md:mb-10">
         <div>
           <h1 className="font-headline text-3xl md:text-4xl text-[#cfe5fa]">Embudo de ventas</h1>
           {data ? (
@@ -93,13 +93,14 @@ export default function FunnelDashboardPage() {
           ) : null}
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <div className="flex border border-[#42484c]/50">
+          <div className="flex border border-[#42484c]/50 w-full sm:w-auto">
             {RANGES.map(r => (
               <button
                 key={r.days}
                 type="button"
                 onClick={() => setDays(r.days)}
-                className={`font-label text-[10px] uppercase tracking-[0.15em] px-4 py-2.5 transition-colors ${
+                aria-pressed={days === r.days}
+                className={`flex-1 sm:flex-initial font-label text-[10px] uppercase tracking-[0.15em] px-4 min-h-11 sm:min-h-0 sm:py-2.5 transition-colors ${
                   days === r.days
                     ? 'bg-[#1a3d52] text-[#cfe5fa]'
                     : 'text-[#8a9299] hover:bg-[#0a2438]'
@@ -121,14 +122,15 @@ export default function FunnelDashboardPage() {
         </div>
       ) : (
         <>
-          {/* Funnel */}
-          <section className="bg-[#0a2438] border border-[#42484c]/30 p-6 md:p-10 mb-10">
+          {/* Funnel. Below md the three fixed columns leave almost no room for
+              the bar, so the label and percentage move above it instead. */}
+          <section className="bg-[#0a2438] border border-[#42484c]/30 p-4 sm:p-6 md:p-10 mb-10">
             <div className="flex flex-col gap-2">
               {stages.map((s, idx) => (
                 <div key={s.key}>
                   {idx > 0 ? (
                     <div className="flex items-center justify-center py-1.5">
-                      <span className="font-label text-[10px] uppercase tracking-widest text-[#5c656d]">
+                      <span className="font-label text-[10px] uppercase tracking-widest text-[#5c656d] text-center">
                         {fmtPct(s.pctOfPrev)} continúa
                         <span className="text-[#c97b63]/80 ml-2 normal-case tracking-normal">
                           (−{fmtPct(1 - s.pctOfPrev)})
@@ -136,19 +138,31 @@ export default function FunnelDashboardPage() {
                       </span>
                     </div>
                   ) : null}
-                  <div className="flex items-center gap-3 md:gap-5">
-                    <div className="w-32 md:w-44 shrink-0 text-right">
-                      <span className="block font-label text-[9px] uppercase tracking-[0.2em] text-[#8a9299]">
-                        {s.phase}
-                      </span>
-                      <span className="block font-body text-xs md:text-sm text-[#cfe5fa] leading-tight">
-                        {s.label}
+                  <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-5">
+                    <div className="flex items-end justify-between gap-3 md:block md:w-44 md:shrink-0 md:text-right">
+                      <div className="min-w-0">
+                        <span className="block font-label text-[9px] uppercase tracking-[0.2em] text-[#8a9299]">
+                          {s.phase}
+                        </span>
+                        <span className="block font-body text-xs md:text-sm text-[#cfe5fa] leading-tight">
+                          {s.label}
+                        </span>
+                      </div>
+                      <span className="md:hidden shrink-0 text-[#cfe5fa] text-sm tabular-nums">
+                        {fmtPct(s.pctOfTop)}
+                        <span className="text-[9px] text-[#5c656d] ml-1">de visitas</span>
                       </span>
                     </div>
-                    <div className="flex-1 flex flex-col items-center justify-center">
+                    <div className="flex-1 min-w-0 flex flex-col items-start md:items-center justify-center">
                       <div
-                        className="h-12 md:h-14 flex items-center justify-center rounded-sm transition-all w-full"
-                        style={{ width: `${Math.max(s.pctOfTop * 100, 6)}%`, backgroundColor: s.color }}
+                        className="h-11 md:h-14 flex items-center justify-center rounded-sm transition-all"
+                        style={{
+                          width: `${Math.max(s.pctOfTop * 100, 6)}%`,
+                          // Keeps the session count legible when a stage converts
+                          // at only a few percent of the top of the funnel.
+                          minWidth: '4rem',
+                          backgroundColor: s.color,
+                        }}
                         title={`${s.count} sesiones`}
                       >
                         <span className="font-headline text-base md:text-xl text-[#001524] tabular-nums px-2">
@@ -156,12 +170,12 @@ export default function FunnelDashboardPage() {
                         </span>
                       </div>
                       {s.revenueUsd !== undefined && (
-                        <div className="mt-2 text-center">
+                        <div className="mt-2">
                           <DualCurrency usd={s.revenueUsd} copOverride={s.revenueCop} tone="income" align="left" />
                         </div>
                       )}
                     </div>
-                    <div className="w-20 md:w-24 shrink-0 text-right">
+                    <div className="hidden md:block w-24 shrink-0 text-right">
                       <span className="block text-[#cfe5fa] text-sm tabular-nums">
                         {fmtPct(s.pctOfTop)}
                       </span>
@@ -178,7 +192,29 @@ export default function FunnelDashboardPage() {
             <h2 className="font-label text-xs uppercase tracking-[0.25em] text-[#8a9299] mb-4">
               Detalle por día
             </h2>
-            <div className="overflow-x-auto border border-[#42484c]/40 rounded-sm">
+            {/* Mobile: one card per day. The table gains a column per stage,
+                so on a phone it would be almost entirely off-screen. */}
+            <ul className="md:hidden flex flex-col gap-2">
+              {data && [...data.days].reverse().map(day => (
+                <li key={day} className="border border-[#42484c]/40 rounded-sm p-4">
+                  <p className="font-label text-[11px] uppercase tracking-[0.2em] text-[#8a9299] tabular-nums">
+                    {day}
+                  </p>
+                  <dl className="mt-3 flex flex-col gap-1.5">
+                    {stages.map(s => (
+                      <div key={s.key} className="flex items-baseline justify-between gap-3">
+                        <dt className="text-xs text-[#8a9299] min-w-0">{s.label}</dt>
+                        <dd className="text-sm text-[#cfe5fa] tabular-nums shrink-0">
+                          {(data.byDay[day]?.[s.key] ?? 0).toLocaleString('es-CO')}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                </li>
+              ))}
+            </ul>
+
+            <div className="hidden md:block overflow-x-auto border border-[#42484c]/40 rounded-sm">
               <table className="w-full text-left text-sm font-body">
                 <thead>
                   <tr className="border-b border-[#42484c]/40 text-[#8a9299] font-label text-[10px] uppercase tracking-widest">

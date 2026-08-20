@@ -1,10 +1,12 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 
 const STORAGE_KEY = 'diamond_cookie_consent'
 
 export default function CookieConsent() {
+  const pathname = usePathname()
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -16,6 +18,9 @@ export default function CookieConsent() {
     setVisible(false)
   }
 
+  // The banner is for site visitors. On the admin panel it just covers the
+  // bottom of the screen — on a phone that hides the sidebar's logout button.
+  if (pathname.startsWith('/admin')) return null
   if (!visible) return null
 
   return (

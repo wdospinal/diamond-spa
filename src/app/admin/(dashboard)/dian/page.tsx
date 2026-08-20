@@ -21,15 +21,15 @@ export default function DianSettingsPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-8">
+    <div className="max-w-4xl mx-auto space-y-8">
       <div>
-        <h1 className="text-3xl font-headline text-on-surface">Configuración DIAN</h1>
-        <p className="text-on-surface-variant mt-2">
+        <h1 className="text-3xl md:text-4xl font-headline text-on-surface">Configuración DIAN</h1>
+        <p className="text-on-surface-variant mt-2 text-sm">
           Sube tu Certificado Digital y configura las credenciales de Software Propio provistas por la DIAN.
         </p>
       </div>
 
-      <form onSubmit={handleSave} className="bg-surface-container rounded-2xl p-6 shadow-sm space-y-6">
+      <form onSubmit={handleSave} className="bg-surface-container rounded-2xl p-4 sm:p-6 shadow-sm space-y-6">
         <h2 className="text-xl font-medium text-on-surface border-b border-outline-variant pb-2">
           1. Certificado Digital (.p12 / .pfx)
         </h2>
@@ -87,7 +87,7 @@ export default function DianSettingsPage() {
           <button 
             type="submit" 
             disabled={isSaving}
-            className="px-8 py-3 bg-primary text-on-primary rounded-full font-medium hover:bg-primary/90 transition-colors shadow-md disabled:opacity-70"
+            className="w-full sm:w-auto px-8 py-3 bg-primary text-on-primary rounded-full font-medium hover:bg-primary/90 transition-colors shadow-md disabled:opacity-70"
           >
             {isSaving ? 'Guardando...' : 'Guardar Configuración'}
           </button>
