@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SERVICES } from './services'
 import type { ServiceDef } from './services'
 import {
   SPA_NAME,
@@ -105,12 +106,70 @@ export const BUSINESS = {
 
 // ─── JSON-LD helpers ──────────────────────────────────────────────────────────
 
-export function localBusinessJsonLd() {
+export function localBusinessJsonLd(locale: 'es' | 'en' = 'es') {
+  const sameAs = [
+    BUSINESS.url,
+    'https://www.instagram.com/diamondmassagesmed/',
+    'https://www.tiktok.com/@diamond.spa95',
+    'https://www.google.com/maps/search/?api=1&query=Google&query_place_id=ChIJKzwytpApRI4RjIhtXLsMvK8'
+  ]
+
+  const massages = SERVICES.filter(s => s.categoryId === 'massages')
+  const facials = SERVICES.filter(s => s.categoryId === 'facials')
+  const hairRemoval = SERVICES.filter(s => s.categoryId === 'hair-removal')
+
+  const mapToOffer = (s: typeof SERVICES[number]) => {
+    let startingPrice = 0
+    if (s.pricingModel === 'duration') {
+      startingPrice = s.prices[30]
+    } else if (s.pricingModel === 'flat') {
+      startingPrice = s.price
+    } else if (s.pricingModel === 'wax-machine') {
+      startingPrice = s.machinePrice
+    }
+    return {
+      '@type': 'Offer',
+      'itemOffered': {
+        '@type': 'Service',
+        'name': s.name[locale],
+        'description': s.shortDesc[locale],
+        'provider': {
+          '@type': 'HealthAndBeautyBusiness',
+          'name': BUSINESS.name
+        }
+      },
+      'price': String(startingPrice),
+      'priceCurrency': 'COP'
+    }
+  }
+
+  const offerCatalog = {
+    '@type': 'OfferCatalog',
+    'name': locale === 'en' ? 'Diamond Spa Services' : 'Servicios de Diamond Spa',
+    'itemListElement': [
+      {
+        '@type': 'OfferCatalog',
+        'name': locale === 'en' ? 'Exclusive Massages' : 'Masajes Exclusivos',
+        'itemListElement': massages.map(mapToOffer)
+      },
+      {
+        '@type': 'OfferCatalog',
+        'name': locale === 'en' ? 'Facials & Skin Care' : 'Faciales y Cuidado de la Piel',
+        'itemListElement': facials.map(mapToOffer)
+      },
+      {
+        '@type': 'OfferCatalog',
+        'name': locale === 'en' ? 'Hair Removal' : 'Depilación',
+        'itemListElement': hairRemoval.map(mapToOffer)
+      }
+    ]
+  }
+
   return {
     '@context': 'https://schema.org',
-    '@type': 'HealthAndBeautyBusiness',
+    '@type': 'DaySpa',
     name: BUSINESS.name,
-    url: BUSINESS.url,
+    url: `${BUSINESS.url}/${locale}`,
     telephone: BUSINESS.telephone,
     email: BUSINESS.email,
     logo: BUSINESS.logo,
@@ -141,9 +200,20 @@ export function localBusinessJsonLd() {
       worstRating: '1',
       reviewCount: String(SPA_RATING.count),
     },
-    priceRange: '$$',
-    servesCuisine: undefined,
-    sameAs: [BUSINESS.url],
+    priceRange: 'COP 120.000 - COP 500.000',
+    sameAs,
+    hasOfferCatalog: offerCatalog,
+    paymentAccepted: ['Cash', 'Credit Card', 'Debit Card'],
+    areaServed: [
+      {
+        '@type': 'AdministrativeArea',
+        'name': 'Medellín'
+      },
+      {
+        '@type': 'AdministrativeArea',
+        'name': 'El Poblado'
+      }
+    ]
   }
 }
 

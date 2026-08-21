@@ -193,12 +193,14 @@ export async function saveLanding(
 ): Promise<LandingPage> {
   const all = await readAllLandings()
   const existingIdx = data.id ? all.findIndex(p => p.id === data.id) : -1
+  const existing = existingIdx >= 0 ? all[existingIdx] : null
 
   const now = new Date().toISOString()
   const page: LandingPage = {
+    ...existing,
     ...data,
     id: data.id ?? randomUUID(),
-    createdAt: existingIdx >= 0 ? all[existingIdx].createdAt : now,
+    createdAt: existing ? existing.createdAt : now,
     updatedAt: now,
   }
 

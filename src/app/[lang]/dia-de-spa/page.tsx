@@ -185,7 +185,7 @@ export default async function DiaDeSpaPage({ params }: { params: Promise<{ lang:
 
   return (
     <>
-      <JsonLd data={localBusinessJsonLd()} />
+      <JsonLd data={localBusinessJsonLd(locale)} />
       <JsonLd data={faqJsonLd(faqs)} />
       <LandingHead path="/dia-de-spa" locale={locale} />
 

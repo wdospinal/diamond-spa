@@ -155,7 +155,7 @@ export default async function DepilacionMedellinPage({ params }: { params: Promi
 
   return (
     <>
-      <JsonLd data={localBusinessJsonLd()} />
+      <JsonLd data={localBusinessJsonLd(locale)} />
       <JsonLd data={faqJsonLd([...c.faqs])} />
       <LandingHead path="/depilacion-medellin" locale={locale} />
 

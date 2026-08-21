@@ -44,7 +44,7 @@ export default async function LocationPage({ params }: { params: Promise<{ lang:
 
   return (
     <>
-      <JsonLd data={localBusinessJsonLd()} />
+      <JsonLd data={localBusinessJsonLd(locale)} />
       <SemTracker />
       {/* HERO */}
       <header className="relative pt-12 md:pt-16 pb-20 px-6 md:px-12 overflow-hidden">
