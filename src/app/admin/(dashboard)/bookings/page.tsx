@@ -101,10 +101,10 @@ function AddLeadModal({ onClose, onSaved }: { onClose: () => void; onSaved: () =
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs text-[#8a9299] mb-1">GCLID</label>
+            <label className="block text-xs text-[#8a9299] mb-1">GCLID (Opcional)</label>
             <input value={gclid} onChange={e => setGclid(e.target.value)}
-              placeholder="Pégalo del mensaje de WhatsApp"
-              className="w-full bg-[#0f1f38] border border-[#1e3358] text-[#cfe5fa] text-sm rounded px-3 py-2 outline-none" />
+              placeholder="Opcional (Google empareja por teléfono)"
+              className="w-full bg-[#0f1f38] border border-[#1e3358] text-[#cfe5fa] text-sm rounded px-3 py-2 outline-none placeholder:text-[#8a9299]/50" />
           </div>
           <div>
             <label className="block text-xs text-[#8a9299] mb-1">Ad Group</label>
@@ -183,10 +183,11 @@ function StatusSelect({
       aria-label={`Estado de la reserva de ${bookingDisplayName(booking) || 'cliente'}`}
       className={`bg-[#0f1f38] border border-[#1e3358] text-[#cfe5fa] text-xs rounded px-2 min-h-11 sm:min-h-0 sm:py-1 outline-none ${className}`}
     >
-      <option value="pending" className="text-black bg-white dark:bg-[#0f1f38] dark:text-[#cfe5fa]">Pendiente</option>
-      <option value="arrived" className="text-black bg-white dark:bg-[#0f1f38] dark:text-[#cfe5fa]">Llegó</option>
-      <option value="completed" className="text-black bg-white dark:bg-[#0f1f38] dark:text-[#cfe5fa]">Completado</option>
-      <option value="cancelled" className="text-black bg-white dark:bg-[#0f1f38] dark:text-[#cfe5fa]">Cancelado</option>
+      <option value="pending" className="text-black bg-white dark:bg-[#0f1f38] dark:text-[#cfe5fa]">1. Nuevo Lead</option>
+      <option value="contacted" className="text-black bg-white dark:bg-[#0f1f38] dark:text-[#cfe5fa]">2. En Conversación</option>
+      <option value="arrived" className="text-black bg-white dark:bg-[#0f1f38] dark:text-[#cfe5fa]">3. Cita Agendada</option>
+      <option value="completed" className="text-black bg-white dark:bg-[#0f1f38] dark:text-[#cfe5fa]">4. Servicio Pagado</option>
+      <option value="cancelled" className="text-black bg-white dark:bg-[#0f1f38] dark:text-[#cfe5fa]">5. Cancelado</option>
     </select>
   )
 }
@@ -367,11 +368,16 @@ function BookingsTable({ bookings, onRefresh }: { bookings: BookingRecord[], onR
   )
 }
 
+import KanbanBoard from '@/components/admin/KanbanBoard'
+import GoogleAdsFeedModal from '@/components/admin/GoogleAdsFeedModal'
+
 export default function AdminDashboardPage() {
   const { replace, refresh } = useRouter()
   const [bookings, setBookings] = useState<BookingRecord[] | null | undefined>(undefined)
   const [error, setError] = useState('')
   const [showAddLead, setShowAddLead] = useState(false)
+  const [showAdsModal, setShowAdsModal] = useState(false)
+  const [viewMode, setViewMode] = useState<'kanban' | 'table'>('kanban')
 
   const load = useCallback(async () => {
     setError('')
@@ -392,7 +398,20 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     void load()
+    try {
+      const saved = localStorage.getItem('admin_bookings_view')
+      if (saved === 'table' || saved === 'kanban') {
+        setViewMode(saved)
+      }
+    } catch {}
   }, [load])
+
+  const handleToggleView = (mode: 'kanban' | 'table') => {
+    setViewMode(mode)
+    try {
+      localStorage.setItem('admin_bookings_view', mode)
+    } catch {}
+  }
 
   if (bookings === undefined && !error) {
     return (
@@ -404,33 +423,107 @@ export default function AdminDashboardPage() {
   if (bookings === null) return null
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <header className="mb-8 md:mb-10 flex flex-wrap items-start justify-between gap-4">
+    <div className="max-w-7xl mx-auto">
+      <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="font-headline text-3xl md:text-4xl text-[#cfe5fa] mb-2">Reservas</h1>
-          <p className="text-[#cfe5fa]/50 text-sm">Gestiona todas las reservas del sistema.</p>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="material-symbols-outlined text-[#38bdf8] text-2xl">account_tree</span>
+            <h1 className="font-headline text-2xl md:text-3xl text-[#cfe5fa]">
+              Pipeline de Ventas & Reservas
+            </h1>
+          </div>
+          <p className="text-[#8a9299] text-xs font-body">
+            Gestiona el embudo de clientes y sincroniza conversiones offline con Google Ads.
+          </p>
         </div>
-        <div className="flex gap-3">
+
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Pipedrive Style View Switcher: Kanban vs Table */}
+          <div className="flex items-center rounded-lg border border-[#1e3358] bg-[#071322] p-1 shadow-sm">
+            <button
+              type="button"
+              onClick={() => handleToggleView('kanban')}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-bold font-label uppercase tracking-wider transition-all ${
+                viewMode === 'kanban'
+                  ? 'bg-[#1a3860] text-[#38bdf8] shadow-md border border-[#38bdf8]/30'
+                  : 'text-[#8a9299] hover:text-[#cfe5fa] hover:bg-[#0f243e]'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[16px]">view_kanban</span>
+              <span>Tablero</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleToggleView('table')}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-bold font-label uppercase tracking-wider transition-all ${
+                viewMode === 'table'
+                  ? 'bg-[#1a3860] text-[#38bdf8] shadow-md border border-[#38bdf8]/30'
+                  : 'text-[#8a9299] hover:text-[#cfe5fa] hover:bg-[#0f243e]'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[16px]">table_rows</span>
+              <span>Lista</span>
+            </button>
+          </div>
+
+          <button
+            onClick={() => setShowAdsModal(true)}
+            className="text-xs font-bold font-label uppercase tracking-wider bg-[#1a3860] hover:bg-[#254e85] text-[#38bdf8] border border-[#38bdf8]/30 px-3.5 py-2 rounded-lg transition-colors flex items-center gap-1.5 shadow-sm active:scale-95"
+            title="Ver enlaces de conexión automática HTTPS para Google Ads"
+          >
+            <span className="material-symbols-outlined text-[16px]">sync</span>
+            <span>Conectar Google Ads</span>
+          </button>
+
           <button
             onClick={() => setShowAddLead(true)}
-            className="text-sm bg-[#4a9fd4] text-white px-4 py-2 rounded min-h-11 sm:min-h-0"
+            className="text-xs font-bold font-label uppercase tracking-wider bg-[#38bdf8] hover:bg-[#0ea5e9] text-[#001524] px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 shadow-md active:scale-95"
           >
-            + Agregar Lead de WhatsApp
+            <span className="material-symbols-outlined text-[16px]">add_circle</span>
+            <span>+ Lead Manual</span>
           </button>
-          <a
-            href="/api/admin/bookings/export"
-            className="text-sm border border-[#1e3358] text-[#cfe5fa] px-4 py-2 rounded min-h-11 sm:min-h-0 inline-flex items-center"
-            title="Exporta solo reservas Completadas + Pagadas + con GCLID"
-          >
-            Exportar CSV para Google Ads
-          </a>
+
+          {/* Export Dropdown / Group */}
+          <div className="flex items-center rounded-lg border border-[#1e3358] bg-[#071322] overflow-hidden shadow-sm">
+            <a
+              href="/api/admin/bookings/export?type=all"
+              className="text-xs font-bold font-label uppercase tracking-wider text-[#cfe5fa] hover:bg-[#1a3860] px-3 py-2 transition-colors border-r border-[#1e3358]"
+              title="Exporta todas las conversiones combinadas para Google Ads"
+            >
+              Exportar Ads
+            </a>
+            <a
+              href="/api/admin/bookings/export?type=qualified"
+              className="text-xs font-bold font-label uppercase tracking-wider text-[#a855f7] hover:bg-[#1a3860] px-2.5 py-2 transition-colors border-r border-[#1e3358]"
+              title="Exporta solo Leads Cualificados (Cita Agendada)"
+            >
+              Cualificados
+            </a>
+            <a
+              href="/api/admin/bookings/export?type=converted"
+              className="text-xs font-bold font-label uppercase tracking-wider text-[#22c55e] hover:bg-[#1a3860] px-2.5 py-2 transition-colors"
+              title="Exporta solo Ventas Pagadas con valor COP"
+            >
+              Ventas
+            </a>
+          </div>
         </div>
       </header>
 
       {error ? <p className="text-red-400/90 font-body mb-6">{error}</p> : null}
-      <BookingsTable bookings={bookings ?? []} onRefresh={load} />
+
+      {viewMode === 'kanban' ? (
+        <KanbanBoard bookings={bookings ?? []} onRefresh={load} />
+      ) : (
+        <BookingsTable bookings={bookings ?? []} onRefresh={load} />
+      )}
+
       {showAddLead && (
         <AddLeadModal onClose={() => setShowAddLead(false)} onSaved={load} />
+      )}
+
+      {showAdsModal && (
+        <GoogleAdsFeedModal onClose={() => setShowAdsModal(false)} />
       )}
     </div>
   )

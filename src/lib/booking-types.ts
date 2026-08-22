@@ -24,8 +24,8 @@ export type BookingRecord = {
   email?: string
   phone: string
   requests?: string
-  /** Booking status, e.g. for arrivals */
-  status?: 'pending' | 'arrived' | 'cancelled' | 'completed'
+  /** Booking status, e.g. for conversion funnel */
+  status?: 'pending' | 'contacted' | 'arrived' | 'cancelled' | 'completed'
   /** Payment status */
   paymentStatus?: 'pending' | 'paid'
   /** Origin of the booking */
