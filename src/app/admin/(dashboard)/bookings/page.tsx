@@ -10,6 +10,150 @@ import DualCurrency from '@/components/DualCurrency'
 const EMPTY_MESSAGE =
   'Aún no hay reservas. Aparecerán aquí cuando un cliente confirme en la página de reservas.'
 
+// Servicios curados que sí se pautan en Ads — mismo listado que la landing de campaña.
+// Se hardcodea aquí (en vez de importar de @/lib/services) porque este componente
+// corre en el cliente y ese archivo trae dependencias de servidor.
+const AD_SERVICES = [
+  { id: 'relaxing', name: 'Relajante' },
+  { id: 'deep-tissue', name: 'Tejido Profundo' },
+  { id: 'sports', name: 'Deportivo' },
+  { id: 'hot-stones', name: 'Piedras Volcánicas' },
+]
+
+function AddLeadModal({ onClose, onSaved }: { onClose: () => void; onSaved: () => void }) {
+  const [name, setName] = useState('')
+  const [phone, setPhone] = useState('')
+  const [serviceId, setServiceId] = useState('')
+  const [gclid, setGclid] = useState('')
+  const [adgroup, setAdgroup] = useState('')
+  const [notes, setNotes] = useState('')
+  const [status, setStatus] = useState<'completed' | 'arrived' | 'pending' | 'cancelled'>('completed')
+  const [paid, setPaid] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!phone.trim()) { setError('El teléfono es obligatorio.'); return }
+    setSaving(true)
+    setError('')
+    try {
+      const res = await fetch('/api/admin/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name.trim() || undefined,
+          phone: phone.trim(),
+          serviceId: serviceId || undefined,
+          gclid: gclid.trim() || undefined,
+          adgroup: adgroup.trim() || undefined,
+          notes: notes.trim() || undefined,
+          status,
+          paymentStatus: paid ? 'paid' : 'pending',
+        }),
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        setError(data.error || 'No se pudo guardar el lead.')
+        setSaving(false)
+        return
+      }
+      onSaved()
+      onClose()
+    } catch {
+      setError('Error de red.')
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={onClose}>
+      <form
+        onSubmit={handleSubmit}
+        onClick={e => e.stopPropagation()}
+        className="bg-[#0a1628] border border-[#1e3358] rounded-sm p-6 w-full max-w-md flex flex-col gap-4"
+      >
+        <h2 className="font-headline text-xl text-[#cfe5fa]">Agregar Lead de WhatsApp</h2>
+        <p className="text-[#8a9299] text-xs -mt-2">
+          Para clientes que escribieron directo por WhatsApp, sin pasar por el wizard de reserva.
+        </p>
+
+        <div>
+          <label className="block text-xs text-[#8a9299] mb-1">Nombre</label>
+          <input value={name} onChange={e => setName(e.target.value)}
+            className="w-full bg-[#0f1f38] border border-[#1e3358] text-[#cfe5fa] text-sm rounded px-3 py-2 outline-none" />
+        </div>
+
+        <div>
+          <label className="block text-xs text-[#8a9299] mb-1">Teléfono *</label>
+          <input value={phone} onChange={e => setPhone(e.target.value)} required
+            className="w-full bg-[#0f1f38] border border-[#1e3358] text-[#cfe5fa] text-sm rounded px-3 py-2 outline-none" />
+        </div>
+
+        <div>
+          <label className="block text-xs text-[#8a9299] mb-1">Servicio</label>
+          <select value={serviceId} onChange={e => setServiceId(e.target.value)}
+            className="w-full bg-[#0f1f38] border border-[#1e3358] text-[#cfe5fa] text-sm rounded px-3 py-2 outline-none">
+            <option value="">No especificado</option>
+            {AD_SERVICES.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+          </select>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs text-[#8a9299] mb-1">GCLID</label>
+            <input value={gclid} onChange={e => setGclid(e.target.value)}
+              placeholder="Pégalo del mensaje de WhatsApp"
+              className="w-full bg-[#0f1f38] border border-[#1e3358] text-[#cfe5fa] text-sm rounded px-3 py-2 outline-none" />
+          </div>
+          <div>
+            <label className="block text-xs text-[#8a9299] mb-1">Ad Group</label>
+            <input value={adgroup} onChange={e => setAdgroup(e.target.value)}
+              className="w-full bg-[#0f1f38] border border-[#1e3358] text-[#cfe5fa] text-sm rounded px-3 py-2 outline-none" />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs text-[#8a9299] mb-1">Estado</label>
+            <select value={status} onChange={e => setStatus(e.target.value as typeof status)}
+              className="w-full bg-[#0f1f38] border border-[#1e3358] text-[#cfe5fa] text-sm rounded px-3 py-2 outline-none">
+              <option value="completed">Completado</option>
+              <option value="arrived">Llegó</option>
+              <option value="pending">Pendiente</option>
+              <option value="cancelled">Cancelado</option>
+            </select>
+          </div>
+          <div className="flex items-end pb-2">
+            <label className="flex items-center gap-2 text-sm text-[#cfe5fa]">
+              <input type="checkbox" checked={paid} onChange={e => setPaid(e.target.checked)} />
+              Ya pagó
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-xs text-[#8a9299] mb-1">Notas</label>
+          <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2}
+            className="w-full bg-[#0f1f38] border border-[#1e3358] text-[#cfe5fa] text-sm rounded px-3 py-2 outline-none" />
+        </div>
+
+        {error && <p className="text-red-400 text-xs">{error}</p>}
+
+        <div className="flex gap-3 justify-end pt-2">
+          <button type="button" onClick={onClose} className="text-sm text-[#8a9299] px-4 py-2">
+            Cancelar
+          </button>
+          <button type="submit" disabled={saving}
+            className="text-sm bg-[#4a9fd4] text-white px-4 py-2 rounded disabled:opacity-50">
+            {saving ? 'Guardando…' : 'Guardar Lead'}
+          </button>
+        </div>
+      </form>
+    </div>
+  )
+}
+
 type UpdateField = 'status' | 'paymentStatus'
 type UpdateHandler = (id: string, field: UpdateField, value: string) => void
 
@@ -227,6 +371,7 @@ export default function AdminDashboardPage() {
   const { replace, refresh } = useRouter()
   const [bookings, setBookings] = useState<BookingRecord[] | null | undefined>(undefined)
   const [error, setError] = useState('')
+  const [showAddLead, setShowAddLead] = useState(false)
 
   const load = useCallback(async () => {
     setError('')
@@ -260,13 +405,33 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="max-w-6xl mx-auto">
-      <header className="mb-8 md:mb-10">
-        <h1 className="font-headline text-3xl md:text-4xl text-[#cfe5fa] mb-2">Reservas</h1>
-        <p className="text-[#cfe5fa]/50 text-sm">Gestiona todas las reservas del sistema.</p>
+      <header className="mb-8 md:mb-10 flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="font-headline text-3xl md:text-4xl text-[#cfe5fa] mb-2">Reservas</h1>
+          <p className="text-[#cfe5fa]/50 text-sm">Gestiona todas las reservas del sistema.</p>
+        </div>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setShowAddLead(true)}
+            className="text-sm bg-[#4a9fd4] text-white px-4 py-2 rounded min-h-11 sm:min-h-0"
+          >
+            + Agregar Lead de WhatsApp
+          </button>
+          <a
+            href="/api/admin/bookings/export"
+            className="text-sm border border-[#1e3358] text-[#cfe5fa] px-4 py-2 rounded min-h-11 sm:min-h-0 inline-flex items-center"
+            title="Exporta solo reservas Completadas + Pagadas + con GCLID"
+          >
+            Exportar CSV para Google Ads
+          </a>
+        </div>
       </header>
 
       {error ? <p className="text-red-400/90 font-body mb-6">{error}</p> : null}
       <BookingsTable bookings={bookings ?? []} onRefresh={load} />
+      {showAddLead && (
+        <AddLeadModal onClose={() => setShowAddLead(false)} onSaved={load} />
+      )}
     </div>
   )
 }
