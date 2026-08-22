@@ -11,26 +11,18 @@ export default function GoogleAdsFeedModal({ onClose }: { onClose: () => void })
 
   const feeds = [
     {
-      id: 'all',
-      title: 'Feed Recomendado (Ambas Conversiones)',
-      subtitle: 'Sincroniza Leads Cualificados y Ventas Pagadas en un solo archivo CSV.',
-      url: `${origin}/api/admin/bookings/export/conversions.csv?type=all`,
-      tagColor: 'text-[#38bdf8] bg-[#38bdf8]/10 border-[#38bdf8]/30',
-      badge: 'Recomendado',
-    },
-    {
       id: 'qualified',
-      title: 'Solo Leads Cualificados (Cita Agendada)',
-      subtitle: 'Dispara cuando el cliente agenda su cita en la etapa 3 del embudo.',
-      url: `${origin}/api/admin/bookings/export/qualified.csv`,
+      title: 'Feed para "Lead Cualificado"',
+      subtitle: 'Conecta esta URL a la acción de conversión "Lead Cualificado" en Google Ads.',
+      url: `${origin}/api/admin/bookings/export/conversions.csv?type=qualified`,
       tagColor: 'text-[#a855f7] bg-[#a855f7]/10 border-[#a855f7]/30',
-      badge: 'Etapa 3',
+      badge: 'Etapa 2-4',
     },
     {
       id: 'converted',
-      title: 'Solo Ventas Confirmadas (Servicio Pagado)',
-      subtitle: 'Dispara cuando el cliente paga con el valor real en COP.',
-      url: `${origin}/api/admin/bookings/export/converted.csv`,
+      title: 'Feed para "Reserva Confirmada Offline"',
+      subtitle: 'Conecta esta URL a la acción de conversión "Reserva Confirmada Offline" en Google Ads.',
+      url: `${origin}/api/admin/bookings/export/conversions.csv?type=converted`,
       tagColor: 'text-[#22c55e] bg-[#22c55e]/10 border-[#22c55e]/30',
       badge: 'Etapa 4',
     },
@@ -88,27 +80,56 @@ export default function GoogleAdsFeedModal({ onClose }: { onClose: () => void })
               </span>
             </div>
 
-            {/* URL */}
+            <p className="text-[10px] text-[#8a9299] -mt-1">
+              Tienes 2 acciones de conversión en Google Ads — cada una necesita su propia URL, conectada por separado.
+            </p>
+
+            {/* URL 1: Lead Cualificado */}
             <div className="flex flex-col gap-1.5">
               <label className="text-[11px] font-bold text-[#8a9299]">
-                1. URL del archivo CSV:
+                1a. URL para la acción &quot;Lead Cualificado&quot;:
               </label>
               <div className="flex items-center gap-2">
                 <input
                   type="text"
                   readOnly
-                  value={`${origin}/api/admin/bookings/export/conversions.csv?type=all`}
+                  value={feeds[0].url}
                   className="flex-1 bg-[#0a182c] border border-[#1e385c] text-[#38bdf8] text-xs font-mono rounded-lg px-3 py-2 outline-none font-medium"
                 />
                 <button
                   type="button"
-                  onClick={() => handleCopy(`${origin}/api/admin/bookings/export/conversions.csv?type=all`, 'url')}
+                  onClick={() => handleCopy(feeds[0].url, 'url-qualified')}
                   className="bg-[#38bdf8] hover:bg-[#0ea5e9] text-[#001524] text-xs font-bold px-4 py-2 rounded-lg transition-colors shadow flex items-center gap-1 shrink-0"
                 >
                   <span className="material-symbols-outlined text-[16px]">
-                    {copiedKey === 'url' ? 'check' : 'content_copy'}
+                    {copiedKey === 'url-qualified' ? 'check' : 'content_copy'}
                   </span>
-                  <span>{copiedKey === 'url' ? '¡Copiado!' : 'Copiar URL'}</span>
+                  <span>{copiedKey === 'url-qualified' ? '¡Copiado!' : 'Copiar URL'}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* URL 2: Reserva Confirmada Offline */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[11px] font-bold text-[#8a9299]">
+                1b. URL para la acción &quot;Reserva Confirmada Offline&quot;:
+              </label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  readOnly
+                  value={feeds[1].url}
+                  className="flex-1 bg-[#0a182c] border border-[#1e385c] text-[#38bdf8] text-xs font-mono rounded-lg px-3 py-2 outline-none font-medium"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleCopy(feeds[1].url, 'url-converted')}
+                  className="bg-[#38bdf8] hover:bg-[#0ea5e9] text-[#001524] text-xs font-bold px-4 py-2 rounded-lg transition-colors shadow flex items-center gap-1 shrink-0"
+                >
+                  <span className="material-symbols-outlined text-[16px]">
+                    {copiedKey === 'url-converted' ? 'check' : 'content_copy'}
+                  </span>
+                  <span>{copiedKey === 'url-converted' ? '¡Copiado!' : 'Copiar URL'}</span>
                 </button>
               </div>
             </div>
