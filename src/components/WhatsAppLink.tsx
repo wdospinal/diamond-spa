@@ -31,12 +31,14 @@ export default function WhatsAppLink({
           const p = new URLSearchParams(window.location.search)
           const campaign = p.get('utm_campaign') || sessionStorage.getItem('sem_campaign') || ''
           const adgroup  = p.get('adgroup') || sessionStorage.getItem('sem_adgroup') || ''
+          const gclid    = p.get('gclid') || sessionStorage.getItem('gclid') || ''
           
           const payload = {
             source,
             button: 'inline',
             ...(campaign ? { campaign } : {}),
             ...(adgroup  ? { adgroup }  : {}),
+            ...(gclid    ? { gclid }    : {}),
           }
           
           pushEvent('whatsapp_click', payload)

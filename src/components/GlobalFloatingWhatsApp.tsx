@@ -32,6 +32,7 @@ export default function GlobalFloatingWhatsApp({ disabledPaths }: { disabledPath
       const p = new URLSearchParams(window.location.search)
       const campaign = p.get('utm_campaign') || sessionStorage.getItem('sem_campaign') || ''
       const adgroup  = p.get('adgroup') || sessionStorage.getItem('sem_adgroup') || ''
+      const gclid    = p.get('gclid') || sessionStorage.getItem('gclid') || ''
       
       if (campaign || adgroup || sessionStorage.getItem('sem_trigger_key')) {
         isAds = true
@@ -42,6 +43,7 @@ export default function GlobalFloatingWhatsApp({ disabledPaths }: { disabledPath
         button: 'floating',
         ...(campaign ? { campaign } : {}),
         ...(adgroup  ? { adgroup }  : {}),
+        ...(gclid    ? { gclid }    : {}),
       }
       
       pushEvent('whatsapp_click', payload)
