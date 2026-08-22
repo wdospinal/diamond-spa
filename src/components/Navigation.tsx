@@ -5,7 +5,6 @@ import { SPA_WHATSAPP_GREETING } from '@/lib/spa'
 import { IMG_LOGOTIPO, IMG_LOGOTIPO_WEBP } from '@/lib/images'
 import MobileMenuClient from '@/components/MobileMenuClient'
 import NavLinksClient from '@/components/NavLinksClient'
-import WhatsAppLink from '@/components/WhatsAppLink'
 
 export default function Navigation({ locale }: { locale: Locale }) {
   const t = getDict(locale).nav
@@ -53,16 +52,8 @@ export default function Navigation({ locale }: { locale: Locale }) {
         {/* Desktop links + locale switcher (client — needs usePathname for active state) */}
         <NavLinksClient links={links} locale={locale} />
 
-        {/* Desktop CTAs */}
-        <div className="hidden md:flex items-center gap-3">
-
-          <WhatsAppLink
-            text={waGreeting}
-            className="flex items-center gap-2 border border-primary/40 text-primary px-5 py-2.5 font-label font-bold tracking-widest text-xs uppercase hover:bg-primary hover:text-on-primary transition-all duration-300"
-          >
-            <span className="material-symbols-outlined text-sm" aria-hidden="true">support_agent</span>
-            {t.contactReceptionist}
-          </WhatsAppLink>
+        {/* Desktop CTA */}
+        <div className="hidden md:flex items-center">
           <Link
             href={`/${locale}/book`}
             className="flex items-center gap-2 bg-primary text-on-primary px-7 py-2.5 font-label font-bold tracking-widest text-xs uppercase hover:bg-white transition-all duration-300"

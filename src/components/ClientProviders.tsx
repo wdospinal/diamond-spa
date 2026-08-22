@@ -21,6 +21,7 @@ const Analytics     = dynamic(() => import('@vercel/analytics/react').then(m => 
 const SpeedInsights = dynamic(() => import('@vercel/speed-insights/next').then(m => ({ default: m.SpeedInsights })), { ssr: false })
 const CookieConsent = dynamic(() => import('@/components/CookieConsent'),                                            { ssr: false })
 const FunnelPageview = dynamic(() => import('@/components/FunnelPageview'),                                          { ssr: false })
+const WhatsAppBridgeModal = dynamic(() => import('@/components/WhatsAppBridgeModal'),                              { ssr: false })
 
 export default function ClientProviders() {
   return (
@@ -29,6 +30,7 @@ export default function ClientProviders() {
       <SpeedInsights />
       <CookieConsent />
       <FunnelPageview />
+      <WhatsAppBridgeModal />
     </>
   )
 }

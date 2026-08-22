@@ -3,7 +3,7 @@ import { dirname, join } from 'path'
 import { randomUUID } from 'crypto'
 import type { BookingRecord } from '@/lib/booking-types'
 import { kvCommand, kvConfigured, kvPipeline } from '@/lib/kv'
-import { sbInsert, sbSelect, sbUpdate, supabaseConfigured } from '@/lib/supabase'
+import { sbDelete, sbInsert, sbSelect, sbUpdate, supabaseConfigured } from '@/lib/supabase'
 
 /**
  * Bookings persistence — backend picked by env, in order of preference:
@@ -197,14 +197,33 @@ export async function appendBooking(
   return row
 }
 
-export async function updateBooking(id: string, payload: Partial<Pick<BookingRecord, 'status' | 'paymentStatus'>>): Promise<boolean> {
+export async function updateBooking(id: string, payload: Partial<BookingRecord>): Promise<boolean> {
   if (supabaseConfigured()) {
     const patch: Partial<BookingRow> = {}
+    if (payload.name !== undefined) patch.name = payload.name
+    if (payload.phone !== undefined) patch.phone = payload.phone
+    if (payload.email !== undefined) patch.email = payload.email
+    if (payload.serviceId !== undefined) patch.service_id = payload.serviceId
+    if (payload.serviceName !== undefined) patch.service_name = payload.serviceName
+    if (payload.priceCop !== undefined) patch.price_cop = payload.priceCop
+    if (payload.dateKey !== undefined) patch.date_key = payload.dateKey
+    if (payload.timeSlot !== undefined) patch.time_slot = payload.timeSlot
+    if (payload.requests !== undefined) patch.requests = payload.requests
     if (payload.status !== undefined) patch.status = payload.status
     if (payload.paymentStatus !== undefined) patch.payment_status = payload.paymentStatus
     if (Object.keys(patch).length === 0) return true
-    const updated = await sbUpdate('bookings', `id=eq.${id}`, patch)
-    return updated.length > 0
+    try {
+      const updated = await sbUpdate('bookings', `id=eq.${id}`, patch)
+      return updated.length > 0
+    } catch (err: unknown) {
+      if (patch.status === 'contacted' && String((err as Error)?.message || '').includes('bookings_status_check')) {
+        console.warn('Supabase bookings_status_check: run supabase/migrations/0005_add_contacted_status.sql in Supabase SQL editor to persist contacted in DB.')
+        patch.status = 'pending'
+        const updated = await sbUpdate('bookings', `id=eq.${id}`, patch)
+        return updated.length > 0
+      }
+      throw err
+    }
   }
   if (kvConfigured()) {
     await ensureMigrated()
@@ -212,9 +231,6 @@ export async function updateBooking(id: string, payload: Partial<Pick<BookingRec
     const idx = bookings.findIndex(b => b.id === id)
     if (idx === -1) return false
     bookings[idx] = { ...bookings[idx], ...payload }
-    // KV doesn't have simple LSET for JSON objects natively without replacing entire string.
-    // Easiest is to rewrite the list or use LSET if we know index.
-    // LSET list index value
     await kvCommand(['LSET', LIST_KEY, idx.toString(), JSON.stringify(bookings[idx])])
     return true
   } else {
@@ -223,6 +239,35 @@ export async function updateBooking(id: string, payload: Partial<Pick<BookingRec
     if (!b) return false
     Object.assign(b, payload)
     await writeFile(FILE, JSON.stringify(list, null, 2), 'utf8')
+    return true
+  }
+}
+
+export async function deleteBooking(id: string): Promise<boolean> {
+  if (supabaseConfigured()) {
+    try {
+      await sbDelete('bookings', `id=eq.${id}`)
+      return true
+    } catch (err) {
+      console.error('Failed to delete booking from Supabase', err)
+      return false
+    }
+  }
+  if (kvConfigured()) {
+    await ensureMigrated()
+    const bookings = await readBookings()
+    const filtered = bookings.filter(b => b.id !== id)
+    if (filtered.length === bookings.length) return false
+    await kvCommand(['DEL', LIST_KEY])
+    if (filtered.length > 0) {
+      await kvPipeline(filtered.map(b => ['RPUSH', LIST_KEY, JSON.stringify(b)]))
+    }
+    return true
+  } else {
+    const list = await readFileBookings()
+    const filtered = list.filter(b => b.id !== id)
+    if (filtered.length === list.length) return false
+    await writeFile(FILE, JSON.stringify(filtered, null, 2), 'utf8')
     return true
   }
 }
