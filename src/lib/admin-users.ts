@@ -16,6 +16,7 @@ import { mkdir, readFile, writeFile } from 'fs/promises'
 import { dirname, join } from 'path'
 import { kvCommand, kvConfigured } from '@/lib/kv'
 import { sbSelect, sbUpsert, supabaseConfigured } from '@/lib/supabase'
+import { seedAccounts } from '@/lib/admin-session'
 
 const scrypt = promisify(scryptCb) as (
   password: string,
@@ -284,4 +285,47 @@ export async function emailTakenBy(email: string, exceptUsername: string): Promi
   const all = await readAllAdminUsers()
   const clash = all.find(u => u.username !== name && normalizeEmail(u.email ?? '') === target)
   return clash?.username ?? null
+}
+
+export interface AdminAccountSummary {
+  username: string
+  /** Correo verificado, o null si todavía no asoció ninguno. */
+  email: string | null
+  /** false = sigue usando la contraseña inicial del entorno. */
+  hasOwnPassword: boolean
+  /** Correo a la espera de un código sin usar, si hay un cambio a medias. */
+  pendingEmail: string | null
+}
+
+/**
+ * Todas las cuentas que hoy pueden entrar al panel: las definidas en el
+ * entorno más las que ya tienen fila propia. Deliberadamente NO devuelve
+ * hashes de contraseña ni de código — esto se pinta en una página.
+ */
+export async function listAdminAccounts(): Promise<AdminAccountSummary[]> {
+  const byName = new Map<string, AdminAccountSummary>()
+
+  // Las del entorno existen aunque nunca hayan entrado.
+  for (const account of seedAccounts()) {
+    byName.set(account.username, {
+      username: account.username,
+      email: null,
+      hasOwnPassword: false,
+      pendingEmail: null,
+    })
+  }
+
+  // La fila en base de datos manda sobre lo anterior.
+  for (const user of await readAllAdminUsers()) {
+    byName.set(user.username, {
+      username: user.username,
+      email: user.email,
+      hasOwnPassword: Boolean(user.passwordHash),
+      // Un código caducado no cuenta como cambio en curso.
+      pendingEmail:
+        user.codeExpiresAt && user.codeExpiresAt > Date.now() ? user.pendingEmail : null,
+    })
+  }
+
+  return [...byName.values()].sort((a, b) => a.username.localeCompare(b.username, 'es'))
 }
