@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { SPA_HOURS } from '@/lib/spa'
 
 type BoldMonth = {
   month: string
@@ -51,6 +52,7 @@ type BoldResponse = {
 }
 
 const RANGES = [6, 12, 24]
+const PAGE_SIZE = 20
 
 /** Escala estilo GitHub: 0 vacío → 4 máximo. */
 const HEAT = ['#161b22', '#0e4429', '#006d32', '#26a641', '#39d353'] as const
@@ -102,20 +104,28 @@ function weekdayLabel(day: string): string {
   return WEEKDAY_LONG.format(parseDay(day))
 }
 
-/** Extrae la hora de un label Bold ("21 de agosto - 02:20 pm" → "02:20 pm"). */
-function extractTime(label: string): string {
-  const parts = label.split(' - ')
-  return parts.length > 1 ? parts[parts.length - 1]!.trim() : label.trim()
+function capitalize(s: string): string {
+  return s ? s.charAt(0).toUpperCase() + s.slice(1) : s
 }
 
-/** Turno: nombre del día + horario. */
-function shiftLabel(c: BoldClosing): string {
-  const weekday = weekdayLabel(c.day)
-  const from = extractTime(c.fromLabel)
-  const to = c.toLabel ? extractTime(c.toLabel) : ''
-  if (from && to) return `${weekday} · ${from} → ${to}`
-  if (from) return `${weekday} · ${from}`
-  return weekday
+/** '10:00' → '10am', '22:00' → '10pm'. */
+function hourLabel(hhmm: string): string {
+  const hour = Number(hhmm.slice(0, 2))
+  const suffix = hour >= 12 ? 'pm' : 'am'
+  const hour12 = hour % 12 || 12
+  return `${hour12}${suffix}`
+}
+
+/** Horario del spa según el día (SPA_HOURS): lun–sáb 10am–10pm, dom 10am–7pm. */
+function spaHoursForDay(day: string): string {
+  const isSunday = parseDay(day).getUTCDay() === 0
+  const slot = isSunday ? SPA_HOURS[1] : SPA_HOURS[0]
+  return `${hourLabel(slot.opens)} – ${hourLabel(slot.closes)}`
+}
+
+/** Turno: 'Viernes · 10am – 10pm' */
+function shiftLabel(day: string): string {
+  return `${capitalize(weekdayLabel(day))} · ${spaHoursForDay(day)}`
 }
 
 /** 'YYYY-MM' → 'ago 26' */
@@ -142,6 +152,10 @@ function fmtDelta(current: number, previous: number): { text: string; tone: stri
  * (el embudo también dibuja a mano) y así no se añade una dependencia.
  */
 function GrowthChart({ months }: { months: BoldMonth[] }) {
+  const [hover, setHover] = useState<number | null>(null)
+  const [pinned, setPinned] = useState<number | null>(null)
+  const active = hover ?? pinned
+
   const W = 720
   const H = 240
   const padX = 44
@@ -160,13 +174,19 @@ function GrowthChart({ months }: { months: BoldMonth[] }) {
   const labelEvery = months.length > 14 ? 2 : 1
   const grid = [0.25, 0.5, 0.75, 1].map(f => scaleMax * f)
 
+  const activeMonth = active !== null ? months[active] : null
+  const tooltipW = 168
+  const tooltipH = 44
+  const tooltipX = active !== null ? Math.min(Math.max(x(active) - tooltipW / 2, 8), W - tooltipW - 8) : 0
+  const tooltipY = active !== null && activeMonth ? Math.max(y(activeMonth.grossCop) - tooltipH - 12, 4) : 0
+
   return (
     <div className="overflow-x-auto">
       <svg
         viewBox={`0 0 ${W} ${H}`}
         className="w-full min-w-[520px] h-auto"
         role="img"
-        aria-label="Ventas de Bold por mes"
+        aria-label="Ventas de Bold por mes. Pasa el mouse o toca un punto para ver el valor."
       >
         <defs>
           <linearGradient id="boldArea" x1="0" y1="0" x2="0" y2="1">
@@ -187,23 +207,71 @@ function GrowthChart({ months }: { months: BoldMonth[] }) {
         <polygon points={area} fill="url(#boldArea)" />
         <polyline points={points} fill="none" stroke="#a5cce6" strokeWidth="2" strokeLinejoin="round" />
 
-        {months.map((m, i) => (
-          <g key={m.month}>
-            <circle
-              cx={x(i)}
-              cy={y(m.grossCop)}
-              r={i === months.length - 1 ? 5 : 3}
-              fill={i === months.length - 1 ? '#cfe5fa' : '#a5cce6'}
+        {months.map((m, i) => {
+          const isActive = active === i
+          return (
+            <g key={m.month}>
+              <circle
+                cx={x(i)}
+                cy={y(m.grossCop)}
+                r={isActive ? 6 : i === months.length - 1 ? 5 : 3.5}
+                fill={isActive || i === months.length - 1 ? '#cfe5fa' : '#a5cce6'}
+                stroke={isActive ? '#001524' : 'none'}
+                strokeWidth={isActive ? 1.5 : 0}
+              />
+              {/* Área de toque más grande que el punto visible. */}
+              <circle
+                cx={x(i)}
+                cy={y(m.grossCop)}
+                r={16}
+                fill="transparent"
+                className="cursor-pointer"
+                role="button"
+                tabIndex={0}
+                aria-label={`${monthLabel(m.month)}: ${fmtCop(m.grossCop)}`}
+                onMouseEnter={() => setHover(i)}
+                onMouseLeave={() => setHover(null)}
+                onClick={() => setPinned(p => (p === i ? null : i))}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    setPinned(p => (p === i ? null : i))
+                  }
+                }}
+              />
+              {i % labelEvery === 0 || i === months.length - 1 ? (
+                <text x={x(i)} y={H - 12} fill="#8a9299" fontSize="10" textAnchor="middle">
+                  {monthLabel(m.month)}
+                </text>
+              ) : null}
+            </g>
+          )
+        })}
+
+        {activeMonth ? (
+          <g pointerEvents="none">
+            <rect
+              x={tooltipX}
+              y={tooltipY}
+              width={tooltipW}
+              height={tooltipH}
+              rx={4}
+              fill="#001524"
+              stroke="#a5cce6"
+              strokeOpacity="0.45"
             />
-            <title>{`${monthLabel(m.month)}: ${fmtCop(m.grossCop)}`}</title>
-            {i % labelEvery === 0 || i === months.length - 1 ? (
-              <text x={x(i)} y={H - 12} fill="#8a9299" fontSize="10" textAnchor="middle">
-                {monthLabel(m.month)}
-              </text>
-            ) : null}
+            <text x={tooltipX + 12} y={tooltipY + 18} fill="#8a9299" fontSize="11">
+              {monthLabel(activeMonth.month)}
+            </text>
+            <text x={tooltipX + 12} y={tooltipY + 34} fill="#cfe5fa" fontSize="13" fontWeight="600">
+              {fmtCop(activeMonth.grossCop)}
+            </text>
           </g>
-        ))}
+        ) : null}
       </svg>
+      <p className="sr-only" aria-live="polite">
+        {activeMonth ? `${monthLabel(activeMonth.month)}: ${fmtCop(activeMonth.grossCop)}` : ''}
+      </p>
     </div>
   )
 }
@@ -393,6 +461,7 @@ export default function BoldDashboardPage() {
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
   const [appliedRange, setAppliedRange] = useState<{ from: string; to: string } | null>(null)
+  const [page, setPage] = useState(1)
 
   const load = useCallback(
     async (n: number, range: { from: string; to: string } | null) => {
@@ -414,6 +483,7 @@ export default function BoldDashboardPage() {
           return
         }
         setData((await res.json()) as BoldResponse)
+        setPage(1)
       } catch {
         setError('Error de red')
         setData(null)
@@ -543,6 +613,9 @@ export default function BoldDashboardPage() {
   const mtdDelta = fmtDelta(mtd?.current.grossCop ?? 0, mtd?.previous.grossCop ?? 0)
   const ticket = current && current.transactions > 0 ? current.grossCop / current.transactions : 0
   const closings = data ? [...data.days].reverse() : []
+  const pageCount = Math.max(1, Math.ceil(closings.length / PAGE_SIZE))
+  const currentPage = Math.min(page, pageCount)
+  const pagedClosings = closings.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -749,20 +822,20 @@ export default function BoldDashboardPage() {
         <h2 className="font-label text-xs uppercase tracking-[0.25em] text-[#8a9299] mb-4">
           {appliedRange
             ? `Cierres del ${dayLabel(appliedRange.from)} al ${dayLabel(appliedRange.to)}`
-            : `Cierres de ${data ? monthLabel(data.currentMonth) : 'este mes'}`}
+            : 'Historial de cierres'}
         </h2>
         {closings.length > 0 ? (
           <>
             <ul className="md:hidden flex flex-col gap-2">
-              {closings.map(c => (
+              {pagedClosings.map(c => (
                 <li key={c.id} className="border border-[#42484c]/40 rounded-sm p-4">
                   <div className="flex items-baseline justify-between gap-3">
                     <div>
                       <p className="font-label text-[11px] uppercase tracking-[0.15em] text-[#8a9299]">
                         {dayLabel(c.day)}
                       </p>
-                      <p className="text-[11px] text-[#5c656d] font-body mt-0.5 capitalize">
-                        {shiftLabel(c)}
+                      <p className="text-[11px] text-[#5c656d] font-body mt-0.5">
+                        {shiftLabel(c.day)}
                       </p>
                     </div>
                     <p className="font-headline text-lg text-[#cfe5fa] tabular-nums">
@@ -791,14 +864,14 @@ export default function BoldDashboardPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {closings.map(c => (
+                  {pagedClosings.map(c => (
                     <tr
                       key={c.id}
                       className="border-b border-[#42484c]/25 text-[#cfe5fa] hover:bg-[#0a2438]/50"
                     >
                       <td className="py-2.5 px-4 whitespace-nowrap capitalize">{dayLabel(c.day)}</td>
-                      <td className="py-2.5 px-4 text-[#8a9299] text-xs whitespace-nowrap capitalize">
-                        {shiftLabel(c)}
+                      <td className="py-2.5 px-4 text-[#8a9299] text-xs whitespace-nowrap">
+                        {shiftLabel(c.day)}
                       </td>
                       <td className="py-2.5 px-4 text-right tabular-nums">{fmtCop(c.grossCop)}</td>
                       <td className="py-2.5 px-4 text-right tabular-nums text-[#a5cce6]/90">
@@ -813,10 +886,34 @@ export default function BoldDashboardPage() {
                 </tbody>
               </table>
             </div>
+
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-4">
+              <p className="text-[11px] text-[#5c656d] font-body">
+                {closings.length} cierres · página {currentPage} de {pageCount}
+              </p>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage <= 1}
+                  className="min-h-11 px-4 border border-[#42484c]/50 text-[#cfe5fa] font-label text-[10px] uppercase tracking-[0.15em] hover:bg-[#0a2438] transition-colors disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed"
+                >
+                  Anterior
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPage(p => Math.min(pageCount, p + 1))}
+                  disabled={currentPage >= pageCount}
+                  className="min-h-11 px-4 border border-[#42484c]/50 text-[#cfe5fa] font-label text-[10px] uppercase tracking-[0.15em] hover:bg-[#0a2438] transition-colors disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed"
+                >
+                  Siguiente
+                </button>
+              </div>
+            </div>
           </>
         ) : (
           <div className="border border-[#42484c]/40 rounded-sm py-12 px-6 text-center text-[#8a9299] font-body text-sm">
-            No hay cierres registrados este mes.
+            No hay cierres registrados en este rango.
           </div>
         )}
       </section>

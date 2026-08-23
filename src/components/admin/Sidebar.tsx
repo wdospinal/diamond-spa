@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { href: '/admin/funnel',   icon: 'filter_alt',     label: 'Embudo'      },
   { href: '/admin/bold',     icon: 'payments',       label: 'Ventas Bold' },
   { href: '/admin/settings', icon: 'settings',       label: 'Configuración' },
+  { href: '/admin/account',  icon: 'person',         label: 'Mi cuenta'   },
 ]
 
 

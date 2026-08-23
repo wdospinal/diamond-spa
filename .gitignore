@@ -43,3 +43,5 @@ next-env.d.ts
 /data/push-subs.json
 # cierres de Bold fallback (local / self-hosted; prod usa Supabase o KV)
 /data/bold-closings.json
+# cuentas del panel fallback (local / self-hosted; prod usa Supabase o KV) — contiene hashes de contraseña, nunca commitear
+/data/admin-users.json

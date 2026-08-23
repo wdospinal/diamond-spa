@@ -157,11 +157,8 @@ export async function GET(req: NextRequest) {
     current: byMonth.get(currentMonth) ?? emptyMonth(currentMonth),
     previous: byMonth.get(previousMonth) ?? emptyMonth(previousMonth),
     mtd: { dayOfMonth, current: mtdCurrent, previous: mtdPrevious },
-    // Sin filtro, la tabla conserva su vista compacta del mes actual.
-    // Con filtro, muestra todos los cierres del rango solicitado.
-    days: closings.filter(c =>
-      hasCustomRange ? c.day >= rangeStart && c.day <= rangeEnd : c.day.startsWith(currentMonth),
-    ),
+    // Historial de cierres del rango (mes seleccionado o filtro Desde/Hasta).
+    days: closings.filter(c => c.day >= rangeStart && c.day <= rangeEnd),
     // Totales por día del rango (heatmap de intensidad).
     daily: [...byDay.values()].sort((a, b) => a.day.localeCompare(b.day)),
   })
