@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import PasswordInput from '@/components/admin/PasswordInput'
 
 type Step = 'request' | 'confirm' | 'done'
 
@@ -19,7 +20,7 @@ export default function AccountClient({
   username: string
   currentEmail: string | null
 }) {
-  const [step, setStep] = useState<Step>('request')
+  const [step, setStep] = useState<Step>('confirm')
   const [email, setEmail] = useState(currentEmail ?? '')
   const [currentPassword, setCurrentPassword] = useState('')
   const [code, setCode] = useState('')
@@ -137,9 +138,8 @@ export default function AccountClient({
           </div>
           <div className="flex flex-col gap-1.5">
             <label htmlFor="current" className={LABEL}>Contraseña actual</label>
-            <input
+            <PasswordInput
               id="current"
-              type="password"
               autoComplete="current-password"
               value={currentPassword}
               onChange={e => setCurrentPassword(e.target.value)}
@@ -179,9 +179,8 @@ export default function AccountClient({
           </div>
           <div className="flex flex-col gap-1.5">
             <label htmlFor="new" className={LABEL}>Contraseña nueva</label>
-            <input
+            <PasswordInput
               id="new"
-              type="password"
               autoComplete="new-password"
               value={newPassword}
               onChange={e => setNewPassword(e.target.value)}
@@ -192,9 +191,8 @@ export default function AccountClient({
           </div>
           <div className="flex flex-col gap-1.5">
             <label htmlFor="repeat" className={LABEL}>Repite la contraseña nueva</label>
-            <input
+            <PasswordInput
               id="repeat"
-              type="password"
               autoComplete="new-password"
               value={repeatPassword}
               onChange={e => setRepeatPassword(e.target.value)}
@@ -230,9 +228,9 @@ export default function AccountClient({
             <span className="font-label text-xs uppercase tracking-widest">Contraseña actualizada</span>
           </div>
           <p className="text-sm text-on-surface/70 font-body">
-            La próxima vez entra como <strong className="text-on-surface">{username}</strong> con tu
-            contraseña nueva. Tu correo <strong className="text-on-surface">{savedEmail}</strong> queda
-            asociado a la cuenta.
+            La próxima vez entra con tu contraseña nueva, usando{' '}
+            <strong className="text-on-surface">{username}</strong> o tu correo{' '}
+            <strong className="text-on-surface">{savedEmail}</strong>: cualquiera de los dos sirve.
           </p>
           <button
             type="button"

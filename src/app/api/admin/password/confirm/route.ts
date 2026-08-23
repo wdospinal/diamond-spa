@@ -13,6 +13,7 @@ import {
   codeMatches,
   getAdminUser,
   hashPassword,
+  normalizeEmail,
   passwordProblem,
   saveAdminUser,
 } from '@/lib/admin-users'
@@ -89,7 +90,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    user.email = user.pendingEmail
+    user.email = normalizeEmail(user.pendingEmail)
     user.passwordHash = await hashPassword(newPassword)
     user.pendingEmail = null
     user.codeHash = null

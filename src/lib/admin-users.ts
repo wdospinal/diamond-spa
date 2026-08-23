@@ -218,20 +218,18 @@ export async function getOrCreateAdminUser(username: string): Promise<AdminUser>
   return (await getAdminUser(name)) ?? emptyUser(name)
 }
 
-/**
- * Correo ya asociado a otra cuenta. Evita que dos personas compartan buzón y,
- * con él, la posibilidad de recuperar la cuenta ajena.
- */
-export async function emailTakenBy(email: string, exceptUsername: string): Promise<string | null> {
-  const target = email.trim().toLowerCase()
-  const name = normalizeUsername(exceptUsername)
+export function normalizeEmail(raw: string): string {
+  return raw.trim().toLowerCase()
+}
 
-  let all: AdminUser[]
+/** Todas las cuentas. Son un puñado, así que leerlas enteras no es problema. */
+async function readAllAdminUsers(): Promise<AdminUser[]> {
   if (supabaseConfigured()) {
-    all = (await sbSelect<Row>('admin_users', 'select=*')).map(fromRow)
-  } else if (kvConfigured()) {
+    return (await sbSelect<Row>('admin_users', 'select=*')).map(fromRow)
+  }
+  if (kvConfigured()) {
     const raw = await kvCommand(['HGETALL', HASH_KEY])
-    all = []
+    const all: AdminUser[] = []
     if (Array.isArray(raw)) {
       // HGETALL devuelve [campo, valor, campo, valor, …]
       for (let i = 1; i < raw.length; i += 2) {
@@ -248,10 +246,42 @@ export async function emailTakenBy(email: string, exceptUsername: string): Promi
         } catch {}
       }
     }
-  } else {
-    all = Object.values(await readFileUsers())
+    return all
   }
+  return Object.values(await readFileUsers())
+}
 
-  const clash = all.find(u => u.username !== name && (u.email ?? '').toLowerCase() === target)
+/**
+ * Busca por el correo ya verificado. Solo lo tienen las cuentas que pasaron por
+ * el cambio de contraseña, que es justo lo que hace fiable entrar con él.
+ *
+ * El correo se guarda ya en minúsculas (ver la ruta de confirmación), así que
+ * basta comparar en minúsculas. Deliberadamente NO se usa `ilike` en Supabase:
+ * el guion bajo, corriente en las direcciones, es un comodín en LIKE y podría
+ * emparejar la fila de otra persona.
+ */
+export async function getAdminUserByEmail(email: string): Promise<AdminUser | null> {
+  const target = normalizeEmail(email)
+  if (!target) return null
+
+  if (supabaseConfigured()) {
+    const rows = await sbSelect<Row>(
+      'admin_users',
+      `email=eq.${encodeURIComponent(target)}&limit=1`,
+    )
+    return rows[0] ? fromRow(rows[0]) : null
+  }
+  return (await readAllAdminUsers()).find(u => normalizeEmail(u.email ?? '') === target) ?? null
+}
+
+/**
+ * Correo ya asociado a otra cuenta. Evita que dos personas compartan buzón y,
+ * con él, la posibilidad de recuperar la cuenta ajena.
+ */
+export async function emailTakenBy(email: string, exceptUsername: string): Promise<string | null> {
+  const target = normalizeEmail(email)
+  const name = normalizeUsername(exceptUsername)
+  const all = await readAllAdminUsers()
+  const clash = all.find(u => u.username !== name && normalizeEmail(u.email ?? '') === target)
   return clash?.username ?? null
 }

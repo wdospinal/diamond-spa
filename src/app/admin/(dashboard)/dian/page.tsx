@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import PasswordInput from '@/components/admin/PasswordInput'
 
 export default function DianSettingsPage() {
   const [certFile, setCertFile] = useState<File | null>(null)
@@ -46,11 +47,10 @@ export default function DianSettingsPage() {
           </div>
           <div className="space-y-2">
             <label className="block text-sm font-medium text-on-surface">Contraseña del Certificado</label>
-            <input 
-              type="password" 
+            <PasswordInput
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 rounded-xl bg-surface border border-outline focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors text-on-surface"
+              className="p-3 rounded-xl bg-surface border border-outline focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors text-on-surface"
               placeholder="••••••••"
             />
           </div>

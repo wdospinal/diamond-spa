@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import PasswordInput from '@/components/admin/PasswordInput'
 
 export default function LoginForm({ next }: { next: string }) {
   const router = useRouter()
@@ -24,7 +25,7 @@ export default function LoginForm({ next }: { next: string }) {
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
         if (res.status === 401) {
-          setError('Usuario o contraseña incorrectos')
+          setError('Usuario, correo o contraseña incorrectos')
         } else {
           setError(typeof data.error === 'string' ? data.error : 'No se pudo iniciar sesión')
         }
@@ -50,7 +51,7 @@ export default function LoginForm({ next }: { next: string }) {
         <form onSubmit={onSubmit} className="flex flex-col gap-5">
           <div className="flex flex-col gap-1">
             <label htmlFor="user" className="font-label text-xs text-[#8a9299] uppercase tracking-widest">
-              Usuario
+              Usuario o correo
             </label>
             <input
               id="user"
@@ -67,14 +68,14 @@ export default function LoginForm({ next }: { next: string }) {
             <label htmlFor="pass" className="font-label text-xs text-[#8a9299] uppercase tracking-widest">
               Contraseña
             </label>
-            <input
+            <PasswordInput
               id="pass"
               name="password"
-              type="password"
               autoComplete="current-password"
               value={password}
               onChange={e => setPassword(e.target.value)}
               className="bg-[#0a2438] border-b border-[#42484c] focus:border-[#a5cce6] outline-none p-3 font-body text-sm text-[#cfe5fa]"
+              toggleClassName="text-[#8a9299] hover:text-[#a5cce6]"
               required
             />
           </div>
