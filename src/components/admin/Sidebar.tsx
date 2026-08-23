@@ -11,9 +11,24 @@ const NAV_ITEMS = [
   { href: '/admin/landings', icon: 'rocket_launch',  label: 'Landings'    },
   { href: '/admin/funnel',   icon: 'filter_alt',     label: 'Embudo'      },
   { href: '/admin/bold',     icon: 'payments',       label: 'Ventas Bold' },
-  { href: '/admin/settings', icon: 'settings',       label: 'Configuración' },
-  { href: '/admin/account',  icon: 'person',         label: 'Mi cuenta'   },
 ]
+
+const DRAWER_ITEMS = [
+  { href: '/admin/account',  icon: 'person',   label: 'Mi cuenta'     },
+  { href: '/admin/settings', icon: 'settings', label: 'Configuración' },
+]
+
+function navLinkClass(isActive: boolean) {
+  return `flex items-center gap-3 px-4 py-3 min-h-11 rounded transition-all duration-200 ${
+    isActive
+      ? 'bg-primary/10 text-primary border border-primary/20'
+      : 'text-on-surface/70 hover:bg-surface-variant hover:text-on-surface'
+  }`
+}
+
+function isNavActive(pathname: string, href: string) {
+  return href === '/admin' ? pathname === '/admin' : pathname.startsWith(href)
+}
 
 
 export default function Sidebar() {
@@ -113,10 +128,7 @@ export default function Sidebar() {
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto py-6 px-4 flex flex-col gap-2">
           {NAV_ITEMS.map((item) => {
-            // Match exact for /admin, match prefix for others
-            const isActive = item.href === '/admin' 
-              ? pathname === '/admin' 
-              : pathname.startsWith(item.href)
+            const isActive = isNavActive(pathname, item.href)
 
             return (
               <Link
@@ -124,11 +136,7 @@ export default function Sidebar() {
                 href={item.href}
                 onClick={() => setIsMobileOpen(false)}
                 aria-current={isActive ? 'page' : undefined}
-                className={`flex items-center gap-3 px-4 py-3 min-h-11 rounded transition-all duration-200 ${
-                  isActive 
-                    ? 'bg-primary/10 text-primary border border-primary/20' 
-                    : 'text-on-surface/70 hover:bg-surface-variant hover:text-on-surface'
-                }`}
+                className={navLinkClass(isActive)}
               >
                 <span className="material-symbols-outlined text-[20px]" aria-hidden="true">{item.icon}</span>
                 <span className="font-label text-sm tracking-wide">{item.label}</span>
@@ -137,8 +145,23 @@ export default function Sidebar() {
           })}
         </nav>
 
-        {/* Footer / Logout */}
-        <div className="p-4 border-t border-outline-variant/20">
+        {/* Account, app settings, logout */}
+        <div className="p-4 border-t border-outline-variant/20 flex flex-col gap-2">
+          {DRAWER_ITEMS.map((item) => {
+            const isActive = isNavActive(pathname, item.href)
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setIsMobileOpen(false)}
+                aria-current={isActive ? 'page' : undefined}
+                className={navLinkClass(isActive)}
+              >
+                <span className="material-symbols-outlined text-[20px]" aria-hidden="true">{item.icon}</span>
+                <span className="font-label text-sm tracking-wide">{item.label}</span>
+              </Link>
+            )
+          })}
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-4 py-3 min-h-11 rounded text-error/80 hover:bg-error/10 hover:text-error transition-all duration-200"
