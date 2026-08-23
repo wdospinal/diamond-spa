@@ -14,7 +14,7 @@ export default function GoogleAdsFeedModal({ onClose }: { onClose: () => void })
       id: 'qualified',
       title: 'Feed para "Lead Cualificado"',
       subtitle: 'Conecta esta URL a la acción de conversión "Lead Cualificado" en Google Ads.',
-      url: `${origin}/api/admin/bookings/export/conversions.csv?type=qualified`,
+      url: `${origin}/api/admin/bookings/export/qualified.csv`,
       tagColor: 'text-[#a855f7] bg-[#a855f7]/10 border-[#a855f7]/30',
       badge: 'Etapa 2-4',
     },
@@ -22,7 +22,7 @@ export default function GoogleAdsFeedModal({ onClose }: { onClose: () => void })
       id: 'converted',
       title: 'Feed para "Reserva Confirmada Offline"',
       subtitle: 'Conecta esta URL a la acción de conversión "Reserva Confirmada Offline" en Google Ads.',
-      url: `${origin}/api/admin/bookings/export/conversions.csv?type=converted`,
+      url: `${origin}/api/admin/bookings/export/converted.csv`,
       tagColor: 'text-[#22c55e] bg-[#22c55e]/10 border-[#22c55e]/30',
       badge: 'Etapa 4',
     },
@@ -187,7 +187,7 @@ export default function GoogleAdsFeedModal({ onClose }: { onClose: () => void })
               ¿Qué hace Google con estos datos?
             </div>
             <p className="text-[11px] text-[#8a9299] leading-relaxed">
-              Google Ads se conectará por HTTPS a este archivo <code>conversions.csv</code> de forma segura y leerá automáticamente las conversiones tanto de <strong>GCLID</strong> (matching exacto) como de <strong>Enhanced Conversions</strong> (teléfono normalizado), excluyendo cualquier tráfico orgánico no relacionado.
+              Google Ads se conectará por HTTPS a este archivo de forma segura y leerá automáticamente las conversiones tanto de <strong>GCLID</strong> (matching exacto) como de <strong>Enhanced Conversions</strong> (teléfono y email, normalizados y encriptados con SHA-256 antes de enviarse — nunca en texto plano), excluyendo cualquier tráfico orgánico no relacionado.
             </p>
           </div>
         </div>
