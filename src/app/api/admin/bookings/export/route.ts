@@ -75,9 +75,14 @@ function normalizeE164(phone: string): string {
 }
 
 function checkAuth(req: NextRequest, queryKey?: string | null): boolean {
+  // Deliberately NOT falling back to ADMIN_SESSION_SECRET here — that
+  // variable already has a real, different value in production (it signs
+  // the normal /admin/login session cookie), so using it as a fallback
+  // silently overrides the password shared with Google Ads and makes every
+  // login attempt with the documented password fail. This feed's password
+  // must come only from its own dedicated env var, or the hardcoded default.
   const validSecret =
     process.env.GOOGLE_ADS_EXPORT_SECRET?.trim() ||
-    process.env.ADMIN_SESSION_SECRET?.trim() ||
     'NbhB7rO30CBMoDNdhfzvV1mfS12juTxT'
 
   const adminUser = process.env.ADMIN_USERNAME?.trim() || 'admin'
