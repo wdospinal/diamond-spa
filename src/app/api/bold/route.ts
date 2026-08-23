@@ -73,7 +73,9 @@ async function requireAdmin(): Promise<boolean> {
 /**
  * Resumen mensual de los cierres de Bold. Admin-only, igual que /api/funnel.
  *
- * Query: ?months=N (por defecto 12, máx 36). Devuelve la serie mensual completa
+ * Query: ?months=N (por defecto 12, máx 36), y opcionalmente
+ * ?from=YYYY-MM-DD&to=YYYY-MM-DD para filtrar el heatmap y la tabla.
+ * Devuelve la serie mensual completa
  * (con los meses sin ventas en cero, para que la línea de crecimiento no salte),
  * el mes actual, el anterior, y la comparación "a la misma altura del mes"
  * (MTD) — comparar un mes a medias contra uno completo engaña.
@@ -87,11 +89,32 @@ export async function GET(req: NextRequest) {
   const monthCount = Math.min(Math.max(Number.isFinite(monthsParam) ? monthsParam : 12, 2), 36)
 
   const today = bogotaToday()
+  const requestedFrom = req.nextUrl.searchParams.get('from')
+  const requestedTo = req.nextUrl.searchParams.get('to')
+  const dayPattern = /^\d{4}-\d{2}-\d{2}$/
+  const hasCustomRange = requestedFrom !== null || requestedTo !== null
+  if (
+    hasCustomRange &&
+    (!requestedFrom ||
+      !requestedTo ||
+      !dayPattern.test(requestedFrom) ||
+      !dayPattern.test(requestedTo) ||
+      requestedFrom > requestedTo ||
+      requestedTo > today)
+  ) {
+    return NextResponse.json({ error: 'Rango de fechas inválido' }, { status: 400 })
+  }
+
   const currentMonth = today.slice(0, 7)
   const dayOfMonth = Number(today.slice(8, 10))
   const firstMonth = shiftMonth(currentMonth, -(monthCount - 1))
+  const rangeStart = requestedFrom ?? `${firstMonth}-01`
+  const rangeEnd = requestedTo ?? today
+  // Los KPIs mensuales aún necesitan el mes anterior/actual aunque el filtro
+  // personalizado empiece después.
+  const readFrom = rangeStart < `${firstMonth}-01` ? rangeStart : `${firstMonth}-01`
 
-  const closings = await readClosings(`${firstMonth}-01`)
+  const closings = await readClosings(readFrom)
 
   const byMonth = new Map<string, BoldMonth>()
   const byDay = new Map<string, BoldDay>()
@@ -103,6 +126,7 @@ export async function GET(req: NextRequest) {
     const monthAcc = byMonth.get(c.day.slice(0, 7))
     if (monthAcc) accumulate(monthAcc, c)
 
+    if (c.day < rangeStart || c.day > rangeEnd) continue
     let dayAcc = byDay.get(c.day)
     if (!dayAcc) {
       dayAcc = emptyDay(c.day)
@@ -127,13 +151,18 @@ export async function GET(req: NextRequest) {
     today,
     currentMonth,
     previousMonth,
+    rangeStart,
+    rangeEnd,
     months: [...byMonth.values()],
     current: byMonth.get(currentMonth) ?? emptyMonth(currentMonth),
     previous: byMonth.get(previousMonth) ?? emptyMonth(previousMonth),
     mtd: { dayOfMonth, current: mtdCurrent, previous: mtdPrevious },
-    // Cierres individuales del mes (tabla de turnos).
-    days: closings.filter(c => c.day.startsWith(currentMonth)),
-    // Totales por día en todo el rango (heatmap de intensidad).
+    // Sin filtro, la tabla conserva su vista compacta del mes actual.
+    // Con filtro, muestra todos los cierres del rango solicitado.
+    days: closings.filter(c =>
+      hasCustomRange ? c.day >= rangeStart && c.day <= rangeEnd : c.day.startsWith(currentMonth),
+    ),
+    // Totales por día del rango (heatmap de intensidad).
     daily: [...byDay.values()].sort((a, b) => a.day.localeCompare(b.day)),
   })
 }

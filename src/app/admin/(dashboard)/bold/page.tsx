@@ -40,6 +40,8 @@ type BoldResponse = {
   today: string
   currentMonth: string
   previousMonth: string
+  rangeStart: string
+  rangeEnd: string
   months: BoldMonth[]
   current: BoldMonth
   previous: BoldMonth
@@ -212,18 +214,16 @@ function GrowthChart({ months }: { months: BoldMonth[] }) {
  */
 function IncomeHeatmap({
   daily,
-  today,
-  monthCount,
+  rangeStart,
+  rangeEnd,
 }: {
   daily: BoldDay[]
-  today: string
-  monthCount: number
+  rangeStart: string
+  rangeEnd: string
 }) {
   const { weeks, monthTicks, activeDays, maxGross, levelOf } = useMemo(() => {
     const byDay = new Map(daily.map(d => [d.day, d.grossCop]))
-    const end = parseDay(today)
-    const start = new Date(end)
-    start.setUTCMonth(start.getUTCMonth() - (monthCount - 1), 1)
+    const start = parseDay(rangeStart)
     // Alinear al domingo (columnas = semanas), como GitHub.
     start.setUTCDate(start.getUTCDate() - start.getUTCDay())
 
@@ -239,10 +239,10 @@ function IncomeHeatmap({
       week.push({
         day: iso,
         gross: byDay.get(iso) ?? 0,
-        future: iso > today,
+        future: iso > rangeEnd,
       })
       cursor.setUTCDate(cursor.getUTCDate() + 1)
-      if (iso >= today && week.length === 7) break
+      if (iso >= rangeEnd && week.length === 7) break
       if (weeks.length > 110) break
     }
 
@@ -274,7 +274,7 @@ function IncomeHeatmap({
     })
 
     return { weeks, monthTicks, activeDays, maxGross, levelOf }
-  }, [daily, today, monthCount])
+  }, [daily, rangeEnd, rangeStart])
 
   const dayNames = ['', 'lun', '', 'mié', '', 'vie', '']
 
@@ -283,8 +283,8 @@ function IncomeHeatmap({
       <div className="flex items-baseline justify-between gap-4 mb-4">
         <p className="font-body text-sm text-[#cfe5fa]">
           <span className="font-headline text-lg tabular-nums">{activeDays}</span>
-          {activeDays === 1 ? ' día con ventas' : ' días con ventas'} en los últimos {monthCount}{' '}
-          meses
+          {activeDays === 1 ? ' día con ventas' : ' días con ventas'} entre {dayLabel(rangeStart)} y{' '}
+          {dayLabel(rangeEnd)}
         </p>
         {maxGross > 0 ? (
           <p className="text-[11px] text-[#5c656d] font-body shrink-0">Máx. día: {fmtCop(maxGross)}</p>
@@ -390,12 +390,20 @@ export default function BoldDashboardPage() {
   const [busy, setBusy] = useState<'sync' | 'paste' | null>(null)
   const [pasteOpen, setPasteOpen] = useState(false)
   const [pasteText, setPasteText] = useState('')
+  const [fromDate, setFromDate] = useState('')
+  const [toDate, setToDate] = useState('')
+  const [appliedRange, setAppliedRange] = useState<{ from: string; to: string } | null>(null)
 
   const load = useCallback(
-    async (n: number) => {
+    async (n: number, range: { from: string; to: string } | null) => {
       setError('')
       try {
-        const res = await fetch(`/api/bold?months=${n}`, { credentials: 'same-origin' })
+        const params = new URLSearchParams({ months: String(n) })
+        if (range) {
+          params.set('from', range.from)
+          params.set('to', range.to)
+        }
+        const res = await fetch(`/api/bold?${params.toString()}`, { credentials: 'same-origin' })
         if (res.status === 401) {
           replace('/admin/login')
           return
@@ -415,8 +423,32 @@ export default function BoldDashboardPage() {
   )
 
   useEffect(() => {
-    void load(months)
-  }, [load, months])
+    void load(months, appliedRange)
+  }, [appliedRange, load, months])
+
+  const applyDateRange = () => {
+    if (!fromDate || !toDate) {
+      setError('Selecciona la fecha inicial y la fecha final.')
+      return
+    }
+    if (fromDate > toDate) {
+      setError('La fecha inicial no puede ser posterior a la fecha final.')
+      return
+    }
+    if (data && toDate > data.today) {
+      setError('La fecha final no puede estar en el futuro.')
+      return
+    }
+    setError('')
+    setAppliedRange({ from: fromDate, to: toDate })
+  }
+
+  const clearDateRange = () => {
+    setFromDate('')
+    setToDate('')
+    setError('')
+    setAppliedRange(null)
+  }
 
   const syncNow = async () => {
     setBusy('sync')
@@ -447,7 +479,7 @@ export default function BoldDashboardPage() {
           ...(body.ignoredCount ? [`otros correos de Bold: ${body.ignoredCount}`] : []),
         ].join(' · '),
       )
-      await load(months)
+      await load(months, appliedRange)
     } catch {
       setError('Error de red al sincronizar.')
     } finally {
@@ -486,7 +518,7 @@ export default function BoldDashboardPage() {
       )
       setPasteText('')
       setPasteOpen(false)
-      await load(months)
+      await load(months, appliedRange)
     } catch {
       setError('Error de red al registrar el cierre.')
     } finally {
@@ -540,6 +572,65 @@ export default function BoldDashboardPage() {
         </div>
       </header>
 
+      <section className="border border-[#42484c]/40 bg-[#0a2438]/35 p-4 sm:p-5 mb-6">
+        <div className="flex flex-col lg:flex-row lg:items-end gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 flex-1">
+            <label className="block">
+              <span className="block font-label text-[10px] uppercase tracking-[0.2em] text-[#8a9299] mb-2">
+                Desde
+              </span>
+              <input
+                type="date"
+                value={fromDate}
+                max={toDate || data?.today}
+                onChange={e => setFromDate(e.target.value)}
+                className="w-full min-h-11 bg-[#001524] border border-[#42484c]/50 px-3 text-sm text-[#cfe5fa] font-body [color-scheme:dark] focus:outline-none focus:border-[#a5cce6]/60"
+              />
+            </label>
+            <label className="block">
+              <span className="block font-label text-[10px] uppercase tracking-[0.2em] text-[#8a9299] mb-2">
+                Hasta
+              </span>
+              <input
+                type="date"
+                value={toDate}
+                min={fromDate || undefined}
+                max={data?.today}
+                onChange={e => setToDate(e.target.value)}
+                className="w-full min-h-11 bg-[#001524] border border-[#42484c]/50 px-3 text-sm text-[#cfe5fa] font-body [color-scheme:dark] focus:outline-none focus:border-[#a5cce6]/60"
+              />
+            </label>
+          </div>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={applyDateRange}
+              className="flex-1 lg:flex-none min-h-11 px-5 bg-[#1a3d52] text-[#cfe5fa] font-label text-[10px] uppercase tracking-[0.15em] hover:bg-[#24516a] transition-colors cursor-pointer"
+            >
+              Aplicar filtro
+            </button>
+            {appliedRange ? (
+              <button
+                type="button"
+                onClick={clearDateRange}
+                className="flex-1 lg:flex-none min-h-11 px-4 border border-[#42484c]/50 text-[#8a9299] font-label text-[10px] uppercase tracking-[0.15em] hover:bg-[#0a2438] transition-colors cursor-pointer"
+              >
+                Limpiar
+              </button>
+            ) : null}
+          </div>
+        </div>
+        {appliedRange ? (
+          <p className="text-[11px] text-[#7fc9a6] font-body mt-3">
+            Mostrando cierres del {dayLabel(appliedRange.from)} al {dayLabel(appliedRange.to)}
+          </p>
+        ) : (
+          <p className="text-[11px] text-[#5c656d] font-body mt-3">
+            Filtra la gráfica diaria y la tabla de cierres por un rango específico.
+          </p>
+        )}
+      </section>
+
       {error ? (
         <p className="text-red-400/90 font-body mb-6" role="alert">
           {error}
@@ -582,7 +673,11 @@ export default function BoldDashboardPage() {
           Intensidad de ingresos por día
         </h2>
         {data && data.daily.length > 0 ? (
-          <IncomeHeatmap daily={data.daily} today={data.today} monthCount={months} />
+          <IncomeHeatmap
+            daily={data.daily}
+            rangeStart={data.rangeStart}
+            rangeEnd={data.rangeEnd}
+          />
         ) : (
           <p className="py-10 text-center text-[#8a9299] font-body text-sm">
             Aún no hay cierres para graficar. Sincroniza el buzón o pega un correo de Bold.
@@ -652,7 +747,9 @@ export default function BoldDashboardPage() {
 
       <section>
         <h2 className="font-label text-xs uppercase tracking-[0.25em] text-[#8a9299] mb-4">
-          Cierres de {data ? monthLabel(data.currentMonth) : 'este mes'}
+          {appliedRange
+            ? `Cierres del ${dayLabel(appliedRange.from)} al ${dayLabel(appliedRange.to)}`
+            : `Cierres de ${data ? monthLabel(data.currentMonth) : 'este mes'}`}
         </h2>
         {closings.length > 0 ? (
           <>
