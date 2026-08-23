@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { href: '/admin/blog',     icon: 'article',        label: 'Blog'        },
   { href: '/admin/landings', icon: 'rocket_launch',  label: 'Landings'    },
   { href: '/admin/funnel',   icon: 'filter_alt',     label: 'Embudo'      },
+  { href: '/admin/bold',     icon: 'payments',       label: 'Ventas Bold' },
   { href: '/admin/settings', icon: 'settings',       label: 'Configuración' },
 ]
 

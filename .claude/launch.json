@@ -4,9 +4,32 @@
     {
       "name": "dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 3000,
       "autoPort": true
+    },
+    {
+      "name": "dev-sin-supabase",
+      "runtimeExecutable": "env",
+      "runtimeArgs": [
+        "SUPABASE_URL=",
+        "NEXT_PUBLIC_SUPABASE_URL=",
+        "SUPABASE_SERVICE_ROLE_KEY=",
+        "KV_REST_API_URL=",
+        "KV_REST_API_TOKEN=",
+        "UPSTASH_REDIS_REST_URL=",
+        "UPSTASH_REDIS_REST_TOKEN=",
+        "npm",
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "3100"
+      ],
+      "port": 3100
     }
   ]
 }

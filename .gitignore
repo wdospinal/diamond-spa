@@ -41,3 +41,5 @@ next-env.d.ts
 /data/funnel-daily.json
 # web-push subscriptions fallback (local / self-hosted; prod uses Vercel KV) — contains user device keys, never commit
 /data/push-subs.json
+# cierres de Bold fallback (local / self-hosted; prod usa Supabase o KV)
+/data/bold-closings.json

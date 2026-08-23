@@ -1,0 +1,468 @@
+'use client'
+
+import { useCallback, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+
+type BoldMonth = {
+  month: string
+  grossCop: number
+  closingCop: number
+  transactions: number
+  refundsCop: number
+  refundCount: number
+  closings: number
+}
+
+type BoldClosing = {
+  id: string
+  day: string
+  grossCop: number
+  closingCop: number
+  transactions: number
+  refundsCop: number
+  refundCount: number
+  fromLabel: string
+  toLabel: string
+  source: 'imap' | 'manual'
+}
+
+type BoldResponse = {
+  today: string
+  currentMonth: string
+  previousMonth: string
+  months: BoldMonth[]
+  current: BoldMonth
+  previous: BoldMonth
+  mtd: { dayOfMonth: number; current: BoldMonth; previous: BoldMonth }
+  days: BoldClosing[]
+}
+
+const RANGES = [6, 12, 24]
+
+const COP = new Intl.NumberFormat('es-CO', {
+  style: 'currency',
+  currency: 'COP',
+  maximumFractionDigits: 0,
+})
+const COP_COMPACT = new Intl.NumberFormat('es-CO', { notation: 'compact', maximumFractionDigits: 1 })
+
+function fmtCop(n: number): string {
+  return COP.format(n || 0)
+}
+
+/** 'YYYY-MM' → 'ago 26'. */
+function monthLabel(month: string): string {
+  const [y, m] = month.split('-')
+  const name = new Intl.DateTimeFormat('es-CO', { month: 'short', timeZone: 'UTC' })
+    .format(new Date(Date.UTC(Number(y), Number(m) - 1, 1)))
+    .replace('.', '')
+  return `${name} ${y.slice(2)}`
+}
+
+function fmtDelta(current: number, previous: number): { text: string; tone: string } {
+  if (!previous) return { text: current ? 'sin base de comparación' : '—', tone: 'text-[#8a9299]' }
+  const pct = ((current - previous) / previous) * 100
+  const sign = pct >= 0 ? '+' : '−'
+  return {
+    text: `${sign}${Math.abs(pct).toFixed(Math.abs(pct) >= 10 ? 0 : 1)}%`,
+    tone: pct >= 0 ? 'text-[#7fc9a6]' : 'text-[#c97b63]',
+  }
+}
+
+/**
+ * Línea de crecimiento mes a mes. SVG a mano: el proyecto no tiene librería de
+ * gráficos (la página del embudo también dibuja sus barras a mano) y así no se
+ * añade una dependencia por un solo gráfico.
+ */
+function GrowthChart({ months }: { months: BoldMonth[] }) {
+  const W = 720
+  const H = 240
+  const padX = 44
+  const padTop = 18
+  const padBottom = 34
+
+  const values = months.map(m => m.grossCop)
+  const max = Math.max(...values, 1)
+  const scaleMax = max * 1.15
+  const stepX = months.length > 1 ? (W - padX * 2) / (months.length - 1) : 0
+  const x = (i: number) => padX + i * stepX
+  const y = (v: number) => H - padBottom - (v / scaleMax) * (H - padTop - padBottom)
+
+  const points = months.map((m, i) => `${x(i)},${y(m.grossCop)}`).join(' ')
+  const area = `${padX},${H - padBottom} ${points} ${x(months.length - 1)},${H - padBottom}`
+  // Con muchos meses las etiquetas se solapan: se muestra una de cada dos.
+  const labelEvery = months.length > 14 ? 2 : 1
+  const gridValues = [0.25, 0.5, 0.75, 1].map(f => scaleMax * f)
+
+  return (
+    <div className="overflow-x-auto">
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        className="w-full min-w-[520px] h-auto"
+        role="img"
+        aria-label="Ventas de Bold por mes"
+      >
+        <defs>
+          <linearGradient id="boldArea" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#a5cce6" stopOpacity="0.25" />
+            <stop offset="100%" stopColor="#a5cce6" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+
+        {gridValues.map(v => (
+          <g key={v}>
+            <line x1={padX} x2={W - padX} y1={y(v)} y2={y(v)} stroke="#42484c" strokeOpacity="0.35" />
+            <text x={4} y={y(v) + 4} fill="#5c656d" fontSize="10">
+              {COP_COMPACT.format(v)}
+            </text>
+          </g>
+        ))}
+
+        <polygon points={area} fill="url(#boldArea)" />
+        <polyline points={points} fill="none" stroke="#a5cce6" strokeWidth="2" strokeLinejoin="round" />
+
+        {months.map((m, i) => (
+          <g key={m.month}>
+            <circle
+              cx={x(i)}
+              cy={y(m.grossCop)}
+              r={i === months.length - 1 ? 5 : 3}
+              fill={i === months.length - 1 ? '#cfe5fa' : '#a5cce6'}
+            />
+            <title>{`${monthLabel(m.month)}: ${fmtCop(m.grossCop)}`}</title>
+            {i % labelEvery === 0 || i === months.length - 1 ? (
+              <text x={x(i)} y={H - 12} fill="#8a9299" fontSize="10" textAnchor="middle">
+                {monthLabel(m.month)}
+              </text>
+            ) : null}
+          </g>
+        ))}
+      </svg>
+    </div>
+  )
+}
+
+function Kpi({
+  label,
+  value,
+  hint,
+  tone = 'text-[#cfe5fa]',
+}: {
+  label: string
+  value: string
+  hint?: string
+  tone?: string
+}) {
+  return (
+    <div className="border border-[#42484c]/40 rounded-sm p-4 sm:p-5 bg-[#0a2438]/40">
+      <p className="font-label text-[10px] uppercase tracking-[0.2em] text-[#8a9299]">{label}</p>
+      <p className={`font-headline text-2xl sm:text-3xl mt-2 tabular-nums ${tone}`}>{value}</p>
+      {hint ? <p className="text-[11px] text-[#5c656d] font-body mt-1.5 leading-snug">{hint}</p> : null}
+    </div>
+  )
+}
+
+export default function BoldDashboardPage() {
+  const { replace } = useRouter()
+  const [months, setMonths] = useState(12)
+  const [data, setData] = useState<BoldResponse | null | undefined>(undefined)
+  const [error, setError] = useState('')
+  const [notice, setNotice] = useState('')
+  const [busy, setBusy] = useState<'sync' | 'paste' | null>(null)
+  const [pasteOpen, setPasteOpen] = useState(false)
+  const [pasteText, setPasteText] = useState('')
+
+  const load = useCallback(
+    async (n: number) => {
+      setError('')
+      try {
+        const res = await fetch(`/api/bold?months=${n}`, { credentials: 'same-origin' })
+        if (res.status === 401) {
+          replace('/admin/login')
+          return
+        }
+        if (!res.ok) {
+          setError('No se pudieron cargar los cierres de Bold.')
+          setData(null)
+          return
+        }
+        setData((await res.json()) as BoldResponse)
+      } catch {
+        setError('Error de red')
+        setData(null)
+      }
+    },
+    [replace],
+  )
+
+  useEffect(() => {
+    void load(months)
+  }, [load, months])
+
+  const syncNow = async () => {
+    setBusy('sync')
+    setNotice('')
+    setError('')
+    try {
+      const res = await fetch('/api/bold/sync', { method: 'POST', credentials: 'same-origin' })
+      const body = (await res.json()) as { error?: string; scanned?: number; inserted?: number; skipped?: number }
+      if (res.status === 401) {
+        replace('/admin/login')
+        return
+      }
+      if (!res.ok) {
+        setError(body.error ?? 'No se pudo sincronizar.')
+        return
+      }
+      setNotice(
+        `Correos revisados: ${body.scanned ?? 0} · cierres nuevos: ${body.inserted ?? 0} · ya registrados: ${body.skipped ?? 0}`,
+      )
+      await load(months)
+    } catch {
+      setError('Error de red al sincronizar.')
+    } finally {
+      setBusy(null)
+    }
+  }
+
+  const submitPaste = async () => {
+    setBusy('paste')
+    setNotice('')
+    setError('')
+    try {
+      const res = await fetch('/api/bold', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: pasteText }),
+      })
+      const body = (await res.json()) as { error?: string; inserted?: number; closing?: BoldClosing }
+      if (res.status === 401) {
+        replace('/admin/login')
+        return
+      }
+      if (!res.ok) {
+        setError(body.error ?? 'No se pudo registrar el cierre.')
+        return
+      }
+      setNotice(
+        body.inserted
+          ? `Cierre del ${body.closing?.day} registrado: ${fmtCop(body.closing?.grossCop ?? 0)}`
+          : `Ese cierre (${body.closing?.day}) ya estaba registrado.`,
+      )
+      setPasteText('')
+      setPasteOpen(false)
+      await load(months)
+    } catch {
+      setError('Error de red al registrar el cierre.')
+    } finally {
+      setBusy(null)
+    }
+  }
+
+  if (data === undefined && !error) {
+    return (
+      <div className="min-h-[40vh] flex items-center justify-center font-body text-[#8a9299]">
+        Cargando…
+      </div>
+    )
+  }
+
+  const current = data?.current
+  const previous = data?.previous
+  const mtd = data?.mtd
+  const series = data?.months ?? []
+  const hasData = series.some(m => m.grossCop > 0)
+  const monthDelta = fmtDelta(current?.grossCop ?? 0, previous?.grossCop ?? 0)
+  const mtdDelta = fmtDelta(mtd?.current.grossCop ?? 0, mtd?.previous.grossCop ?? 0)
+  const ticket = current && current.transactions > 0 ? current.grossCop / current.transactions : 0
+
+  return (
+    <div className="max-w-5xl mx-auto">
+      <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-8 md:mb-10">
+        <div>
+          <h1 className="font-headline text-3xl md:text-4xl text-[#cfe5fa]">Ventas Bold</h1>
+          {data ? (
+            <p className="text-[11px] text-[#5c656d] font-body mt-2">
+              Cierres del datáfono · {monthLabel(data.currentMonth)} al día {mtd?.dayOfMonth}
+            </p>
+          ) : null}
+        </div>
+        <div className="flex border border-[#42484c]/50 w-full sm:w-auto">
+          {RANGES.map(n => (
+            <button
+              key={n}
+              type="button"
+              onClick={() => setMonths(n)}
+              aria-pressed={months === n}
+              className={`flex-1 sm:flex-initial font-label text-[10px] uppercase tracking-[0.15em] px-4 min-h-11 sm:min-h-0 sm:py-2.5 transition-colors ${
+                months === n ? 'bg-[#1a3d52] text-[#cfe5fa]' : 'text-[#8a9299] hover:bg-[#0a2438]'
+              }`}
+            >
+              {n} meses
+            </button>
+          ))}
+        </div>
+      </header>
+
+      {error ? <p className="text-red-400/90 font-body mb-6">{error}</p> : null}
+      {notice ? <p className="text-[#7fc9a6] font-body text-sm mb-6">{notice}</p> : null}
+
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-10">
+        <Kpi
+          label="Mes actual"
+          value={fmtCop(current?.grossCop ?? 0)}
+          hint={`${current?.transactions ?? 0} transacciones · ${current?.closings ?? 0} cierres`}
+        />
+        <Kpi
+          label={`Mes anterior (${previous ? monthLabel(previous.month) : '—'})`}
+          value={fmtCop(previous?.grossCop ?? 0)}
+          hint={`${previous?.transactions ?? 0} transacciones`}
+        />
+        <Kpi
+          label="Variación"
+          value={monthDelta.text}
+          tone={monthDelta.tone}
+          hint={`A la misma altura del mes (día ${mtd?.dayOfMonth}): ${mtdDelta.text} — ${fmtCop(
+            mtd?.current.grossCop ?? 0,
+          )} vs ${fmtCop(mtd?.previous.grossCop ?? 0)}`}
+        />
+        <Kpi
+          label="Ticket promedio"
+          value={fmtCop(ticket)}
+          hint={
+            current && current.refundsCop > 0
+              ? `Anulaciones del mes: ${fmtCop(current.refundsCop)} (${current.refundCount})`
+              : 'Sin anulaciones este mes'
+          }
+        />
+      </section>
+
+      <section className="bg-[#0a2438] border border-[#42484c]/30 p-4 sm:p-6 mb-10">
+        <h2 className="font-label text-xs uppercase tracking-[0.25em] text-[#8a9299] mb-4">
+          Crecimiento mes a mes
+        </h2>
+        {hasData ? (
+          <GrowthChart months={series} />
+        ) : (
+          <p className="py-12 text-center text-[#8a9299] font-body text-sm">
+            Aún no hay cierres registrados. Sincroniza el buzón o pega un correo de Bold.
+          </p>
+        )}
+      </section>
+
+      <section className="mb-10">
+        <div className="flex flex-wrap items-center gap-3 mb-4">
+          <button
+            type="button"
+            onClick={syncNow}
+            disabled={busy !== null}
+            className="font-label text-[10px] uppercase tracking-[0.15em] px-4 min-h-11 border border-[#42484c]/50 text-[#cfe5fa] hover:bg-[#0a2438] transition-colors disabled:opacity-50"
+          >
+            {busy === 'sync' ? 'Sincronizando…' : 'Sincronizar ahora'}
+          </button>
+          <button
+            type="button"
+            onClick={() => setPasteOpen(o => !o)}
+            aria-expanded={pasteOpen}
+            className="font-label text-[10px] uppercase tracking-[0.15em] px-4 min-h-11 border border-[#42484c]/50 text-[#8a9299] hover:bg-[#0a2438] transition-colors"
+          >
+            Pegar correo de Bold
+          </button>
+        </div>
+        {pasteOpen ? (
+          <div className="border border-[#42484c]/40 rounded-sm p-4">
+            <label htmlFor="bold-paste" className="block font-label text-[10px] uppercase tracking-[0.2em] text-[#8a9299] mb-2">
+              Contenido del correo
+            </label>
+            <textarea
+              id="bold-paste"
+              value={pasteText}
+              onChange={e => setPasteText(e.target.value)}
+              rows={8}
+              placeholder="Pega aquí el correo completo de Bold (texto o HTML)…"
+              className="w-full bg-[#001524] border border-[#42484c]/50 rounded-sm p-3 text-sm text-[#cfe5fa] font-body focus:outline-none focus:border-[#a5cce6]/60"
+            />
+            <button
+              type="button"
+              onClick={submitPaste}
+              disabled={busy !== null || !pasteText.trim()}
+              className="mt-3 font-label text-[10px] uppercase tracking-[0.15em] px-4 min-h-11 bg-[#1a3d52] text-[#cfe5fa] hover:bg-[#1a3d52]/80 transition-colors disabled:opacity-50"
+            >
+              {busy === 'paste' ? 'Registrando…' : 'Registrar cierre'}
+            </button>
+          </div>
+        ) : null}
+      </section>
+
+      <section>
+        <h2 className="font-label text-xs uppercase tracking-[0.25em] text-[#8a9299] mb-4">
+          Cierres de {data ? monthLabel(data.currentMonth) : 'este mes'}
+        </h2>
+        {data && data.days.length > 0 ? (
+          <>
+            {/* Móvil: una tarjeta por cierre — la tabla se saldría de pantalla. */}
+            <ul className="md:hidden flex flex-col gap-2">
+              {[...data.days].reverse().map(c => (
+                <li key={c.id} className="border border-[#42484c]/40 rounded-sm p-4">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <p className="font-label text-[11px] uppercase tracking-[0.2em] text-[#8a9299] tabular-nums">
+                      {c.day}
+                    </p>
+                    <p className="font-headline text-lg text-[#cfe5fa] tabular-nums">{fmtCop(c.grossCop)}</p>
+                  </div>
+                  <p className="text-[11px] text-[#5c656d] font-body mt-1.5">
+                    {c.transactions} transacciones
+                    {c.refundsCop > 0 ? ` · anulaciones ${fmtCop(c.refundsCop)}` : ''}
+                    {c.source === 'manual' ? ' · cargado a mano' : ''}
+                  </p>
+                </li>
+              ))}
+            </ul>
+
+            <div className="hidden md:block overflow-x-auto border border-[#42484c]/40 rounded-sm">
+              <table className="w-full text-left text-sm font-body">
+                <thead>
+                  <tr className="border-b border-[#42484c]/40 text-[#8a9299] font-label text-[10px] uppercase tracking-widest">
+                    <th className="py-3 px-4 font-medium">Día</th>
+                    <th className="py-3 px-4 font-medium">Turno</th>
+                    <th className="py-3 px-4 font-medium text-right">Ventas</th>
+                    <th className="py-3 px-4 font-medium text-right">Transacciones</th>
+                    <th className="py-3 px-4 font-medium text-right">Anulaciones</th>
+                    <th className="py-3 px-4 font-medium text-right">Cierre</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[...data.days].reverse().map(c => (
+                    <tr key={c.id} className="border-b border-[#42484c]/25 text-[#cfe5fa] hover:bg-[#0a2438]/50">
+                      <td className="py-2.5 px-4 whitespace-nowrap tabular-nums">{c.day}</td>
+                      <td className="py-2.5 px-4 text-[#8a9299] text-xs whitespace-nowrap">
+                        {c.fromLabel}{c.toLabel ? ` → ${c.toLabel}` : ''}
+                      </td>
+                      <td className="py-2.5 px-4 text-right tabular-nums">{fmtCop(c.grossCop)}</td>
+                      <td className="py-2.5 px-4 text-right tabular-nums text-[#a5cce6]/90">{c.transactions}</td>
+                      <td className="py-2.5 px-4 text-right tabular-nums text-[#c97b63]/90">
+                        {c.refundsCop > 0 ? fmtCop(c.refundsCop) : '—'}
+                      </td>
+                      <td className="py-2.5 px-4 text-right tabular-nums">{fmtCop(c.closingCop)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        ) : (
+          <div className="border border-[#42484c]/40 rounded-sm py-12 px-6 text-center text-[#8a9299] font-body text-sm">
+            No hay cierres registrados este mes.
+          </div>
+        )}
+      </section>
+
+      <p className="text-[10px] text-[#5c656d] font-body mt-8 max-w-3xl leading-relaxed">
+        Los datos vienen del correo diario de cierre de Bold (no-responder@bold.co), leído del buzón
+        por IMAP una vez al día. Los montos son los del datáfono en pesos: no incluyen ventas
+        cobradas por otros medios. Un día puede tener varios cierres si se programan varios turnos.
+      </p>
+    </div>
+  )
+}
