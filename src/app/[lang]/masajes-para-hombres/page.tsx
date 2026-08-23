@@ -1,50 +1,78 @@
-import Link from 'next/link'
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
-import { getDict, isLocale, type Locale } from '@/lib/i18n'
-import { getMassageServices, serviceDisplayName, serviceShortDesc } from '@/lib/services'
-import { SERVICE_DETAIL_FROM_MASAJES } from '@/lib/service-detail-nav'
-import { getServiceSlug } from '@/lib/services'
-import { buildAlternates, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
-import { JsonLd } from '@/components/JsonLd'
-import { ServiceCardLink } from '@/components/ServiceCardLink'
-import LandingHead from '@/components/LandingHead'
-import { mergeLandingMetadata } from '@/lib/landing-meta'
-import { getFaqCategories, getFaqItems, type FaqCategoryId } from '@/lib/faqs'
+import Link from "next/link";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { getDict, isLocale, type Locale } from "@/lib/i18n";
+import {
+  getMassageServices,
+  serviceDisplayName,
+  serviceShortDesc,
+} from "@/lib/services";
+import { SERVICE_DETAIL_FROM_MASAJES } from "@/lib/service-detail-nav";
+import { getServiceSlug } from "@/lib/services";
+import {
+  buildAlternates,
+  buildOpenGraph,
+  localBusinessJsonLd,
+  faqJsonLd,
+} from "@/lib/seo";
+import { JsonLd } from "@/components/JsonLd";
+import { ServiceCardLink } from "@/components/ServiceCardLink";
+import LandingHead from "@/components/LandingHead";
+import { mergeLandingMetadata } from "@/lib/landing-meta";
+import { getFaqCategories, getFaqItems, type FaqCategoryId } from "@/lib/faqs";
 
-export const revalidate = 3600
+export const revalidate = 3600;
 
 /** Slices of the shared FAQ library that matter to a male visitor. */
+// TODO: move this to the shared library
 const MEN_FAQ_CATEGORIES: readonly FaqCategoryId[] = [
-  'men',
-  'experiences',
-  'booking',
-  'payments',
-  'trust',
-]
+  "men",
+  "experiences",
+  "booking",
+  "payments",
+  "trust",
+];
 
-export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
-  const { lang } = await params
-  const locale = (isLocale(lang) ? lang : 'es') as Locale
-  const { metaTitle: title, metaDesc: description, ogImageAlt: imageAlt } = getDict(locale).masajesParaHombres
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
+  const { lang } = await params;
+  const locale = (isLocale(lang) ? lang : "es") as Locale;
+  const {
+    metaTitle: title,
+    metaDesc: description,
+    ogImageAlt: imageAlt,
+  } = getDict(locale).masajesParaHombres;
   return mergeLandingMetadata(
-    '/masajes-para-hombres',
+    "/masajes-para-hombres",
     locale,
     { title, description },
     {
-      alternates: buildAlternates('/masajes-para-hombres', locale),
-      openGraph: buildOpenGraph({ title, description, path: '/masajes-para-hombres', locale, imageAlt }),
+      alternates: buildAlternates("/masajes-para-hombres", locale),
+      openGraph: buildOpenGraph({
+        title,
+        description,
+        path: "/masajes-para-hombres",
+        locale,
+        imageAlt,
+      }),
     },
-  )
+  );
 }
 
-export default async function MasajesParaHombresPage({ params }: { params: Promise<{ lang: string }> }) {
-  const { lang } = await params
-  if (!isLocale(lang)) notFound()
-  const locale = lang as Locale
-  const p = getDict(locale).masajesParaHombres
-  const massageServices = getMassageServices()
-  const faqCategories = getFaqCategories(locale, MEN_FAQ_CATEGORIES)
+export default async function MasajesParaHombresPage({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}) {
+  const { lang } = await params;
+  if (!isLocale(lang)) notFound();
+  const locale = lang as Locale;
+  const p = getDict(locale).masajesParaHombres;
+  const massageServices = getMassageServices();
+  const faqCategories = getFaqCategories(locale, MEN_FAQ_CATEGORIES);
 
   return (
     <>
@@ -53,7 +81,6 @@ export default async function MasajesParaHombresPage({ params }: { params: Promi
       <LandingHead path="/masajes-para-hombres" locale={locale} />
 
       <main className="max-w-screen-xl mx-auto px-6 md:px-12 pt-32 pb-24">
-
         {/* Hero */}
         <section className="mb-20">
           <p className="font-label text-primary tracking-[0.3em] uppercase text-xs mb-4">
@@ -80,7 +107,10 @@ export default async function MasajesParaHombresPage({ params }: { params: Promi
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {massageServices.map((m) => (
-              <div key={m.id} className="bg-surface-container p-8 flex flex-col gap-4">
+              <div
+                key={m.id}
+                className="bg-surface-container p-8 flex flex-col gap-4"
+              >
                 <h3 className="font-headline text-xl text-on-surface tracking-tighter">
                   {serviceDisplayName(m, locale)}
                 </h3>
@@ -123,7 +153,12 @@ export default async function MasajesParaHombresPage({ params }: { params: Promi
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {p.pillars.map((pillar) => (
               <div key={pillar.icon} className="bg-surface-container p-8">
-                <span className="material-symbols-outlined text-primary text-3xl mb-4 block" aria-hidden="true">{pillar.icon}</span>
+                <span
+                  className="material-symbols-outlined text-primary text-3xl mb-4 block"
+                  aria-hidden="true"
+                >
+                  {pillar.icon}
+                </span>
                 <h3 className="font-headline text-lg text-on-surface tracking-tighter mb-2">
                   {pillar.title}
                 </h3>
@@ -145,18 +180,35 @@ export default async function MasajesParaHombresPage({ params }: { params: Promi
             {faqCategories.map(({ id, icon, label, items }) => (
               <div key={id}>
                 <div className="flex items-center gap-3 mb-4">
-                  <span className="material-symbols-outlined text-primary text-lg shrink-0" aria-hidden="true">{icon}</span>
-                  <h3 className="font-label text-on-surface text-xs tracking-[0.25em] uppercase">{label}</h3>
-                  <span className="h-px flex-1 bg-outline-variant/20" aria-hidden="true" />
+                  <span
+                    className="material-symbols-outlined text-primary text-lg shrink-0"
+                    aria-hidden="true"
+                  >
+                    {icon}
+                  </span>
+                  <h3 className="font-label text-on-surface text-xs tracking-[0.25em] uppercase">
+                    {label}
+                  </h3>
+                  <span
+                    className="h-px flex-1 bg-outline-variant/20"
+                    aria-hidden="true"
+                  />
                 </div>
                 <div className="flex flex-col divide-y divide-outline-variant/20 border-t border-outline-variant/20">
                   {items.map((faq) => (
                     <details key={faq.question} className="group py-5">
                       <summary className="font-label text-on-surface text-sm tracking-wide cursor-pointer list-none flex justify-between items-center gap-4">
                         {faq.question}
-                        <span className="material-symbols-outlined text-primary text-xl shrink-0 group-open:rotate-180 transition-transform" aria-hidden="true">expand_more</span>
+                        <span
+                          className="material-symbols-outlined text-primary text-xl shrink-0 group-open:rotate-180 transition-transform"
+                          aria-hidden="true"
+                        >
+                          expand_more
+                        </span>
                       </summary>
-                      <p className="mt-4 text-zinc-400 font-body text-sm leading-relaxed">{faq.answer}</p>
+                      <p className="mt-4 text-zinc-400 font-body text-sm leading-relaxed">
+                        {faq.answer}
+                      </p>
                     </details>
                   ))}
                 </div>
@@ -180,8 +232,7 @@ export default async function MasajesParaHombresPage({ params }: { params: Promi
             {p.bookMassage}
           </Link>
         </section>
-
       </main>
     </>
-  )
+  );
 }
