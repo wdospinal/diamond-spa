@@ -138,11 +138,16 @@ export default function WhatsAppBridgeModal() {
       })
     }
 
-    // If a phone was provided, save it to the backend asynchronously with keepalive
-    if (fullPhone && fullPhone.length >= 8) {
+    // Save the lead to the backend asynchronously with keepalive — even
+    // without a phone number, so the gclid/adgroup attribution isn't lost
+    // when the visitor uses the "skip" link. Only skip entirely when there's
+    // truly nothing worth keeping (no phone AND no ads attribution at all) —
+    // otherwise this would fill the Kanban with blank, unactionable cards
+    // for fully organic visitors who also skipped the phone step.
+    if (fullPhone || isAds) {
       try {
         const body = JSON.stringify({
-          phone: fullPhone,
+          phone: fullPhone || undefined,
           gclid: gclid || undefined,
           adgroup: adgroup || undefined,
           campaign: campaign || undefined,

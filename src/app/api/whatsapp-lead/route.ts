@@ -30,9 +30,14 @@ export async function POST(req: NextRequest) {
   }
 
   const rawPhone = typeof body.phone === 'string' ? body.phone.trim() : ''
-  const phone = normalizePhone(rawPhone)
+  const phone = rawPhone ? normalizePhone(rawPhone) : ''
 
-  if (!phone || phone.length < 8) {
+  // Phone is optional — if the visitor skipped that step in the bridge modal,
+  // we still record the lead so the gclid/adgroup attribution isn't lost.
+  // Staff can fill in the phone later from the LeadDetailModal in the Kanban
+  // once they get it from the real WhatsApp conversation. If a phone WAS
+  // provided, it still has to look valid.
+  if (rawPhone && (!phone || phone.length < 8)) {
     return NextResponse.json({ error: 'Número de teléfono inválido' }, { status: 400 })
   }
 
@@ -59,7 +64,10 @@ export async function POST(req: NextRequest) {
       duration: 'N/A',
       name,
       phone,
-      requests: campaign ? `Campaña: ${campaign}` : undefined,
+      requests: [
+        campaign ? `Campaña: ${campaign}` : null,
+        !phone ? '⚠ Sin teléfono — el visitante saltó ese paso. Complétalo aquí cuando lo obtengas de la conversación real de WhatsApp.' : null,
+      ].filter(Boolean).join(' · ') || undefined,
       source,
       status: 'pending',
       paymentStatus: 'pending',
@@ -71,9 +79,10 @@ export async function POST(req: NextRequest) {
     if (ensureWebPush()) {
       try {
         const subs = await readSubscriptions()
+        const contactLine = phone ? phone : 'sin número — revisar en el Kanban'
         const payload = JSON.stringify({
           title: '💬 Nuevo Lead de WhatsApp',
-          body: `${name || 'Cliente'} (${phone}) conectó desde ${source === 'ads' ? 'Google Ads' : 'la web'}.`,
+          body: `${name || 'Cliente'} (${contactLine}) conectó desde ${source === 'ads' ? 'Google Ads' : 'la web'}.`,
           icon: '/favicon.png',
         })
 
