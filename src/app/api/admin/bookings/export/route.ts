@@ -156,6 +156,7 @@ export async function handleExport(req: NextRequest, explicitType?: string) {
     conversionCurrency: string
     phoneNumber: string
     email: string
+    transactionId: string
   }
 
   const exportRows: ExportRow[] = []
@@ -205,6 +206,7 @@ export async function handleExport(req: NextRequest, explicitType?: string) {
         conversionCurrency: 'COP',
         phoneNumber: phoneHashed,
         email: emailHashed,
+        transactionId: `${b.id}-qualified`,
       })
     }
 
@@ -220,6 +222,7 @@ export async function handleExport(req: NextRequest, explicitType?: string) {
         conversionCurrency: 'COP',
         phoneNumber: phoneHashed,
         email: emailHashed,
+        transactionId: `${b.id}-converted`,
       })
     }
   }
@@ -232,6 +235,7 @@ export async function handleExport(req: NextRequest, explicitType?: string) {
     'Conversion Currency',
     'Phone Number',
     'Email',
+    'Transaction ID',
   ]
 
   const csvBody = exportRows.map(r =>
@@ -243,6 +247,7 @@ export async function handleExport(req: NextRequest, explicitType?: string) {
       r.conversionCurrency,
       r.phoneNumber,
       r.email,
+      r.transactionId,
     ]
       .map(csvEscape)
       .join(','),
