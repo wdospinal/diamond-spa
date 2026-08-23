@@ -243,7 +243,6 @@ function IncomeHeatmap({
       })
       cursor.setUTCDate(cursor.getUTCDate() + 1)
       if (iso >= today && week.length === 7) break
-      // Tope de seguridad (~2 años de columnas).
       if (weeks.length > 110) break
     }
 
@@ -510,8 +509,7 @@ export default function BoldDashboardPage() {
   const hasData = series.some(m => m.grossCop > 0)
   const monthDelta = fmtDelta(current?.grossCop ?? 0, previous?.grossCop ?? 0)
   const mtdDelta = fmtDelta(mtd?.current.grossCop ?? 0, mtd?.previous.grossCop ?? 0)
-  const ticket =
-    current && current.transactions > 0 ? current.grossCop / current.transactions : 0
+  const ticket = current && current.transactions > 0 ? current.grossCop / current.transactions : 0
   const closings = data ? [...data.days].reverse() : []
 
   return (
