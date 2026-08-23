@@ -167,6 +167,12 @@ export interface FetchOptions {
   from: string
   /** Solo correos recibidos desde esta fecha (inclusive). */
   since: Date
+  /**
+   * Solo correos anteriores a esta fecha (exclusivo, como el BEFORE de IMAP).
+   * Es lo que permite barrer el historial por ventanas: sin un techo, un buzón
+   * con más correos que `limit` devolvería siempre los mismos más recientes.
+   */
+  before?: Date
   /** Tope de correos a descargar en una corrida. Los más recientes primero. */
   limit?: number
   /** Timeout por comando. */
@@ -174,10 +180,21 @@ export interface FetchOptions {
   mailbox?: string
 }
 
+export interface FetchResult {
+  /** Cuántos correos coinciden con el filtro en el buzón. */
+  matched: number
+  /** Los descargados: los `limit` más recientes de entre los que coinciden. */
+  messages: FetchedMessage[]
+}
+
 /**
  * Descarga los correos que coinciden con el filtro. Cierra siempre el socket.
+ *
+ * `matched` puede ser mayor que `messages.length`: significa que la ventana se
+ * truncó y quedaron correos más antiguos sin bajar. Quien llama decide si
+ * estrecha el rango o sube el tope.
  */
-export async function fetchMessages(opts: FetchOptions): Promise<FetchedMessage[]> {
+export async function fetchMessages(opts: FetchOptions): Promise<FetchResult> {
   const conn = imapEnv()
   if (!conn) throw new Error('IMAP no configurado (BOLD_IMAP_HOST / _USER / _PASSWORD)')
 
@@ -200,8 +217,9 @@ export async function fetchMessages(opts: FetchOptions): Promise<FetchedMessage[
     await session.run(`LOGIN ${quote(conn.user)} ${quote(conn.pass)}`, timeoutMs)
     await session.run(`EXAMINE ${quote(opts.mailbox ?? 'INBOX')}`, timeoutMs)
 
+    const window = opts.before ? ` BEFORE ${imapDate(opts.before)}` : ''
     const search = await session.run(
-      `UID SEARCH FROM ${quote(opts.from)} SINCE ${imapDate(opts.since)}`,
+      `UID SEARCH FROM ${quote(opts.from)} SINCE ${imapDate(opts.since)}${window}`,
       timeoutMs,
     )
     const uids = (/^\* SEARCH([\d ]*)/m.exec(search.response)?.[1] ?? '')
@@ -210,7 +228,7 @@ export async function fetchMessages(opts: FetchOptions): Promise<FetchedMessage[
       .filter(Boolean)
     if (uids.length === 0) {
       await session.run('LOGOUT', timeoutMs).catch(() => {})
-      return []
+      return { matched: 0, messages: [] }
     }
 
     // Los más recientes primero: si hay que truncar, se prefiere lo nuevo.
@@ -218,7 +236,7 @@ export async function fetchMessages(opts: FetchOptions): Promise<FetchedMessage[
     const fetched = await session.run(`UID FETCH ${wanted.join(',')} (BODY.PEEK[])`, timeoutMs)
     await session.run('LOGOUT', timeoutMs).catch(() => {})
 
-    return fetched.literals.map((raw, i) => {
+    const messages = fetched.literals.map((raw, i) => {
       const head = raw.slice(0, raw.search(/\r?\n\r?\n/) + 1 || raw.length).replace(/\r?\n[ \t]+/g, ' ')
       const pick = (name: string) =>
         new RegExp(`^${name}:\\s*(.*)$`, 'im').exec(head)?.[1]?.trim() ?? ''
@@ -229,6 +247,7 @@ export async function fetchMessages(opts: FetchOptions): Promise<FetchedMessage[
         raw,
       }
     })
+    return { matched: uids.length, messages }
   } finally {
     socket.destroy()
   }

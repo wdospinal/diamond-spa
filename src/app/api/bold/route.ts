@@ -37,18 +37,32 @@ export interface BoldMonth {
   closings: number
 }
 
+/** Totales de un día natural (varios turnos/cierres se suman). */
+export interface BoldDay {
+  day: string // YYYY-MM-DD
+  grossCop: number
+  closingCop: number
+  transactions: number
+  refundsCop: number
+  refundCount: number
+  closings: number
+}
+
 function emptyMonth(month: string): BoldMonth {
   return { month, grossCop: 0, closingCop: 0, transactions: 0, refundsCop: 0, refundCount: 0, closings: 0 }
 }
 
-function accumulate(acc: BoldMonth, c: BoldClosing): BoldMonth {
+function emptyDay(day: string): BoldDay {
+  return { day, grossCop: 0, closingCop: 0, transactions: 0, refundsCop: 0, refundCount: 0, closings: 0 }
+}
+
+function accumulate(acc: BoldMonth | BoldDay, c: BoldClosing): void {
   acc.grossCop += c.grossCop
   acc.closingCop += c.closingCop
   acc.transactions += c.transactions
   acc.refundsCop += c.refundsCop
   acc.refundCount += c.refundCount
   acc.closings += 1
-  return acc
 }
 
 async function requireAdmin(): Promise<boolean> {
@@ -80,13 +94,21 @@ export async function GET(req: NextRequest) {
   const closings = await readClosings(`${firstMonth}-01`)
 
   const byMonth = new Map<string, BoldMonth>()
+  const byDay = new Map<string, BoldDay>()
   for (let i = 0; i < monthCount; i++) {
     const m = shiftMonth(firstMonth, i)
     byMonth.set(m, emptyMonth(m))
   }
   for (const c of closings) {
-    const acc = byMonth.get(c.day.slice(0, 7))
-    if (acc) accumulate(acc, c)
+    const monthAcc = byMonth.get(c.day.slice(0, 7))
+    if (monthAcc) accumulate(monthAcc, c)
+
+    let dayAcc = byDay.get(c.day)
+    if (!dayAcc) {
+      dayAcc = emptyDay(c.day)
+      byDay.set(c.day, dayAcc)
+    }
+    accumulate(dayAcc, c)
   }
 
   const previousMonth = shiftMonth(currentMonth, -1)
@@ -109,7 +131,10 @@ export async function GET(req: NextRequest) {
     current: byMonth.get(currentMonth) ?? emptyMonth(currentMonth),
     previous: byMonth.get(previousMonth) ?? emptyMonth(previousMonth),
     mtd: { dayOfMonth, current: mtdCurrent, previous: mtdPrevious },
+    // Cierres individuales del mes (tabla de turnos).
     days: closings.filter(c => c.day.startsWith(currentMonth)),
+    // Totales por día en todo el rango (heatmap de intensidad).
+    daily: [...byDay.values()].sort((a, b) => a.day.localeCompare(b.day)),
   })
 }
 

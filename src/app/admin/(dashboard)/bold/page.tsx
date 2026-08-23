@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 type BoldMonth = {
@@ -26,6 +26,16 @@ type BoldClosing = {
   source: 'imap' | 'manual'
 }
 
+type BoldDay = {
+  day: string
+  grossCop: number
+  closingCop: number
+  transactions: number
+  refundsCop: number
+  refundCount: number
+  closings: number
+}
+
 type BoldResponse = {
   today: string
   currentMonth: string
@@ -35,32 +45,88 @@ type BoldResponse = {
   previous: BoldMonth
   mtd: { dayOfMonth: number; current: BoldMonth; previous: BoldMonth }
   days: BoldClosing[]
+  daily: BoldDay[]
 }
 
 const RANGES = [6, 12, 24]
+
+/** Escala estilo GitHub: 0 vacío → 4 máximo. */
+const HEAT = ['#161b22', '#0e4429', '#006d32', '#26a641', '#39d353'] as const
 
 const COP = new Intl.NumberFormat('es-CO', {
   style: 'currency',
   currency: 'COP',
   maximumFractionDigits: 0,
 })
-const COP_COMPACT = new Intl.NumberFormat('es-CO', { notation: 'compact', maximumFractionDigits: 1 })
+const COP_COMPACT = new Intl.NumberFormat('es-CO', {
+  notation: 'compact',
+  maximumFractionDigits: 1,
+})
+const DAY_LONG = new Intl.DateTimeFormat('es-CO', {
+  day: 'numeric',
+  month: 'long',
+  timeZone: 'UTC',
+})
+const WEEKDAY_LONG = new Intl.DateTimeFormat('es-CO', {
+  weekday: 'long',
+  timeZone: 'UTC',
+})
+const MONTH_SHORT = new Intl.DateTimeFormat('es-CO', {
+  month: 'short',
+  timeZone: 'UTC',
+})
 
 function fmtCop(n: number): string {
   return COP.format(n || 0)
 }
 
-/** 'YYYY-MM' → 'ago 26'. */
+/** 'YYYY-MM-DD' → Date UTC a mediodía (evita saltos de zona). */
+function parseDay(day: string): Date {
+  const [y, m, d] = day.split('-').map(Number)
+  return new Date(Date.UTC(y!, m! - 1, d!, 12))
+}
+
+function toIsoDay(d: Date): string {
+  return d.toISOString().slice(0, 10)
+}
+
+/** '2026-08-21' → '21 de agosto' */
+function dayLabel(day: string): string {
+  return DAY_LONG.format(parseDay(day))
+}
+
+/** '2026-08-21' → 'viernes' */
+function weekdayLabel(day: string): string {
+  return WEEKDAY_LONG.format(parseDay(day))
+}
+
+/** Extrae la hora de un label Bold ("21 de agosto - 02:20 pm" → "02:20 pm"). */
+function extractTime(label: string): string {
+  const parts = label.split(' - ')
+  return parts.length > 1 ? parts[parts.length - 1]!.trim() : label.trim()
+}
+
+/** Turno: nombre del día + horario. */
+function shiftLabel(c: BoldClosing): string {
+  const weekday = weekdayLabel(c.day)
+  const from = extractTime(c.fromLabel)
+  const to = c.toLabel ? extractTime(c.toLabel) : ''
+  if (from && to) return `${weekday} · ${from} → ${to}`
+  if (from) return `${weekday} · ${from}`
+  return weekday
+}
+
+/** 'YYYY-MM' → 'ago 26' */
 function monthLabel(month: string): string {
   const [y, m] = month.split('-')
-  const name = new Intl.DateTimeFormat('es-CO', { month: 'short', timeZone: 'UTC' })
-    .format(new Date(Date.UTC(Number(y), Number(m) - 1, 1)))
-    .replace('.', '')
-  return `${name} ${y.slice(2)}`
+  const name = MONTH_SHORT.format(new Date(Date.UTC(Number(y), Number(m) - 1, 1))).replace('.', '')
+  return `${name} ${y!.slice(2)}`
 }
 
 function fmtDelta(current: number, previous: number): { text: string; tone: string } {
-  if (!previous) return { text: current ? 'sin base de comparación' : '—', tone: 'text-[#8a9299]' }
+  if (!previous) {
+    return { text: current ? 'sin base de comparación' : '—', tone: 'text-[#8a9299]' }
+  }
   const pct = ((current - previous) / previous) * 100
   const sign = pct >= 0 ? '+' : '−'
   return {
@@ -70,9 +136,8 @@ function fmtDelta(current: number, previous: number): { text: string; tone: stri
 }
 
 /**
- * Línea de crecimiento mes a mes. SVG a mano: el proyecto no tiene librería de
- * gráficos (la página del embudo también dibuja sus barras a mano) y así no se
- * añade una dependencia por un solo gráfico.
+ * Línea mes a mes. SVG a mano: el proyecto no tiene librería de gráficos
+ * (el embudo también dibuja a mano) y así no se añade una dependencia.
  */
 function GrowthChart({ months }: { months: BoldMonth[] }) {
   const W = 720
@@ -90,9 +155,8 @@ function GrowthChart({ months }: { months: BoldMonth[] }) {
 
   const points = months.map((m, i) => `${x(i)},${y(m.grossCop)}`).join(' ')
   const area = `${padX},${H - padBottom} ${points} ${x(months.length - 1)},${H - padBottom}`
-  // Con muchos meses las etiquetas se solapan: se muestra una de cada dos.
   const labelEvery = months.length > 14 ? 2 : 1
-  const gridValues = [0.25, 0.5, 0.75, 1].map(f => scaleMax * f)
+  const grid = [0.25, 0.5, 0.75, 1].map(f => scaleMax * f)
 
   return (
     <div className="overflow-x-auto">
@@ -109,7 +173,7 @@ function GrowthChart({ months }: { months: BoldMonth[] }) {
           </linearGradient>
         </defs>
 
-        {gridValues.map(v => (
+        {grid.map(v => (
           <g key={v}>
             <line x1={padX} x2={W - padX} y1={y(v)} y2={y(v)} stroke="#42484c" strokeOpacity="0.35" />
             <text x={4} y={y(v) + 4} fill="#5c656d" fontSize="10">
@@ -138,6 +202,162 @@ function GrowthChart({ months }: { months: BoldMonth[] }) {
           </g>
         ))}
       </svg>
+    </div>
+  )
+}
+
+/**
+ * Heatmap estilo GitHub: cada celda es un día; el verde mide qué tan altas
+ * fueron las ventas respecto al máximo del rango seleccionado.
+ */
+function IncomeHeatmap({
+  daily,
+  today,
+  monthCount,
+}: {
+  daily: BoldDay[]
+  today: string
+  monthCount: number
+}) {
+  const { weeks, monthTicks, activeDays, maxGross, levelOf } = useMemo(() => {
+    const byDay = new Map(daily.map(d => [d.day, d.grossCop]))
+    const end = parseDay(today)
+    const start = new Date(end)
+    start.setUTCMonth(start.getUTCMonth() - (monthCount - 1), 1)
+    // Alinear al domingo (columnas = semanas), como GitHub.
+    start.setUTCDate(start.getUTCDate() - start.getUTCDay())
+
+    const weeks: { day: string; gross: number; future: boolean }[][] = []
+    const cursor = new Date(start)
+
+    while (true) {
+      if (weeks.length === 0 || weeks[weeks.length - 1]!.length === 7) {
+        weeks.push([])
+      }
+      const iso = toIsoDay(cursor)
+      const week = weeks[weeks.length - 1]!
+      week.push({
+        day: iso,
+        gross: byDay.get(iso) ?? 0,
+        future: iso > today,
+      })
+      cursor.setUTCDate(cursor.getUTCDate() + 1)
+      if (iso >= today && week.length === 7) break
+      // Tope de seguridad (~2 años de columnas).
+      if (weeks.length > 110) break
+    }
+
+    const maxGross = Math.max(0, ...daily.map(d => d.grossCop))
+    const activeDays = daily.filter(d => d.grossCop > 0).length
+
+    const levelOf = (gross: number, future: boolean): number => {
+      if (future || gross <= 0 || maxGross <= 0) return 0
+      const ratio = gross / maxGross
+      if (ratio <= 0.25) return 1
+      if (ratio <= 0.5) return 2
+      if (ratio <= 0.75) return 3
+      return 4
+    }
+
+    const monthTicks: { weekIndex: number; label: string }[] = []
+    let lastMonth = ''
+    weeks.forEach((week, wi) => {
+      const anchor = week.find(c => !c.future) ?? week[0]
+      if (!anchor) return
+      const month = anchor.day.slice(0, 7)
+      if (month !== lastMonth) {
+        monthTicks.push({
+          weekIndex: wi,
+          label: MONTH_SHORT.format(parseDay(anchor.day)).replace('.', ''),
+        })
+        lastMonth = month
+      }
+    })
+
+    return { weeks, monthTicks, activeDays, maxGross, levelOf }
+  }, [daily, today, monthCount])
+
+  const dayNames = ['', 'lun', '', 'mié', '', 'vie', '']
+
+  return (
+    <div>
+      <div className="flex items-baseline justify-between gap-4 mb-4">
+        <p className="font-body text-sm text-[#cfe5fa]">
+          <span className="font-headline text-lg tabular-nums">{activeDays}</span>
+          {activeDays === 1 ? ' día con ventas' : ' días con ventas'} en los últimos {monthCount}{' '}
+          meses
+        </p>
+        {maxGross > 0 ? (
+          <p className="text-[11px] text-[#5c656d] font-body shrink-0">Máx. día: {fmtCop(maxGross)}</p>
+        ) : null}
+      </div>
+
+      <div className="overflow-x-auto pb-1">
+        <div className="inline-block min-w-full">
+          <div className="relative h-4 mb-1 ml-8">
+            {monthTicks.map(t => (
+              <span
+                key={`${t.label}-${t.weekIndex}`}
+                className="absolute text-[10px] text-[#8a9299] font-label capitalize"
+                style={{ left: `${t.weekIndex * 14}px` }}
+              >
+                {t.label}
+              </span>
+            ))}
+          </div>
+
+          <div className="flex gap-1">
+            <div className="flex flex-col gap-1 w-7 shrink-0">
+              {dayNames.map((name, i) => (
+                <div
+                  key={i}
+                  className="h-[11px] text-[9px] leading-[11px] text-[#5c656d] font-label text-right pr-1"
+                >
+                  {name}
+                </div>
+              ))}
+            </div>
+
+            <div className="flex gap-1" role="img" aria-label="Intensidad de ingresos por día">
+              {weeks.map((week, wi) => (
+                <div key={wi} className="flex flex-col gap-1">
+                  {week.map(cell => {
+                    const level = levelOf(cell.gross, cell.future)
+                    const title = cell.future
+                      ? `${dayLabel(cell.day)} (${weekdayLabel(cell.day)}) — futuro`
+                      : `${dayLabel(cell.day)} (${weekdayLabel(cell.day)}): ${fmtCop(cell.gross)}`
+                    return (
+                      <div
+                        key={cell.day}
+                        title={title}
+                        aria-label={title}
+                        className="w-[11px] h-[11px] rounded-[2px] transition-opacity hover:opacity-80"
+                        style={{
+                          backgroundColor: HEAT[level],
+                          opacity: cell.future ? 0.35 : 1,
+                        }}
+                      />
+                    )
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center justify-end gap-1.5 mt-3 text-[10px] text-[#8a9299] font-label">
+            <span>Menos</span>
+            {HEAT.map((c, i) => (
+              <span
+                key={c}
+                className="w-[11px] h-[11px] rounded-[2px] inline-block"
+                style={{ backgroundColor: c }}
+                aria-label={`Nivel ${i}`}
+              />
+            ))}
+            <span>Más</span>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
@@ -205,7 +425,13 @@ export default function BoldDashboardPage() {
     setError('')
     try {
       const res = await fetch('/api/bold/sync', { method: 'POST', credentials: 'same-origin' })
-      const body = (await res.json()) as { error?: string; scanned?: number; inserted?: number; skipped?: number }
+      const body = (await res.json()) as {
+        error?: string
+        scanned?: number
+        inserted?: number
+        skipped?: number
+        ignoredCount?: number
+      }
       if (res.status === 401) {
         replace('/admin/login')
         return
@@ -215,7 +441,12 @@ export default function BoldDashboardPage() {
         return
       }
       setNotice(
-        `Correos revisados: ${body.scanned ?? 0} · cierres nuevos: ${body.inserted ?? 0} · ya registrados: ${body.skipped ?? 0}`,
+        [
+          `Correos revisados: ${body.scanned ?? 0}`,
+          `cierres nuevos: ${body.inserted ?? 0}`,
+          `ya registrados: ${body.skipped ?? 0}`,
+          ...(body.ignoredCount ? [`otros correos de Bold: ${body.ignoredCount}`] : []),
+        ].join(' · '),
       )
       await load(months)
     } catch {
@@ -236,7 +467,11 @@ export default function BoldDashboardPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: pasteText }),
       })
-      const body = (await res.json()) as { error?: string; inserted?: number; closing?: BoldClosing }
+      const body = (await res.json()) as {
+        error?: string
+        inserted?: number
+        closing?: BoldClosing
+      }
       if (res.status === 401) {
         replace('/admin/login')
         return
@@ -247,8 +482,8 @@ export default function BoldDashboardPage() {
       }
       setNotice(
         body.inserted
-          ? `Cierre del ${body.closing?.day} registrado: ${fmtCop(body.closing?.grossCop ?? 0)}`
-          : `Ese cierre (${body.closing?.day}) ya estaba registrado.`,
+          ? `Cierre del ${body.closing?.day ? dayLabel(body.closing.day) : '—'} registrado: ${fmtCop(body.closing?.grossCop ?? 0)}`
+          : `Ese cierre (${body.closing?.day ? dayLabel(body.closing.day) : '—'}) ya estaba registrado.`,
       )
       setPasteText('')
       setPasteOpen(false)
@@ -275,7 +510,9 @@ export default function BoldDashboardPage() {
   const hasData = series.some(m => m.grossCop > 0)
   const monthDelta = fmtDelta(current?.grossCop ?? 0, previous?.grossCop ?? 0)
   const mtdDelta = fmtDelta(mtd?.current.grossCop ?? 0, mtd?.previous.grossCop ?? 0)
-  const ticket = current && current.transactions > 0 ? current.grossCop / current.transactions : 0
+  const ticket =
+    current && current.transactions > 0 ? current.grossCop / current.transactions : 0
+  const closings = data ? [...data.days].reverse() : []
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -295,7 +532,7 @@ export default function BoldDashboardPage() {
               type="button"
               onClick={() => setMonths(n)}
               aria-pressed={months === n}
-              className={`flex-1 sm:flex-initial font-label text-[10px] uppercase tracking-[0.15em] px-4 min-h-11 sm:min-h-0 sm:py-2.5 transition-colors ${
+              className={`flex-1 sm:flex-initial font-label text-[10px] uppercase tracking-[0.15em] px-4 min-h-11 sm:min-h-0 sm:py-2.5 transition-colors cursor-pointer ${
                 months === n ? 'bg-[#1a3d52] text-[#cfe5fa]' : 'text-[#8a9299] hover:bg-[#0a2438]'
               }`}
             >
@@ -305,7 +542,11 @@ export default function BoldDashboardPage() {
         </div>
       </header>
 
-      {error ? <p className="text-red-400/90 font-body mb-6">{error}</p> : null}
+      {error ? (
+        <p className="text-red-400/90 font-body mb-6" role="alert">
+          {error}
+        </p>
+      ) : null}
       {notice ? <p className="text-[#7fc9a6] font-body text-sm mb-6">{notice}</p> : null}
 
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-10">
@@ -340,6 +581,19 @@ export default function BoldDashboardPage() {
 
       <section className="bg-[#0a2438] border border-[#42484c]/30 p-4 sm:p-6 mb-10">
         <h2 className="font-label text-xs uppercase tracking-[0.25em] text-[#8a9299] mb-4">
+          Intensidad de ingresos por día
+        </h2>
+        {data && data.daily.length > 0 ? (
+          <IncomeHeatmap daily={data.daily} today={data.today} monthCount={months} />
+        ) : (
+          <p className="py-10 text-center text-[#8a9299] font-body text-sm">
+            Aún no hay cierres para graficar. Sincroniza el buzón o pega un correo de Bold.
+          </p>
+        )}
+      </section>
+
+      <section className="bg-[#0a2438] border border-[#42484c]/30 p-4 sm:p-6 mb-10">
+        <h2 className="font-label text-xs uppercase tracking-[0.25em] text-[#8a9299] mb-4">
           Crecimiento mes a mes
         </h2>
         {hasData ? (
@@ -357,7 +611,7 @@ export default function BoldDashboardPage() {
             type="button"
             onClick={syncNow}
             disabled={busy !== null}
-            className="font-label text-[10px] uppercase tracking-[0.15em] px-4 min-h-11 border border-[#42484c]/50 text-[#cfe5fa] hover:bg-[#0a2438] transition-colors disabled:opacity-50"
+            className="font-label text-[10px] uppercase tracking-[0.15em] px-4 min-h-11 border border-[#42484c]/50 text-[#cfe5fa] hover:bg-[#0a2438] transition-colors disabled:opacity-50 cursor-pointer"
           >
             {busy === 'sync' ? 'Sincronizando…' : 'Sincronizar ahora'}
           </button>
@@ -365,14 +619,17 @@ export default function BoldDashboardPage() {
             type="button"
             onClick={() => setPasteOpen(o => !o)}
             aria-expanded={pasteOpen}
-            className="font-label text-[10px] uppercase tracking-[0.15em] px-4 min-h-11 border border-[#42484c]/50 text-[#8a9299] hover:bg-[#0a2438] transition-colors"
+            className="font-label text-[10px] uppercase tracking-[0.15em] px-4 min-h-11 border border-[#42484c]/50 text-[#8a9299] hover:bg-[#0a2438] transition-colors cursor-pointer"
           >
             Pegar correo de Bold
           </button>
         </div>
         {pasteOpen ? (
           <div className="border border-[#42484c]/40 rounded-sm p-4">
-            <label htmlFor="bold-paste" className="block font-label text-[10px] uppercase tracking-[0.2em] text-[#8a9299] mb-2">
+            <label
+              htmlFor="bold-paste"
+              className="block font-label text-[10px] uppercase tracking-[0.2em] text-[#8a9299] mb-2"
+            >
               Contenido del correo
             </label>
             <textarea
@@ -387,7 +644,7 @@ export default function BoldDashboardPage() {
               type="button"
               onClick={submitPaste}
               disabled={busy !== null || !pasteText.trim()}
-              className="mt-3 font-label text-[10px] uppercase tracking-[0.15em] px-4 min-h-11 bg-[#1a3d52] text-[#cfe5fa] hover:bg-[#1a3d52]/80 transition-colors disabled:opacity-50"
+              className="mt-3 font-label text-[10px] uppercase tracking-[0.15em] px-4 min-h-11 bg-[#1a3d52] text-[#cfe5fa] hover:bg-[#1a3d52]/80 transition-colors disabled:opacity-50 cursor-pointer"
             >
               {busy === 'paste' ? 'Registrando…' : 'Registrar cierre'}
             </button>
@@ -399,17 +656,23 @@ export default function BoldDashboardPage() {
         <h2 className="font-label text-xs uppercase tracking-[0.25em] text-[#8a9299] mb-4">
           Cierres de {data ? monthLabel(data.currentMonth) : 'este mes'}
         </h2>
-        {data && data.days.length > 0 ? (
+        {closings.length > 0 ? (
           <>
-            {/* Móvil: una tarjeta por cierre — la tabla se saldría de pantalla. */}
             <ul className="md:hidden flex flex-col gap-2">
-              {[...data.days].reverse().map(c => (
+              {closings.map(c => (
                 <li key={c.id} className="border border-[#42484c]/40 rounded-sm p-4">
                   <div className="flex items-baseline justify-between gap-3">
-                    <p className="font-label text-[11px] uppercase tracking-[0.2em] text-[#8a9299] tabular-nums">
-                      {c.day}
+                    <div>
+                      <p className="font-label text-[11px] uppercase tracking-[0.15em] text-[#8a9299]">
+                        {dayLabel(c.day)}
+                      </p>
+                      <p className="text-[11px] text-[#5c656d] font-body mt-0.5 capitalize">
+                        {shiftLabel(c)}
+                      </p>
+                    </div>
+                    <p className="font-headline text-lg text-[#cfe5fa] tabular-nums">
+                      {fmtCop(c.grossCop)}
                     </p>
-                    <p className="font-headline text-lg text-[#cfe5fa] tabular-nums">{fmtCop(c.grossCop)}</p>
                   </div>
                   <p className="text-[11px] text-[#5c656d] font-body mt-1.5">
                     {c.transactions} transacciones
@@ -433,14 +696,19 @@ export default function BoldDashboardPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {[...data.days].reverse().map(c => (
-                    <tr key={c.id} className="border-b border-[#42484c]/25 text-[#cfe5fa] hover:bg-[#0a2438]/50">
-                      <td className="py-2.5 px-4 whitespace-nowrap tabular-nums">{c.day}</td>
-                      <td className="py-2.5 px-4 text-[#8a9299] text-xs whitespace-nowrap">
-                        {c.fromLabel}{c.toLabel ? ` → ${c.toLabel}` : ''}
+                  {closings.map(c => (
+                    <tr
+                      key={c.id}
+                      className="border-b border-[#42484c]/25 text-[#cfe5fa] hover:bg-[#0a2438]/50"
+                    >
+                      <td className="py-2.5 px-4 whitespace-nowrap capitalize">{dayLabel(c.day)}</td>
+                      <td className="py-2.5 px-4 text-[#8a9299] text-xs whitespace-nowrap capitalize">
+                        {shiftLabel(c)}
                       </td>
                       <td className="py-2.5 px-4 text-right tabular-nums">{fmtCop(c.grossCop)}</td>
-                      <td className="py-2.5 px-4 text-right tabular-nums text-[#a5cce6]/90">{c.transactions}</td>
+                      <td className="py-2.5 px-4 text-right tabular-nums text-[#a5cce6]/90">
+                        {c.transactions}
+                      </td>
                       <td className="py-2.5 px-4 text-right tabular-nums text-[#c97b63]/90">
                         {c.refundsCop > 0 ? fmtCop(c.refundsCop) : '—'}
                       </td>
