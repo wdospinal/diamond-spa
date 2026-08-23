@@ -20,7 +20,7 @@ export default function AccountClient({
   username: string
   currentEmail: string | null
 }) {
-  const [step, setStep] = useState<Step>('confirm')
+  const [step, setStep] = useState<Step>('request')
   const [email, setEmail] = useState(currentEmail ?? '')
   const [currentPassword, setCurrentPassword] = useState('')
   const [code, setCode] = useState('')
