@@ -63,7 +63,10 @@ class ImapSession {
   /** Literales del comando en curso, en orden de aparición. */
   private literals: string[] = []
 
-  constructor(private socket: TLSSocket) {
+  private socket: TLSSocket
+
+  constructor(socket: TLSSocket) {
+    this.socket = socket
     socket.on('data', (chunk: Buffer | string) => {
       this.buffer = Buffer.concat([
         this.buffer,

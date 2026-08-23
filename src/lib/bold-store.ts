@@ -6,7 +6,7 @@
  *  - Supabase: tabla `bold_closings` con columnas reales (se agrega por mes en
  *    la API). La PK es el `Message-ID`, así que un upsert repetido es idempotente
  *    y volver a barrer el buzón nunca duplica un cierre.
- *    Esquema: supabase/migrations/0005_bold_closings.sql.
+ *    Esquema: supabase/migrations/0007_bold_closings.sql.
  *  - Vercel KV / Upstash sobre su API REST vía `fetch` — un hash `bold:closings`
  *    con campo = id, en vez de una lista, porque la deduplicación es por id.
  *  - Local/dev: data/bold-closings.json, un objeto { id: cierre }.
@@ -96,7 +96,7 @@ export async function saveClosings(rows: BoldClosing[]): Promise<{ inserted: num
   for (const r of rows) batch.set(r.id, r)
   const unique = [...batch.values()]
 
-  const known = await existingIds(unique.map(r => r.id))
+  const known = await existingIds(unique)
   const fresh = unique.filter(r => !known.has(r.id))
   const result = { inserted: fresh.length, skipped: unique.length - fresh.length }
 
@@ -118,14 +118,25 @@ export async function saveClosings(rows: BoldClosing[]): Promise<{ inserted: num
   return result
 }
 
-/** Ids ya almacenados de entre los indicados. Permite no re-descargar correos. */
-export async function existingIds(ids: string[]): Promise<Set<string>> {
-  if (ids.length === 0) return new Set()
+/**
+ * De entre los cierres indicados, cuáles ya estaban guardados. Sirve para
+ * distinguir "nuevo" de "repetido" al informar el resultado de una sincronización.
+ */
+export async function existingIds(rows: Pick<BoldClosing, 'id' | 'day'>[]): Promise<Set<string>> {
+  if (rows.length === 0) return new Set()
+  const ids = rows.map(r => r.id)
 
   if (supabaseConfigured()) {
-    const list = ids.map(id => `"${id.replace(/"/g, '\\"')}"`).join(',')
-    const rows = await sbSelect<{ id: string }>('bold_closings', `select=id&id=in.(${encodeURIComponent(list)})`)
-    return new Set(rows.map(r => r.id))
+    // Los Message-ID llevan `<`, `>` y `@`, incómodos de escapar dentro de un
+    // filtro `in.(…)` de PostgREST. Basta con traer los ids de los días que
+    // toca el lote —siempre unos pocos— y cruzarlos aquí.
+    const days = rows.map(r => r.day).sort()
+    const found = await sbSelect<{ id: string }>(
+      'bold_closings',
+      `select=id&day=gte.${days[0]}&day=lte.${days[days.length - 1]}`,
+    )
+    const wanted = new Set(ids)
+    return new Set(found.map(r => r.id).filter(id => wanted.has(id)))
   }
 
   if (kvConfigured()) {
