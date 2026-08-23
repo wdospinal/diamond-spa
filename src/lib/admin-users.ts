@@ -1,13 +1,11 @@
 /**
- * Cuentas del panel de administración con contraseña propia y correo asociado.
+ * Cuentas del panel de administración con contraseña hasheada y correo
+ * asociado. Las cuentas iniciales se crean en Supabase mediante la migración
+ * 0009_seed_admin_users.sql.
  *
  * Backend, en el mismo orden que el resto de stores: Supabase (tabla
  * `admin_users`, ver supabase/migrations/0008_admin_users.sql) → Vercel KV
  * (hash `admin_users`) → data/admin-users.json.
- *
- * Una cuenta solo existe aquí cuando ya cambió su contraseña. Mientras no haya
- * fila, el login la valida contra ADMIN_USERS/ADMIN_PASSWORD del entorno (ver
- * admin-session.ts), que hacen de contraseña inicial de un solo uso práctico.
  */
 
 import { createHmac, randomBytes, randomInt, scrypt as scryptCb, timingSafeEqual } from 'crypto'
@@ -16,7 +14,6 @@ import { mkdir, readFile, writeFile } from 'fs/promises'
 import { dirname, join } from 'path'
 import { kvCommand, kvConfigured } from '@/lib/kv'
 import { sbSelect, sbUpsert, supabaseConfigured } from '@/lib/supabase'
-import { seedAccounts } from '@/lib/admin-session'
 
 const scrypt = promisify(scryptCb) as (
   password: string,
@@ -179,13 +176,40 @@ async function saveFileUsers(users: Record<string, AdminUser>): Promise<void> {
   await writeFile(FILE, JSON.stringify(users, null, 2), 'utf8')
 }
 
+/**
+ * ¿El error dice que la tabla todavía no existe (migraciones 0008/0009 sin
+ * correr)? Se separa de un fallo real de la base porque «la tabla no existe»
+ * significa inequívocamente «no hay ninguna cuenta», mientras que una caída de
+ * Supabase no dice nada y debe seguir rechazando el acceso.
+ *
+ * Avisa por consola siempre: sin este log, el síntoma es un 401 mudo en todos
+ * los logins y la causa real queda invisible.
+ */
+export function isMissingTableError(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err)
+  const missing =
+    msg.includes('PGRST205') || msg.includes("Could not find the table 'public.admin_users'")
+  if (missing) {
+    console.error(
+      'admin_users no existe: corre las migraciones 0008 y 0009 en Supabase. ' +
+        'Hasta entonces NADIE puede entrar al panel.',
+    )
+  }
+  return missing
+}
+
 export async function getAdminUser(username: string): Promise<AdminUser | null> {
   const name = normalizeUsername(username)
   if (!name) return null
 
   if (supabaseConfigured()) {
-    const rows = await sbSelect<Row>('admin_users', `username=eq.${encodeURIComponent(name)}&limit=1`)
-    return rows[0] ? fromRow(rows[0]) : null
+    try {
+      const rows = await sbSelect<Row>('admin_users', `username=eq.${encodeURIComponent(name)}&limit=1`)
+      return rows[0] ? fromRow(rows[0]) : null
+    } catch (err) {
+      if (isMissingTableError(err)) return null
+      throw err
+    }
   }
   if (kvConfigured()) {
     const raw = await kvCommand(['HGET', HASH_KEY, name])
@@ -226,7 +250,12 @@ export function normalizeEmail(raw: string): string {
 /** Todas las cuentas. Son un puñado, así que leerlas enteras no es problema. */
 async function readAllAdminUsers(): Promise<AdminUser[]> {
   if (supabaseConfigured()) {
-    return (await sbSelect<Row>('admin_users', 'select=*')).map(fromRow)
+    try {
+      return (await sbSelect<Row>('admin_users', 'select=*')).map(fromRow)
+    } catch (err) {
+      if (isMissingTableError(err)) return []
+      throw err
+    }
   }
   if (kvConfigured()) {
     const raw = await kvCommand(['HGETALL', HASH_KEY])
@@ -266,11 +295,16 @@ export async function getAdminUserByEmail(email: string): Promise<AdminUser | nu
   if (!target) return null
 
   if (supabaseConfigured()) {
-    const rows = await sbSelect<Row>(
-      'admin_users',
-      `email=eq.${encodeURIComponent(target)}&limit=1`,
-    )
-    return rows[0] ? fromRow(rows[0]) : null
+    try {
+      const rows = await sbSelect<Row>(
+        'admin_users',
+        `email=eq.${encodeURIComponent(target)}&limit=1`,
+      )
+      return rows[0] ? fromRow(rows[0]) : null
+    } catch (err) {
+      if (isMissingTableError(err)) return null
+      throw err
+    }
   }
   return (await readAllAdminUsers()).find(u => normalizeEmail(u.email ?? '') === target) ?? null
 }
@@ -291,41 +325,21 @@ export interface AdminAccountSummary {
   username: string
   /** Correo verificado, o null si todavía no asoció ninguno. */
   email: string | null
-  /** false = sigue usando la contraseña inicial del entorno. */
+  /** false = la cuenta no tiene una contraseña utilizable. */
   hasOwnPassword: boolean
   /** Correo a la espera de un código sin usar, si hay un cambio a medias. */
   pendingEmail: string | null
 }
 
-/**
- * Todas las cuentas que hoy pueden entrar al panel: las definidas en el
- * entorno más las que ya tienen fila propia. Deliberadamente NO devuelve
- * hashes de contraseña ni de código — esto se pinta en una página.
- */
+/** Todas las cuentas persistidas. No devuelve hashes de contraseña ni de código. */
 export async function listAdminAccounts(): Promise<AdminAccountSummary[]> {
-  const byName = new Map<string, AdminAccountSummary>()
+  const accounts = (await readAllAdminUsers()).map(user => ({
+    username: user.username,
+    email: user.email,
+    hasOwnPassword: Boolean(user.passwordHash),
+    // Un código caducado no cuenta como cambio en curso.
+    pendingEmail: user.codeExpiresAt && user.codeExpiresAt > Date.now() ? user.pendingEmail : null,
+  }))
 
-  // Las del entorno existen aunque nunca hayan entrado.
-  for (const account of seedAccounts()) {
-    byName.set(account.username, {
-      username: account.username,
-      email: null,
-      hasOwnPassword: false,
-      pendingEmail: null,
-    })
-  }
-
-  // La fila en base de datos manda sobre lo anterior.
-  for (const user of await readAllAdminUsers()) {
-    byName.set(user.username, {
-      username: user.username,
-      email: user.email,
-      hasOwnPassword: Boolean(user.passwordHash),
-      // Un código caducado no cuenta como cambio en curso.
-      pendingEmail:
-        user.codeExpiresAt && user.codeExpiresAt > Date.now() ? user.pendingEmail : null,
-    })
-  }
-
-  return [...byName.values()].sort((a, b) => a.username.localeCompare(b.username, 'es'))
+  return accounts.sort((a, b) => a.username.localeCompare(b.username, 'es'))
 }

@@ -11,8 +11,6 @@ export default async function AccountPage() {
   // El layout ya redirige sin sesión; esto solo estrecha el tipo.
   if (!username) redirect('/admin/login')
 
-  // Sin fila todavía significa que la cuenta aún usa la contraseña inicial y
-  // no tiene correo asociado — la pantalla es justamente para arreglar eso.
   let email: string | null = null
   let accounts: AdminAccountSummary[] = []
   let listFailed = false

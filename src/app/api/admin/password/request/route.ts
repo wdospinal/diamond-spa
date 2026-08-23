@@ -17,6 +17,7 @@ import {
   generateCode,
   getOrCreateAdminUser,
   hashCode,
+  isMissingTableError,
   isValidEmail,
   saveAdminUser,
 } from '@/lib/admin-users'
@@ -111,6 +112,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, email, expiresInMinutes: Math.round(CODE_TTL_MS / 60000) })
   } catch (err) {
     console.error('admin password request failed', err)
+    if (isMissingTableError(err)) {
+      // Diagnóstico explícito: sin esto el fallo aparece como un 500 opaco.
+      return NextResponse.json(
+        { error: 'Falta la tabla admin_users. Corre la migración 0008 en Supabase.' },
+        { status: 503 },
+      )
+    }
     return NextResponse.json({ error: 'No se pudo iniciar el cambio.' }, { status: 500 })
   }
 }

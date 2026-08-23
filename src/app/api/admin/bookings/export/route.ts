@@ -85,11 +85,8 @@ function checkAuth(req: NextRequest, queryKey?: string | null): boolean {
     process.env.GOOGLE_ADS_EXPORT_SECRET?.trim() ||
     'NbhB7rO30CBMoDNdhfzvV1mfS12juTxT'
 
-  const adminUser = process.env.ADMIN_USERNAME?.trim() || 'admin'
-  const adminPass = process.env.ADMIN_PASSWORD?.trim() || 'admin'
-
   // 1. Check Query Key / Token
-  if (queryKey && (queryKey === validSecret || queryKey === adminPass)) {
+  if (queryKey === validSecret) {
     return true
   }
 
@@ -99,17 +96,15 @@ function checkAuth(req: NextRequest, queryKey?: string | null): boolean {
     if (authHeader.startsWith('Basic ')) {
       try {
         const decoded = Buffer.from(authHeader.slice(6), 'base64').toString('utf8')
-        const [u, p] = decoded.split(':')
-        if (
-          (u === adminUser && (p === adminPass || p === validSecret)) ||
-          p === validSecret
-        ) {
+        const separator = decoded.indexOf(':')
+        const password = separator >= 0 ? decoded.slice(separator + 1) : ''
+        if (password === validSecret) {
           return true
         }
       } catch {}
     } else if (authHeader.startsWith('Bearer ')) {
       const token = authHeader.slice(7).trim()
-      if (token === validSecret || token === adminPass) {
+      if (token === validSecret) {
         return true
       }
     }
@@ -117,7 +112,7 @@ function checkAuth(req: NextRequest, queryKey?: string | null): boolean {
 
   // 3. Check X-API-Key Header
   const apiKey = req.headers.get('x-api-key')?.trim()
-  if (apiKey && (apiKey === validSecret || apiKey === adminPass)) {
+  if (apiKey === validSecret) {
     return true
   }
 

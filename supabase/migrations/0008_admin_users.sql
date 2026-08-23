@@ -1,9 +1,8 @@
 -- Cuentas del panel de administración (/admin).
 --
--- Hasta ahora las credenciales vivían solo en variables de entorno
--- (ADMIN_USERNAME/ADMIN_PASSWORD y ADMIN_USERS). Esas siguen sirviendo como
--- contraseña *inicial*: en cuanto una usuaria cambia la suya desde
--- /admin/account se crea aquí su fila y la del entorno deja de valer para ella.
+-- Las credenciales viven en esta tabla. La migración 0009_seed_admin_users.sql
+-- crea las cuentas iniciales con contraseñas hasheadas; no se guardan
+-- contraseñas del panel en variables de entorno.
 --
 -- El cambio de contraseña exige un código de 6 dígitos enviado al correo que
 -- la usuaria escribe, y ese correo queda asociado a la cuenta. El código se
@@ -15,7 +14,7 @@ create table if not exists public.admin_users (
   username        text primary key,
   -- Correo ya verificado con un código. Null hasta el primer cambio.
   email           text,
-  -- 'scrypt$<salt hex>$<hash hex>'. Null => todavía usa la contraseña del entorno.
+  -- 'scrypt$<salt hex>$<hash hex>'.
   password_hash   text,
   -- Correo a la espera de verificación, junto con el código en curso.
   pending_email   text,

@@ -2,8 +2,7 @@
  * Paso 2 del cambio de contraseña: con el código recibido por correo, se
  * guarda la contraseña nueva y el correo queda asociado a la cuenta.
  *
- * A partir de aquí la contraseña del entorno (ADMIN_USERS/ADMIN_PASSWORD) deja
- * de valer para esta cuenta: verifyAdminCredentials prefiere siempre el hash.
+ * El nuevo hash reemplaza la contraseña temporal guardada en Supabase.
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -13,6 +12,7 @@ import {
   codeMatches,
   getAdminUser,
   hashPassword,
+  isMissingTableError,
   normalizeEmail,
   passwordProblem,
   saveAdminUser,
@@ -101,6 +101,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, email: user.email })
   } catch (err) {
     console.error('admin password confirm failed', err)
+    if (isMissingTableError(err)) {
+      // Diagnóstico explícito: sin esto el fallo aparece como un 500 opaco.
+      return NextResponse.json(
+        { error: 'Falta la tabla admin_users. Corre la migración 0008 en Supabase.' },
+        { status: 503 },
+      )
+    }
     return NextResponse.json({ error: 'No se pudo guardar la contraseña.' }, { status: 500 })
   }
 }

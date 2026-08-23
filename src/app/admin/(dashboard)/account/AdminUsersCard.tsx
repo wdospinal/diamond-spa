@@ -73,14 +73,14 @@ export default function AdminUsersCard({
                   <td className="py-3 whitespace-nowrap">
                     {account.hasOwnPassword ? (
                       <span className="font-label text-[10px] uppercase tracking-widest text-[#34d399]">
-                        Propia
+                        Configurada
                       </span>
                     ) : (
                       <span
-                        className="font-label text-[10px] uppercase tracking-widest text-on-surface/45"
-                        title="Sigue usando la contraseña inicial del entorno"
+                        className="font-label text-[10px] uppercase tracking-widest text-error"
+                        title="La cuenta no tiene una contraseña configurada"
                       >
-                        Inicial
+                        Sin configurar
                       </span>
                     )}
                   </td>

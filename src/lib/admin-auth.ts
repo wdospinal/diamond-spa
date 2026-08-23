@@ -1,14 +1,11 @@
 /**
- * Validación de credenciales del panel: primero la fila en base de datos
- * (contraseña ya cambiada por la usuaria), y solo si no existe, la contraseña
- * inicial del entorno.
+ * Validación de credenciales del panel contra la cuenta persistida.
  *
  * Va aparte de admin-session.ts a propósito: aquel lo importan una docena de
  * rutas que solo necesitan leer la cookie, y no deben arrastrar el store
  * (fs/promises, fetch a Supabase) por ello.
  */
 
-import { seedAccountMatches } from '@/lib/admin-session'
 import {
   getAdminUser,
   getAdminUserByEmail,
@@ -45,16 +42,10 @@ export async function verifyAdminCredentials(
   try {
     stored = await getAdminUser(name)
   } catch (err) {
-    // Un fallo del store no debe degradar a la contraseña inicial: si la
-    // usuaria ya cambió la suya, aceptar la del entorno sería un retroceso
-    // silencioso de seguridad. Mejor rechazar el intento.
     console.error('admin-auth: no se pudo leer la cuenta', err)
     return null
   }
 
-  if (stored?.passwordHash) {
-    return (await verifyPasswordHash(password, stored.passwordHash)) ? name : null
-  }
-
-  return seedAccountMatches(name, password) ? name : null
+  if (!stored?.passwordHash) return null
+  return (await verifyPasswordHash(password, stored.passwordHash)) ? name : null
 }
