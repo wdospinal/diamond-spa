@@ -27,7 +27,7 @@ function AddLeadModal({ onClose, onSaved }: { onClose: () => void; onSaved: () =
   const [gclid, setGclid] = useState('')
   const [adgroup, setAdgroup] = useState('')
   const [notes, setNotes] = useState('')
-  const [status, setStatus] = useState<'completed' | 'arrived' | 'pending' | 'cancelled'>('completed')
+  const [status, setStatus] = useState<'completed' | 'arrived' | 'contacted' | 'pending' | 'cancelled'>('completed')
   const [paid, setPaid] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -118,10 +118,11 @@ function AddLeadModal({ onClose, onSaved }: { onClose: () => void; onSaved: () =
             <label className="block text-xs text-[#8a9299] mb-1">Estado</label>
             <select value={status} onChange={e => setStatus(e.target.value as typeof status)}
               className="w-full bg-[#0f1f38] border border-[#1e3358] text-[#cfe5fa] text-sm rounded px-3 py-2 outline-none">
-              <option value="completed">Completado</option>
-              <option value="arrived">Llegó</option>
-              <option value="pending">Pendiente</option>
-              <option value="cancelled">Cancelado</option>
+              <option value="pending">1. Nuevo Lead</option>
+              <option value="contacted">2. En Chat</option>
+              <option value="arrived">3. Cita Agendada</option>
+              <option value="completed">4. Servicio Pagado</option>
+              <option value="cancelled">5. Cancelado</option>
             </select>
           </div>
           <div className="flex items-end pb-2">

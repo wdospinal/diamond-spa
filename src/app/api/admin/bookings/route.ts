@@ -40,8 +40,8 @@ export async function POST(req: NextRequest) {
     : typeof body.priceCop === 'string' ? Number(body.priceCop) || 0
     : 0
 
-  const status = ['pending', 'arrived', 'completed', 'cancelled'].includes(body.status as string)
-    ? (body.status as 'pending' | 'arrived' | 'completed' | 'cancelled')
+  const status = ['pending', 'contacted', 'arrived', 'completed', 'cancelled'].includes(body.status as string)
+    ? (body.status as 'pending' | 'contacted' | 'arrived' | 'completed' | 'cancelled')
     : 'completed' // staff usually logs this after the fact, once the outcome is known
   const paymentStatus = body.paymentStatus === 'paid' ? 'paid' as const : 'pending' as const
 
