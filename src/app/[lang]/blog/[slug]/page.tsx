@@ -3,7 +3,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { readPublishedPosts, getPostBySlug } from '@/lib/blog-store'
-import { BASE_URL } from '@/lib/seo'
+import { BASE_URL, X_DEFAULT_LOCALE } from '@/lib/seo'
 import { SPA_NAME_FULL, SPA_LOGO } from '@/lib/spa'
 
 export const dynamic = 'force-dynamic'
@@ -38,7 +38,7 @@ export async function generateMetadata({
       languages: {
         es: `${BASE_URL}/es/blog/${slug}`,
         en: `${BASE_URL}/en/blog/${slug}`,
-        'x-default': `${BASE_URL}/es/blog/${slug}`,
+        'x-default': `${BASE_URL}/${X_DEFAULT_LOCALE}/blog/${slug}`,
       },
     },
     openGraph: {

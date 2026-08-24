@@ -1,10 +1,10 @@
-import { notFound } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { ServiceDetailBackLink } from '@/components/ServiceDetailBackLink'
 import { ServiceDetailTracker } from '@/components/ServiceDetailTracker'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
-import { SERVICES, formatCop, getServiceBySlug, type DurationMinutes, type ServiceDef } from '@/lib/services'
+import { SERVICES, formatCop, getServiceBySlug, getServiceByForeignSlug, getServiceSlug, type DurationMinutes, type ServiceDef } from '@/lib/services'
 import { DURATION_MINUTES } from '@/lib/constants'
 import { buildServiceAlternates, buildOpenGraph, BASE_URL, BUSINESS } from '@/lib/seo'
 import { JsonLd } from '@/components/JsonLd'
@@ -26,6 +26,7 @@ export async function generateMetadata({
   const locale = isLocale(lang) ? lang : 'en'
   const service = getServiceBySlug(serviceId, locale)
   if (!service) return {}
+
   const name = locale === 'en' ? service.name.en : service.name.es
   const description = locale === 'en' ? service.shortDesc.en : service.shortDesc.es
   const title = `${name} — Diamond Spa Medellín`
@@ -47,7 +48,14 @@ export default async function ServiceDetailPage({
   if (!isLocale(lang)) notFound()
   const locale = lang as Locale
   const service = getServiceBySlug(serviceId, locale)
-  if (!service) notFound()
+  if (!service) {
+    // The slug may belong to the other locale (EN and ES slugs differ, e.g.
+    // /es/services/basic-facial-cleanse). Send a 308 to the right slug for this
+    // locale rather than 404ing, so the link equity survives.
+    const foreign = getServiceByForeignSlug(serviceId, locale)
+    if (foreign) permanentRedirect(`/${locale}/services/${getServiceSlug(foreign, locale)}`)
+    notFound()
+  }
 
   const t = getDict(locale).services
   const backFallbackClass =
@@ -57,6 +65,16 @@ export default async function ServiceDetailPage({
   const name = locale === 'en' ? service.name.en : service.name.es
   const description = locale === 'en' ? service.description.en : service.description.es
   const slug = locale === 'en' ? service.slugEn : service.id
+
+  // Sibling services in the same category, falling back to any other service so
+  // short categories still get a full row. Detail pages previously linked only
+  // to /book (which is noindex), leaving all 20 of them as dead ends in the link
+  // graph — several never got crawled at all ("Discovered - currently not
+  // indexed"). Linking siblings gives Googlebot a path between them.
+  const related = [
+    ...SERVICES.filter(s => s.id !== service.id && s.categoryId === service.categoryId),
+    ...SERVICES.filter(s => s.id !== service.id && s.categoryId !== service.categoryId),
+  ].slice(0, 4)
 
   // Build Service price for JSON-LD
   const servicePrice: number =
@@ -208,6 +226,32 @@ export default async function ServiceDetailPage({
               </>
             )
           })()}
+        </div>
+      </section>
+
+      {/* Related services — internal links between sibling detail pages */}
+      <section className="py-20 px-6 md:px-12 bg-surface-container-low">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="font-label text-outline text-xs uppercase tracking-widest mb-8">
+            {t.relatedServices}
+          </h2>
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-outline-variant/20">
+            {related.map(r => (
+              <li key={r.id} className="bg-surface-container-low">
+                <Link
+                  href={`/${locale}/services/${getServiceSlug(r, locale)}`}
+                  className="group flex flex-col gap-2 p-8 hover:bg-surface-container-high transition-colors"
+                >
+                  <span className="font-headline text-on-surface text-xl group-hover:text-primary transition-colors">
+                    {locale === 'en' ? r.name.en : r.name.es}
+                  </span>
+                  <span className="font-body text-secondary text-sm leading-relaxed">
+                    {locale === 'en' ? r.shortDesc.en : r.shortDesc.es}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 

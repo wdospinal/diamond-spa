@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { readPublishedPosts, type BlogCategory } from '@/lib/blog-store'
 import { buildOpenGraph } from '@/lib/seo'
-import { BASE_URL } from '@/lib/seo'
+import { BASE_URL, X_DEFAULT_LOCALE } from '@/lib/seo'
 
 export const dynamic = 'force-dynamic'
 
@@ -38,7 +38,7 @@ export async function generateMetadata({
       languages: {
         es: `${BASE_URL}/es/blog`,
         en: `${BASE_URL}/en/blog`,
-        'x-default': `${BASE_URL}/es/blog`,
+        'x-default': `${BASE_URL}/${X_DEFAULT_LOCALE}/blog`,
       },
     },
     openGraph: buildOpenGraph({ title, description, path: '/blog', locale }),

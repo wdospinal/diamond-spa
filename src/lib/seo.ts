@@ -21,6 +21,20 @@ const SITE_NAME = SPA_NAME_FULL
 
 // ─── hreflang + canonical ─────────────────────────────────────────────────────
 
+/**
+ * Single source of truth for hreflang x-default.
+ *
+ * Spanish, because that is what every locale-less entry point resolves to:
+ * `/` → `/es`, and `/services`, `/about`, `/location`, `/book`, `/history`
+ * all 308 to their `/es/*` equivalents (see next.config.mjs).
+ *
+ * Every alternates block on the site MUST use this value. A page that declares
+ * x-default → /es while its sibling declares x-default → /en gives Google a
+ * contradictory cluster, which it drops entirely — the pages then land in
+ * "Duplicate without user-selected canonical" in Search Console.
+ */
+export const X_DEFAULT_LOCALE: 'es' | 'en' = 'es'
+
 export function buildAlternates(path: string, locale: 'es' | 'en' = 'es'): Metadata['alternates'] {
   const base = path === '' ? '' : path
   return {
@@ -28,7 +42,10 @@ export function buildAlternates(path: string, locale: 'es' | 'en' = 'es'): Metad
     languages: {
       es: `${BASE_URL}/es${base}`,
       en: `${BASE_URL}/en${base}`,
-      'x-default': `${BASE_URL}/en${base}`,
+      // x-default must match the site default everywhere (see X_DEFAULT_LOCALE).
+      // Two different x-default values across a hreflang cluster make Google
+      // discard the whole cluster and treat the pages as unsignalled duplicates.
+      'x-default': `${BASE_URL}/${X_DEFAULT_LOCALE}${base}`,
     },
   }
 }
@@ -42,7 +59,7 @@ export function buildServiceAlternates(service: ServiceDef, locale: 'es' | 'en')
     languages: {
       es: `${BASE_URL}/es/services/${esSlug}`,
       en: `${BASE_URL}/en/services/${enSlug}`,
-      'x-default': `${BASE_URL}/en/services/${enSlug}`,
+      'x-default': `${BASE_URL}/${X_DEFAULT_LOCALE}/services/${X_DEFAULT_LOCALE === 'en' ? enSlug : esSlug}`,
     },
   }
 }

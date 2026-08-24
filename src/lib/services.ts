@@ -437,3 +437,16 @@ export function serviceDisplayName(s: ServiceDef, locale: 'en' | 'es'): string {
 export function serviceShortDesc(s: ServiceDef, locale: 'en' | 'es'): string {
   return locale === 'en' ? s.shortDesc.en : s.shortDesc.es
 }
+
+/**
+ * Find a service by a slug belonging to the *other* locale.
+ *
+ * EN and ES use different slugs for the same service (`hidrafacial` vs
+ * `hydrafacial`), so a cross-locale URL such as /es/services/basic-facial-cleanse
+ * used to 404. Callers use this to issue a 308 to the correct slug instead of
+ * dropping the URL — Search Console was reporting exactly that URL under
+ * "Not found (404)".
+ */
+export function getServiceByForeignSlug(slug: string, locale: 'en' | 'es'): ServiceDef | undefined {
+  return getServiceBySlug(slug, locale === 'en' ? 'es' : 'en')
+}

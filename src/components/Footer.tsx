@@ -35,6 +35,18 @@ export default function Footer({ locale }: { locale: Locale }) {
           <Link href={`/${locale}/masajes-para-mujeres`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.massagesForWomen}</Link>
           <Link href={`/${locale}/depilacion-medellin`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.hairRemoval}</Link>
           <Link href={`/${locale}/limpieza-facial-medellin`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.facials}</Link>
+          {/*
+            These five were in the sitemap but linked from nowhere on the site.
+            Search Console had /dia-de-spa under "Crawled - currently not indexed"
+            and /en/spa-near-me under "Discovered - currently not indexed": a URL
+            with no internal links is a URL Google has little reason to fetch or
+            keep. The footer is the cheapest sitewide link into each of them.
+          */}
+          <Link href={`/${locale}/hydrafacial-medellin`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.hydrafacial}</Link>
+          <Link href={`/${locale}/dia-de-spa`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.spaDay}</Link>
+          <Link href={`/${locale}/spa-el-poblado`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.spaElPoblado}</Link>
+          <Link href={`/${locale}/spa-near-me`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.spaNearMe}</Link>
+          <Link href={`/${locale}/blog`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.blog}</Link>
           <Link href={`/${locale}/about`}    className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.philosophy}</Link>
           <Link href={`/${locale}/history`}  className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.heritage}</Link>
           <Link href={`/${locale}/location`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.location}</Link>

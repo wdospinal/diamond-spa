@@ -1,6 +1,5 @@
 import { getAdminJsonLd, getAdminSemConfig } from '@/lib/landing-meta'
 import LandingSemInit from '@/components/LandingSemInit'
-import { SPA_BASE_URL } from '@/lib/spa'
 
 interface Props {
   path: string
@@ -14,16 +13,16 @@ export default async function LandingHead({ path, locale }: Props) {
     getAdminSemConfig(path),
   ])
 
-  const esUrl = `${SPA_BASE_URL}/es${path}`
-  const enUrl = `${SPA_BASE_URL}/en${path}`
-
   return (
     <>
-      {/* hreflang — declare ES/EN variants for Google (avoids duplicate content penalty) */}
-      <link rel="alternate" hrefLang="es" href={esUrl} />
-      <link rel="alternate" hrefLang="en" href={enUrl} />
-      {/* x-default points to Spanish as the primary audience */}
-      <link rel="alternate" hrefLang="x-default" href={esUrl} />
+      {/*
+        No hreflang here on purpose. Every page that renders LandingHead already
+        emits its hreflang cluster from generateMetadata via buildAlternates().
+        Emitting a second set from the body produced two <link rel="alternate">
+        blocks in <head> with *different* x-default values, so Google discarded
+        the cluster and filed the pages under "Duplicate without user-selected
+        canonical". Keep hreflang in metadata only.
+      */}
 
       {/* 1. Admin JSON-LD */}
       {jsonLdRaw && (
