@@ -692,6 +692,301 @@ function DailyTransactionsChart({
   )
 }
 
+/**
+ * Barras horizontales: transacciones agregadas por día de la semana, con una
+ * barra por mes dentro de cada día. Responde a "¿qué día de qué mes trae más
+ * citas?" comparando, por ejemplo, todos los viernes de agosto contra los de
+ * julio. Se limita a los últimos meses del rango cargado para que las barras
+ * sigan siendo legibles.
+ */
+const MONTH_COLORS = ['#a5cce6', '#7fc9a6', '#e0b46c', '#c97b63', '#b39ddb', '#d98cb3'] as const
+const MAX_MONTHS = MONTH_COLORS.length
+
+/** Lunes primero: getUTCDay() 0=domingo → índice 6. */
+function weekdayIndex(day: string): number {
+  return (parseDay(day).getUTCDay() + 6) % 7
+}
+
+/** 0 → 'lunes' … 6 → 'domingo' (2024-01-01 fue lunes). */
+function weekdayName(index: number): string {
+  return WEEKDAY_LONG.format(new Date(Date.UTC(2024, 0, 1 + index, 12)))
+}
+
+function WeekdayByMonthChart({ daily }: { daily: BoldDay[] }) {
+  const [hidden, setHidden] = useState<string[]>([])
+  const [hover, setHover] = useState<string | null>(null)
+  const [pinned, setPinned] = useState<string | null>(null)
+  const active = hover ?? pinned
+
+  /** Meses con cierres, del más viejo al más nuevo, recortados a los más recientes. */
+  const months = useMemo(() => {
+    const set = new Set(daily.filter(d => d.closings > 0).map(d => d.day.slice(0, 7)))
+    return [...set].sort().slice(-MAX_MONTHS)
+  }, [daily])
+
+  const colorOf = useCallback(
+    (month: string) => MONTH_COLORS[months.indexOf(month) % MONTH_COLORS.length]!,
+    [months],
+  )
+
+  const visible = months.filter(m => !hidden.includes(m))
+
+  /** `${weekday}|${month}` → acumulado del par. */
+  const cells = useMemo(() => {
+    const map = new Map<string, { transactions: number; grossCop: number; days: number }>()
+    for (const d of daily) {
+      if (d.closings <= 0) continue
+      const month = d.day.slice(0, 7)
+      if (!months.includes(month)) continue
+      const key = `${weekdayIndex(d.day)}|${month}`
+      const cell = map.get(key) ?? { transactions: 0, grossCop: 0, days: 0 }
+      cell.transactions += d.transactions
+      cell.grossCop += d.grossCop
+      cell.days += 1
+      map.set(key, cell)
+    }
+    return map
+  }, [daily, months])
+
+  const cellOf = (weekday: number, month: string) =>
+    cells.get(`${weekday}|${month}`) ?? { transactions: 0, grossCop: 0, days: 0 }
+
+  const max = Math.max(
+    1,
+    ...visible.flatMap(m => [0, 1, 2, 3, 4, 5, 6].map(w => cellOf(w, m).transactions)),
+  )
+  const step = Math.max(1, Math.ceil(max / 4))
+  const scaleMax = step * 4
+
+  /** Par día+mes con más transacciones entre los meses visibles. */
+  const best = useMemo(() => {
+    let top: { weekday: number; month: string; transactions: number } | null = null
+    for (const m of visible) {
+      for (let w = 0; w < 7; w++) {
+        const { transactions } = cellOf(w, m)
+        if (transactions > (top?.transactions ?? 0)) top = { weekday: w, month: m, transactions }
+      }
+    }
+    return top
+  }, [cells, visible])
+
+  const lanes = Math.max(visible.length, 1)
+  const rowH = Math.max(34, Math.min(56, 18 * lanes + 16))
+  const padLeft = 78
+  const padRight = 12
+  const padTop = 8
+  const padBottom = 28
+  const W = 720
+  const H = padTop + rowH * 7 + padBottom
+  const innerW = W - padLeft - padRight
+
+  const x = (v: number) => padLeft + (v / scaleMax) * innerW
+  const barH = Math.min(16, Math.max(4, (rowH - 10) / lanes))
+  const barY = (weekday: number, lane: number) =>
+    padTop + rowH * weekday + (rowH - barH * lanes) / 2 + barH * lane
+
+  const activeCell = useMemo(() => {
+    if (!active) return null
+    const [w, month] = active.split('|')
+    const weekday = Number(w)
+    if (!month || !visible.includes(month)) return null
+    return { weekday, month, ...cellOf(weekday, month) }
+  }, [active, cells, visible])
+
+  const tooltipW = 208
+  const tooltipH = 74
+  const tooltipX = activeCell
+    ? Math.min(Math.max(x(activeCell.transactions) + 10, 4), W - tooltipW - 4)
+    : 0
+  const tooltipY = activeCell
+    ? Math.min(Math.max(barY(activeCell.weekday, 0) - 8, 2), H - tooltipH - 2)
+    : 0
+
+  const toggleMonth = (month: string) => {
+    setHover(null)
+    setPinned(null)
+    setHidden(prev =>
+      prev.includes(month)
+        ? prev.filter(m => m !== month)
+        : // Nunca dejamos la gráfica vacía: el último mes visible no se puede ocultar.
+          visible.length > 1
+          ? [...prev, month]
+          : prev,
+    )
+  }
+
+  return (
+    <div>
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-4">
+        <div className="flex flex-wrap gap-2">
+          {months.map(m => {
+            const off = hidden.includes(m)
+            return (
+              <button
+                key={m}
+                type="button"
+                onClick={() => toggleMonth(m)}
+                aria-pressed={!off}
+                className={`flex items-center gap-2 border px-3 min-h-9 font-label text-[10px] uppercase tracking-[0.15em] cursor-pointer transition-colors ${
+                  off
+                    ? 'border-[#42484c]/40 text-[#5c656d]'
+                    : 'border-[#42484c]/60 text-[#cfe5fa] hover:bg-[#001524]'
+                }`}
+              >
+                <span
+                  className="inline-block w-2.5 h-2.5"
+                  style={{ backgroundColor: colorOf(m), opacity: off ? 0.25 : 1 }}
+                />
+                {monthLabel(m)}
+              </button>
+            )
+          })}
+        </div>
+        <p className="text-[11px] text-[#5c656d] font-body leading-relaxed">
+          {best && best.transactions > 0 ? (
+            <>
+              Mejor combinación:{' '}
+              <span className="text-[#cfe5fa]">
+                {capitalize(weekdayName(best.weekday))} de {monthLabel(best.month)} (
+                {best.transactions})
+              </span>
+            </>
+          ) : (
+            'Sin transacciones en los meses seleccionados.'
+          )}
+        </p>
+      </div>
+
+      <div className="overflow-x-auto">
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          className="w-full min-w-[520px] h-auto"
+          role="img"
+          aria-label="Transacciones por día de la semana, comparadas mes a mes. Pasa el mouse o toca una barra para ver el detalle."
+        >
+          {[0, 1, 2, 3, 4].map(i => {
+            const v = step * i
+            return (
+              <g key={v}>
+                <line
+                  x1={x(v)}
+                  x2={x(v)}
+                  y1={padTop}
+                  y2={H - padBottom}
+                  stroke="#42484c"
+                  strokeOpacity={i === 0 ? 0.6 : 0.3}
+                />
+                <text x={x(v)} y={H - 10} fill="#5c656d" fontSize="10" textAnchor="middle">
+                  {v}
+                </text>
+              </g>
+            )
+          })}
+
+          {[0, 1, 2, 3, 4, 5, 6].map(w => (
+            <g key={w}>
+              <text
+                x={padLeft - 8}
+                y={padTop + rowH * w + rowH / 2 + 4}
+                fill="#8a9299"
+                fontSize="11"
+                textAnchor="end"
+              >
+                {capitalize(weekdayName(w))}
+              </text>
+              {visible.map((m, lane) => {
+                const key = `${w}|${m}`
+                const cell = cellOf(w, m)
+                const isActive = active === key
+                const isBest = best !== null && best.month === m && best.weekday === w
+                const width = cell.transactions > 0 ? Math.max(x(cell.transactions) - padLeft, 2) : 0
+                return (
+                  <g key={m}>
+                    {width > 0 ? (
+                      <rect
+                        x={padLeft}
+                        y={barY(w, lane)}
+                        width={width}
+                        height={Math.max(barH - 2, 3)}
+                        fill={colorOf(m)}
+                        fillOpacity={isActive ? 1 : isBest ? 0.9 : 0.55}
+                      />
+                    ) : null}
+                    {/* Área de toque de ancho completo, más cómoda que la barra. */}
+                    <rect
+                      x={padLeft}
+                      y={barY(w, lane)}
+                      width={innerW}
+                      height={Math.max(barH, 8)}
+                      fill="transparent"
+                      className="cursor-pointer"
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`${weekdayName(w)} de ${monthLong(m)}: ${cell.transactions} transacciones en ${cell.days} ${cell.days === 1 ? 'día' : 'días'}, ${fmtCop(cell.grossCop)}`}
+                      onMouseEnter={() => setHover(key)}
+                      onMouseLeave={() => setHover(null)}
+                      onClick={() => setPinned(p => (p === key ? null : key))}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          setPinned(p => (p === key ? null : key))
+                        }
+                      }}
+                    />
+                  </g>
+                )
+              })}
+              {w < 6 ? (
+                <line
+                  x1={padLeft}
+                  x2={W - padRight}
+                  y1={padTop + rowH * (w + 1)}
+                  y2={padTop + rowH * (w + 1)}
+                  stroke="#42484c"
+                  strokeOpacity="0.2"
+                />
+              ) : null}
+            </g>
+          ))}
+
+          {activeCell ? (
+            <g pointerEvents="none">
+              <rect
+                x={tooltipX}
+                y={tooltipY}
+                width={tooltipW}
+                height={tooltipH}
+                rx={4}
+                fill="#001524"
+                stroke={colorOf(activeCell.month)}
+                strokeOpacity="0.6"
+              />
+              <text x={tooltipX + 12} y={tooltipY + 18} fill="#8a9299" fontSize="11">
+                {capitalize(weekdayName(activeCell.weekday))} · {capitalize(monthLong(activeCell.month))}
+              </text>
+              <text x={tooltipX + 12} y={tooltipY + 36} fill="#cfe5fa" fontSize="13" fontWeight="600">
+                {activeCell.transactions}{' '}
+                {activeCell.transactions === 1 ? 'transacción' : 'transacciones'}
+              </text>
+              <text x={tooltipX + 12} y={tooltipY + 52} fill="#8a9299" fontSize="11">
+                {fmtCop(activeCell.grossCop)}
+              </text>
+              <text x={tooltipX + 12} y={tooltipY + 66} fill="#5c656d" fontSize="10">
+                {activeCell.days} {activeCell.days === 1 ? 'día con cierres' : 'días con cierres'}
+              </text>
+            </g>
+          ) : null}
+        </svg>
+      </div>
+      <p className="sr-only" aria-live="polite">
+        {activeCell
+          ? `${weekdayName(activeCell.weekday)} de ${monthLong(activeCell.month)}: ${activeCell.transactions} transacciones, ${fmtCop(activeCell.grossCop)}`
+          : ''}
+      </p>
+    </div>
+  )
+}
+
 function Kpi({
   label,
   value,
@@ -1031,6 +1326,23 @@ export default function BoldDashboardPage() {
             currentMonth={data.currentMonth}
             today={data.today}
           />
+        ) : (
+          <p className="py-10 text-center text-[#8a9299] font-body text-sm">
+            Aún no hay cierres para graficar. Sincroniza el buzón o pega un correo de Bold.
+          </p>
+        )}
+      </section>
+
+      <section className="bg-[#0a2438] border border-[#42484c]/30 p-4 sm:p-6 mb-10">
+        <h2 className="font-label text-xs uppercase tracking-[0.25em] text-[#8a9299] mb-1">
+          Días de la semana por mes
+        </h2>
+        <p className="text-[11px] text-[#5c656d] font-body mb-4">
+          Suma de transacciones de cada día de la semana, un color por mes. Toca un mes en la
+          leyenda para ocultarlo.
+        </p>
+        {data && data.daily.length > 0 ? (
+          <WeekdayByMonthChart daily={data.daily} />
         ) : (
           <p className="py-10 text-center text-[#8a9299] font-body text-sm">
             Aún no hay cierres para graficar. Sincroniza el buzón o pega un correo de Bold.
