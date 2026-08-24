@@ -79,6 +79,11 @@ const MONTH_SHORT = new Intl.DateTimeFormat('es-CO', {
   month: 'short',
   timeZone: 'UTC',
 })
+const MONTH_LONG = new Intl.DateTimeFormat('es-CO', {
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+})
 
 function fmtCop(n: number): string {
   return COP.format(n || 0)
@@ -133,6 +138,12 @@ function monthLabel(month: string): string {
   const [y, m] = month.split('-')
   const name = MONTH_SHORT.format(new Date(Date.UTC(Number(y), Number(m) - 1, 1))).replace('.', '')
   return `${name} ${y!.slice(2)}`
+}
+
+/** 'YYYY-MM' → 'agosto de 2026' */
+function monthLong(month: string): string {
+  const [y, m] = month.split('-')
+  return MONTH_LONG.format(new Date(Date.UTC(Number(y), Number(m) - 1, 1)))
 }
 
 function fmtDelta(current: number, previous: number): { text: string; tone: string } {
@@ -425,6 +436,258 @@ function IncomeHeatmap({
           </div>
         </div>
       </div>
+    </div>
+  )
+}
+
+/**
+ * Barras: transacciones por día del mes elegido. El filtro es por mes, así que
+ * cada barra es un día natural del mes — incluidos los días sin cierres, que
+ * quedan en cero para que los huecos se vean.
+ */
+function DailyTransactionsChart({
+  daily,
+  currentMonth,
+  today,
+}: {
+  daily: BoldDay[]
+  currentMonth: string
+  today: string
+}) {
+  const [month, setMonth] = useState(currentMonth)
+  const [hover, setHover] = useState<number | null>(null)
+  const [pinned, setPinned] = useState<number | null>(null)
+  const active = hover ?? pinned
+
+  /** Meses con al menos un cierre dentro del rango cargado, del más reciente al más viejo. */
+  const monthOptions = useMemo(() => {
+    const set = new Set(daily.filter(d => d.closings > 0).map(d => d.day.slice(0, 7)))
+    return [...set].sort((a, b) => b.localeCompare(a))
+  }, [daily])
+
+  // El rango de fechas puede dejar fuera el mes elegido; en ese caso caemos al más reciente.
+  const selected = monthOptions.includes(month) ? month : (monthOptions[0] ?? currentMonth)
+
+  const bars = useMemo(() => {
+    const [y, m] = selected.split('-').map(Number)
+    const daysInMonth = new Date(Date.UTC(y!, m!, 0)).getUTCDate()
+    const byDay = new Map(daily.map(d => [d.day, d]))
+    const out: { day: string; dayNum: number; transactions: number; grossCop: number }[] = []
+    for (let i = 1; i <= daysInMonth; i++) {
+      const day = `${selected}-${String(i).padStart(2, '0')}`
+      if (day > today) break
+      const found = byDay.get(day)
+      out.push({
+        day,
+        dayNum: i,
+        transactions: found?.transactions ?? 0,
+        grossCop: found?.grossCop ?? 0,
+      })
+    }
+    return out
+  }, [daily, selected, today])
+
+  const total = bars.reduce((s, b) => s + b.transactions, 0)
+  const activeDays = bars.filter(b => b.transactions > 0).length
+  const best = bars.reduce<(typeof bars)[number] | null>(
+    (top, b) => (b.transactions > (top?.transactions ?? 0) ? b : top),
+    null,
+  )
+
+  const W = 720
+  const H = 240
+  const padLeft = 30
+  const padRight = 10
+  const padTop = 16
+  const padBottom = 30
+
+  const max = Math.max(...bars.map(b => b.transactions), 1)
+  const step = Math.max(1, Math.ceil(max / 4))
+  const scaleMax = step * 4
+  const innerW = W - padLeft - padRight
+  const slot = bars.length > 0 ? innerW / bars.length : innerW
+  const barW = Math.max(3, Math.min(slot * 0.68, 26))
+  const cx = (i: number) => padLeft + slot * (i + 0.5)
+  const y = (v: number) => H - padBottom - (v / scaleMax) * (H - padTop - padBottom)
+
+  const labelEvery = bars.length > 16 ? 2 : 1
+  const activeBar = active !== null ? bars[active] : null
+  const tooltipW = 176
+  const tooltipH = 58
+  const tooltipX =
+    active !== null ? Math.min(Math.max(cx(active) - tooltipW / 2, 4), W - tooltipW - 4) : 0
+  const tooltipY = activeBar ? Math.max(y(activeBar.transactions) - tooltipH - 10, 2) : 0
+
+  return (
+    <div>
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-4">
+        <label className="block sm:w-56">
+          <span className="block font-label text-[10px] uppercase tracking-[0.2em] text-[#8a9299] mb-2">
+            Mes
+          </span>
+          <select
+            value={selected}
+            onChange={e => {
+              setMonth(e.target.value)
+              setHover(null)
+              setPinned(null)
+            }}
+            disabled={monthOptions.length === 0}
+            className="w-full min-h-11 bg-[#001524] border border-[#42484c]/50 px-3 text-sm text-[#cfe5fa] font-body [color-scheme:dark] focus:outline-none focus:border-[#a5cce6]/60 cursor-pointer disabled:opacity-50"
+          >
+            {monthOptions.length === 0 ? (
+              <option value={selected}>{capitalize(monthLong(selected))}</option>
+            ) : (
+              monthOptions.map(m => (
+                <option key={m} value={m}>
+                  {capitalize(monthLong(m))}
+                </option>
+              ))
+            )}
+          </select>
+        </label>
+        <p className="text-[11px] text-[#5c656d] font-body leading-relaxed">
+          <span className="text-[#cfe5fa] tabular-nums">{total}</span> transacciones en{' '}
+          <span className="tabular-nums">{activeDays}</span>{' '}
+          {activeDays === 1 ? 'día con ventas' : 'días con ventas'}
+          {best && best.transactions > 0 ? (
+            <>
+              {' · '}mejor día:{' '}
+              <span className="text-[#cfe5fa]">
+                {dayLabel(best.day)} ({best.transactions})
+              </span>
+            </>
+          ) : null}
+        </p>
+      </div>
+
+      <div className="overflow-x-auto">
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          className="w-full min-w-[520px] h-auto"
+          role="img"
+          aria-label={`Transacciones por día en ${monthLong(selected)}. Pasa el mouse o toca una barra para ver el detalle.`}
+        >
+          {[1, 2, 3, 4].map(i => {
+            const v = step * i
+            return (
+              <g key={v}>
+                <line
+                  x1={padLeft}
+                  x2={W - padRight}
+                  y1={y(v)}
+                  y2={y(v)}
+                  stroke="#42484c"
+                  strokeOpacity="0.35"
+                />
+                <text x={4} y={y(v) + 4} fill="#5c656d" fontSize="10">
+                  {v}
+                </text>
+              </g>
+            )
+          })}
+          <line
+            x1={padLeft}
+            x2={W - padRight}
+            y1={H - padBottom}
+            y2={H - padBottom}
+            stroke="#42484c"
+            strokeOpacity="0.6"
+          />
+
+          {bars.map((b, i) => {
+            const isActive = active === i
+            const isBest = best !== null && b.day === best.day && b.transactions > 0
+            const h = b.transactions > 0 ? H - padBottom - y(b.transactions) : 0
+            return (
+              <g key={b.day}>
+                {h > 0 ? (
+                  <rect
+                    x={cx(i) - barW / 2}
+                    y={y(b.transactions)}
+                    width={barW}
+                    height={h}
+                    fill={isActive ? '#cfe5fa' : isBest ? '#a5cce6' : '#a5cce6'}
+                    fillOpacity={isActive ? 1 : isBest ? 0.85 : 0.45}
+                  />
+                ) : (
+                  /* Día sin cierres: una marca tenue en la base para que el hueco se lea. */
+                  <rect
+                    x={cx(i) - barW / 2}
+                    y={H - padBottom - 2}
+                    width={barW}
+                    height={2}
+                    fill="#42484c"
+                    fillOpacity="0.7"
+                  />
+                )}
+                {/* Área de toque de alto completo, más cómoda que la barra. */}
+                <rect
+                  x={cx(i) - slot / 2}
+                  y={padTop}
+                  width={slot}
+                  height={H - padTop - padBottom}
+                  fill="transparent"
+                  className="cursor-pointer"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`${dayLabel(b.day)}: ${b.transactions} transacciones, ${fmtCop(b.grossCop)}`}
+                  onMouseEnter={() => setHover(i)}
+                  onMouseLeave={() => setHover(null)}
+                  onClick={() => setPinned(p => (p === i ? null : i))}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      setPinned(p => (p === i ? null : i))
+                    }
+                  }}
+                />
+                {i % labelEvery === 0 || i === bars.length - 1 ? (
+                  <text
+                    x={cx(i)}
+                    y={H - 12}
+                    fill={active === i ? '#cfe5fa' : '#8a9299'}
+                    fontSize="10"
+                    textAnchor="middle"
+                  >
+                    {b.dayNum}
+                  </text>
+                ) : null}
+              </g>
+            )
+          })}
+
+          {activeBar ? (
+            <g pointerEvents="none">
+              <rect
+                x={tooltipX}
+                y={tooltipY}
+                width={tooltipW}
+                height={tooltipH}
+                rx={4}
+                fill="#001524"
+                stroke="#a5cce6"
+                strokeOpacity="0.45"
+              />
+              <text x={tooltipX + 12} y={tooltipY + 18} fill="#8a9299" fontSize="11">
+                {capitalize(weekdayLabel(activeBar.day))} {activeBar.dayNum}
+              </text>
+              <text x={tooltipX + 12} y={tooltipY + 35} fill="#cfe5fa" fontSize="13" fontWeight="600">
+                {activeBar.transactions}{' '}
+                {activeBar.transactions === 1 ? 'transacción' : 'transacciones'}
+              </text>
+              <text x={tooltipX + 12} y={tooltipY + 50} fill="#8a9299" fontSize="11">
+                {fmtCop(activeBar.grossCop)}
+              </text>
+            </g>
+          ) : null}
+        </svg>
+      </div>
+      <p className="sr-only" aria-live="polite">
+        {activeBar
+          ? `${dayLabel(activeBar.day)}: ${activeBar.transactions} transacciones, ${fmtCop(activeBar.grossCop)}`
+          : ''}
+      </p>
     </div>
   )
 }
@@ -750,6 +1013,23 @@ export default function BoldDashboardPage() {
             daily={data.daily}
             rangeStart={data.rangeStart}
             rangeEnd={data.rangeEnd}
+          />
+        ) : (
+          <p className="py-10 text-center text-[#8a9299] font-body text-sm">
+            Aún no hay cierres para graficar. Sincroniza el buzón o pega un correo de Bold.
+          </p>
+        )}
+      </section>
+
+      <section className="bg-[#0a2438] border border-[#42484c]/30 p-4 sm:p-6 mb-10">
+        <h2 className="font-label text-xs uppercase tracking-[0.25em] text-[#8a9299] mb-4">
+          Transacciones por día
+        </h2>
+        {data && data.daily.length > 0 ? (
+          <DailyTransactionsChart
+            daily={data.daily}
+            currentMonth={data.currentMonth}
+            today={data.today}
           />
         ) : (
           <p className="py-10 text-center text-[#8a9299] font-body text-sm">
