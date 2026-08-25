@@ -272,12 +272,26 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
     if (!service || !form.name.trim() || !form.phone.trim() || leadId) return
     setCreatingLead(true)
     const { bookingSource, adgroup, gclid } = getAttribution()
+
+    // Misma lógica que finalizeBooking usa para traducir el precio elegido
+    // en los campos que el backend valida (30/60/90 min, o cera/máquina).
+    let payloadDuration: number | null = null
+    let hairMethod: 'wax' | 'machine' | undefined = undefined
+    if (service.category === 'masajes') {
+      if (selectedPrice?.label.includes('30')) payloadDuration = 30
+      else if (selectedPrice?.label.includes('90')) payloadDuration = 90
+      else payloadDuration = 60
+    }
+    if (service.category === 'depilacion') {
+      hairMethod = selectedPrice?.label === 'Cera' ? 'wax' : 'machine'
+    }
+
     try {
       const res = await fetch('/api/bookings', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          serviceId: service.id, locale: lang,
-          name: form.name, phone: form.phone, requests: form.notes,
+          serviceId: service.id, durationMinutes: payloadDuration, hairMethod: hairMethod,
+          locale: lang, name: form.name, phone: form.phone, requests: form.notes,
           source: bookingSource,
           ...(gclid ? { gclid } : {}), ...(adgroup ? { adgroup } : {}),
         }),
