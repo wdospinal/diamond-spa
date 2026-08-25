@@ -208,6 +208,7 @@ export async function updateBooking(id: string, payload: Partial<BookingRecord>)
     if (payload.priceCop !== undefined) patch.price_cop = payload.priceCop
     if (payload.dateKey !== undefined) patch.date_key = payload.dateKey
     if (payload.timeSlot !== undefined) patch.time_slot = payload.timeSlot
+    if (payload.scheduledAt !== undefined) patch.scheduled_at = payload.scheduledAt
     if (payload.requests !== undefined) patch.requests = payload.requests
     if (payload.status !== undefined) patch.status = payload.status
     if (payload.paymentStatus !== undefined) patch.payment_status = payload.paymentStatus
