@@ -425,80 +425,90 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="max-w-7xl mx-auto">
-      <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="material-symbols-outlined text-[#38bdf8] text-2xl">account_tree</span>
-            <h1 className="font-headline text-2xl md:text-3xl text-[#cfe5fa]">
-              Pipeline de Ventas & Reservas
-            </h1>
+      <header className="mb-6 flex flex-col gap-4">
+        {/* Title row */}
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="material-symbols-outlined text-[#38bdf8] text-xl shrink-0">account_tree</span>
+              <h1 className="font-headline text-xl md:text-3xl text-[#cfe5fa] leading-tight">
+                Pipeline de Ventas
+              </h1>
+            </div>
+            <p className="text-[#8a9299] text-xs font-body">
+              Gestiona el embudo de clientes y sincroniza con Google Ads.
+            </p>
           </div>
-          <p className="text-[#8a9299] text-xs font-body">
-            Gestiona el embudo de clientes y sincroniza conversiones offline con Google Ads.
-          </p>
+
+          {/* Primary action — always visible */}
+          <button
+            onClick={() => setShowAddLead(true)}
+            className="shrink-0 text-xs font-bold font-label uppercase tracking-wider bg-[#38bdf8] hover:bg-[#0ea5e9] text-[#001524] px-3 py-2 md:px-4 rounded-lg transition-colors flex items-center gap-1.5 shadow-md active:scale-95"
+          >
+            <span className="material-symbols-outlined text-[16px]">add_circle</span>
+            <span className="hidden sm:inline">+ Lead Manual</span>
+            <span className="sm:hidden">+ Lead</span>
+          </button>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Pipedrive Style View Switcher: Kanban vs Table */}
+        {/* Secondary actions row — wraps on mobile */}
+        <div className="flex flex-wrap items-center gap-2">
+          {/* View switcher */}
           <div className="flex items-center rounded-lg border border-[#1e3358] bg-[#071322] p-1 shadow-sm">
             <button
               type="button"
               onClick={() => handleToggleView('kanban')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-bold font-label uppercase tracking-wider transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold font-label uppercase tracking-wider transition-all ${
                 viewMode === 'kanban'
                   ? 'bg-[#1a3860] text-[#38bdf8] shadow-md border border-[#38bdf8]/30'
                   : 'text-[#8a9299] hover:text-[#cfe5fa] hover:bg-[#0f243e]'
               }`}
             >
               <span className="material-symbols-outlined text-[16px]">view_kanban</span>
-              <span>Tablero</span>
+              <span className="hidden sm:inline">Tablero</span>
             </button>
             <button
               type="button"
               onClick={() => handleToggleView('table')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-bold font-label uppercase tracking-wider transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold font-label uppercase tracking-wider transition-all ${
                 viewMode === 'table'
                   ? 'bg-[#1a3860] text-[#38bdf8] shadow-md border border-[#38bdf8]/30'
                   : 'text-[#8a9299] hover:text-[#cfe5fa] hover:bg-[#0f243e]'
               }`}
             >
               <span className="material-symbols-outlined text-[16px]">table_rows</span>
-              <span>Lista</span>
+              <span className="hidden sm:inline">Lista</span>
             </button>
           </div>
 
+          {/* Google Ads connect */}
           <button
             onClick={() => setShowAdsModal(true)}
-            className="text-xs font-bold font-label uppercase tracking-wider bg-[#1a3860] hover:bg-[#254e85] text-[#38bdf8] border border-[#38bdf8]/30 px-3.5 py-2 rounded-lg transition-colors flex items-center gap-1.5 shadow-sm active:scale-95"
+            className="text-xs font-bold font-label uppercase tracking-wider bg-[#1a3860] hover:bg-[#254e85] text-[#38bdf8] border border-[#38bdf8]/30 px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 shadow-sm active:scale-95"
             title="Ver enlaces de conexión automática HTTPS para Google Ads"
           >
             <span className="material-symbols-outlined text-[16px]">sync</span>
-            <span>Conectar Google Ads</span>
+            <span className="hidden sm:inline">Conectar Google Ads</span>
+            <span className="sm:hidden">Google Ads</span>
           </button>
 
-          <button
-            onClick={() => setShowAddLead(true)}
-            className="text-xs font-bold font-label uppercase tracking-wider bg-[#38bdf8] hover:bg-[#0ea5e9] text-[#001524] px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 shadow-md active:scale-95"
-          >
-            <span className="material-symbols-outlined text-[16px]">add_circle</span>
-            <span>+ Lead Manual</span>
-          </button>
-
-          {/* Export Dropdown / Group */}
-          <div className="flex items-center rounded-lg border border-[#1e3358] bg-[#071322] overflow-hidden shadow-sm">
+          {/* Export group */}
+          <div className="flex items-center rounded-lg border border-[#1e3358] bg-[#071322] overflow-hidden shadow-sm ml-auto">
             <a
               href="/api/admin/bookings/export?type=all"
-              className="text-xs font-bold font-label uppercase tracking-wider text-[#cfe5fa] hover:bg-[#1a3860] px-3 py-2 transition-colors border-r border-[#1e3358]"
+              className="text-xs font-bold font-label uppercase tracking-wider text-[#cfe5fa] hover:bg-[#1a3860] px-2.5 py-2 transition-colors border-r border-[#1e3358]"
               title="Exporta todas las conversiones combinadas para Google Ads"
             >
-              Exportar Ads
+              <span className="hidden sm:inline">Exportar Ads</span>
+              <span className="sm:hidden">Ads</span>
             </a>
             <a
               href="/api/admin/bookings/export?type=qualified"
               className="text-xs font-bold font-label uppercase tracking-wider text-[#a855f7] hover:bg-[#1a3860] px-2.5 py-2 transition-colors border-r border-[#1e3358]"
               title="Exporta solo Leads Cualificados (Cita Agendada)"
             >
-              Cualificados
+              <span className="hidden sm:inline">Cualificados</span>
+              <span className="sm:hidden">Cual.</span>
             </a>
             <a
               href="/api/admin/bookings/export?type=converted"
