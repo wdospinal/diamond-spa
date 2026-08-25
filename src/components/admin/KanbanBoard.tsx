@@ -589,6 +589,8 @@ export default function KanbanBoard({
   const [filterQuery, setFilterQuery] = useState('')
   const [selectedBooking, setSelectedBooking] = useState<BookingRecord | null>(null)
   const [deletingBooking, setDeletingBooking] = useState<BookingRecord | null>(null)
+  // Mobile: which column index (0-4) is currently displayed
+  const [activeColumnMobile, setActiveColumnMobile] = useState(0)
   const isDraggingRef = useRef(false)
 
   // Sync prop changes into local state
@@ -730,7 +732,7 @@ export default function KanbanBoard({
     setDraggedId(null)
   }
 
-  const handleStepMove = (e: React.MouseEvent, b: BookingRecord, direction: 'prev' | 'next') => {
+  const handleStepMove = (e: React.MouseEvent, b: BookingRecord, direction: 'prev' | 'next', isMobile = false) => {
     e.stopPropagation()
     const currentStatus = (b.status || 'pending') as StageKey
     const currentIndex = COLUMNS.findIndex(c => c.key === currentStatus)
@@ -739,6 +741,8 @@ export default function KanbanBoard({
     const targetIndex = direction === 'next' ? currentIndex + 1 : currentIndex - 1
     if (targetIndex >= 0 && targetIndex < COLUMNS.length) {
       moveBooking(b.id, COLUMNS[targetIndex].key)
+      // On mobile, follow the card to its new column
+      if (isMobile) setActiveColumnMobile(targetIndex)
     }
   }
 
@@ -755,6 +759,148 @@ export default function KanbanBoard({
   }
 
   const cleanWaNumber = (phone: string) => phone.replace(/\D/g, '')
+
+  // ─── Shared card renderer ─────────────────────────────────────────────────
+  const renderCard = (b: BookingRecord, colIdx: number, isMobile = false) => {
+    const displayName = bookingDisplayName(b)
+    const isAds = b.source === 'ads' || Boolean(b.gclid || b.adgroup)
+    const waNum = cleanWaNumber(b.phone)
+    const isPaid = b.paymentStatus === 'paid'
+    const isBeingDragged = draggedId === b.id
+
+    return (
+      <div
+        key={b.id}
+        draggable={!isMobile}
+        onDragStart={!isMobile ? (e => handleDragStart(e, b.id)) : undefined}
+        onDragEnd={!isMobile ? handleDragEnd : undefined}
+        onClick={() => handleCardClick(b)}
+        className={`bg-[#0d1d32] border border-[#1d385c] rounded-xl shadow-md transition-all flex flex-col gap-2 relative group ${
+          isMobile
+            ? 'p-4 hover:border-[#38bdf8]/50 active:scale-[0.99] cursor-pointer'
+            : `p-3 hover:border-[#38bdf8]/70 hover:shadow-xl cursor-grab active:cursor-grabbing ${
+                isBeingDragged ? 'opacity-30 scale-95 border-dashed border-[#38bdf8]' : ''
+              }`
+        }`}
+      >
+        {/* Deal Header: Name & Direct WhatsApp Link */}
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0 flex-1">
+            <p className={`font-bold text-[#cfe5fa] truncate group-hover:text-[#38bdf8] transition-colors ${
+              isMobile ? 'text-sm' : 'text-xs'
+            }`}>
+              {displayName !== 'Desconocido' ? displayName : b.phone}
+            </p>
+            <p className={`text-[#8a9299] font-mono truncate mt-0.5 ${
+              isMobile ? 'text-xs' : 'text-[11px]'
+            }`}>
+              {b.phone}
+            </p>
+          </div>
+
+          {waNum && (
+            <a
+              href={`https://wa.me/${waNum}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={e => e.stopPropagation()}
+              aria-label="Abrir WhatsApp del cliente"
+              className={`flex items-center justify-center bg-[#25D366]/15 text-[#25D366] hover:bg-[#25D366] hover:text-[#001524] rounded-full transition-all shrink-0 shadow-sm ${
+                isMobile ? 'w-9 h-9' : 'w-6 h-6'
+              }`}
+              title="Abrir chat en WhatsApp"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" className={isMobile ? 'w-5 h-5' : 'w-3.5 h-3.5'}>
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.888-.788-1.489-1.761-1.663-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+              </svg>
+            </a>
+          )}
+        </div>
+
+        {/* Service Details & Deal Value */}
+        <div className="flex items-center justify-between py-1.5 px-2.5 rounded-lg bg-[#071322] border border-[#172c4c]">
+          <span className={`text-[#a5cce6] font-medium truncate ${
+            isMobile ? 'text-xs max-w-[160px]' : 'text-xs max-w-[110px]'
+          }`}>
+            {b.serviceName || 'Lead WhatsApp'}
+          </span>
+          <span className={`font-bold font-mono text-[#34d399] ${
+            isMobile ? 'text-sm' : 'text-xs'
+          }`}>
+            {b.priceCop ? formatCopCurrency(b.priceCop) : 'Por cotizar'}
+          </span>
+        </div>
+
+        {/* GCLID Tag */}
+        {b.gclid && (
+          <div className="flex items-center gap-1 text-[10px] font-mono text-[#38bdf8] bg-[#38bdf8]/10 px-2 py-0.5 rounded border border-[#38bdf8]/20 truncate">
+            <span className="material-symbols-outlined text-[12px] shrink-0">ads_click</span>
+            <span className="truncate">GCLID: {b.gclid}</span>
+          </div>
+        )}
+
+        {/* Origin Badge & Date */}
+        <div className="flex items-center justify-between gap-1.5 text-[10px]">
+          <span className={`inline-flex items-center px-1.5 py-0.5 rounded font-label uppercase tracking-wider font-semibold ${
+            isAds
+              ? 'bg-[#38bdf8]/15 text-[#38bdf8] border border-[#38bdf8]/30'
+              : 'bg-[#8a9299]/15 text-[#8a9299] border border-[#8a9299]/20'
+          }`}>
+            {isAds ? (b.adgroup ? `Ads · ${b.adgroup}` : 'Google Ads') : 'Orgánico'}
+          </span>
+          <span className="text-[#8a9299]/80 font-mono text-[10px] truncate">
+            {b.dateKey} {b.timeSlot}
+          </span>
+        </div>
+
+        {/* Quick Step Move Controls */}
+        <div className={`flex items-center justify-between border-t border-[#172c4c] gap-1 ${
+          isMobile ? 'pt-2' : 'pt-1.5'
+        }`}>
+          <button
+            type="button"
+            disabled={colIdx === 0}
+            onClick={e => handleStepMove(e, b, 'prev', isMobile)}
+            aria-label="Mover a etapa anterior"
+            className={`rounded bg-[#071322] text-[#8a9299] hover:text-[#cfe5fa] hover:bg-[#172c4c] disabled:opacity-20 disabled:hover:bg-[#071322] font-bold transition-colors ${
+              isMobile ? 'px-4 py-2 text-base min-w-[44px] min-h-[44px] flex items-center justify-center' : 'px-2 py-0.5 text-xs'
+            }`}
+            title="Etapa anterior"
+          >
+            ‹
+          </button>
+
+          {isPaid ? (
+            <span className={`font-bold text-[#34d399] inline-flex items-center gap-0.5 ${
+              isMobile ? 'text-xs' : 'text-[10px]'
+            }`}>
+              <span className={`material-symbols-outlined ${
+                isMobile ? 'text-[16px]' : 'text-[12px]'
+              }`}>check_circle</span>
+              Pagado
+            </span>
+          ) : (
+            <span className={`text-[#8a9299] ${
+              isMobile ? 'text-xs' : 'text-[10px]'
+            }`}>Pendiente</span>
+          )}
+
+          <button
+            type="button"
+            disabled={colIdx === COLUMNS.length - 1}
+            onClick={e => handleStepMove(e, b, 'next', isMobile)}
+            aria-label="Mover a etapa siguiente"
+            className={`rounded bg-[#071322] text-[#8a9299] hover:text-[#cfe5fa] hover:bg-[#172c4c] disabled:opacity-20 disabled:hover:bg-[#071322] font-bold transition-colors ${
+              isMobile ? 'px-4 py-2 text-base min-w-[44px] min-h-[44px] flex items-center justify-center' : 'px-2 py-0.5 text-xs'
+            }`}
+            title="Siguiente etapa"
+          >
+            ›
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col gap-5">
@@ -788,7 +934,7 @@ export default function KanbanBoard({
 
       {/* Quick Search & Filter Toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-3 bg-[#0a1628]/60 p-2.5 rounded-xl border border-[#1e3358]/60">
-        <div className="relative flex-1 min-w-[240px] max-w-md">
+        <div className="relative flex-1 min-w-0 max-w-md">
           <span className="material-symbols-outlined absolute left-3 top-2.5 text-[#8a9299] text-base">
             search
           </span>
@@ -811,19 +957,161 @@ export default function KanbanBoard({
 
         <div className="flex items-center gap-3 text-xs text-[#8a9299] font-medium">
           <span>
-            Total en Embudo: <strong className="text-[#38bdf8]">{filteredBookings.length}</strong>
+            Total: <strong className="text-[#38bdf8]">{filteredBookings.length}</strong>
           </span>
-          <span>·</span>
-          <span>
-            Valor Total:{' '}
+          <span className="hidden sm:inline">·</span>
+          <span className="hidden sm:inline">
+            Valor:{' '}
             <strong className="text-[#22c55e]">{formatCopCurrency(totalPipelineValue)}</strong>
           </span>
         </div>
       </div>
 
-      {/* Pipedrive Style 5-Column Kanban Board */}
-      <div className="overflow-x-auto pb-6 -mx-4 px-4 sm:mx-0 sm:px-0">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-3.5 min-w-[1150px]">
+      {/* ═══════════════════════════════════════════════════════
+          MOBILE VIEW — Single column with stage selector tabs
+          Visible only on screens smaller than lg (< 1024px)
+          ═══════════════════════════════════════════════════════ */}
+      <div className="lg:hidden flex flex-col gap-4">
+        {/* Stage Selector Strip */}
+        <div className="flex overflow-x-auto gap-2 pb-1 -mx-1 px-1 scrollbar-none">
+          {COLUMNS.map((col, idx) => {
+            const count = grouped[col.key]?.length || 0
+            const isActive = activeColumnMobile === idx
+            return (
+              <button
+                key={col.key}
+                type="button"
+                onClick={() => setActiveColumnMobile(idx)}
+                className={`flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 rounded-xl border text-xs font-bold font-label transition-all ${
+                  isActive
+                    ? 'text-white shadow-lg scale-[1.03]'
+                    : 'bg-[#071322] border-[#172c4c] text-[#8a9299] hover:text-[#cfe5fa] hover:bg-[#0d1d32]'
+                }`}
+                style={isActive ? {
+                  background: `linear-gradient(135deg, ${col.accentColor}25, ${col.accentColor}10)`,
+                  borderColor: col.accentColor,
+                  color: col.accentColor,
+                } : undefined}
+              >
+                <span
+                  className="material-symbols-outlined text-[18px]"
+                  style={isActive ? { color: col.accentColor } : undefined}
+                >
+                  {col.icon}
+                </span>
+                <span className="whitespace-nowrap text-[10px] uppercase tracking-wider">
+                  {col.title.replace(/^\d+\.\s*/, '')}
+                </span>
+                <span
+                  className={`text-[11px] font-black tabular-nums px-2 py-0.5 rounded-full ${
+                    isActive ? 'bg-white/20' : 'bg-[#1e3358]'
+                  }`}
+                  style={isActive ? { color: col.accentColor } : { color: '#cfe5fa' }}
+                >
+                  {count}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+
+        {/* Active Column Info Bar */}
+        {(() => {
+          const col = COLUMNS[activeColumnMobile]
+          const totalStageVal = stageTotals[col.key] || 0
+          const list = grouped[col.key] || []
+          return (
+            <div
+              className="flex items-center justify-between px-4 py-2.5 rounded-xl border"
+              style={{
+                background: `linear-gradient(135deg, ${col.accentColor}12, ${col.accentColor}05)`,
+                borderColor: `${col.accentColor}40`,
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <span
+                  className="material-symbols-outlined text-[20px]"
+                  style={{ color: col.accentColor }}
+                >
+                  {col.icon}
+                </span>
+                <div>
+                  <p className="font-bold text-sm text-[#cfe5fa]">{col.title}</p>
+                  <p className="text-[11px] text-[#8a9299]">{col.subtitle}</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="font-mono font-bold text-sm text-[#cfe5fa]">{formatCopCurrency(totalStageVal)}</p>
+                <p className="text-[11px] text-[#8a9299]">{list.length} leads</p>
+              </div>
+            </div>
+          )
+        })()}
+
+        {/* Cards for active column */}
+        {(() => {
+          const col = COLUMNS[activeColumnMobile]
+          const colIdx = activeColumnMobile
+          const list = grouped[col.key] || []
+          const currentPage = pageByColumn[col.key] || 1
+          const totalPages = Math.max(1, Math.ceil(list.length / CARDS_PER_PAGE))
+          const startIndex = (currentPage - 1) * CARDS_PER_PAGE
+          const visibleCards = list.slice(startIndex, startIndex + CARDS_PER_PAGE)
+
+          return (
+            <div className="flex flex-col gap-3">
+              {visibleCards.length === 0 ? (
+                <div
+                  className="flex flex-col items-center justify-center py-16 text-center text-[#8a9299]/50 border-2 border-dashed rounded-2xl"
+                  style={{ borderColor: `${col.accentColor}30` }}
+                >
+                  <span className="material-symbols-outlined text-4xl mb-3 opacity-30">
+                    inbox
+                  </span>
+                  <p className="text-sm font-medium">Sin leads en esta etapa</p>
+                  <p className="text-xs mt-1 text-[#8a9299]/40">
+                    Mueve un lead aquí con los botones ‹ ›
+                  </p>
+                </div>
+              ) : (
+                visibleCards.map(b => renderCard(b, colIdx, true))
+              )}
+
+              {/* Pagination for mobile */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between px-2 py-3 text-sm font-medium text-[#8a9299]">
+                  <button
+                    type="button"
+                    disabled={currentPage <= 1}
+                    onClick={() => handlePageChange(col.key, -1)}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#071322] border border-[#172c4c] text-[#cfe5fa] disabled:opacity-30 transition-colors min-h-[44px]"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">chevron_left</span>
+                    Anterior
+                  </button>
+                  <span className="text-xs">{currentPage} / {totalPages}</span>
+                  <button
+                    type="button"
+                    disabled={currentPage >= totalPages}
+                    onClick={() => handlePageChange(col.key, 1)}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#071322] border border-[#172c4c] text-[#cfe5fa] disabled:opacity-30 transition-colors min-h-[44px]"
+                  >
+                    Siguiente
+                    <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          )
+        })()}
+      </div>
+
+      {/* ═══════════════════════════════════════════════════════
+          DESKTOP VIEW — 5-column Pipedrive-style Kanban board
+          Visible only on lg screens (≥ 1024px)
+          ═══════════════════════════════════════════════════════ */}
+      <div className="hidden lg:block overflow-x-auto pb-6">
+        <div className="grid grid-cols-5 gap-3.5 min-w-[1150px]">
           {COLUMNS.map((col, colIdx) => {
             const list = grouped[col.key] || []
             const currentPage = pageByColumn[col.key] || 1
@@ -895,127 +1183,7 @@ export default function KanbanBoard({
                       </span>
                     </div>
                   ) : (
-                    visibleCards.map(b => {
-                      const displayName = bookingDisplayName(b)
-                      const isAds = b.source === 'ads' || Boolean(b.gclid || b.adgroup)
-                      const waNum = cleanWaNumber(b.phone)
-                      const isPaid = b.paymentStatus === 'paid'
-                      const isBeingDragged = draggedId === b.id
-
-                      return (
-                        <div
-                          key={b.id}
-                          draggable
-                          onDragStart={e => handleDragStart(e, b.id)}
-                          onDragEnd={handleDragEnd}
-                          onClick={() => handleCardClick(b)}
-                          className={`bg-[#0d1d32] border border-[#1d385c] hover:border-[#38bdf8]/70 rounded-lg p-3 shadow-md hover:shadow-xl transition-all flex flex-col gap-2 cursor-grab active:cursor-grabbing relative group ${
-                            isBeingDragged ? 'opacity-30 scale-95 border-dashed border-[#38bdf8]' : ''
-                          }`}
-                        >
-                          {/* Deal Header: Name & Direct WhatsApp Link */}
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="min-w-0 flex-1">
-                              <p className="font-bold text-xs text-[#cfe5fa] truncate group-hover:text-[#38bdf8] transition-colors">
-                                {displayName !== 'Desconocido' ? displayName : b.phone}
-                              </p>
-                              <p className="text-[11px] text-[#8a9299] font-mono truncate mt-0.5">
-                                {b.phone}
-                              </p>
-                            </div>
-
-                            {waNum && (
-                              <a
-                                href={`https://wa.me/${waNum}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={e => e.stopPropagation()}
-                                aria-label="Abrir WhatsApp del cliente"
-                                className="w-6 h-6 flex items-center justify-center bg-[#25D366]/15 text-[#25D366] hover:bg-[#25D366] hover:text-[#001524] rounded-full transition-all shrink-0 shadow-sm"
-                                title="Abrir chat en WhatsApp"
-                              >
-                                <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
-                                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.888-.788-1.489-1.761-1.663-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
-                                </svg>
-                              </a>
-                            )}
-                          </div>
-
-                          {/* Service Details & Deal Value */}
-                          <div className="flex items-center justify-between text-xs py-1 px-2 rounded bg-[#071322] border border-[#172c4c]">
-                            <span className="text-[#a5cce6] font-medium truncate max-w-[110px]">
-                              {b.serviceName || 'Lead WhatsApp'}
-                            </span>
-                            <span className="font-bold font-mono text-[#34d399] text-xs">
-                              {b.priceCop ? formatCopCurrency(b.priceCop) : 'Por cotizar'}
-                            </span>
-                          </div>
-
-                          {/* Prominent GCLID Tag on Card (If present) */}
-                          {b.gclid && (
-                            <div className="flex items-center gap-1 text-[10px] font-mono text-[#38bdf8] bg-[#38bdf8]/10 px-2 py-0.5 rounded border border-[#38bdf8]/20 truncate">
-                              <span className="material-symbols-outlined text-[12px] shrink-0">
-                                ads_click
-                              </span>
-                              <span className="truncate">GCLID: {b.gclid}</span>
-                            </div>
-                          )}
-
-                          {/* Origin Badge & Date */}
-                          <div className="flex items-center justify-between gap-1.5 text-[10px]">
-                            <span
-                              className={`inline-flex items-center px-1.5 py-0.5 rounded font-label uppercase tracking-wider font-semibold ${
-                                isAds
-                                  ? 'bg-[#38bdf8]/15 text-[#38bdf8] border border-[#38bdf8]/30'
-                                  : 'bg-[#8a9299]/15 text-[#8a9299] border border-[#8a9299]/20'
-                              }`}
-                            >
-                              {isAds ? (b.adgroup ? `Ads · ${b.adgroup}` : 'Google Ads') : 'Orgánico'}
-                            </span>
-
-                            <span className="text-[#8a9299]/80 font-mono text-[10px] truncate">
-                              {b.dateKey} {b.timeSlot}
-                            </span>
-                          </div>
-
-                          {/* Quick Step Move Controls */}
-                          <div className="flex items-center justify-between pt-1.5 border-t border-[#172c4c] gap-1">
-                            <button
-                              type="button"
-                              disabled={colIdx === 0}
-                              onClick={e => handleStepMove(e, b, 'prev')}
-                              aria-label="Mover a etapa anterior"
-                              className="px-2 py-0.5 rounded bg-[#071322] text-[#8a9299] hover:text-[#cfe5fa] hover:bg-[#172c4c] disabled:opacity-20 disabled:hover:bg-[#071322] text-xs font-bold transition-colors"
-                              title="Etapa anterior"
-                            >
-                              ‹
-                            </button>
-
-                            {isPaid ? (
-                              <span className="text-[10px] font-bold text-[#34d399] inline-flex items-center gap-0.5">
-                                <span className="material-symbols-outlined text-[12px]">
-                                  check_circle
-                                </span>
-                                Pagado
-                              </span>
-                            ) : (
-                              <span className="text-[10px] text-[#8a9299]">Pendiente</span>
-                            )}
-
-                            <button
-                              type="button"
-                              disabled={colIdx === COLUMNS.length - 1}
-                              onClick={e => handleStepMove(e, b, 'next')}
-                              aria-label="Mover a etapa siguiente"
-                              className="px-2 py-0.5 rounded bg-[#071322] text-[#8a9299] hover:text-[#cfe5fa] hover:bg-[#172c4c] disabled:opacity-20 disabled:hover:bg-[#071322] text-xs font-bold transition-colors"
-                              title="Siguiente etapa"
-                            >
-                              ›
-                            </button>
-                          </div>
-                        </div>
-                      )
-                    })
+                    visibleCards.map(b => renderCard(b, colIdx, false))
                   )}
                 </div>
 
