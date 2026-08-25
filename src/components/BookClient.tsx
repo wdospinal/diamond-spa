@@ -164,6 +164,10 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
   const [form, setForm] = useState({ name: '', phone: '', notes: '' })
   const [submitting, setSubmitting] = useState(false)
   const [confirmed, setConfirmed] = useState(false)
+  // id del registro creado en la Fase 1 (nombre+teléfono, sin fecha/hora aún)
+  // — la Fase 2 lo actualiza en vez de crear uno duplicado.
+  const [leadId, setLeadId] = useState<string | null>(null)
+  const [creatingLead, setCreatingLead] = useState(false)
 
   const scrollRef = useRef<HTMLDivElement>(null)
 
@@ -235,11 +239,62 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
   // Map to user-visible steps 1..3 (category+service → 1, price+datetime → 2, details → 3)
   const uiStep = progressStep <= 1 ? 1 : progressStep <= 3 ? 2 : 3
 
+  // Reads campaign/adgroup/gclid the same way everywhere (URL first, then
+  // sessionStorage — persisted by LandingSemInit/SemTracker on arrival).
+  function getAttribution() {
+    let bookingSource = 'organic'
+    let campaignName = ''
+    let adgroup = ''
+    let gclid = ''
+    try {
+      const p = new URLSearchParams(window.location.search)
+      if (p.get('utm_source') === 'ads' || sessionStorage.getItem('sem_trigger_value') === 'ads' || document.documentElement.classList.contains('is-ads')) {
+        bookingSource = 'ads'
+        campaignName = p.get('utm_campaign') || sessionStorage.getItem('sem_campaign') || 'general_ads'
+      }
+      adgroup = p.get('adgroup') || ''
+      const gclidFromUrl = p.get('gclid')
+      if (gclidFromUrl) {
+        gclid = gclidFromUrl
+        sessionStorage.setItem('gclid', gclidFromUrl)
+      } else {
+        gclid = sessionStorage.getItem('gclid') || ''
+      }
+    } catch { /* sessionStorage unavailable */ }
+    return { bookingSource, campaignName, adgroup, gclid }
+  }
+
+  // ── Phase 1: create a minimal lead as soon as name+phone are known ────────
+  // Fired from the 'details' step's Continue button, before date/time exist.
+  // Best-effort: if it fails, finalizeBooking() below falls back to creating
+  // the full record itself, so nothing blocks the visitor from proceeding.
+  async function createLead() {
+    if (!service || !form.name.trim() || !form.phone.trim() || leadId) return
+    setCreatingLead(true)
+    const { bookingSource, adgroup, gclid } = getAttribution()
+    try {
+      const res = await fetch('/api/bookings', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          serviceId: service.id, locale: lang,
+          name: form.name, phone: form.phone, requests: form.notes,
+          source: bookingSource,
+          ...(gclid ? { gclid } : {}), ...(adgroup ? { adgroup } : {}),
+        }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        if (data?.id) setLeadId(data.id)
+      }
+    } catch { /* best-effort — finalizeBooking() will create the row instead */ }
+    setCreatingLead(false)
+  }
+
   // ── Finalize booking ──────────────────────────────────────────────────────
   // Called either from pickTime (real day+time picked) or from the "coordinate
-  // via WhatsApp" shortcut (day/time both null → "a coordinar"). By this point
-  // name+phone were already captured in the 'details' step, so this is the
-  // single moment the whole booking record + tracking events fire.
+  // via WhatsApp" shortcut (day/time both null → "a coordinar"). If a Phase 1
+  // lead already exists (leadId), this UPDATES that same row via `id` instead
+  // of creating a duplicate.
   async function finalizeBooking(day: number | null, time: string | null) {
     if (!service || !form.name.trim() || !form.phone.trim()) return
     setSubmitting(true)
@@ -277,37 +332,25 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
       hairMethod = selectedPrice?.label === 'Cera' ? 'wax' : 'machine'
     }
 
-    let bookingSource = 'organic'
-    let campaignName = ''
-    let adgroup = ''
-    let gclid = ''
-    try {
-      const p = new URLSearchParams(window.location.search)
-      if (p.get('utm_source') === 'ads' || sessionStorage.getItem('sem_trigger_value') === 'ads' || document.documentElement.classList.contains('is-ads')) {
-        bookingSource = 'ads'
-        campaignName = p.get('utm_campaign') || sessionStorage.getItem('sem_campaign') || 'general_ads'
-      }
-      adgroup = p.get('adgroup') || ''
-      // GCLID: read from URL first, fall back to sessionStorage (persisted on first visit)
-      const gclidFromUrl = p.get('gclid')
-      if (gclidFromUrl) {
-        gclid = gclidFromUrl
-        sessionStorage.setItem('gclid', gclidFromUrl) // persist across SPA navigation
-      } else {
-        gclid = sessionStorage.getItem('gclid') || ''
-      }
-    } catch (e) { }
+    const { bookingSource, campaignName, adgroup, gclid } = getAttribution()
 
     try {
-      await fetch('/api/bookings', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          serviceId: service.id, durationMinutes: payloadDuration, hairMethod: hairMethod,
-          year: calYear, monthIndex: calMonth, day: day, timeSlot: isTbd ? 'A coordinar' : time,
-          locale: lang, name: form.name, phone: form.phone, requests: form.notes, source: bookingSource,
-          ...(gclid ? { gclid } : {}), ...(adgroup ? { adgroup } : {}),
+      // If phase-1 already created a lead but the visitor hit the "TBD"
+      // shortcut, there's nothing new to persist — that row already has
+      // everything. Only call the API again when we're setting a real
+      // date/time, or when phase 1 never ran (leadId is null).
+      if (!leadId || !isTbd) {
+        await fetch('/api/bookings', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...(leadId ? { id: leadId } : {}),
+            serviceId: service.id, durationMinutes: payloadDuration, hairMethod: hairMethod,
+            ...(isTbd ? {} : { year: calYear, monthIndex: calMonth, day, timeSlot: time }),
+            locale: lang, name: form.name, phone: form.phone, requests: form.notes, source: bookingSource,
+            ...(gclid ? { gclid } : {}), ...(adgroup ? { adgroup } : {}),
+          }),
         })
-      })
+      }
     } catch { }
 
     const submitPayload: Record<string, string | number> = {
@@ -750,8 +793,8 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
                 <div style={{ maxWidth: 640, margin: '0 auto' }}>
                   <button
                     type="button"
-                    disabled={!form.name.trim() || !form.phone.trim()}
-                    onClick={() => go('datetime')}
+                    disabled={!form.name.trim() || !form.phone.trim() || creatingLead}
+                    onClick={async () => { await createLead(); go('datetime') }}
                     className="btn-confirm"
                     style={{
                       width: '100%', padding: '16px', fontSize: 15, fontWeight: 700,
@@ -761,7 +804,7 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
                       transition: 'all 0.2s', letterSpacing: '0.03em',
                     }}
                   >
-                    {lang === 'en' ? 'Continue' : 'Continuar'}
+                    {creatingLead ? (lang === 'en' ? 'Saving…' : 'Guardando…') : (lang === 'en' ? 'Continue' : 'Continuar')}
                   </button>
                 </div>
               </div>
