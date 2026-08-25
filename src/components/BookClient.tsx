@@ -101,10 +101,14 @@ function fmtCop(n: number) {
 }
 
 // ─── Step machine ─────────────────────────────────────────────────────────────
-// Steps: category → service → price → datetime → details
-type StepId = 'category' | 'service' | 'price' | 'datetime' | 'details'
-const STEP_ORDER: StepId[] = ['category', 'service', 'price', 'datetime', 'details']
-const STEP_LABELS = ['Servicio', 'Servicio', 'Duración', 'Fecha y hora', 'Confirmar']
+// Steps: category → service → price → details → datetime
+// Contact details are captured BEFORE the exact date/time commitment — this
+// way, someone who drops off at the calendar is still a recoverable lead
+// (name + phone + gclid already saved), not a lost visitor. Picking a time
+// slot (or the "coordinate via WhatsApp" shortcut) finalizes the booking.
+type StepId = 'category' | 'service' | 'price' | 'details' | 'datetime'
+const STEP_ORDER: StepId[] = ['category', 'service', 'price', 'details', 'datetime']
+const STEP_LABELS = ['Servicio', 'Servicio', 'Duración', 'Tus datos', 'Fecha y hora']
 
 function stepIndex(s: StepId) { return STEP_ORDER.indexOf(s) }
 
@@ -136,7 +140,7 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
 
   let initialStep: StepId = allowedServiceIds ? 'service' : 'category';
   if (initialSvc) {
-    initialStep = initialSvc.prices.length > 1 ? 'price' : 'datetime';
+    initialStep = initialSvc.prices.length > 1 ? 'price' : 'details';
   }
 
   const [step, setStep] = useState<StepId>(initialStep)
@@ -155,8 +159,9 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
   const [selDay, setSelDay] = useState<number | null>(null)
   const [selTime, setSelTime] = useState<string | null>(null)
 
-  // form
-  const [form, setForm] = useState({ name: '', phone: '', email: '', notes: '' })
+  // form — email removido: nunca se enviaba al backend (solo vivía en el
+  // mensaje de WhatsApp), y un campo menos reduce fricción en el wizard.
+  const [form, setForm] = useState({ name: '', phone: '', notes: '' })
   const [submitting, setSubmitting] = useState(false)
   const [confirmed, setConfirmed] = useState(false)
 
@@ -197,13 +202,13 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
     setPriceIdx(0)
     trackEvent(EVENTS.BOOKING_SERVICE_SELECTED, { service_id: svc.id, service_name: svc.name, category: svc.category, locale: lang })
     // Skip price step if only one price option
-    if (svc.prices.length <= 1) { go('datetime') }
+    if (svc.prices.length <= 1) { go('details') }
     else { go('price') }
   }
 
   function pickPrice(idx: number) {
     setPriceIdx(idx)
-    go('datetime')
+    go('details')
   }
 
   function pickDay(d: number) {
@@ -215,7 +220,7 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
   function pickTime(t: string) {
     setSelTime(t)
     trackEvent(EVENTS.BOOKING_TIME_SELECTED, { service_id: service?.id ?? '', time_slot: t })
-    setTimeout(() => go('details'), 300)
+    setTimeout(() => finalizeBooking(selDay, t), 300)
   }
 
   function isPast(day: number) {
@@ -230,24 +235,28 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
   // Map to user-visible steps 1..3 (category+service → 1, price+datetime → 2, details → 3)
   const uiStep = progressStep <= 1 ? 1 : progressStep <= 3 ? 2 : 3
 
-  // ── Submit ────────────────────────────────────────────────────────────────
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (!service || !selDay || !selTime || !form.name || !form.phone) return
+  // ── Finalize booking ──────────────────────────────────────────────────────
+  // Called either from pickTime (real day+time picked) or from the "coordinate
+  // via WhatsApp" shortcut (day/time both null → "a coordinar"). By this point
+  // name+phone were already captured in the 'details' step, so this is the
+  // single moment the whole booking record + tracking events fire.
+  async function finalizeBooking(day: number | null, time: string | null) {
+    if (!service || !form.name.trim() || !form.phone.trim()) return
     setSubmitting(true)
 
-    const dateStr = `${MONTHS(lang)[calMonth]} ${selDay}, ${calYear}`
+    const isTbd = day === null || time === null
+    const dateStr = isTbd ? '' : `${MONTHS(lang)[calMonth]} ${day}, ${calYear}`
     const svcLabel = `${service.name}${service.prices.length > 1 ? ` · ${service.prices[priceIdx].label}` : ''}`
     const price = selectedPrice?.value ?? 0
 
     const waText =
       `Hola Diamond Spa! Me gustaría reservar:\n\n` +
       `📋 Servicio: ${svcLabel}\n` +
-      `📅 Fecha: ${dateStr}\n` +
-      `⏰ Hora: ${selTime}\n` +
+      (isTbd
+        ? `📅 Fecha y hora: A coordinar por este chat\n`
+        : `📅 Fecha: ${dateStr}\n⏰ Hora: ${time}\n`) +
       `👤 Nombre: ${form.name}\n` +
       `📱 Tel: ${form.phone}\n` +
-      (form.email ? `📧 Email: ${form.email}\n` : '') +
       (form.notes ? `💬 Notas: ${form.notes}\n` : '') +
       `\n💰 Total: ${fmtCop(price)}`
 
@@ -289,7 +298,17 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
       }
     } catch (e) { }
 
-    try { await fetch('/api/bookings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ serviceId: service.id, durationMinutes: payloadDuration, hairMethod: hairMethod, year: calYear, monthIndex: calMonth, day: selDay, timeSlot: selTime, locale: lang, name: form.name, phone: form.phone, requests: form.notes, source: bookingSource, ...(gclid ? { gclid } : {}), ...(adgroup ? { adgroup } : {}) }) }) } catch { }
+    try {
+      await fetch('/api/bookings', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          serviceId: service.id, durationMinutes: payloadDuration, hairMethod: hairMethod,
+          year: calYear, monthIndex: calMonth, day: day, timeSlot: isTbd ? 'A coordinar' : time,
+          locale: lang, name: form.name, phone: form.phone, requests: form.notes, source: bookingSource,
+          ...(gclid ? { gclid } : {}), ...(adgroup ? { adgroup } : {}),
+        })
+      })
+    } catch { }
 
     const submitPayload: Record<string, string | number> = {
       service_id: service.id,
@@ -333,8 +352,8 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
           <div style={{ background: C.card, border: `1px solid ${C.cardBrd}`, borderRadius: 6, padding: 24, marginBottom: 32, textAlign: 'left' }}>
             {[
               [lang === 'en' ? 'Service' : 'Servicio', service?.name ?? ''],
-              [lang === 'en' ? 'Date' : 'Fecha', `${MONTHS(lang)[calMonth]} ${selDay}, ${calYear}`],
-              [lang === 'en' ? 'Time' : 'Hora', selTime ?? ''],
+              [lang === 'en' ? 'Date' : 'Fecha', selDay ? `${MONTHS(lang)[calMonth]} ${selDay}, ${calYear}` : (lang === 'en' ? 'To be coordinated via WhatsApp' : 'A coordinar por WhatsApp')],
+              [lang === 'en' ? 'Time' : 'Hora', selTime ?? (lang === 'en' ? 'To be coordinated' : 'A coordinar')],
               ['Total', selectedPrice ? fmtCop(selectedPrice.value) : '—'],
             ].map(([l, v]) => (
               <div key={l} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: `1px solid ${C.div}` }}>
@@ -343,7 +362,7 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
               </div>
             ))}
           </div>
-          <button onClick={() => { setConfirmed(false); setStep('category'); setCategory(null); setService(null); setSelDay(null); setSelTime(null); setForm({ name: '', phone: '', email: '', notes: '' }) }}
+          <button onClick={() => { setConfirmed(false); setStep('category'); setCategory(null); setService(null); setSelDay(null); setSelTime(null); setForm({ name: '', phone: '', notes: '' }) }}
             style={{ background: 'transparent', border: `1px solid ${C.cardBrd}`, color: C.sec, padding: '12px 28px', cursor: 'pointer', fontSize: 13, borderRadius: 4 }}>
             {lang === 'en' ? 'Make another booking' : 'Hacer otra reserva'}
           </button>
@@ -381,7 +400,7 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
 
           {/* Step indicators */}
           <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 6 }}>
-            {(lang === 'en' ? ['Category', 'Service', 'Date & time', 'Confirm'] : ['Categoría', 'Servicio', 'Fecha y hora', 'Confirmar']).map((label, i) => {
+            {(lang === 'en' ? ['Category', 'Service', 'Your details', 'Date & time'] : ['Categoría', 'Servicio', 'Tus datos', 'Fecha y hora']).map((label, i) => {
               // Map step index to 4 visible stages
               const stageMap = [0, 1, 1, 2, 3]
               const curStage = stageMap[progressStep]
@@ -555,6 +574,24 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
 
               <StepTitle label={lang === 'en' ? 'When would you like to come?' : '¿Cuándo te gustaría venir?'} sub={selDay ? `${MONTHS(lang)[calMonth]} ${selDay} — ${lang === 'en' ? 'choose your time' : 'elige tu hora'}` : (lang === 'en' ? 'Select the day' : 'Selecciona el día')} />
 
+              {/* Salida rápida — ya tenemos nombre/teléfono, así que saltarse
+                  fecha/hora exacta sigue siendo un lead recuperable, no uno perdido. */}
+              <button
+                type="button"
+                onClick={() => finalizeBooking(null, null)}
+                disabled={submitting}
+                style={{
+                  width: '100%', background: 'transparent', border: `1.5px dashed ${C.cardBrd}`,
+                  borderRadius: 8, padding: '12px 16px', marginBottom: 20, cursor: submitting ? 'default' : 'pointer',
+                  display: 'flex', alignItems: 'center', gap: 10, color: C.sec, fontSize: 13,
+                  transition: 'all 0.18s ease',
+                }}
+              >
+                <Icon name="chat" size={16} style={{ color: C.accent, flexShrink: 0 }} />
+                <span>{lang === 'en' ? "I'd rather coordinate the time via WhatsApp" : 'Prefiero coordinar la hora por WhatsApp'}</span>
+                <span style={{ marginLeft: 'auto' }}>→</span>
+              </button>
+
               {/* Calendar */}
               <div style={{ background: C.card, border: `1px solid ${C.cardBrd}`, borderRadius: 10, padding: 20, marginBottom: 24 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
@@ -634,39 +671,24 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
             </div>
           )}
 
-          {/* ── STEP: DETAILS + CONFIRM ────────────────────────────────── */}
+          {/* ── STEP: DETAILS ───────────────────────────────────────────── */}
           {step === 'details' && (
-            <form onSubmit={handleSubmit}>
-              {/* Booking summary card */}
-              <div style={{ background: C.card, border: `1px solid ${C.cardBrd}`, borderRadius: 10, padding: '18px 20px', marginBottom: 28 }}>
-                <p style={{ color: C.sec, fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: 14 }}>{lang === 'en' ? 'Your booking' : 'Tu reserva'}</p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  {[
-                    { label: lang === 'en' ? 'Service' : 'Servicio', val: service?.name ?? '—', icon: 'spa' },
-                    { label: lang === 'en' ? 'Date' : 'Fecha', val: selDay ? `${MONTHS(lang)[calMonth]} ${selDay}, ${calYear}` : '—', icon: 'calendar_month' },
-                    { label: lang === 'en' ? 'Time' : 'Hora', val: selTime ?? '—', icon: 'schedule' },
-                  ].map(({ label, val, icon }) => (
-                    <div key={label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ color: C.sec, fontSize: 12, display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <Icon name={icon} size={14} style={{ color: C.sec }} />{label}
-                      </span>
-                      <span style={{ color: C.text, fontSize: 13, fontWeight: 500 }}>{val}</span>
-                    </div>
-                  ))}
-                  <div style={{ borderTop: `1px solid ${C.div}`, paddingTop: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                    <span style={{ color: C.sec, fontSize: 12 }}>Total</span>
-                    <span style={{ color: C.accent, fontSize: 22, fontWeight: 700 }}>{selectedPrice ? fmtCop(selectedPrice.value) : '—'}</span>
-                  </div>
+            <div>
+              {/* Mini summary chip — igual que en datetime, servicio ya elegido */}
+              {service && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 24, background: C.card, border: `1px solid ${C.cardBrd}`, borderRadius: 8, padding: '10px 14px' }}>
+                  <Icon name="spa" size={16} style={{ color: C.accent, flexShrink: 0 }} />
+                  <span style={{ color: C.text, fontSize: 13, fontWeight: 600 }}>{service.name}</span>
+                  {selectedPrice && <span style={{ color: C.accent, fontSize: 13, fontWeight: 700, marginLeft: 'auto' }}>{fmtCop(selectedPrice.value)}</span>}
                 </div>
-              </div>
+              )}
 
-              <StepTitle label={lang === 'en' ? 'Your details' : 'Tus datos'} sub={lang === 'en' ? 'Last step — just a few details to confirm' : 'Último paso — solo unos datos para confirmar'} />
+              <StepTitle label={lang === 'en' ? 'Your details' : 'Tus datos'} sub={lang === 'en' ? "We'll pick the date and time next" : 'A continuación eliges fecha y hora'} />
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 18, marginBottom: 24 }}>
                 {([
                   { id: 'name', label: lang === 'en' ? 'Full name' : 'Nombre completo', type: 'text', required: true },
                   { id: 'phone', label: lang === 'en' ? 'Phone / WhatsApp' : 'Teléfono / WhatsApp', type: 'tel', required: true },
-                  { id: 'email', label: lang === 'en' ? 'Email (optional)' : 'Email (opcional)', type: 'email', required: false },
                 ] as const).map(f => (
                   <div key={f.id}>
                     <label style={{ display: 'block', color: C.sec, fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
@@ -723,12 +745,13 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
                 ))}
               </div>
 
-              {/* Sticky confirm */}
+              {/* Sticky continue */}
               <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '14px 16px', background: `${C.bg}f4`, backdropFilter: 'blur(10px)', borderTop: `1px solid ${C.div}`, zIndex: 50 }}>
-                <div style={{ maxWidth: 640, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <div style={{ maxWidth: 640, margin: '0 auto' }}>
                   <button
-                    type="submit"
-                    disabled={!form.name.trim() || !form.phone.trim() || submitting}
+                    type="button"
+                    disabled={!form.name.trim() || !form.phone.trim()}
+                    onClick={() => go('datetime')}
                     className="btn-confirm"
                     style={{
                       width: '100%', padding: '16px', fontSize: 15, fontWeight: 700,
@@ -738,34 +761,11 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
                       transition: 'all 0.2s', letterSpacing: '0.03em',
                     }}
                   >
-                    {submitting ? (lang === 'en' ? 'Sending...' : 'Enviando…') : `${lang === 'en' ? 'Confirm booking' : 'Confirmar reserva'}${selectedPrice ? ` — ${fmtCop(selectedPrice.value)}` : ''}`}
+                    {lang === 'en' ? 'Continue' : 'Continuar'}
                   </button>
-                  <div style={{ textAlign: 'center' }}>
-                    <a
-                      href={`https://wa.me/573054541635?text=${encodeURIComponent('Hola Diamond Spa, quisiera reservar una cita.')}`}
-                      target="_blank" rel="noopener noreferrer"
-                      onClick={() => {
-                        try {
-                          const p = new URLSearchParams(window.location.search)
-                          const campaign = p.get('utm_campaign') || sessionStorage.getItem('sem_campaign') || ''
-                          const adgroupFallback = p.get('adgroup') || sessionStorage.getItem('sem_adgroup') || ''
-                          const payload: Record<string, string> = { source: 'booking_wizard', button: 'fallback_link' }
-                          if (campaign) payload.campaign = campaign
-                          if (adgroupFallback) payload.adgroup = adgroupFallback
-                          pushEvent('whatsapp_click', payload)
-                          if (campaign || adgroupFallback || sessionStorage.getItem('sem_trigger_key')) {
-                            pushEvent('whatsapp_lead_ads', payload)
-                          }
-                        } catch { /* sessionStorage unavailable */ }
-                      }}
-                      style={{ color: C.sec, fontSize: 12, textDecoration: 'none' }}
-                    >
-                      {lang === 'en' ? 'Prefer WhatsApp? Book here →' : '¿Prefieres WhatsApp? Reserva aquí →'}
-                    </a>
-                  </div>
                 </div>
               </div>
-            </form>
+            </div>
           )}
 
         </div>
