@@ -1,4 +1,4 @@
-import { getAdminJsonLd, getAdminSemConfig } from '@/lib/landing-meta'
+import { getAdminSemConfig } from '@/lib/landing-meta'
 import LandingSemInit from '@/components/LandingSemInit'
 
 interface Props {
@@ -7,11 +7,7 @@ interface Props {
 }
 
 export default async function LandingHead({ path, locale }: Props) {
-  // Fetch both in parallel
-  const [jsonLdRaw, semConfig] = await Promise.all([
-    getAdminJsonLd(path, locale),
-    getAdminSemConfig(path),
-  ])
+  const semConfig = await getAdminSemConfig(path)
 
   return (
     <>
@@ -24,17 +20,16 @@ export default async function LandingHead({ path, locale }: Props) {
         canonical". Keep hreflang in metadata only.
       */}
 
-      {/* 1. Admin JSON-LD */}
-      {jsonLdRaw && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: jsonLdRaw.replace(/</g, '\\u003c'),
-          }}
-        />
-      )}
+      {/*
+        JSON-LD: NOT rendered here anymore. The parent page.tsx already
+        renders one DaySpa block via localBusinessJsonLd(locale) for every
+        landing on this shared route. This admin-stored block used to render
+        a second, near-identical DaySpa entity with its own aggregateRating,
+        which Search Console flagged as invalid ("multiple aggregate ratings
+        for the same entity") on every ad landing page.
+      */}
 
-      {/* 2 & 3. SEM trigger sync (client-side) */}
+      {/* SEM trigger sync (client-side) */}
       {semConfig && (
         <LandingSemInit
           triggerKey={semConfig.triggerKey}
