@@ -712,8 +712,13 @@ function weekdayName(index: number): string {
   return WEEKDAY_LONG.format(new Date(Date.UTC(2024, 0, 1 + index, 12)))
 }
 
+/** Clave de la serie combinada: suma de todos los meses visibles. */
+const TOTAL_KEY = '*'
+const TOTAL_COLOR = '#a5cce6'
+
 function WeekdayByMonthChart({ daily }: { daily: BoldDay[] }) {
   const [hidden, setHidden] = useState<string[]>([])
+  const [combined, setCombined] = useState(false)
   const [hover, setHover] = useState<string | null>(null)
   const [pinned, setPinned] = useState<string | null>(null)
   const active = hover ?? pinned
@@ -725,7 +730,10 @@ function WeekdayByMonthChart({ daily }: { daily: BoldDay[] }) {
   }, [daily])
 
   const colorOf = useCallback(
-    (month: string) => MONTH_COLORS[months.indexOf(month) % MONTH_COLORS.length]!,
+    (month: string) =>
+      month === TOTAL_KEY
+        ? TOTAL_COLOR
+        : MONTH_COLORS[months.indexOf(month) % MONTH_COLORS.length]!,
     [months],
   )
 
@@ -748,12 +756,30 @@ function WeekdayByMonthChart({ daily }: { daily: BoldDay[] }) {
     return map
   }, [daily, months])
 
-  const cellOf = (weekday: number, month: string) =>
-    cells.get(`${weekday}|${month}`) ?? { transactions: 0, grossCop: 0, days: 0 }
+  const cellOf = (weekday: number, month: string) => {
+    if (month === TOTAL_KEY) {
+      return visible.reduce(
+        (acc, m) => {
+          const c = cells.get(`${weekday}|${m}`)
+          if (!c) return acc
+          return {
+            transactions: acc.transactions + c.transactions,
+            grossCop: acc.grossCop + c.grossCop,
+            days: acc.days + c.days,
+          }
+        },
+        { transactions: 0, grossCop: 0, days: 0 },
+      )
+    }
+    return cells.get(`${weekday}|${month}`) ?? { transactions: 0, grossCop: 0, days: 0 }
+  }
+
+  /** Series dibujadas: un carril por mes, o uno solo con la suma. */
+  const series = combined ? [TOTAL_KEY] : visible
 
   const max = Math.max(
     1,
-    ...visible.flatMap(m => [0, 1, 2, 3, 4, 5, 6].map(w => cellOf(w, m).transactions)),
+    ...series.flatMap(m => [0, 1, 2, 3, 4, 5, 6].map(w => cellOf(w, m).transactions)),
   )
   const step = Math.max(1, Math.ceil(max / 4))
   const scaleMax = step * 4
@@ -761,16 +787,16 @@ function WeekdayByMonthChart({ daily }: { daily: BoldDay[] }) {
   /** Par día+mes con más transacciones entre los meses visibles. */
   const best = useMemo(() => {
     let top: { weekday: number; month: string; transactions: number } | null = null
-    for (const m of visible) {
+    for (const m of series) {
       for (let w = 0; w < 7; w++) {
         const { transactions } = cellOf(w, m)
         if (transactions > (top?.transactions ?? 0)) top = { weekday: w, month: m, transactions }
       }
     }
     return top
-  }, [cells, visible])
+  }, [cells, visible, combined])
 
-  const lanes = Math.max(visible.length, 1)
+  const lanes = Math.max(series.length, 1)
   const rowH = Math.max(34, Math.min(56, 18 * lanes + 16))
   const padLeft = 78
   const padRight = 12
@@ -789,9 +815,9 @@ function WeekdayByMonthChart({ daily }: { daily: BoldDay[] }) {
     if (!active) return null
     const [w, month] = active.split('|')
     const weekday = Number(w)
-    if (!month || !visible.includes(month)) return null
+    if (!month || !series.includes(month)) return null
     return { weekday, month, ...cellOf(weekday, month) }
-  }, [active, cells, visible])
+  }, [active, cells, visible, combined])
 
   const tooltipW = 208
   const tooltipH = 74
@@ -819,6 +845,26 @@ function WeekdayByMonthChart({ daily }: { daily: BoldDay[] }) {
     <div>
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-4">
         <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              setHover(null)
+              setPinned(null)
+              setCombined(c => !c)
+            }}
+            aria-pressed={combined}
+            className={`flex items-center gap-2 border px-3 min-h-9 font-label text-[10px] uppercase tracking-[0.15em] cursor-pointer transition-colors ${
+              combined
+                ? 'border-[#a5cce6]/70 text-[#001524] bg-[#a5cce6]'
+                : 'border-[#42484c]/60 text-[#cfe5fa] hover:bg-[#001524]'
+            }`}
+          >
+            <span
+              className="inline-block w-2.5 h-2.5"
+              style={{ backgroundColor: TOTAL_COLOR, opacity: combined ? 1 : 0.35 }}
+            />
+            {combined ? 'Ver por mes' : 'Sumar meses'}
+          </button>
           {months.map(m => {
             const off = hidden.includes(m)
             return (
@@ -845,10 +891,10 @@ function WeekdayByMonthChart({ daily }: { daily: BoldDay[] }) {
         <p className="text-[11px] text-[#5c656d] font-body leading-relaxed">
           {best && best.transactions > 0 ? (
             <>
-              Mejor combinación:{' '}
+              {combined ? 'Mejor día:' : 'Mejor combinación:'}{' '}
               <span className="text-[#cfe5fa]">
-                {capitalize(weekdayName(best.weekday))} de {monthLabel(best.month)} (
-                {best.transactions})
+                {capitalize(weekdayName(best.weekday))}
+                {combined ? '' : ` de ${monthLabel(best.month)}`} ({best.transactions})
               </span>
             </>
           ) : (
@@ -862,7 +908,11 @@ function WeekdayByMonthChart({ daily }: { daily: BoldDay[] }) {
           viewBox={`0 0 ${W} ${H}`}
           className="w-full min-w-[520px] h-auto"
           role="img"
-          aria-label="Transacciones por día de la semana, comparadas mes a mes. Pasa el mouse o toca una barra para ver el detalle."
+          aria-label={
+            combined
+              ? 'Transacciones por día de la semana, sumando todos los meses visibles. Pasa el mouse o toca una barra para ver el detalle.'
+              : 'Transacciones por día de la semana, comparadas mes a mes. Pasa el mouse o toca una barra para ver el detalle.'
+          }
         >
           {[0, 1, 2, 3, 4].map(i => {
             const v = step * i
@@ -894,7 +944,7 @@ function WeekdayByMonthChart({ daily }: { daily: BoldDay[] }) {
               >
                 {capitalize(weekdayName(w))}
               </text>
-              {visible.map((m, lane) => {
+              {series.map((m, lane) => {
                 const key = `${w}|${m}`
                 const cell = cellOf(w, m)
                 const isActive = active === key
@@ -922,7 +972,7 @@ function WeekdayByMonthChart({ daily }: { daily: BoldDay[] }) {
                       className="cursor-pointer"
                       role="button"
                       tabIndex={0}
-                      aria-label={`${weekdayName(w)} de ${monthLong(m)}: ${cell.transactions} transacciones en ${cell.days} ${cell.days === 1 ? 'día' : 'días'}, ${fmtCop(cell.grossCop)}`}
+                      aria-label={`${weekdayName(w)} ${m === TOTAL_KEY ? '(todos los meses)' : `de ${monthLong(m)}`}: ${cell.transactions} transacciones en ${cell.days} ${cell.days === 1 ? 'día' : 'días'}, ${fmtCop(cell.grossCop)}`}
                       onMouseEnter={() => setHover(key)}
                       onMouseLeave={() => setHover(null)}
                       onClick={() => setPinned(p => (p === key ? null : key))}
@@ -962,7 +1012,10 @@ function WeekdayByMonthChart({ daily }: { daily: BoldDay[] }) {
                 strokeOpacity="0.6"
               />
               <text x={tooltipX + 12} y={tooltipY + 18} fill="#8a9299" fontSize="11">
-                {capitalize(weekdayName(activeCell.weekday))} · {capitalize(monthLong(activeCell.month))}
+                {capitalize(weekdayName(activeCell.weekday))} ·{' '}
+                {activeCell.month === TOTAL_KEY
+                  ? 'Todos los meses'
+                  : capitalize(monthLong(activeCell.month))}
               </text>
               <text x={tooltipX + 12} y={tooltipY + 36} fill="#cfe5fa" fontSize="13" fontWeight="600">
                 {activeCell.transactions}{' '}
@@ -980,7 +1033,7 @@ function WeekdayByMonthChart({ daily }: { daily: BoldDay[] }) {
       </div>
       <p className="sr-only" aria-live="polite">
         {activeCell
-          ? `${weekdayName(activeCell.weekday)} de ${monthLong(activeCell.month)}: ${activeCell.transactions} transacciones, ${fmtCop(activeCell.grossCop)}`
+          ? `${weekdayName(activeCell.weekday)} ${activeCell.month === TOTAL_KEY ? '(todos los meses)' : `de ${monthLong(activeCell.month)}`}: ${activeCell.transactions} transacciones, ${fmtCop(activeCell.grossCop)}`
           : ''}
       </p>
     </div>
@@ -1339,7 +1392,7 @@ export default function BoldDashboardPage() {
         </h2>
         <p className="text-[11px] text-[#5c656d] font-body mb-4">
           Suma de transacciones de cada día de la semana, un color por mes. Toca un mes en la
-          leyenda para ocultarlo.
+          leyenda para ocultarlo, o «Sumar meses» para ver una sola barra por día.
         </p>
         {data && data.daily.length > 0 ? (
           <WeekdayByMonthChart daily={data.daily} />
