@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import PasswordInput from '@/components/admin/PasswordInput'
+import CodeInput from '@/components/admin/CodeInput'
 
 type Step = 'request' | 'confirm' | 'done'
 
@@ -164,16 +165,12 @@ export default function AccountClient({
           </p>
           <div className="flex flex-col gap-1.5">
             <label htmlFor="code" className={LABEL}>Código</label>
-            <input
+            <CodeInput
               id="code"
-              inputMode="numeric"
-              autoComplete="one-time-code"
               autoFocus
-              maxLength={6}
               value={code}
-              onChange={e => setCode(e.target.value.replace(/\D/g, ''))}
-              placeholder="000000"
-              className={`${FIELD} tracking-[0.5em] text-center text-lg`}
+              onValueChange={setCode}
+              className={FIELD}
               required
             />
           </div>

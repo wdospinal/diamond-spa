@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import PasswordInput from '@/components/admin/PasswordInput'
+import CodeInput from '@/components/admin/CodeInput'
 
 const fieldClass =
   'bg-[#0a2438] border-b border-[#42484c] focus:border-[#a5cce6] outline-none p-3 font-body text-sm text-[#cfe5fa]'
@@ -123,15 +124,12 @@ export default function ForgotForm() {
                 <label htmlFor="code" className={labelClass}>
                   Código
                 </label>
-                <input
+                <CodeInput
                   id="code"
-                  inputMode="numeric"
-                  autoComplete="one-time-code"
                   autoFocus
-                  maxLength={6}
                   value={code}
-                  onChange={e => setCode(e.target.value.replace(/\D/g, ''))}
-                  className={`${fieldClass} tracking-[0.5em]`}
+                  onValueChange={setCode}
+                  className={fieldClass}
                   required
                 />
               </div>
