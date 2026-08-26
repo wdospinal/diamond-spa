@@ -24,6 +24,8 @@ const nextConfig = {
       { source: '/en/services/depilacion-espalda',    destination: '/en/services/wax-back',            permanent: true },
       { source: '/en/services/depilacion-zona-perianal', destination: '/en/services/wax-perianal',     permanent: true },
       { source: '/en/services/depilacion-cuerpo-completo', destination: '/en/services/wax-full-body',  permanent: true },
+      // Root → Spanish (308 permanent — prevents Soft 404 on the domain root)
+      { source: '/',          destination: '/es',           permanent: true },
       // lang-less paths → Spanish (permanent so Google treats /es/* as canonical)
       { source: '/services',  destination: '/es/services',  permanent: true },
       { source: '/about',     destination: '/es/about',     permanent: true },
