@@ -120,6 +120,15 @@ export function hashCode(username: string, code: string): string {
   return createHmac('sha256', secret).update(`${username}:${code}`).digest('base64url')
 }
 
+/**
+ * Etiqueta del código de recuperación («olvidé mi contraseña»). Al ir dentro
+ * del HMAC, un código emitido para recuperar no sirve en el cambio de correo
+ * ni al revés, aunque ambos flujos compartan la misma columna.
+ */
+export function resetCodeScope(username: string): string {
+  return `reset:${username}`
+}
+
 export function codeMatches(username: string, code: string, stored: string | null): boolean {
   if (!stored) return false
   const expected = hashCode(username, code.trim())

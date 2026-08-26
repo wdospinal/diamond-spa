@@ -21,7 +21,108 @@ import {
   isValidEmail,
   saveAdminUser,
 } from '@/lib/admin-users'
+import { kvConfigured } from '@/lib/kv'
 import { clientIp, rateLimit, tooManyRequests } from '@/lib/rate-limit'
+import { supabaseConfigured } from '@/lib/supabase'
+
+/** Dónde se persisten las cuentas: lo primero que hay que mirar si el cambio falla. */
+function storageLabel(): string {
+  if (supabaseConfigured()) return 'Supabase (tabla public.admin_users)'
+  if (kvConfigured()) return 'Vercel KV / Upstash (hash admin_users)'
+  return 'archivo local data/admin-users.json'
+}
+
+function sanitizeDetail(raw: string): string {
+  return raw
+    .replace(/Bearer\s+\S+/gi, 'Bearer [redactado]')
+    .replace(/eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g, '[jwt]')
+    .slice(0, 400)
+}
+
+function nodeCode(err: unknown): string {
+  if (typeof err === 'object' && err && 'code' in err && typeof err.code === 'string') {
+    return err.code
+  }
+  return ''
+}
+
+/** Mensaje accionable para el panel: paso, almacén y causa. */
+function diagnoseFailure(err: unknown, step: string): { error: string; status: number } {
+  const raw = err instanceof Error ? err.message : String(err)
+  const fsCode = nodeCode(err)
+  const backend = storageLabel()
+  const detail = sanitizeDetail(raw)
+
+  if (isMissingTableError(err)) {
+    return {
+      status: 503,
+      error:
+        `Falta la tabla public.admin_users en Supabase. Corre las migraciones 0008, 0009 y 0010. ` +
+        `Paso: ${step}. Detalle: ${detail}`,
+    }
+  }
+
+  if (
+    raw.includes('PGRST204') ||
+    /Could not find the '.+' column/i.test(raw) ||
+    /column .+ does not exist/i.test(raw)
+  ) {
+    return {
+      status: 503,
+      error:
+        `La tabla admin_users existe pero le falta una columna. Corre las migraciones 0008–0010 ` +
+        `(0010 si falta is_superadmin). Paso: ${step}. Almacén: ${backend}. Detalle: ${detail}`,
+    }
+  }
+
+  if (raw.includes('PGRST125') || raw.includes('Invalid path')) {
+    return {
+      status: 503,
+      error:
+        `SUPABASE_URL está mal formado (PGRST125). Debe ser https://xxxx.supabase.co, sin /rest/v1. ` +
+        `Paso: ${step}. Detalle: ${detail}`,
+    }
+  }
+
+  if (raw.includes('Invalid API key') || (raw.includes('401') && /jwt/i.test(raw))) {
+    return {
+      status: 503,
+      error:
+        `SUPABASE_SERVICE_ROLE_KEY inválida o no autorizada. Paso: ${step}. Detalle: ${detail}`,
+    }
+  }
+
+  if (raw.includes('Supabase not configured')) {
+    return {
+      status: 503,
+      error: `Falta SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY. Paso: ${step}.`,
+    }
+  }
+
+  if (raw.includes('KV not configured') || raw.startsWith('KV ')) {
+    return {
+      status: 503,
+      error:
+        `Fallo en Vercel KV. Revisa KV_REST_API_URL y KV_REST_API_TOKEN. ` +
+        `Paso: ${step}. Detalle: ${detail}`,
+    }
+  }
+
+  if (fsCode === 'EACCES' || fsCode === 'ENOENT' || raw.includes('EACCES') || raw.includes('ENOENT')) {
+    return {
+      status: 500,
+      error:
+        `No se pudo leer o escribir data/admin-users.json (${fsCode || 'filesystem'}). ` +
+        `En Vercel el disco es efímero: configura Supabase. Paso: ${step}. Detalle: ${detail}`,
+    }
+  }
+
+  return {
+    status: 500,
+    error:
+      `No se pudo iniciar el cambio en el paso «${step}». Almacén: ${backend}. Causa: ${detail}`,
+  }
+}
 
 function codeEmailHtml(username: string, code: string): string {
   return `<div style="font-family:sans-serif;color:#1a1a1a;max-width:480px">
@@ -78,6 +179,7 @@ export async function POST(req: NextRequest) {
     )
   }
 
+  let step = 'comprobar si el correo ya está asociado'
   try {
     const clash = await emailTakenBy(email, username)
     if (clash) {
@@ -88,6 +190,7 @@ export async function POST(req: NextRequest) {
     }
 
     const code = generateCode()
+    step = 'leer la cuenta de administración'
     const user = await getOrCreateAdminUser(username)
     user.pendingEmail = email
     user.codeHash = hashCode(username, code)
@@ -96,6 +199,7 @@ export async function POST(req: NextRequest) {
 
     // El correo se envía ANTES de guardar: si Resend falla, no dejamos un
     // código vivo que nadie puede recibir.
+    step = 'enviar el código por correo (Resend)'
     const sent = await sendEmail({
       to: email,
       subject: `Código para cambiar tu contraseña — Diamond Spa`,
@@ -103,22 +207,20 @@ export async function POST(req: NextRequest) {
     })
     if (!sent) {
       return NextResponse.json(
-        { error: 'No se pudo enviar el correo. Revisa la dirección e inténtalo de nuevo.' },
+        {
+          error:
+            'No se pudo enviar el correo con Resend. Revisa RESEND_API_KEY y que el dominio de reserva@zanacode.com esté verificado. La dirección de destino también puede estar rechazada.',
+        },
         { status: 502 },
       )
     }
 
+    step = 'guardar el código pendiente en admin_users'
     await saveAdminUser(user)
     return NextResponse.json({ ok: true, email, expiresInMinutes: Math.round(CODE_TTL_MS / 60000) })
   } catch (err) {
-    console.error('admin password request failed', err)
-    if (isMissingTableError(err)) {
-      // Diagnóstico explícito: sin esto el fallo aparece como un 500 opaco.
-      return NextResponse.json(
-        { error: 'Falta la tabla admin_users. Corre la migración 0008 en Supabase.' },
-        { status: 503 },
-      )
-    }
-    return NextResponse.json({ error: 'No se pudo iniciar el cambio.' }, { status: 500 })
+    console.error('admin password request failed', { step, err })
+    const { error, status } = diagnoseFailure(err, step)
+    return NextResponse.json({ error }, { status })
   }
 }

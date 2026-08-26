@@ -92,7 +92,12 @@ export default function LoginForm({ next }: { next: string }) {
             {loading ? 'Entrando…' : 'Iniciar sesión'}
           </button>
         </form>
-        <p className="mt-10 text-center text-xs text-[#8a9299] font-body">
+        <p className="mt-6 text-center text-xs text-[#8a9299] font-body">
+          <Link href="/admin/forgot" className="text-[#a5cce6] hover:underline">
+            ¿Olvidaste tu contraseña?
+          </Link>
+        </p>
+        <p className="mt-6 text-center text-xs text-[#8a9299] font-body">
           <Link href="/" className="text-[#a5cce6] hover:underline">
             Volver al sitio
           </Link>
