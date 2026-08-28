@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { SPA_HOURS } from '@/lib/spa'
 
@@ -1239,20 +1240,31 @@ export default function BoldDashboardPage() {
             </p>
           ) : null}
         </div>
-        <div className="flex border border-[#42484c]/50 w-full sm:w-auto">
-          {RANGES.map(n => (
-            <button
-              key={n}
-              type="button"
-              onClick={() => setMonths(n)}
-              aria-pressed={months === n}
-              className={`flex-1 sm:flex-initial font-label text-[10px] uppercase tracking-[0.15em] px-4 min-h-11 sm:min-h-0 sm:py-2.5 transition-colors cursor-pointer ${
-                months === n ? 'bg-[#1a3d52] text-[#cfe5fa]' : 'text-[#8a9299] hover:bg-[#0a2438]'
-              }`}
-            >
-              {n} meses
-            </button>
-          ))}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+          <Link
+            href="/admin/bold/informe"
+            className="flex items-center justify-center gap-2 min-h-11 px-4 border border-[#42484c]/50 text-[#8a9299] font-label text-[10px] uppercase tracking-[0.15em] hover:bg-[#0a2438] hover:text-[#cfe5fa] transition-colors"
+          >
+            <span className="material-symbols-outlined text-[18px]" aria-hidden="true">
+              article
+            </span>
+            Informe 4 meses
+          </Link>
+          <div className="flex border border-[#42484c]/50 w-full sm:w-auto">
+            {RANGES.map(n => (
+              <button
+                key={n}
+                type="button"
+                onClick={() => setMonths(n)}
+                aria-pressed={months === n}
+                className={`flex-1 sm:flex-initial font-label text-[10px] uppercase tracking-[0.15em] px-4 min-h-11 sm:min-h-0 sm:py-2.5 transition-colors cursor-pointer ${
+                  months === n ? 'bg-[#1a3d52] text-[#cfe5fa]' : 'text-[#8a9299] hover:bg-[#0a2438]'
+                }`}
+              >
+                {n} meses
+              </button>
+            ))}
+          </div>
         </div>
       </header>
 
