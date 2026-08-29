@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "test": "node --experimental-strip-types --import ./scripts/ts-alias-hook.mjs --test 'src/lib/*.test.ts'",
     "clean": "rm -rf .next node_modules/.cache",
     "refresh-reviews": "node scripts/fetch-place-details.mjs",
     "migrate-to-supabase": "node scripts/migrate-to-supabase.mjs",

@@ -19,6 +19,7 @@
  * (e.g. "event" shows a broken "E…" instead of the glyph).
  */
 const ICON_NAMES = [
+  'account_balance_wallet',
   'add',
   'add_alert',
   'ads_click',

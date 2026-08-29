@@ -125,7 +125,7 @@ body {
   font-weight: 100 700;
   font-display: swap;
   /* ?v=2 busts the immutable 1-year cache — bump it whenever the subset file changes */
-  src: url('/fonts/material-symbols-outlined.woff2?v=2') format('woff2');
+  src: url('/fonts/material-symbols-outlined.woff2?v=3') format('woff2');
 }
 
 .material-symbols-outlined {
@@ -320,7 +320,7 @@ body {
   font-weight: 100 700;
   font-display: swap;
   /* ?v=2 busts the immutable 1-year cache — bump it whenever the subset file changes */
-  src: url('/fonts/material-symbols-outlined.woff2?v=2') format('woff2');
+  src: url('/fonts/material-symbols-outlined.woff2?v=3') format('woff2');
 }
 
 .material-symbols-outlined {

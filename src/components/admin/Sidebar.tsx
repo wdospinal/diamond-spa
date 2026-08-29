@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { href: '/admin/landings', icon: 'rocket_launch',  label: 'Landings'    },
   { href: '/admin/funnel',   icon: 'filter_alt',     label: 'Embudo'      },
   { href: '/admin/bold',     icon: 'payments',       label: 'Ventas Bold' },
+  { href: '/admin/caja',     icon: 'account_balance_wallet', label: 'Caja' },
 ]
 
 const DRAWER_ITEMS = [
