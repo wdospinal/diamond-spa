@@ -10,21 +10,22 @@
  * fallar el webhook sería peor, porque Meta lo reintenta en bucle.
  */
 
-const GRAPH = 'https://graph.facebook.com/v21.0'
+// TODO: cambiar a la versión más reciente
+const GRAPH = "https://graph.facebook.com/v21.0";
 
 export interface WhatsappConn {
-  token: string
-  phoneNumberId: string
+  token: string;
+  phoneNumberId: string;
 }
 
 export function whatsappEnv(): WhatsappConn | null {
-  const token = process.env.WHATSAPP_TOKEN?.trim()
-  const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID?.trim()
-  return token && phoneNumberId ? { token, phoneNumberId } : null
+  const token = process.env.WHATSAPP_TOKEN?.trim();
+  const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID?.trim();
+  return token && phoneNumberId ? { token, phoneNumberId } : null;
 }
 
 export function whatsappConfigured(): boolean {
-  return whatsappEnv() !== null
+  return whatsappEnv() !== null;
 }
 
 /**
@@ -33,10 +34,10 @@ export function whatsappConfigured(): boolean {
  * (`+57 305 454 1635`, `573054541635`, …).
  */
 export function allowedSenders(): string[] {
-  return (process.env.WHATSAPP_ALLOWED_SENDERS ?? '')
-    .split(',')
-    .map(s => s.replace(/\D/g, ''))
-    .filter(Boolean)
+  return (process.env.WHATSAPP_ALLOWED_SENDERS ?? "")
+    .split(",")
+    .map((s) => s.replace(/\D/g, ""))
+    .filter(Boolean);
 }
 
 /**
@@ -47,56 +48,56 @@ export function allowedSenders(): string[] {
  * en Colombia el móvil de 10 dígitos identifica sin ambigüedad.
  */
 export function isAllowedSender(from: string): boolean {
-  const list = allowedSenders()
-  if (list.length === 0) return false
-  const tail = (n: string) => n.replace(/\D/g, '').slice(-10)
-  const incoming = tail(from)
-  return incoming.length === 10 && list.some(n => tail(n) === incoming)
+  const list = allowedSenders();
+  if (list.length === 0) return false;
+  const tail = (n: string) => n.replace(/\D/g, "").slice(-10);
+  const incoming = tail(from);
+  return incoming.length === 10 && list.some((n) => tail(n) === incoming);
 }
 
 async function graph(path: string, init?: RequestInit): Promise<Response> {
-  const conn = whatsappEnv()
-  if (!conn) throw new Error('WhatsApp not configured')
+  const conn = whatsappEnv();
+  if (!conn) throw new Error("WhatsApp not configured");
   return fetch(`${GRAPH}/${path}`, {
     ...init,
     headers: {
       Authorization: `Bearer ${conn.token}`,
-      ...(init?.body ? { 'Content-Type': 'application/json' } : {}),
+      ...(init?.body ? { "Content-Type": "application/json" } : {}),
       ...init?.headers,
     },
-    cache: 'no-store',
-  })
+    cache: "no-store",
+  });
 }
 
 /** Manda un mensaje ya armado. Devuelve el `wamid` del mensaje enviado, o null. */
 async function send(payload: Record<string, unknown>): Promise<string | null> {
-  const conn = whatsappEnv()
-  if (!conn) return null
+  const conn = whatsappEnv();
+  if (!conn) return null;
   try {
     const res = await graph(`${conn.phoneNumberId}/messages`, {
-      method: 'POST',
-      body: JSON.stringify({ messaging_product: 'whatsapp', ...payload }),
-    })
+      method: "POST",
+      body: JSON.stringify({ messaging_product: "whatsapp", ...payload }),
+    });
     if (!res.ok) {
-      console.error('WhatsApp send failed:', res.status, await res.text())
-      return null
+      console.error("WhatsApp send failed:", res.status, await res.text());
+      return null;
     }
-    const json = (await res.json()) as { messages?: { id: string }[] }
-    return json.messages?.[0]?.id ?? null
+    const json = (await res.json()) as { messages?: { id: string }[] };
+    return json.messages?.[0]?.id ?? null;
   } catch (err) {
-    console.error('WhatsApp send error:', err)
-    return null
+    console.error("WhatsApp send error:", err);
+    return null;
   }
 }
 
 export function sendText(to: string, body: string): Promise<string | null> {
-  return send({ to, type: 'text', text: { body, preview_url: false } })
+  return send({ to, type: "text", text: { body, preview_url: false } });
 }
 
 export interface ReplyOption {
-  id: string
-  title: string
-  description?: string
+  id: string;
+  title: string;
+  description?: string;
 }
 
 /** Botones de respuesta rápida. La Cloud API admite 3 como máximo. */
@@ -107,19 +108,19 @@ export function sendButtons(
 ): Promise<string | null> {
   return send({
     to,
-    type: 'interactive',
+    type: "interactive",
     interactive: {
-      type: 'button',
+      type: "button",
       body: { text: body },
       action: {
-        buttons: options.slice(0, 3).map(o => ({
-          type: 'reply',
+        buttons: options.slice(0, 3).map((o) => ({
+          type: "reply",
           // Los títulos de botón no pasan de 20 caracteres.
           reply: { id: o.id, title: o.title.slice(0, 20) },
         })),
       },
     },
-  })
+  });
 }
 
 /** Lista desplegable. La Cloud API admite 10 filas como máximo. */
@@ -131,25 +132,27 @@ export function sendList(
 ): Promise<string | null> {
   return send({
     to,
-    type: 'interactive',
+    type: "interactive",
     interactive: {
-      type: 'list',
+      type: "list",
       body: { text: body },
       action: {
         button: buttonLabel.slice(0, 20),
         sections: [
           {
-            title: 'Opciones',
-            rows: options.slice(0, 10).map(o => ({
+            title: "Opciones",
+            rows: options.slice(0, 10).map((o) => ({
               id: o.id,
               title: o.title.slice(0, 24),
-              ...(o.description ? { description: o.description.slice(0, 72) } : {}),
+              ...(o.description
+                ? { description: o.description.slice(0, 72) }
+                : {}),
             })),
           },
         ],
       },
     },
-  })
+  });
 }
 
 /**
@@ -160,25 +163,31 @@ export function sendList(
 export async function fetchMedia(
   mediaId: string,
 ): Promise<{ body: ArrayBuffer; mimeType: string } | null> {
-  const conn = whatsappEnv()
+  const conn = whatsappEnv();
   // Sin credenciales no hay nada que traer, y no es un error que valga la pena
   // registrar: en local es lo normal.
-  if (!conn) return null
+  if (!conn) return null;
 
   try {
-    const meta = await graph(mediaId)
-    if (!meta.ok) return null
-    const { url, mime_type } = (await meta.json()) as { url?: string; mime_type?: string }
-    if (!url) return null
+    const meta = await graph(mediaId);
+    if (!meta.ok) return null;
+    const { url, mime_type } = (await meta.json()) as {
+      url?: string;
+      mime_type?: string;
+    };
+    if (!url) return null;
 
     const file = await fetch(url, {
       headers: { Authorization: `Bearer ${conn.token}` },
-      cache: 'no-store',
-    })
-    if (!file.ok) return null
-    return { body: await file.arrayBuffer(), mimeType: mime_type ?? 'image/jpeg' }
+      cache: "no-store",
+    });
+    if (!file.ok) return null;
+    return {
+      body: await file.arrayBuffer(),
+      mimeType: mime_type ?? "image/jpeg",
+    };
   } catch (err) {
-    console.error('WhatsApp media error:', err)
-    return null
+    console.error("WhatsApp media error:", err);
+    return null;
   }
 }
