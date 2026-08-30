@@ -7,11 +7,11 @@ import { useEffect, useState } from 'react'
 const NAV_ITEMS = [
   { href: '/admin',          icon: 'dashboard',      label: 'Inicio'      },
   { href: '/admin/bookings', icon: 'calendar_month', label: 'Reservas'    },
-  { href: '/admin/blog',     icon: 'article',        label: 'Blog'        },
-  { href: '/admin/landings', icon: 'rocket_launch',  label: 'Landings'    },
-  { href: '/admin/funnel',   icon: 'filter_alt',     label: 'Embudo'      },
-  { href: '/admin/bold',     icon: 'payments',       label: 'Ventas Bold' },
-  { href: '/admin/caja',     icon: 'account_balance_wallet', label: 'Caja' },
+  { href: '/admin/blog',     icon: 'article',        label: 'Blog',        superadminOnly: true },
+  { href: '/admin/landings', icon: 'rocket_launch',  label: 'Landings',    superadminOnly: true },
+  { href: '/admin/funnel',   icon: 'filter_alt',     label: 'Embudo',      superadminOnly: true },
+  { href: '/admin/bold',     icon: 'payments',       label: 'Ventas Bold', superadminOnly: true },
+  { href: '/admin/caja',     icon: 'account_balance_wallet', label: 'Caja', superadminOnly: true },
 ]
 
 const DRAWER_ITEMS = [
@@ -32,7 +32,7 @@ function isNavActive(pathname: string, href: string) {
 }
 
 
-export default function Sidebar() {
+export default function Sidebar({ isSuperadmin }: { isSuperadmin: boolean }) {
   const pathname = usePathname()
   const router = useRouter()
   const [isMobileOpen, setIsMobileOpen] = useState(false)
@@ -128,7 +128,7 @@ export default function Sidebar() {
 
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto py-6 px-4 flex flex-col gap-2">
-          {NAV_ITEMS.map((item) => {
+          {NAV_ITEMS.filter(item => isSuperadmin || !item.superadminOnly).map((item) => {
             const isActive = isNavActive(pathname, item.href)
 
             return (
