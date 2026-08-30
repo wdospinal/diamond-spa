@@ -233,7 +233,7 @@ function LeadDetailModal({
         </div>
 
         {/* Pipedrive Interactive Stage Stepper */}
-        <div className="px-5 py-3 bg-[#071322] border-b border-[#1e385c] flex items-center gap-1 overflow-x-auto">
+        <div className="px-5 py-3 bg-[#071322] border-b border-[#1e385c] flex items-stretch gap-1 overflow-x-auto">
           {COLUMNS.map((c, i) => {
             const isCurrent = status === c.key
             return (
@@ -244,7 +244,7 @@ function LeadDetailModal({
                   setStatus(c.key)
                   if (c.key === 'completed') setPaymentStatus('paid')
                 }}
-                className={`flex-1 min-w-[100px] py-1.5 px-2 rounded text-xs font-bold font-label uppercase tracking-wider transition-all border text-center ${
+                className={`flex-1 basis-0 min-w-[100px] flex items-center justify-center text-center py-1.5 px-2 rounded text-xs font-bold font-label uppercase tracking-wider leading-tight transition-all border ${
                   isCurrent
                     ? 'bg-[#1a3860] text-white border-[#38bdf8] shadow'
                     : 'bg-[#0a182c] text-[#8a9299] border-[#1e385c] hover:bg-[#122744] hover:text-[#cfe5fa]'
