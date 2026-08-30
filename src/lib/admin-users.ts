@@ -4,7 +4,7 @@
  * 0009_seed_admin_users.sql.
  *
  * Backend, en el mismo orden que el resto de stores: Supabase (tabla
- * `admin_users`, ver supabase/migrations/0008_admin_users.sql) → Vercel KV
+ * `admin_users`, ver supabase/migrations/0008_admin_users.sql y 0013_admin_roles.sql) → Vercel KV
  * (hash `admin_users`) → data/admin-users.json.
  */
 
@@ -14,6 +14,7 @@ import { mkdir, readFile, writeFile } from 'fs/promises'
 import { dirname, join } from 'path'
 import { kvCommand, kvConfigured } from '@/lib/kv'
 import { sbInsert, sbSelect, sbUpsert, supabaseConfigured } from '@/lib/supabase'
+import { type AdminRole, DEFAULT_ADMIN_ROLE, roleFromLegacy } from '@/lib/admin-roles'
 
 const scrypt = promisify(scryptCb) as (
   password: string,
@@ -34,7 +35,7 @@ export interface AdminUser {
   username: string
   email: string | null
   passwordHash: string | null
-  isSuperadmin: boolean
+  role: AdminRole
   pendingEmail: string | null
   codeHash: string | null
   /** Epoch ms. */
@@ -47,7 +48,7 @@ function emptyUser(username: string): AdminUser {
     username,
     email: null,
     passwordHash: null,
-    isSuperadmin: false,
+    role: DEFAULT_ADMIN_ROLE,
     pendingEmail: null,
     codeHash: null,
     codeExpiresAt: null,
@@ -151,6 +152,8 @@ type Row = {
   username: string
   email: string | null
   password_hash: string | null
+  role?: string | null
+  /** Columna anterior a los tres roles; se mantiene sincronizada al guardar. */
   is_superadmin?: boolean | null
   pending_email: string | null
   code_hash: string | null
@@ -164,7 +167,7 @@ function fromRow(row: Row): AdminUser {
     username: row.username,
     email: row.email ?? null,
     passwordHash: row.password_hash ?? null,
-    isSuperadmin: row.is_superadmin === true,
+    role: roleFromLegacy(row.role, row.is_superadmin),
     pendingEmail: row.pending_email ?? null,
     codeHash: row.code_hash ?? null,
     codeExpiresAt: Number.isNaN(exp) ? null : exp,
@@ -177,7 +180,10 @@ function toRow(user: AdminUser): Row & { updated_at: string } {
     username: user.username,
     email: user.email,
     password_hash: user.passwordHash,
-    is_superadmin: user.isSuperadmin,
+    role: user.role,
+    // Se sigue escribiendo para que una versión anterior de la app desplegada
+    // en paralelo no vea al superadmin como una cuenta normal.
+    is_superadmin: user.role === 'superadmin',
     pending_email: user.pendingEmail,
     code_hash: user.codeHash,
     code_expires_at: user.codeExpiresAt ? new Date(user.codeExpiresAt).toISOString() : null,
@@ -194,7 +200,7 @@ async function readFileUsers(): Promise<Record<string, AdminUser>> {
     return Object.fromEntries(
       Object.entries(users).map(([username, user]) => [
         username,
-        { ...user, isSuperadmin: user.isSuperadmin === true },
+        { ...user, role: roleFromLegacy(user.role, (user as { isSuperadmin?: unknown }).isSuperadmin) },
       ]),
     )
   } catch (e: unknown) {
@@ -223,7 +229,7 @@ export function isMissingTableError(err: unknown): boolean {
     msg.includes('PGRST205') || msg.includes("Could not find the table 'public.admin_users'")
   if (missing) {
     console.error(
-      'admin_users no existe: corre las migraciones 0008, 0009 y 0010 en Supabase. ' +
+      'admin_users no existe: corre las migraciones 0008, 0009, 0010 y 0013 en Supabase. ' +
         'Hasta entonces NADIE puede entrar al panel.',
     )
   }
@@ -248,7 +254,7 @@ export async function getAdminUser(username: string): Promise<AdminUser | null> 
     if (typeof raw !== 'string') return null
     try {
       const user = JSON.parse(raw) as AdminUser
-      return { ...user, isSuperadmin: user.isSuperadmin === true }
+      return { ...user, role: roleFromLegacy(user.role, (user as { isSuperadmin?: unknown }).isSuperadmin) }
     } catch {
       return null
     }
@@ -282,9 +288,10 @@ function isDuplicateUsernameError(err: unknown): boolean {
 export async function createAdminUser(
   username: string,
   passwordHash: string,
+  role: AdminRole = DEFAULT_ADMIN_ROLE,
 ): Promise<boolean> {
   const name = normalizeUsername(username)
-  const user = { ...emptyUser(name), passwordHash }
+  const user = { ...emptyUser(name), passwordHash, role }
 
   if (supabaseConfigured()) {
     try {
@@ -307,9 +314,13 @@ export async function createAdminUser(
   return true
 }
 
-/** El privilegio se consulta en el store para que una revocación sea inmediata. */
+/** El rol se consulta en el store para que un cambio sea inmediato. */
+export async function getAdminRole(username: string): Promise<AdminRole | null> {
+  return (await getAdminUser(username))?.role ?? null
+}
+
 export async function isAdminSuperadmin(username: string): Promise<boolean> {
-  return (await getAdminUser(username))?.isSuperadmin === true
+  return (await getAdminRole(username)) === 'superadmin'
 }
 
 /** Lee la fila, o devuelve una vacía en memoria si la cuenta aún no existe. */
@@ -341,7 +352,7 @@ async function readAllAdminUsers(): Promise<AdminUser[]> {
         if (typeof raw[i] !== 'string') continue
         try {
           const user = JSON.parse(raw[i] as string) as AdminUser
-          all.push({ ...user, isSuperadmin: user.isSuperadmin === true })
+          all.push({ ...user, role: roleFromLegacy(user.role, (user as { isSuperadmin?: unknown }).isSuperadmin) })
         } catch {}
       }
     } else if (raw && typeof raw === 'object') {
@@ -349,7 +360,7 @@ async function readAllAdminUsers(): Promise<AdminUser[]> {
         if (typeof value !== 'string') continue
         try {
           const user = JSON.parse(value) as AdminUser
-          all.push({ ...user, isSuperadmin: user.isSuperadmin === true })
+          all.push({ ...user, role: roleFromLegacy(user.role, (user as { isSuperadmin?: unknown }).isSuperadmin) })
         } catch {}
       }
     }
@@ -402,7 +413,7 @@ export interface AdminAccountSummary {
   username: string
   /** Correo verificado, o null si todavía no asoció ninguno. */
   email: string | null
-  isSuperadmin: boolean
+  role: AdminRole
   /** false = la cuenta no tiene una contraseña utilizable. */
   hasOwnPassword: boolean
   /** Correo a la espera de un código sin usar, si hay un cambio a medias. */
@@ -414,7 +425,7 @@ export async function listAdminAccounts(): Promise<AdminAccountSummary[]> {
   const accounts = (await readAllAdminUsers()).map(user => ({
     username: user.username,
     email: user.email,
-    isSuperadmin: user.isSuperadmin,
+    role: user.role,
     hasOwnPassword: Boolean(user.passwordHash),
     // Un código caducado no cuenta como cambio en curso.
     pendingEmail: user.codeExpiresAt && user.codeExpiresAt > Date.now() ? user.pendingEmail : null,

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { currentAdminUser } from '@/lib/admin-guard'
+import { type AdminRole, DEFAULT_ADMIN_ROLE, isAdminRole, ROLE_LABELS } from '@/lib/admin-roles'
 import {
   createAdminUser,
   hashPassword,
@@ -28,9 +29,13 @@ export async function POST(req: NextRequest) {
       return tooManyRequests(limit.retryAfter, 'Demasiadas cuentas creadas. Espera unos minutos.')
     }
 
-    let body: { username?: unknown; temporaryPassword?: unknown }
+    let body: { username?: unknown; temporaryPassword?: unknown; role?: unknown }
     try {
-      body = (await req.json()) as { username?: unknown; temporaryPassword?: unknown }
+      body = (await req.json()) as {
+        username?: unknown
+        temporaryPassword?: unknown
+        role?: unknown
+      }
     } catch {
       return NextResponse.json({ error: 'JSON inválido' }, { status: 400 })
     }
@@ -38,6 +43,12 @@ export async function POST(req: NextRequest) {
     const username = normalizeUsername(typeof body.username === 'string' ? body.username : '')
     const temporaryPassword =
       typeof body.temporaryPassword === 'string' ? body.temporaryPassword : ''
+
+    // Sin rol explícito se crea la cuenta con los permisos más bajos.
+    const role: AdminRole = body.role === undefined ? DEFAULT_ADMIN_ROLE : (body.role as AdminRole)
+    if (!isAdminRole(role)) {
+      return NextResponse.json({ error: 'Rol inválido.' }, { status: 400 })
+    }
 
     const invalidUsername = usernameProblem(username)
     if (invalidUsername) {
@@ -48,12 +59,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: invalidPassword }, { status: 400 })
     }
 
-    const created = await createAdminUser(username, await hashPassword(temporaryPassword))
+    const created = await createAdminUser(username, await hashPassword(temporaryPassword), role)
     if (!created) {
       return NextResponse.json({ error: 'Ese usuario ya existe.' }, { status: 409 })
     }
 
-    return NextResponse.json({ ok: true, username }, { status: 201 })
+    return NextResponse.json(
+      { ok: true, username, role, roleLabel: ROLE_LABELS[role] },
+      { status: 201 },
+    )
   } catch (err) {
     console.error('admin user creation failed', err)
     return NextResponse.json({ error: 'No se pudo crear el usuario.' }, { status: 500 })

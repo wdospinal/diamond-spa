@@ -57,7 +57,7 @@ function diagnoseFailure(err: unknown, step: string): { error: string; status: n
     return {
       status: 503,
       error:
-        `Falta la tabla public.admin_users en Supabase. Corre las migraciones 0008, 0009 y 0010. ` +
+        `Falta la tabla public.admin_users en Supabase. Corre las migraciones 0008, 0009, 0010 y 0013. ` +
         `Paso: ${step}. Detalle: ${detail}`,
     }
   }
@@ -70,8 +70,8 @@ function diagnoseFailure(err: unknown, step: string): { error: string; status: n
     return {
       status: 503,
       error:
-        `La tabla admin_users existe pero le falta una columna. Corre las migraciones 0008–0010 ` +
-        `(0010 si falta is_superadmin). Paso: ${step}. Almacén: ${backend}. Detalle: ${detail}`,
+        `La tabla admin_users existe pero le falta una columna. Corre las migraciones 0008–0013 ` +
+        `(0013 si falta role). Paso: ${step}. Almacén: ${backend}. Detalle: ${detail}`,
     }
   }
 

@@ -2,6 +2,13 @@
 
 import { useState } from 'react'
 import PasswordInput from '@/components/admin/PasswordInput'
+import { ADMIN_ROLES, DEFAULT_ADMIN_ROLE, ROLE_LABELS, type AdminRole } from '@/lib/admin-roles'
+
+const ROLE_HINTS: Record<AdminRole, string> = {
+  recepcionista: 'Inicio y Reservas.',
+  ads_manager: 'Inicio, Reservas, Blog, Landings y Embudo.',
+  superadmin: 'Todo el panel, incluidas Ventas Bold, Caja y la creación de usuarios.',
+}
 
 const FIELD =
   'bg-surface-variant/40 border border-outline-variant/30 focus:border-primary outline-none ' +
@@ -15,14 +22,17 @@ export default function CreateAdminUserCard() {
   const [username, setUsername] = useState('')
   const [temporaryPassword, setTemporaryPassword] = useState('')
   const [repeatPassword, setRepeatPassword] = useState('')
+  const [role, setRole] = useState<AdminRole>(DEFAULT_ADMIN_ROLE)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [createdUser, setCreatedUser] = useState('')
+  const [createdRole, setCreatedRole] = useState('')
 
   async function createUser(e: React.FormEvent) {
     e.preventDefault()
     setError('')
     setCreatedUser('')
+    setCreatedRole('')
     if (temporaryPassword !== repeatPassword) {
       setError('Las dos contraseñas no coinciden.')
       return
@@ -33,7 +43,7 @@ export default function CreateAdminUserCard() {
       const res = await fetch('/api/admin/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, temporaryPassword }),
+        body: JSON.stringify({ username, temporaryPassword, role }),
       })
       const data = (await res.json().catch(() => ({}))) as Record<string, unknown>
       if (!res.ok) {
@@ -43,7 +53,9 @@ export default function CreateAdminUserCard() {
 
       const savedUsername = typeof data.username === 'string' ? data.username : username
       setCreatedUser(savedUsername)
+      setCreatedRole(typeof data.roleLabel === 'string' ? data.roleLabel : ROLE_LABELS[role])
       setUsername('')
+      setRole(DEFAULT_ADMIN_ROLE)
       setTemporaryPassword('')
       setRepeatPassword('')
     } catch {
@@ -69,7 +81,7 @@ export default function CreateAdminUserCard() {
             </span>
           </div>
           <p className="text-sm text-on-surface/60 leading-relaxed">
-            Crea una cuenta normal con una contraseña temporal. La persona debe cambiarla desde
+            Crea una cuenta con su rol y una contraseña temporal. La persona debe cambiarla desde
             Mi cuenta.
           </p>
         </div>
@@ -97,8 +109,8 @@ export default function CreateAdminUserCard() {
             check_circle
           </span>
           <span>
-            Usuario <strong>{createdUser}</strong> creado. Comparte la contraseña temporal por un
-            canal seguro.
+            Usuario <strong>{createdUser}</strong> creado como <strong>{createdRole}</strong>.
+            Comparte la contraseña temporal por un canal seguro.
           </span>
         </p>
       ) : null}
@@ -124,6 +136,25 @@ export default function CreateAdminUserCard() {
           <p className="text-xs text-on-surface/40 font-body">
             Entre 2 y 32 caracteres: letras minúsculas, números, punto, guion o guion bajo.
           </p>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="new-admin-role" className={LABEL}>
+            Rol
+          </label>
+          <select
+            id="new-admin-role"
+            value={role}
+            onChange={e => setRole(e.target.value as AdminRole)}
+            className={FIELD}
+          >
+            {ADMIN_ROLES.map(option => (
+              <option key={option} value={option}>
+                {ROLE_LABELS[option]}
+              </option>
+            ))}
+          </select>
+          <p className="text-xs text-on-surface/40 font-body">{ROLE_HINTS[role]}</p>
         </div>
 
         <div className="flex flex-col gap-1.5">
