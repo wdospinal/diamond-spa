@@ -935,7 +935,10 @@ export default function KanbanBoard({
       {/* Quick Search & Filter Toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-3 bg-[#0a1628]/60 p-2.5 rounded-xl border border-[#1e3358]/60">
         <div className="relative flex-1 min-w-0 max-w-md">
-          <span className="material-symbols-outlined absolute left-3 top-2.5 text-[#8a9299] text-base">
+          <span
+            className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#8a9299] text-base pointer-events-none"
+            aria-hidden="true"
+          >
             search
           </span>
           <input
@@ -948,7 +951,7 @@ export default function KanbanBoard({
           {filterQuery && (
             <button
               onClick={() => setFilterQuery('')}
-              className="absolute right-2.5 top-2 text-[#8a9299] hover:text-white text-xs"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 leading-none text-[#8a9299] hover:text-white text-xs"
             >
               ✕
             </button>
