@@ -9,7 +9,7 @@
  * quedó guardado y lo único que se pierde es el acuse por WhatsApp: hacer
  * fallar el webhook sería peor, porque Meta lo reintenta en bucle.
  */
-
+// TODO: Cambiar a la versión más reciente
 const GRAPH = "https://graph.facebook.com/v21.0";
 
 export interface WhatsappConn {
