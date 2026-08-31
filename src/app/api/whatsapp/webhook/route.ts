@@ -21,6 +21,11 @@ import { isAllowedSender } from '@/lib/whatsapp'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
+/** Últimos 4 dígitos: basta para identificar quién escribió sin volcar el número al log. */
+function maskNumber(n: string): string {
+  return `…${n.replace(/\D/g, '').slice(-4)}`
+}
+
 /** Handshake de alta del webhook: Meta pide que le devuelvan el challenge. */
 export async function GET(req: NextRequest) {
   const params = req.nextUrl.searchParams
@@ -64,8 +69,22 @@ export async function POST(req: NextRequest) {
   // Meta reintente la misma entrega en bucle. Los fallos se registran en el log
   // y el comprobante se puede cargar a mano desde /admin/caja.
   try {
-    for (const msg of extractMessages(payload)) {
-      if (!isAllowedSender(msg.from)) continue
+    const messages = extractMessages(payload)
+    // Se registra cada decisión. Esto no es depuración pasajera: descartar el
+    // comprobante de un pago sin dejar rastro es indistinguible de perderlo, y
+    // el log es la única forma de auditar por qué algo no aparece en la caja.
+    if (messages.length === 0) {
+      console.log('[whatsapp] entrega sin mensajes (probablemente un estado de envío)')
+    }
+    for (const msg of messages) {
+      if (!isAllowedSender(msg.from)) {
+        console.warn(
+          `[whatsapp] remitente NO autorizado: ${maskNumber(msg.from)} — ` +
+            'agrégalo a WHATSAPP_ALLOWED_SENDERS si debe poder registrar movimientos.',
+        )
+        continue
+      }
+      console.log(`[whatsapp] procesando ${msg.id} de ${maskNumber(msg.from)}`)
       await handleMessage(msg)
     }
   } catch (err) {

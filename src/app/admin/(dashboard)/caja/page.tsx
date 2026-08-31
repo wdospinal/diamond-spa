@@ -20,6 +20,7 @@ import {
 } from '@/lib/ledger-types'
 import { summarize, type CashSummary } from '@/lib/cash-summary'
 import { formatCop, getMassageServices, getFacialServices, getHairRemovalServices } from '@/lib/services'
+import { STAFF_NAMES } from '@/lib/staff'
 
 interface LedgerResponse {
   from: string
@@ -267,13 +268,24 @@ function EntryRow({
 
           <label className="text-[11px] text-[#5c656d] font-body">
             Terapeuta
-            <input
-              defaultValue={entry.therapist ?? ''}
-              onBlur={e =>
-                e.target.value !== (entry.therapist ?? '') && void patch({ therapist: e.target.value })
-              }
+            <select
+              value={entry.therapist ?? ''}
+              onChange={e => void patch({ therapist: e.target.value })}
               className="mt-1 w-full bg-surface-container border border-[#1b3346] rounded px-2 py-1.5 text-sm text-[#cfe5fa]"
-            />
+            >
+              <option value="">— sin asignar —</option>
+              {/* Un nombre que venga de WhatsApp y ya no esté en la lista (alguien
+                  que salió del equipo) se conserva como opción, para no borrarlo
+                  en silencio al abrir un movimiento viejo. */}
+              {entry.therapist && !STAFF_NAMES.includes(entry.therapist) ? (
+                <option value={entry.therapist}>{entry.therapist}</option>
+              ) : null}
+              {STAFF_NAMES.map(n => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
+            </select>
           </label>
 
           <div className="col-span-2 md:col-span-4 flex items-center justify-between gap-3">

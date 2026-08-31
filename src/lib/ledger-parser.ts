@@ -17,6 +17,7 @@
 
 import { parseCop } from '@/lib/bold-parser'
 import { getServicePrice, SERVICES } from '@/lib/services'
+import { STAFF_ALIASES } from '@/lib/staff'
 import type { ExpenseCategoryId, LedgerKind } from '@/lib/ledger-types'
 
 export interface ParsedEntry {
@@ -126,31 +127,8 @@ function matchService(text: string): ServiceMatch | null {
 
 // ─── Terapeutas ─────────────────────────────────────────────────────────────────
 
-/**
- * Nombre de pila → nombre para mostrar.
- *
- * A propósito NO sale de `THERAPISTS` (la lista del equipo en la página): el
- * chat nombra a personas que no están publicadas, y si alguien se quita de la
- * web sus movimientos pasados dejarían de reconocerse. La contabilidad necesita
- * su propia lista, que crece agregando una línea aquí.
- * `sarira` es como quedó escrito «Saira» en un mensaje real.
- */
-const THERAPIST_ALIASES = new Map<string, string>([
-  ['daniela', 'Daniela Salina'],
-  ['dani', 'Daniela Salina'],
-  ['sary', 'Sary Paez'],
-  ['ana', 'Ana Maria'],
-  ['sheyla', 'Sheyla Tinoco'],
-  ['sheila', 'Sheyla Tinoco'],
-  ['tatiana', 'Tatiana'],
-  ['saira', 'Saira Bedoya'],
-  ['sarira', 'Saira Bedoya'],
-  ['nicol', 'Nicol'],
-  ['angelica', 'Angélica'],
-])
-
 function matchTherapist(text: string): string | null {
-  for (const [alias, name] of THERAPIST_ALIASES) {
+  for (const [alias, name] of STAFF_ALIASES) {
     if (new RegExp(`\\b${alias}\\b`).test(text)) return name
   }
   return null
