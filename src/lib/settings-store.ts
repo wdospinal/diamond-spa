@@ -2,7 +2,7 @@
  * Configuración compartida por todo el equipo.
  *
  * Preferencia de backend — Supabase → Vercel KV → archivo JSON, igual que el
- * resto de stores. Esquema en supabase/migrations/0012_app_settings.sql.
+ * resto de stores. Esquema en supabase/migrations/0014_app_settings.sql.
  *
  * Es a propósito un almacén compartido y no `localStorage`: el día de corte
  * decide qué movimientos entran en cada período, así que si cada navegador
