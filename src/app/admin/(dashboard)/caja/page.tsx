@@ -71,7 +71,18 @@ function Kpi({ label, value, tone }: { label: string; value: string; tone?: 'goo
   return (
     <div className="rounded bg-surface-container-low border border-[#1b3346] px-4 py-3">
       <div className="text-[10px] uppercase tracking-wider text-[#5c656d] font-body">{label}</div>
-      <div className={`font-headline text-xl md:text-2xl mt-1 ${color}`}>{value}</div>
+      {/* Cifras en la fuente del cuerpo, no en la de titulares: Playfair usa
+          cifras de estilo antiguo (el «0» mide 12.7 px contra 17.3 px de la
+          «C»), así que el número quedaba visiblemente más bajo que el «$» y el
+          «COP». Forzar `lnum` no es fiable —la variante de Google Fonts no
+          expone esa característica—, y Manrope ya trae cifras a altura de
+          mayúscula. `tabular-nums` les da ancho fijo para que las cuatro
+          tarjetas queden alineadas entre sí. */}
+      <div
+        className={`font-body tabular-nums font-light tracking-tight text-xl md:text-2xl mt-1 ${color}`}
+      >
+        {value}
+      </div>
     </div>
   )
 }
