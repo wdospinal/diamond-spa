@@ -10,7 +10,6 @@
  * fallar el webhook sería peor, porque Meta lo reintenta en bucle.
  */
 
-// TODO: cambiar a la versión más reciente
 const GRAPH = "https://graph.facebook.com/v21.0";
 
 export interface WhatsappConn {
