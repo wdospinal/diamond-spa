@@ -5,6 +5,7 @@ import PasswordInput from '@/components/admin/PasswordInput'
 import { ADMIN_ROLES, DEFAULT_ADMIN_ROLE, ROLE_LABELS, type AdminRole } from '@/lib/admin-roles'
 
 const ROLE_HINTS: Record<AdminRole, string> = {
+  terapeuta: 'Inicio y Reservas, sin datos de Ads.',
   recepcionista: 'Inicio y Reservas.',
   ads_manager: 'Inicio, Reservas, Blog, Landings y Embudo.',
   superadmin: 'Todo el panel, incluidas Ventas Bold, Caja y la creación de usuarios.',

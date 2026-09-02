@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useMemo, useEffect, useRef } from 'react'
+import { hidesAdsAttribution, type AdminRole } from '@/lib/admin-roles'
+import { bogotaDay } from '@/lib/bogota'
 import type { BookingRecord } from '@/lib/booking-types'
 import { bookingDisplayName } from '@/lib/booking-types'
 
@@ -97,11 +99,13 @@ function LeadDetailModal({
   onClose,
   onSaved,
   onDeleteRequest,
+  showAds,
 }: {
   booking: BookingRecord
   onClose: () => void
   onSaved: () => void
   onDeleteRequest: (booking: BookingRecord) => void
+  showAds: boolean
 }) {
   const [name, setName] = useState(booking.name || '')
   const [phone, setPhone] = useState(booking.phone || '')
@@ -195,15 +199,17 @@ function LeadDetailModal({
               <span className="font-headline text-lg sm:text-xl font-bold text-[#cfe5fa] truncate">
                 {name || phone || 'Detalle del Lead'}
               </span>
-              <span
-                className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                  booking.source === 'ads' || Boolean(gclid)
-                    ? 'bg-[#38bdf8]/15 text-[#38bdf8] border-[#38bdf8]/30'
-                    : 'bg-[#8a9299]/15 text-[#8a9299] border-[#8a9299]/20'
-                }`}
-              >
-                {booking.source === 'ads' || Boolean(gclid) ? 'Google Ads' : 'Orgánico'}
-              </span>
+              {showAds && (
+                <span
+                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                    booking.source === 'ads' || Boolean(gclid)
+                      ? 'bg-[#38bdf8]/15 text-[#38bdf8] border-[#38bdf8]/30'
+                      : 'bg-[#8a9299]/15 text-[#8a9299] border-[#8a9299]/20'
+                  }`}
+                >
+                  {booking.source === 'ads' || Boolean(gclid) ? 'Google Ads' : 'Orgánico'}
+                </span>
+              )}
             </div>
             <p className="text-[#8a9299] text-xs font-mono mt-0.5">ID: {booking.id}</p>
           </div>
@@ -259,40 +265,42 @@ function LeadDetailModal({
         {/* Scrollable Form Body */}
         <form onSubmit={handleSubmit} className="p-6 overflow-y-auto flex flex-col gap-4">
           {/* Prominent GCLID Attribution Box */}
-          <div className="p-3.5 rounded-xl bg-[#071322] border border-[#38bdf8]/40 shadow-inner flex flex-col gap-2">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-bold text-[#38bdf8] flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-[18px]">ads_click</span>
-                Google Click ID (GCLID):
-              </span>
-              <span className="text-[10px] text-[#8a9299] font-mono">
-                {booking.adgroup ? `Grupo de anuncios: ${booking.adgroup}` : 'Atribución de Ads'}
-              </span>
-            </div>
+          {showAds && (
+            <div className="p-3.5 rounded-xl bg-[#071322] border border-[#38bdf8]/40 shadow-inner flex flex-col gap-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-bold text-[#38bdf8] flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-[18px]">ads_click</span>
+                  Google Click ID (GCLID):
+                </span>
+                <span className="text-[10px] text-[#8a9299] font-mono">
+                  {booking.adgroup ? `Grupo de anuncios: ${booking.adgroup}` : 'Atribución de Ads'}
+                </span>
+              </div>
 
-            {gclid ? (
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  readOnly
-                  value={gclid}
-                  className="flex-1 bg-[#0a182c] border border-[#1e385c] text-[#38bdf8] text-xs font-mono rounded-lg px-3 py-2 outline-none select-all font-semibold"
-                />
-                <button
-                  type="button"
-                  onClick={handleCopyGclid}
-                  className="bg-[#1a3860] hover:bg-[#254e85] text-[#38bdf8] text-xs font-bold px-3.5 py-2 rounded-lg transition-colors shadow flex items-center gap-1"
-                >
-                  <span className="material-symbols-outlined text-[14px]">content_copy</span>
-                  <span>{copiedGclid ? '¡Copiado!' : 'Copiar'}</span>
-                </button>
-              </div>
-            ) : (
-              <div className="text-xs text-[#8a9299] italic bg-[#0a182c] p-2 rounded-lg border border-[#1e385c]">
-                Sin GCLID detectado (Tráfico Directo u Orgánico). Google Ads emparejará este lead automáticamente por número de teléfono (Enhanced Conversions).
-              </div>
-            )}
-          </div>
+              {gclid ? (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    readOnly
+                    value={gclid}
+                    className="flex-1 bg-[#0a182c] border border-[#1e385c] text-[#38bdf8] text-xs font-mono rounded-lg px-3 py-2 outline-none select-all font-semibold"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleCopyGclid}
+                    className="bg-[#1a3860] hover:bg-[#254e85] text-[#38bdf8] text-xs font-bold px-3.5 py-2 rounded-lg transition-colors shadow flex items-center gap-1"
+                  >
+                    <span className="material-symbols-outlined text-[14px]">content_copy</span>
+                    <span>{copiedGclid ? '¡Copiado!' : 'Copiar'}</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="text-xs text-[#8a9299] italic bg-[#0a182c] p-2 rounded-lg border border-[#1e385c]">
+                  Sin GCLID detectado (Tráfico Directo u Orgánico). Google Ads emparejará este lead automáticamente por número de teléfono (Enhanced Conversions).
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Form Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -571,10 +579,17 @@ function DeleteConfirmModal({
 export default function KanbanBoard({
   bookings,
   onRefresh,
+  role,
 }: {
   bookings: BookingRecord[]
   onRefresh: () => void
+  role: AdminRole
 }) {
+  // Las terapeutas trabajan la agenda, no la pauta: nada de GCLID ni origen.
+  const showAds = !hidesAdsAttribution(role)
+  // Día de Bogotá para resaltar las citas de hoy. Se recalcula al cambiar el
+  // set de reservas, suficiente para un tablero que se refresca solo.
+  const today = useMemo(() => bogotaDay(), [])
   // Local state for optimistic instant card moving
   const [localBookings, setLocalBookings] = useState<BookingRecord[]>(bookings)
   const [draggedId, setDraggedId] = useState<string | null>(null)
@@ -606,10 +621,10 @@ export default function KanbanBoard({
       const name = bookingDisplayName(b).toLowerCase()
       const phone = (b.phone || '').toLowerCase()
       const service = (b.serviceName || '').toLowerCase()
-      const gclid = (b.gclid || '').toLowerCase()
-      return name.includes(q) || phone.includes(q) || service.includes(q) || gclid.includes(q)
+      const gclid = showAds ? (b.gclid || '').toLowerCase() : ''
+      return name.includes(q) || phone.includes(q) || service.includes(q) || (showAds && gclid.includes(q))
     })
-  }, [localBookings, filterQuery])
+  }, [localBookings, filterQuery, showAds])
 
   // Group bookings by column stage & compute metrics
   const { grouped, stageTotals, totalPipelineValue } = useMemo(() => {
@@ -764,6 +779,7 @@ export default function KanbanBoard({
   const renderCard = (b: BookingRecord, colIdx: number, isMobile = false) => {
     const displayName = bookingDisplayName(b)
     const isAds = b.source === 'ads' || Boolean(b.gclid || b.adgroup)
+    const isToday = b.dateKey === today
     const waNum = cleanWaNumber(b.phone)
     const isPaid = b.paymentStatus === 'paid'
     const isBeingDragged = draggedId === b.id
@@ -775,7 +791,11 @@ export default function KanbanBoard({
         onDragStart={!isMobile ? (e => handleDragStart(e, b.id)) : undefined}
         onDragEnd={!isMobile ? handleDragEnd : undefined}
         onClick={() => handleCardClick(b)}
-        className={`bg-[#0d1d32] border border-[#1d385c] rounded-xl shadow-md transition-all flex flex-col gap-2 relative group ${
+        className={`rounded-xl shadow-md transition-all flex flex-col gap-2 relative group ${
+          isToday
+            ? 'bg-[#2a1b06] border-2 border-[#f59e0b] shadow-[0_0_0_1px_rgba(245,158,11,0.25)]'
+            : 'bg-[#0d1d32] border border-[#1d385c]'
+        } ${
           isMobile
             ? 'p-4 hover:border-[#38bdf8]/50 active:scale-[0.99] cursor-pointer'
             : `p-3 hover:border-[#38bdf8]/70 hover:shadow-xl cursor-grab active:cursor-grabbing ${
@@ -832,7 +852,7 @@ export default function KanbanBoard({
         </div>
 
         {/* GCLID Tag */}
-        {b.gclid && (
+        {showAds && b.gclid && (
           <div className="flex items-center gap-1 text-[10px] font-mono text-[#38bdf8] bg-[#38bdf8]/10 px-2 py-0.5 rounded border border-[#38bdf8]/20 truncate">
             <span className="material-symbols-outlined text-[12px] shrink-0">ads_click</span>
             <span className="truncate">GCLID: {b.gclid}</span>
@@ -841,15 +861,26 @@ export default function KanbanBoard({
 
         {/* Origin Badge & Date */}
         <div className="flex items-center justify-between gap-1.5 text-[10px]">
-          <span className={`inline-flex items-center px-1.5 py-0.5 rounded font-label uppercase tracking-wider font-semibold ${
-            isAds
-              ? 'bg-[#38bdf8]/15 text-[#38bdf8] border border-[#38bdf8]/30'
-              : 'bg-[#8a9299]/15 text-[#8a9299] border border-[#8a9299]/20'
+          {showAds ? (
+            <span className={`inline-flex items-center px-1.5 py-0.5 rounded font-label uppercase tracking-wider font-semibold ${
+              isAds
+                ? 'bg-[#38bdf8]/15 text-[#38bdf8] border border-[#38bdf8]/30'
+                : 'bg-[#8a9299]/15 text-[#8a9299] border border-[#8a9299]/20'
+            }`}>
+              {isAds ? (b.adgroup ? `Ads · ${b.adgroup}` : 'Google Ads') : 'Orgánico'}
+            </span>
+          ) : isToday ? (
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded font-label uppercase tracking-wider font-semibold bg-[#f59e0b]/20 text-[#fbbf24] border border-[#f59e0b]/40">
+              <span className="material-symbols-outlined text-[12px]">today</span>
+              Hoy
+            </span>
+          ) : (
+            <span />
+          )}
+          <span className={`font-mono text-[10px] truncate ${
+            isToday ? 'text-[#fbbf24] font-bold' : 'text-[#8a9299]/80'
           }`}>
-            {isAds ? (b.adgroup ? `Ads · ${b.adgroup}` : 'Google Ads') : 'Orgánico'}
-          </span>
-          <span className="text-[#8a9299]/80 font-mono text-[10px] truncate">
-            {b.dateKey} {b.timeSlot}
+            {isToday ? 'HOY' : b.dateKey} {b.timeSlot}
           </span>
         </div>
 
@@ -945,7 +976,7 @@ export default function KanbanBoard({
             type="text"
             value={filterQuery}
             onChange={e => setFilterQuery(e.target.value)}
-            placeholder="Buscar por cliente, teléfono, GCLID o servicio..."
+            placeholder={showAds ? 'Buscar por cliente, teléfono, GCLID o servicio...' : 'Buscar por cliente, teléfono o servicio...'}
             className="w-full bg-[#071322] border border-[#1e3358] rounded-lg pl-9 pr-4 py-1.5 text-xs text-[#cfe5fa] placeholder:text-[#8a9299]/50 outline-none focus:border-[#38bdf8] transition-colors select-text"
           />
           {filterQuery && (
@@ -1230,6 +1261,7 @@ export default function KanbanBoard({
             setSelectedBooking(null)
             setDeletingBooking(b)
           }}
+          showAds={showAds}
         />
       )}
 
