@@ -100,8 +100,12 @@ function Kpi({
       <p className="font-label text-[10px] uppercase tracking-[0.2em] text-[#8a9299] mb-2">
         {label}
       </p>
+      {/* Cifras en la fuente del cuerpo, no en la de titulares: Playfair usa
+          cifras de estilo antiguo, así que en «$19,57M» el número quedaba
+          hundido respecto al «$» y a la «M». Manrope trae cifras a altura de
+          mayúscula —mismo criterio que los totales de /admin/caja—. */}
       <p
-        className={`font-headline text-2xl tabular-nums ${
+        className={`font-body font-light tracking-tight text-2xl tabular-nums ${
           tone === 'warn' ? 'text-[#e08a6f]' : 'text-[#cfe5fa]'
         }`}
       >
@@ -169,7 +173,8 @@ export default function BoldReportPage() {
           mayo – agosto 2026
         </h1>
         <p className="font-body text-[17px] text-[#a5cce6]/80">
-          Cuatro meses de operación · Elaborado el 27 de agosto de 2026
+          Cuatro meses de operación · Elaborado el 27 de agosto de 2026 · Datos del datáfono
+          actualizados el 1 de septiembre con los informes de transacciones de Bold
         </p>
       </header>
 
@@ -223,8 +228,8 @@ export default function BoldReportPage() {
               +3,5% · $654.490
             </text>
             <text x="40" y="202" style={ax}>
-              La franja clara es todo el colchón del negocio. Debajo de la línea roja, cada mes
-              cierra en pérdida.
+              La franja clara es el colchón completo. Debajo de la línea roja, el mes cierra en
+              pérdida.
             </text>
           </svg>
         </Figure>
@@ -395,43 +400,43 @@ export default function BoldReportPage() {
             role="img"
             aria-label="Estructura de costos de agosto"
           >
-            <rect x="150" y="8" width="462" height="24" fill={BLUE} rx="2" />
+            <rect x="150" y="8" width="400" height="24" fill={BLUE} rx="2" />
             <text x="138" y="25" textAnchor="end" style={axB}>
               Arriendo
             </text>
-            <text x="622" y="25" style={val}>
+            <text x="560" y="25" style={val}>
               $7.000.000 · 37.8%
             </text>
 
-            <rect x="150" y="52" width="374.6" height="24" fill={CLAY} rx="2" />
+            <rect x="150" y="52" width="324.4" height="24" fill={CLAY} rx="2" />
             <text x="138" y="69" textAnchor="end" style={axB}>
               Salarios
             </text>
-            <text x="534.6" y="69" style={val}>
+            <text x="484.4" y="69" style={val}>
               $5.676.300 · 30.6%
             </text>
 
-            <rect x="150" y="96" width="277.2" height="24" fill={OCHRE} rx="2" />
+            <rect x="150" y="96" width="240" height="24" fill={OCHRE} rx="2" />
             <text x="138" y="113" textAnchor="end" style={axB}>
               Publicidad
             </text>
-            <text x="437.2" y="113" style={val}>
+            <text x="400" y="113" style={val}>
               $4.200.000 · 22.7%
             </text>
 
-            <rect x="150" y="140" width="77.5" height="24" fill={STEEL} rx="2" />
+            <rect x="150" y="140" width="67.1" height="24" fill={STEEL} rx="2" />
             <text x="138" y="157" textAnchor="end" style={axB}>
               Servicios públicos
             </text>
-            <text x="237.5" y="157" style={val}>
+            <text x="227.1" y="157" style={val}>
               $1.173.959 · 6.3%
             </text>
 
-            <rect x="150" y="184" width="31.3" height="24" fill={STEEL} rx="2" />
+            <rect x="150" y="184" width="27.1" height="24" fill={STEEL} rx="2" />
             <text x="138" y="201" textAnchor="end" style={axB}>
               Insumos
             </text>
-            <text x="191.3" y="201" style={val}>
+            <text x="187.1" y="201" style={val}>
               $474.500 · 2.6%
             </text>
           </svg>
@@ -800,53 +805,116 @@ export default function BoldReportPage() {
 
       {/* 07 ------------------------------------------------------------- */}
       <Section n="07" title="De dónde vienen los clientes">
-        <Figure caption="Ticket promedio de un cliente estadounidense: $352.741. De un cliente colombiano: $262.167.">
+        <p className={P}>
+          El datáfono es la única fuente que dice de dónde viene cada cliente. En julio y agosto
+          procesó <span className={NUM}>70</span> cobros exitosos por{' '}
+          <span className={NUM}>$23.919.000</span>, de tarjetas emitidas en 19 países distintos.
+        </p>
+
+        <Figure caption="Participación sobre las ventas con tarjeta de cada mes. Agosto no trae menos clientes estadounidenses —trae 18 contra 17— sino muchos más del resto del mundo: 18 contra 11.">
           <svg
-            viewBox="0 0 720 168"
+            viewBox="0 0 720 196"
             className="w-full h-auto"
             role="img"
-            aria-label="Origen de los clientes que pagan con tarjeta"
+            aria-label="Origen de las tarjetas procesadas en julio y en agosto"
           >
-            <rect x="150" y="8" width="267.6" height="26" fill={BLUE} rx="2" />
-            <text x="138" y="26" textAnchor="end" style={axB}>
+            <rect x="132" y="2" width="11" height="11" fill={STEEL} />
+            <text x="149" y="12" style={ax}>
+              Julio
+            </text>
+            <rect x="202" y="2" width="11" height="11" fill={BLUE} />
+            <text x="219" y="12" style={ax}>
+              Agosto
+            </text>
+
+            <text x="120" y="42" textAnchor="end" style={axB}>
               Estados Unidos
             </text>
-            <text x="427.6" y="26" style={val}>
-              63.7% · 17 transacciones
+            <rect x="132" y="24" width="436.6" height="13" fill={STEEL} rx="1.5" />
+            <rect x="132" y="40" width="306.6" height="13" fill={BLUE} rx="1.5" />
+            <text x="578.6" y="45" style={{ ...val, fill: OCHRE }}>
+              64,5% → 45,3%
             </text>
 
-            <rect x="150" y="54" width="117.3" height="26" fill={STEEL} rx="2" />
-            <text x="138" y="72" textAnchor="end" style={axB}>
+            <text x="120" y="98" textAnchor="end" style={axB}>
               Resto del mundo
             </text>
-            <text x="277.3" y="72" style={val}>
-              27.9% · 11 transacciones
+            <rect x="132" y="80" width="184.8" height="13" fill={STEEL} rx="1.5" />
+            <rect x="132" y="96" width="328.3" height="13" fill={BLUE} rx="1.5" />
+            <text x="470.3" y="101" style={{ ...val, fill: GREEN }}>
+              27,3% → 48,5%
             </text>
 
-            <rect x="150" y="100" width="35.1" height="26" fill={CLAY} rx="2" />
-            <text x="138" y="118" textAnchor="end" style={axB}>
+            <text x="120" y="154" textAnchor="end" style={axB}>
               Colombia
             </text>
-            <text x="195.1" y="118" style={val}>
-              8.4% · 3 transacciones
+            <rect x="132" y="136" width="55.5" height="13" fill={STEEL} rx="1.5" />
+            <rect x="132" y="152" width="42" height="13" fill={BLUE} rx="1.5" />
+            <text x="197.5" y="157" style={{ ...val, fill: OCHRE }}>
+              8,2% → 6,2%
             </text>
 
-            <text x="150" y="162" style={ax}>
-              Tarjetas procesadas en julio. El 91,6% del valor viene de fuera de Colombia.
+            {/* Una sola línea: `<text>` en SVG no ajusta, y a 12 px el ancho útil
+                desde x=132 son ~83 caracteres antes de salirse del viewBox. */}
+            <text x="132" y="188" style={ax}>
+              31 cobros en julio, 39 en agosto. El 93,8% del valor de agosto es extranjero.
             </text>
           </svg>
         </Figure>
 
+        <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+          <table className="w-full text-[14.5px] font-body border-collapse my-5">
+            <thead>
+              <tr>
+                <th className={TH}>Origen de la tarjeta</th>
+                <th className={THR}>Julio</th>
+                <th className={THR}>Agosto</th>
+                <th className={THR}>Ticket agosto</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className={TD}>Estados Unidos</td>
+                <td className={TDR}>17 tx · $6.203.600</td>
+                <td className={TDR}>18 tx · $6.480.400</td>
+                <td className={TDR}>$360.022</td>
+              </tr>
+              <tr>
+                <td className={TD}>Resto del mundo</td>
+                <td className={TDR}>11 tx · $2.630.000</td>
+                <td className={TDR}>18 tx · $6.927.700</td>
+                <td className={TDR}>$384.872</td>
+              </tr>
+              <tr>
+                <td className={TD}>Colombia</td>
+                <td className={TDR}>3 tx · $786.500</td>
+                <td className={TDR}>3 tx · $890.800</td>
+                <td className={TDR}>$296.933</td>
+              </tr>
+              <tr>
+                <td className={TOT}>Total con tarjeta</td>
+                <td className={TOTR}>31 tx · $9.620.100</td>
+                <td className={TOTR}>39 tx · $14.298.900</td>
+                <td className={TOTR}>$366.638</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
         <p className={P}>
-          El negocio depende del turismo hacia Medellín. Eso explica por qué la campaña de Google Ads
-          en español gastó <span className={NUM}>$1.783.442</span> para conseguir una sola
-          conversión: le habla en español a un mercado que aporta el 8% de los ingresos. La campaña
-          en inglés convierte diez veces mejor.
+          El negocio depende del turismo hacia Medellín: el 91,8% del valor cobrado en julio y el
+          93,8% en agosto salió de tarjetas extranjeras. Eso explica por qué la campaña de Google
+          Ads en español gastó <span className={NUM}>$1.783.442</span> para conseguir una sola
+          conversión: le habla en español a un mercado que aporta el 6% de los ingresos con tarjeta.
+          La campaña en inglés convierte diez veces mejor.
         </p>
         <p className={P}>
-          La contracara es la concentración de riesgo. Una dependencia del 91,6% en clientes
-          extranjeros expone al negocio a la estacionalidad turística, a la tasa de cambio y a la
-          percepción de seguridad de la ciudad.
+          Lo que cambió en agosto no es la dependencia del extranjero, que subió, sino su reparto.
+          Estados Unidos dejó de ser la mitad del negocio y el resto del mundo —Alemania, Lituania,
+          Países Bajos, Reino Unido, Emiratos, México, Italia, Suiza— pasó a pesar más. La
+          diversificación reduce la exposición a un solo mercado emisor, pero no al riesgo de fondo:
+          la estacionalidad turística de Medellín, la tasa de cambio y la percepción de seguridad de
+          la ciudad siguen moviendo casi todos los ingresos.
         </p>
 
         <h3 className="font-headline text-lg text-[#cfe5fa] mt-8 mb-2">Qué cuesta el marketing</h3>
@@ -882,7 +950,177 @@ export default function BoldReportPage() {
       </Section>
 
       {/* 08 ------------------------------------------------------------- */}
-      <Section n="08" title="Hacia dónde puede ir">
+      <Section n="08" title="Lo que dice el datáfono">
+        <p className={P}>
+          Los informes mensuales de Bold traen el detalle transacción por transacción de julio y
+          agosto. Es la única parte del informe que no depende de registros manuales.
+        </p>
+
+        <h3 className="font-headline text-lg text-[#cfe5fa] mt-8 mb-2">El costo de cobrar</h3>
+        <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+          <table className="w-full text-[14.5px] font-body border-collapse my-4">
+            <thead>
+              <tr>
+                <th className={TH}>Concepto</th>
+                <th className={THR}>Julio</th>
+                <th className={THR}>Agosto</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className={TD}>Cobrado con tarjeta</td>
+                <td className={TDR}>$9.620.100</td>
+                <td className={TDR}>$14.298.900</td>
+              </tr>
+              <tr>
+                <td className={TD}>Comisión Bold (variable)</td>
+                <td className={TDR}>−$399.317</td>
+                <td className={TDR}>−$593.317</td>
+              </tr>
+              <tr>
+                <td className={TD}>Comisión fija por cobro</td>
+                <td className={TDR}>−$9.300</td>
+                <td className={TDR}>−$12.300</td>
+              </tr>
+              <tr>
+                <td className={TD}>Retención de ICA</td>
+                <td className={TDR}>−$19.240</td>
+                <td className={TDR}>−$28.598</td>
+              </tr>
+              <tr>
+                <td className={TD}>Deducción total</td>
+                <td className={`${TDR} text-[#e08a6f]`}>−$427.857 · 4,45%</td>
+                <td className={`${TDR} text-[#e08a6f]`}>−$634.215 · 4,44%</td>
+              </tr>
+              <tr>
+                <td className={TOT}>Depositado en la cuenta</td>
+                <td className={TOTR}>$9.192.243</td>
+                <td className={TOTR}>$13.664.685</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p className={P}>
+          Al ritmo de agosto, cobrar con tarjeta cuesta <span className={NUM}>$7,6 millones</span> al
+          año. Esa comisión no aparece en la estructura de costos del punto 03 —Bold la descuenta
+          antes de depositar—, pero con $634.215 sería la quinta categoría de gasto del mes, por
+          encima de los insumos.
+        </p>
+
+        <Flag title="Lo primero que hay que verificar">
+          <p>
+            Las 19 partidas de egresos de agosto suman exactamente $18.524.759 y ninguna es la
+            comisión del datáfono. Quedan dos posibilidades.
+          </p>
+          <p>
+            Si la hoja registra como ingreso lo cobrado —$14.298.900 en tarjeta—, entonces los
+            $634.215 que Bold descontó son un gasto que falta: la utilidad de agosto sería{' '}
+            <strong className="text-[#cfe5fa] font-semibold">$413.026</strong> y el margen 2,1% en
+            lugar de 5,4%. Si registra lo depositado —$13.664.685—, la comisión ya está descontada y
+            no hay nada que corregir.
+          </p>
+          <p className="text-[#cfe5fa] font-semibold">
+            Se resuelve comparando un solo día de la hoja con el depósito de Bold de ese día.
+          </p>
+        </Flag>
+
+        <Flag title="Una tarifa que se puede bajar" tone="ok">
+          <p>
+            Bold liquidó a dos tarifas distintas: <span className={NUM}>4,29%</span> en 60 de los 70
+            cobros y <span className={NUM}>3,29%</span> en los otros 10. Los diez baratos son las
+            seis tarjetas colombianas y las cuatro transacciones en las que el cliente aceptó pagar
+            en su moneda (conversión dinámica).
+          </p>
+          <p>
+            Si las 33 transacciones internacionales de agosto hubieran liquidado al 3,29%, la
+            deducción habría sido <strong className="text-[#cfe5fa] font-semibold">$122.883</strong>{' '}
+            menor — <span className={NUM}>$1,5 millones</span> al año. Son solo cuatro casos, así que
+            antes de cambiar nada conviene confirmar con Bold si ofrecer la conversión de moneda en
+            el datáfono baja de verdad la tarifa, y a qué costo para el cliente.
+          </p>
+        </Flag>
+
+        <h3 className="font-headline text-lg text-[#cfe5fa] mt-8 mb-2">Cobros rechazados</h3>
+        <p className={P}>
+          Nueve intentos no pasaron en dos meses, pero casi todos se resolvieron en el mostrador. Los
+          cinco de julio son la misma Mastercard reintentada entre las 4:51 y las 4:53 p. m. del 31,
+          y un minuto después la venta de $296.800 se cobró con otra tarjeta. En agosto, el rechazo
+          del 15 se recuperó al minuto siguiente y los dos del 17 vienen después de un cobro exitoso
+          por el mismo monto.
+        </p>
+        <p className={P}>
+          Queda uno sin contrapartida:{' '}
+          <span className={NUM}>$138.000</span> el 18 de agosto a las 6:52 p. m., sin ningún cobro
+          cercano que lo reemplace. Es la única venta con tarjeta que parece haberse perdido en dos
+          meses — un 1,0% de lo cobrado en agosto. El datáfono no es un problema.
+        </p>
+
+        <h3 className="font-headline text-lg text-[#cfe5fa] mt-8 mb-2">Ritmo de operación</h3>
+        <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+          <table className="w-full text-[14.5px] font-body border-collapse my-4">
+            <thead>
+              <tr>
+                <th className={TH}>Indicador</th>
+                <th className={THR}>Julio</th>
+                <th className={THR}>Agosto</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className={TD}>Días del mes con al menos un cobro</td>
+                <td className={TDR}>15 de 31</td>
+                <td className={TDR}>24 de 31</td>
+              </tr>
+              <tr>
+                <td className={TD}>Cobros exitosos</td>
+                <td className={TDR}>31</td>
+                <td className={TDR}>39</td>
+              </tr>
+              <tr>
+                <td className={TD}>Ticket promedio por cobro</td>
+                <td className={TDR}>$310.326</td>
+                <td className={TDR}>$366.638</td>
+              </tr>
+              <tr>
+                <td className={TD}>Pagos con débito</td>
+                <td className={TDR}>5,9%</td>
+                <td className={TDR}>20,5%</td>
+              </tr>
+              <tr>
+                <td className={TD}>Peso del cobro más grande del mes</td>
+                <td className={TDR}>8,5%</td>
+                <td className={TDR}>10,4%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p className={P}>
+          El salto de 15 a 24 días con venta es el mejor indicador operativo de los dos meses: el spa
+          dejó de facturar a ráfagas. La contracara es la concentración —el cobro del 27 de agosto,{' '}
+          <span className={NUM}>$1.484.000</span> con una tarjeta de Guyana, es por sí solo el 10,4%
+          del mes—, y con un margen de seguridad del 3,5% un solo cliente de ese tamaño decide si el
+          mes cierra en positivo.
+        </p>
+
+        <Flag title="Matiz sobre «crece por volumen, no por precio»">
+          <p>
+            El punto 02 concluye que la facturación crece por volumen. Con tarjeta el ticket por
+            cobro subió 18% —de $310.326 a $366.638— y el número de cobros solo 26%. No es
+            necesariamente una subida de precios: un cobro puede cubrir varios servicios o varias
+            personas. Pero el crecimiento no viene únicamente del volumen.
+          </p>
+          <p>
+            Tampoco se sabe cuánto entra en efectivo. En julio la tarjeta fue el{' '}
+            <span className={NUM}>60,1%</span> de los ingresos registrados; en agosto no se puede
+            calcular igual, porque el informe se cerró el 27 y el datáfono cubre el mes completo.
+            Cuanto más pese la tarjeta, menos efectivo entra al cajón y más dinero llega por Bold,
+            con su 4,4% de descuento y su demora de depósito. Es relevante para la caja del punto 06.
+          </p>
+        </Flag>
+      </Section>
+
+      {/* 09 ------------------------------------------------------------- */}
+      <Section n="09" title="Hacia dónde puede ir">
         <Figure caption="La línea punteada marca el techo de capacidad: con las camillas y turnos actuales, alrededor de $38 millones mensuales.">
           <svg
             viewBox="0 0 720 300"
@@ -1008,8 +1246,8 @@ export default function BoldReportPage() {
         </p>
       </Section>
 
-      {/* 09 ------------------------------------------------------------- */}
-      <Section n="09" title="Cómo mejorar la utilidad">
+      {/* 10 ------------------------------------------------------------- */}
+      <Section n="10" title="Cómo mejorar la utilidad">
         <p className={P}>
           El camino más corto no pasa por vender más. Pasa por devolver los costos a donde estaban
           hace un mes.
@@ -1072,11 +1310,15 @@ export default function BoldReportPage() {
         </p>
       </Section>
 
-      {/* 10 ------------------------------------------------------------- */}
-      <Section n="10" title="Plan de acción">
+      {/* 11 ------------------------------------------------------------- */}
+      <Section n="11" title="Plan de acción">
         <Horizon>Primeros 30 días</Horizon>
         <Plan
           items={[
+            {
+              title: 'Verificar si la comisión de Bold ya está contada',
+              body: 'Comparar un día de la hoja de ingresos con el depósito de Bold de ese día. Si la hoja registra lo cobrado y no lo depositado, faltan $634.215 de gasto en agosto y la utilidad real es $413.026, no $1.047.241. Es la corrección más grande pendiente y se resuelve en diez minutos.',
+            },
             {
               title: 'Explicar el salto de salarios',
               body: 'Determinar si los $5.676.300 de agosto incluyen pagos atrasados o corresponden a dotación nueva. Es el dato que define si el plazo de recuperación es de 33 o de 54 meses.',
@@ -1141,10 +1383,10 @@ export default function BoldReportPage() {
         />
       </Section>
 
-      {/* 11 ------------------------------------------------------------- */}
-      <Section n="11" title="Qué falta por saber">
+      {/* 12 ------------------------------------------------------------- */}
+      <Section n="12" title="Qué falta por saber">
         <p className={P}>
-          Estas siete brechas afectan la precisión del informe. Ninguna cambia el diagnóstico
+          Estas nueve brechas afectan la precisión del informe. Ninguna cambia el diagnóstico
           general, pero conviene cerrarlas antes de decisiones de inversión mayores.
         </p>
         <ul className="list-disc pl-5 my-3 flex flex-col gap-2.5 font-body text-[15px] leading-relaxed text-[#cfe5fa]/80 max-w-[64ch]">
@@ -1191,8 +1433,26 @@ export default function BoldReportPage() {
             <strong className="text-[#cfe5fa] font-semibold">
               El costo variable se modela al 4,6% de las ventas
             </strong>{' '}
-            aunque los insumos de agosto fueron el 2,4%. El punto de equilibrio y las proyecciones
-            usan el 4,6%, que es el supuesto conservador.
+            aunque los insumos de agosto fueron el 2,4%. Sumando la comisión del datáfono —3,2% de
+            los ingresos del mes— el costo variable real se acerca al 5,6%, y entonces el 4,6% no es
+            el supuesto conservador sino el optimista. Depende de la verificación del punto 08.
+          </li>
+          <li>
+            <strong className="text-[#cfe5fa] font-semibold">
+              El corte de agosto no es el mismo en las dos fuentes.
+            </strong>{' '}
+            El informe se elaboró el 27 de agosto; el datáfono cubre el mes completo y registró
+            $1.731.200 con tarjeta entre el 28 y el 31. Si la hoja se cerró el 27, los ingresos de
+            agosto están subestimados en al menos esa cifra y el margen del mes es mejor de lo que
+            muestra el punto 02.
+          </li>
+          <li>
+            <strong className="text-[#cfe5fa] font-semibold">
+              No se sabe cuánto se cobra en efectivo.
+            </strong>{' '}
+            En julio la tarjeta fue el 60,1% de los ingresos registrados; el 39,9% restante no tiene
+            respaldo documental equivalente. Sin conocer la proporción real de efectivo no se puede
+            conciliar la caja del punto 06.
           </li>
         </ul>
       </Section>
@@ -1201,8 +1461,11 @@ export default function BoldReportPage() {
         <p>
           Elaborado a partir del registro de ingresos y egresos en Google Sheets, los cierres del
           datáfono Bold, las cuentas de Google Ads y Meta Ads, y el registro manuscrito de la segunda
-          inversión. Las cifras de junio y los egresos marcados como estimados son reconstrucciones,
-          no datos registrados.
+          inversión. Los puntos 07 y 08 se rehicieron el 1 de septiembre de 2026 con los informes
+          mensuales de transacciones de Bold de julio y agosto —70 cobros exitosos y 9 rechazados,
+          con detalle de origen, franquicia, comisión y depósito—, que reemplazan las estimaciones
+          anteriores sobre el origen de los clientes. Las cifras de junio y los egresos marcados como
+          estimados siguen siendo reconstrucciones, no datos registrados.
         </p>
       </footer>
     </div>
