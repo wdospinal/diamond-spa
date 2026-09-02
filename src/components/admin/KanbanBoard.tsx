@@ -87,6 +87,57 @@ const SERVICES_LIST = [
 
 const CARDS_PER_PAGE = 6;
 
+/** Movimiento hecho en el tablero y aún no confirmado por el servidor. */
+type PendingMove = {
+  status: StageKey;
+  paymentStatus?: "pending" | "paid";
+  at: number;
+};
+
+/** Cuánto se respeta un movimiento optimista antes de ceder ante el servidor. */
+const PENDING_MOVE_TTL_MS = 15000;
+
+const MONTHS_ES = [
+  "Enero",
+  "Febrero",
+  "Marzo",
+  "Abril",
+  "Mayo",
+  "Junio",
+  "Julio",
+  "Agosto",
+  "Septiembre",
+  "Octubre",
+  "Noviembre",
+  "Diciembre",
+];
+
+/** "2026-08-28" → "Agosto 28" */
+function formatCardDate(dateKey?: string): string {
+  if (!dateKey) return "";
+  const parts = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateKey.trim());
+  if (!parts) return dateKey;
+  const month = MONTHS_ES[Number(parts[2]) - 1];
+  if (!month) return dateKey;
+  return `${month} ${Number(parts[3])}`;
+}
+
+/** "14:33" o "2:33 PM" → "2:33pm" */
+function formatCardTime(timeSlot?: string): string {
+  if (!timeSlot) return "";
+  const raw = timeSlot.trim();
+  const parts = /^(\d{1,2}):(\d{2})\s*([ap])\.?\s*m\.?$/i.exec(raw);
+  if (parts) {
+    const hour = Number(parts[1]) % 12 || 12;
+    return `${hour}:${parts[2]}${parts[3].toLowerCase()}m`;
+  }
+  const h24 = /^(\d{1,2}):(\d{2})$/.exec(raw);
+  if (!h24) return raw;
+  const hour = Number(h24[1]);
+  if (hour > 23) return raw;
+  return `${hour % 12 || 12}:${h24[2]}${hour < 12 ? "am" : "pm"}`;
+}
+
 function formatCopCurrency(amount: number): string {
   if (!amount) return "$0";
   return new Intl.NumberFormat("es-CO", {
@@ -494,7 +545,7 @@ function LeadDetailModal({
               <span className="material-symbols-outlined text-[16px]">
                 delete
               </span>
-              <span>Eliminar Lead</span>
+              <span>Eliminar Usuario</span>
             </button>
 
             <div className="flex items-center gap-3">
@@ -623,9 +674,19 @@ export default function KanbanBoard({
   // Recepción trabaja la agenda, no la pauta: nada de GCLID ni origen.
   const showAds = !hidesAdsAttribution(role);
   const showPipelineTotals = !hidesPipelineTotals(role);
-  // Día de Bogotá para resaltar las citas de hoy. Se recalcula al cambiar el
-  // set de reservas, suficiente para un tablero que se refresca solo.
-  const today = useMemo(() => bogotaDay(), []);
+  // Día de Bogotá para resaltar las citas de hoy. El tablero ahora se deja
+  // abierto durante toda la jornada (y a veces de un día para otro), así que
+  // se revisa cada minuto en vez de congelarse en el día del montaje.
+  const [today, setToday] = useState(() => bogotaDay());
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setToday((prev) => {
+        const now = bogotaDay();
+        return now === prev ? prev : now;
+      });
+    }, 60000);
+    return () => window.clearInterval(timer);
+  }, []);
   // Local state for optimistic instant card moving
   const [localBookings, setLocalBookings] = useState<BookingRecord[]>(bookings);
   const [draggedId, setDraggedId] = useState<string | null>(null);
@@ -648,9 +709,47 @@ export default function KanbanBoard({
   const [activeColumnMobile, setActiveColumnMobile] = useState(0);
   const isDraggingRef = useRef(false);
 
+  // Cambios optimistas aún no confirmados por el servidor. El tablero recibe
+  // actualizaciones en vivo cada pocos segundos: sin esto, una tarjeta que
+  // acabas de mover saltaría a su columna anterior hasta que el servidor
+  // devolviera el nuevo estado.
+  const pendingRef = useRef<Map<string, PendingMove>>(new Map());
+  // Última lista del servidor, para aplicarla al soltar la tarjeta.
+  const serverBookingsRef = useRef<BookingRecord[]>(bookings);
+
+  const mergePending = (list: BookingRecord[]): BookingRecord[] => {
+    if (pendingRef.current.size === 0) return list;
+    const now = Date.now();
+    return list.map((b) => {
+      const pending = pendingRef.current.get(b.id);
+      if (!pending) return b;
+      const serverCaughtUp =
+        b.status === pending.status &&
+        (!pending.paymentStatus || b.paymentStatus === pending.paymentStatus);
+      // El servidor ya refleja el movimiento, o se acabó el margen de espera
+      // (el PATCH falló en silencio): en ambos casos manda el servidor.
+      if (serverCaughtUp || now - pending.at > PENDING_MOVE_TTL_MS) {
+        pendingRef.current.delete(b.id);
+        return b;
+      }
+      return {
+        ...b,
+        status: pending.status,
+        ...(pending.paymentStatus
+          ? { paymentStatus: pending.paymentStatus }
+          : {}),
+      };
+    });
+  };
+
   // Sync prop changes into local state
   useEffect(() => {
-    setLocalBookings(bookings);
+    serverBookingsRef.current = bookings;
+    // Reordenar las columnas debajo del cursor cancelaría el arrastre: la
+    // lista nueva se guarda y se aplica al soltar.
+    if (isDraggingRef.current) return;
+    setLocalBookings(mergePending(bookings));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookings]);
 
   // Filter bookings by search query
@@ -718,6 +817,15 @@ export default function KanbanBoard({
 
   // Move booking with optimistic immediate UI response
   const moveBooking = async (id: string, newStatus: StageKey) => {
+    // 0. Se anota como pendiente para que la próxima actualización en vivo no
+    //    devuelva la tarjeta a su columna anterior antes de que el servidor
+    //    confirme el movimiento.
+    pendingRef.current.set(id, {
+      status: newStatus,
+      ...(newStatus === "completed" ? { paymentStatus: "paid" as const } : {}),
+      at: Date.now(),
+    });
+
     // 1. Optimistic local update
     setLocalBookings((prev) =>
       prev.map((b) => {
@@ -749,9 +857,11 @@ export default function KanbanBoard({
       });
 
       if (!res.ok) {
+        pendingRef.current.delete(id);
         onRefresh(); // rollback
       }
     } catch {
+      pendingRef.current.delete(id);
       onRefresh(); // rollback on network failure
     }
   };
@@ -767,6 +877,9 @@ export default function KanbanBoard({
   const handleDragEnd = () => {
     setTimeout(() => {
       isDraggingRef.current = false;
+      // Se aplica lo que haya llegado en vivo mientras se arrastraba, con los
+      // movimientos optimistas todavía superpuestos.
+      setLocalBookings(mergePending(serverBookingsRef.current));
     }, 100);
     setDraggedId(null);
     setDragOverColumn(null);
@@ -959,12 +1072,28 @@ export default function KanbanBoard({
           ) : (
             <span />
           )}
-          <span
-            className={`font-mono text-[10px] truncate ${
-              isToday ? "text-[#fbbf24] font-bold" : "text-[#8a9299]/80"
-            }`}
-          >
-            {isToday ? "HOY" : b.dateKey} {b.timeSlot}
+          <span className="inline-flex items-center gap-1 text-[10px] truncate">
+            <span
+              className={`material-symbols-outlined text-[12px] shrink-0 ${
+                isToday ? "text-[#fbbf24]" : "text-[#8a9299]/70"
+              }`}
+            >
+              schedule
+            </span>
+            <span
+              className={`truncate ${
+                isToday ? "text-[#fbbf24] font-bold" : "text-[#8a9299]"
+              }`}
+            >
+              {isToday ? "Hoy" : formatCardDate(b.dateKey)}
+            </span>
+            <span
+              className={`font-mono shrink-0 ${
+                isToday ? "text-[#fde68a] font-bold" : "text-[#a5cce6]"
+              }`}
+            >
+              {formatCardTime(b.timeSlot)}
+            </span>
           </span>
         </div>
 
