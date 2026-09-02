@@ -4,14 +4,13 @@
  * clientes de Supabase/KV solo para saber qué secciones mostrar.
  */
 
-export const ADMIN_ROLES = ['terapeuta', 'recepcionista', 'ads_manager', 'superadmin'] as const
+export const ADMIN_ROLES = ['recepcionista', 'ads_manager', 'superadmin'] as const
 
 export type AdminRole = (typeof ADMIN_ROLES)[number]
 
 export const DEFAULT_ADMIN_ROLE: AdminRole = 'recepcionista'
 
 export const ROLE_LABELS: Record<AdminRole, string> = {
-  terapeuta: 'Terapeuta',
   recepcionista: 'Recepcionista',
   ads_manager: 'Ads manager',
   superadmin: 'Superadmin',
@@ -31,11 +30,11 @@ export function roleFromLegacy(role: unknown, isSuperadmin: unknown): AdminRole 
 }
 
 /**
- * Las terapeutas ven el tablero de reservas sin nada de atribución de Ads
- * (GCLID, origen Ads/Orgánico): solo necesitan a quién atender y cuándo.
+ * Recepción trabaja la agenda, no la pauta: ve el tablero sin atribución de
+ * Ads (GCLID, origen Ads/Orgánico) ni las etapas de captación.
  */
 export function hidesAdsAttribution(role: AdminRole): boolean {
-  return role === 'terapeuta'
+  return role === 'recepcionista'
 }
 
 /**

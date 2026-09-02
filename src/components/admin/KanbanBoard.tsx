@@ -93,13 +93,13 @@ function formatCopCurrency(amount: number): string {
 }
 
 /**
- * Etapas visibles según el rol. Las terapeutas trabajan desde la cita en
- * adelante: los dos primeros embudos (captación y chat) son de recepción.
+ * Etapas visibles según el rol. Recepción trabaja desde la cita en adelante:
+ * los dos primeros embudos (captación y chat) son de quien gestiona la pauta.
  */
-const THERAPIST_HIDDEN_STAGES: StageKey[] = ['pending', 'contacted']
+const RECEPTION_HIDDEN_STAGES: StageKey[] = ['pending', 'contacted']
 
 function columnsForRole(showAds: boolean): ColumnDef[] {
-  return showAds ? COLUMNS : COLUMNS.filter(c => !THERAPIST_HIDDEN_STAGES.includes(c.key))
+  return showAds ? COLUMNS : COLUMNS.filter(c => !RECEPTION_HIDDEN_STAGES.includes(c.key))
 }
 
 // ─── Modal de Edición de Lead ───────────────────────────────────────────────────
@@ -597,7 +597,7 @@ export default function KanbanBoard({
   onRefresh: () => void
   role: AdminRole
 }) {
-  // Las terapeutas trabajan la agenda, no la pauta: nada de GCLID ni origen.
+  // Recepción trabaja la agenda, no la pauta: nada de GCLID ni origen.
   const showAds = !hidesAdsAttribution(role)
   const visibleColumns = useMemo(() => columnsForRole(showAds), [showAds])
   // Día de Bogotá para resaltar las citas de hoy. Se recalcula al cambiar el
