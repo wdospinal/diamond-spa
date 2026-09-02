@@ -412,11 +412,11 @@ export default function BookingsClient({ role }: { role: AdminRole }) {
     void load()
     try {
       const saved = localStorage.getItem('admin_bookings_view')
-      if (saved === 'table' || saved === 'kanban') {
+      if (showAds && (saved === 'table' || saved === 'kanban')) {
         setViewMode(saved)
       }
     } catch {}
-  }, [load])
+  }, [load, showAds])
 
   // Tiempo real: el tablero lo miran varias personas a la vez (recepción y
   // terapeutas), así que se refresca solo. `load` no muestra spinner, de modo
@@ -482,41 +482,41 @@ export default function BookingsClient({ role }: { role: AdminRole }) {
           </button>
         </div>
 
-        {/* Secondary actions row — wraps on mobile */}
+        {/* Secondary actions row — wraps on mobile. Las terapeutas no ven
+            ninguna de estas acciones, así que la fila entera desaparece. */}
+        {showAds && (
         <div className="flex flex-wrap items-center gap-2">
           {/* View switcher */}
           <div className="flex items-center rounded-lg border border-[#1e3358] bg-[#071322] p-1 shadow-sm">
-            <button
-              type="button"
-              onClick={() => handleToggleView('kanban')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold font-label uppercase tracking-wider transition-all ${
-                viewMode === 'kanban'
-                  ? 'bg-[#1a3860] text-[#38bdf8] shadow-md border border-[#38bdf8]/30'
-                  : 'text-[#8a9299] hover:text-[#cfe5fa] hover:bg-[#0f243e]'
-              }`}
-            >
-              <span className="material-symbols-outlined text-[16px]">view_kanban</span>
-              <span className="hidden sm:inline">Tablero</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleToggleView('table')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold font-label uppercase tracking-wider transition-all ${
-                viewMode === 'table'
-                  ? 'bg-[#1a3860] text-[#38bdf8] shadow-md border border-[#38bdf8]/30'
-                  : 'text-[#8a9299] hover:text-[#cfe5fa] hover:bg-[#0f243e]'
-              }`}
-            >
-              <span className="material-symbols-outlined text-[16px]">table_rows</span>
-              <span className="hidden sm:inline">Lista</span>
-            </button>
+              <button
+                type="button"
+                onClick={() => handleToggleView('kanban')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold font-label uppercase tracking-wider transition-all ${
+                  viewMode === 'kanban'
+                    ? 'bg-[#1a3860] text-[#38bdf8] shadow-md border border-[#38bdf8]/30'
+                    : 'text-[#8a9299] hover:text-[#cfe5fa] hover:bg-[#0f243e]'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[16px]">view_kanban</span>
+                <span className="hidden sm:inline">Tablero</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleToggleView('table')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold font-label uppercase tracking-wider transition-all ${
+                  viewMode === 'table'
+                    ? 'bg-[#1a3860] text-[#38bdf8] shadow-md border border-[#38bdf8]/30'
+                    : 'text-[#8a9299] hover:text-[#cfe5fa] hover:bg-[#0f243e]'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[16px]">table_rows</span>
+                <span className="hidden sm:inline">Lista</span>
+              </button>
           </div>
 
-          {showAds && (
-            <>
-            {/* Google Ads connect */}
-            <button
-              onClick={() => setShowAdsModal(true)}
+          {/* Google Ads connect */}
+          <button
+            onClick={() => setShowAdsModal(true)}
               className="text-xs font-bold font-label uppercase tracking-wider bg-[#1a3860] hover:bg-[#254e85] text-[#38bdf8] border border-[#38bdf8]/30 px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 shadow-sm active:scale-95"
               title="Ver enlaces de conexión automática HTTPS para Google Ads"
             >
@@ -551,14 +551,13 @@ export default function BookingsClient({ role }: { role: AdminRole }) {
                 Ventas
               </a>
             </div>
-            </>
-          )}
         </div>
+        )}
       </header>
 
       {error ? <p className="text-red-400/90 font-body mb-6">{error}</p> : null}
 
-      {viewMode === 'kanban' ? (
+      {viewMode === 'kanban' || !showAds ? (
         <KanbanBoard bookings={bookings ?? []} onRefresh={load} role={role} />
       ) : (
         <BookingsTable bookings={bookings ?? []} onRefresh={load} showAds={showAds} />

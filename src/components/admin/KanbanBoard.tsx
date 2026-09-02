@@ -92,6 +92,16 @@ function formatCopCurrency(amount: number): string {
   }).format(amount)
 }
 
+/**
+ * Etapas visibles según el rol. Las terapeutas trabajan desde la cita en
+ * adelante: los dos primeros embudos (captación y chat) son de recepción.
+ */
+const THERAPIST_HIDDEN_STAGES: StageKey[] = ['pending', 'contacted']
+
+function columnsForRole(showAds: boolean): ColumnDef[] {
+  return showAds ? COLUMNS : COLUMNS.filter(c => !THERAPIST_HIDDEN_STAGES.includes(c.key))
+}
+
 // ─── Modal de Edición de Lead ───────────────────────────────────────────────────
 
 function LeadDetailModal({
@@ -100,12 +110,14 @@ function LeadDetailModal({
   onSaved,
   onDeleteRequest,
   showAds,
+  columns,
 }: {
   booking: BookingRecord
   onClose: () => void
   onSaved: () => void
   onDeleteRequest: (booking: BookingRecord) => void
   showAds: boolean
+  columns: ColumnDef[]
 }) {
   const [name, setName] = useState(booking.name || '')
   const [phone, setPhone] = useState(booking.phone || '')
@@ -240,7 +252,7 @@ function LeadDetailModal({
 
         {/* Pipedrive Interactive Stage Stepper */}
         <div className="px-5 py-3 bg-[#071322] border-b border-[#1e385c] flex items-stretch gap-1 overflow-x-auto">
-          {COLUMNS.map((c, i) => {
+          {columns.map(c => {
             const isCurrent = status === c.key
             return (
               <button
@@ -413,7 +425,7 @@ function LeadDetailModal({
                 onChange={e => setStatus(e.target.value as StageKey)}
                 className="w-full bg-[#071322] border border-[#1e385c] text-[#cfe5fa] text-sm font-medium rounded-lg px-3 py-2 outline-none focus:border-[#38bdf8]"
               >
-                {COLUMNS.map(c => (
+                {columns.map(c => (
                   <option key={c.key} value={c.key}>
                     {c.title}
                   </option>
@@ -587,6 +599,7 @@ export default function KanbanBoard({
 }) {
   // Las terapeutas trabajan la agenda, no la pauta: nada de GCLID ni origen.
   const showAds = !hidesAdsAttribution(role)
+  const visibleColumns = useMemo(() => columnsForRole(showAds), [showAds])
   // Día de Bogotá para resaltar las citas de hoy. Se recalcula al cambiar el
   // set de reservas, suficiente para un tablero que se refresca solo.
   const today = useMemo(() => bogotaDay(), [])
@@ -750,12 +763,12 @@ export default function KanbanBoard({
   const handleStepMove = (e: React.MouseEvent, b: BookingRecord, direction: 'prev' | 'next', isMobile = false) => {
     e.stopPropagation()
     const currentStatus = (b.status || 'pending') as StageKey
-    const currentIndex = COLUMNS.findIndex(c => c.key === currentStatus)
+    const currentIndex = visibleColumns.findIndex(c => c.key === currentStatus)
     if (currentIndex === -1) return
 
     const targetIndex = direction === 'next' ? currentIndex + 1 : currentIndex - 1
-    if (targetIndex >= 0 && targetIndex < COLUMNS.length) {
-      moveBooking(b.id, COLUMNS[targetIndex].key)
+    if (targetIndex >= 0 && targetIndex < visibleColumns.length) {
+      moveBooking(b.id, visibleColumns[targetIndex].key)
       // On mobile, follow the card to its new column
       if (isMobile) setActiveColumnMobile(targetIndex)
     }
@@ -918,7 +931,7 @@ export default function KanbanBoard({
 
           <button
             type="button"
-            disabled={colIdx === COLUMNS.length - 1}
+            disabled={colIdx === visibleColumns.length - 1}
             onClick={e => handleStepMove(e, b, 'next', isMobile)}
             aria-label="Mover a etapa siguiente"
             className={`rounded bg-[#071322] text-[#8a9299] hover:text-[#cfe5fa] hover:bg-[#172c4c] disabled:opacity-20 disabled:hover:bg-[#071322] font-bold transition-colors ${
@@ -936,8 +949,10 @@ export default function KanbanBoard({
   return (
     <div className="flex flex-col gap-5">
       {/* Pipedrive Style Pipeline Metrics Summary Bar */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 p-3 bg-[#0a1628] border border-[#1e3358] rounded-xl shadow-lg">
-        {COLUMNS.map(col => {
+      <div className={`grid grid-cols-2 sm:grid-cols-3 gap-3 p-3 bg-[#0a1628] border border-[#1e3358] rounded-xl shadow-lg ${
+        visibleColumns.length === 5 ? 'lg:grid-cols-5' : 'lg:grid-cols-3'
+      }`}>
+        {visibleColumns.map(col => {
           const count = grouped[col.key]?.length || 0
           const val = stageTotals[col.key] || 0
           return (
@@ -1008,7 +1023,7 @@ export default function KanbanBoard({
       <div className="lg:hidden flex flex-col gap-4">
         {/* Stage Selector Strip */}
         <div className="flex overflow-x-auto gap-2 pb-1 -mx-1 px-1 scrollbar-none">
-          {COLUMNS.map((col, idx) => {
+          {visibleColumns.map((col, idx) => {
             const count = grouped[col.key]?.length || 0
             const isActive = activeColumnMobile === idx
             return (
@@ -1051,7 +1066,7 @@ export default function KanbanBoard({
 
         {/* Active Column Info Bar */}
         {(() => {
-          const col = COLUMNS[activeColumnMobile]
+          const col = visibleColumns[Math.min(activeColumnMobile, visibleColumns.length - 1)]
           const totalStageVal = stageTotals[col.key] || 0
           const list = grouped[col.key] || []
           return (
@@ -1084,7 +1099,7 @@ export default function KanbanBoard({
 
         {/* Cards for active column */}
         {(() => {
-          const col = COLUMNS[activeColumnMobile]
+          const col = visibleColumns[Math.min(activeColumnMobile, visibleColumns.length - 1)]
           const colIdx = activeColumnMobile
           const list = grouped[col.key] || []
           const currentPage = pageByColumn[col.key] || 1
@@ -1145,8 +1160,10 @@ export default function KanbanBoard({
           Visible only on lg screens (≥ 1024px)
           ═══════════════════════════════════════════════════════ */}
       <div className="hidden lg:block overflow-x-auto pb-6">
-        <div className="grid grid-cols-5 gap-3.5 min-w-[1150px]">
-          {COLUMNS.map((col, colIdx) => {
+        <div className={`grid gap-3.5 ${
+          visibleColumns.length === 5 ? 'grid-cols-5 min-w-[1150px]' : 'grid-cols-3 min-w-[690px]'
+        }`}>
+          {visibleColumns.map((col, colIdx) => {
             const list = grouped[col.key] || []
             const currentPage = pageByColumn[col.key] || 1
             const totalPages = Math.max(1, Math.ceil(list.length / CARDS_PER_PAGE))
@@ -1262,6 +1279,7 @@ export default function KanbanBoard({
             setDeletingBooking(b)
           }}
           showAds={showAds}
+          columns={visibleColumns}
         />
       )}
 
