@@ -647,7 +647,7 @@ export default function BookingsClient({ role }: { role: AdminRole }) {
             <span className="material-symbols-outlined text-[16px]">
               add_circle
             </span>
-            <span className="hidden sm:inline">Nuevo cliente</span>
+            <span className="hidden sm:inline">Nuevo usuario</span>
             <span className="sm:hidden">Nuevo</span>
           </button>
         </div>
