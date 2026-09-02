@@ -8,7 +8,7 @@ import type { BookingRecord } from "@/lib/booking-types";
 import { bookingDisplayName } from "@/lib/booking-types";
 import DualCurrency from "@/components/DualCurrency";
 
-/** Cada cuánto se vuelven a pedir las reservas mientras la pestaña está visible. */
+/** Sondeo de respaldo: solo se enciende si el stream en vivo no se sostiene. */
 const POLL_INTERVAL_MS = 15000;
 
 const EMPTY_MESSAGE =
@@ -556,6 +556,8 @@ export default function BookingsClient({ role }: { role: AdminRole }) {
   const [showAddLead, setShowAddLead] = useState(false);
   const [showAdsModal, setShowAdsModal] = useState(false);
   const [viewMode, setViewMode] = useState<"kanban" | "table">("kanban");
+  // Stream SSE conectado — se refleja en el indicador "En vivo" del encabezado.
+  const [live, setLive] = useState(false);
 
   const load = useCallback(async () => {
     setError("");
@@ -584,21 +586,130 @@ export default function BookingsClient({ role }: { role: AdminRole }) {
     } catch {}
   }, [load, showAds]);
 
-  // Tiempo real: el tablero lo miran varias personas a la vez (recepción y
-  // quien gestiona la pauta), así que se refresca solo. `load` no muestra spinner, de modo
-  // que el refresco es invisible salvo por las tarjetas que cambian.
+  // Tiempo real: el tablero lo miran varias personas a la vez (recepción,
+  // terapeutas y quien gestiona la pauta), así que nunca hay que recargar.
+  // `/api/bookings/stream` mantiene un Server-Sent Event abierto y empuja la
+  // lista completa en cuanto cambia en el servidor; el estado se reemplaza sin
+  // spinner, de modo que lo único que se ve moverse son las tarjetas.
+  //
+  // Si el stream no se puede sostener (red móvil, proxy que bufferiza, sesión
+  // caducada) se enciende el sondeo de antes para que el tablero nunca quede
+  // congelado, y se vuelve a intentar la conexión en vivo.
   useEffect(() => {
-    const refresh = () => {
-      if (document.visibilityState === "visible") void load();
+    let source: EventSource | null = null;
+    let pollTimer: number | null = null;
+    let reconnectTimer: number | null = null;
+    let failures = 0;
+    let stopped = false;
+    // El servidor cierra el stream cada pocos minutos por el límite de la
+    // función; cuando avisa, la reconexión es inmediata y no cuenta como caída.
+    let rotating = false;
+
+    const startPolling = () => {
+      if (pollTimer !== null) return;
+      pollTimer = window.setInterval(() => {
+        if (document.visibilityState === "visible") void load();
+      }, POLL_INTERVAL_MS);
     };
-    const timer = window.setInterval(refresh, POLL_INTERVAL_MS);
-    // Al volver a la pestaña se refresca de inmediato, sin esperar al intervalo.
-    document.addEventListener("visibilitychange", refresh);
-    window.addEventListener("focus", refresh);
+
+    const stopPolling = () => {
+      if (pollTimer === null) return;
+      window.clearInterval(pollTimer);
+      pollTimer = null;
+    };
+
+    const clearReconnect = () => {
+      if (reconnectTimer === null) return;
+      window.clearTimeout(reconnectTimer);
+      reconnectTimer = null;
+    };
+
+    const scheduleReconnect = (delay: number) => {
+      if (stopped || reconnectTimer !== null) return;
+      reconnectTimer = window.setTimeout(() => {
+        reconnectTimer = null;
+        connect();
+      }, delay);
+    };
+
+    function connect() {
+      if (stopped) return;
+      source?.close();
+      const es = new EventSource("/api/bookings/stream");
+      source = es;
+
+      es.onopen = () => {
+        failures = 0;
+        setLive(true);
+      };
+
+      // `connect()` reemplaza `source`; una conexión vieja que aún dispare
+      // eventos no debe tocar el estado.
+      const isCurrent = () => source === es;
+
+      es.addEventListener("bookings", (event) => {
+        if (!isCurrent()) return; // trama tardía de una conexión ya relevada
+        try {
+          const data = JSON.parse((event as MessageEvent).data) as {
+            bookings?: BookingRecord[];
+          };
+          if (Array.isArray(data.bookings)) {
+            setBookings(data.bookings);
+            setError("");
+          }
+        } catch {
+          // Trama corrupta: se ignora, el próximo cambio manda la lista entera.
+        }
+        failures = 0;
+        setLive(true);
+        stopPolling();
+      });
+
+      es.addEventListener("rotate", () => {
+        rotating = true;
+        es.close();
+        connect();
+      });
+
+      es.onerror = () => {
+        if (rotating) return; // relevo planificado, ya hay conexión nueva
+        setLive(false);
+        failures += 1;
+        // EventSource reintenta solo, pero a la segunda caída seguida ya
+        // encendemos el sondeo para no dejar de ver cambios mientras tanto.
+        if (failures >= 2) startPolling();
+        // readyState CLOSED = el navegador se rindió (p. ej. un 401 por sesión
+        // caducada). `load` redirige al login si toca; si no, reintentamos con
+        // una espera que crece.
+        if (es.readyState === EventSource.CLOSED) {
+          void load();
+          scheduleReconnect(Math.min(30000, 3000 * failures));
+        }
+      };
+    }
+
+    // Al volver a la pestaña: si el stream se cayó mientras estaba en segundo
+    // plano, se reconecta y se refresca al instante en vez de esperar.
+    const onWake = () => {
+      if (document.visibilityState !== "visible") return;
+      if (!source || source.readyState !== EventSource.OPEN) {
+        void load();
+        clearReconnect();
+        connect();
+      }
+    };
+
+    connect();
+    document.addEventListener("visibilitychange", onWake);
+    window.addEventListener("focus", onWake);
+
     return () => {
-      window.clearInterval(timer);
-      document.removeEventListener("visibilitychange", refresh);
-      window.removeEventListener("focus", refresh);
+      stopped = true;
+      stopPolling();
+      clearReconnect();
+      document.removeEventListener("visibilitychange", onWake);
+      window.removeEventListener("focus", onWake);
+      source?.close();
     };
   }, [load]);
 
@@ -636,6 +747,20 @@ export default function BookingsClient({ role }: { role: AdminRole }) {
               {showAds
                 ? "Gestiona el embudo de clientes y sincroniza con Google Ads."
                 : "Agenda de clientes: contacta, confirma y marca el servicio."}
+            </p>
+            {/* El tablero se actualiza solo; el indicador dice si el stream
+                está abierto o si se está reintentando la conexión. */}
+            <p
+              className="mt-1.5 flex items-center gap-1.5 text-[10px] font-label uppercase tracking-wider text-[#8a9299]"
+              aria-live="polite"
+            >
+              <span
+                aria-hidden="true"
+                className={`inline-block w-1.5 h-1.5 rounded-full ${
+                  live ? "bg-[#22c55e] animate-pulse" : "bg-[#fbbf24]"
+                }`}
+              />
+              {live ? "En vivo" : "Reconectando…"}
             </p>
           </div>
 
