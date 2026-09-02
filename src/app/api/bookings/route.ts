@@ -10,6 +10,7 @@ import { readSubscriptions } from '@/lib/push-store'
 import { ensureWebPush, webpush } from '@/lib/web-push'
 import { sendBusinessSms } from '@/lib/twilio-sms'
 import { clientIp, rateLimit, tooManyRequests } from '@/lib/rate-limit'
+import { sortBookingsForAdmin } from '@/lib/booking-types'
 
 function bad(msg: string, status = 400) {
   return NextResponse.json({ error: msg }, { status })
@@ -21,12 +22,9 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const bookings = await readBookings()
-  const sorted = [...bookings].sort((a, b) => {
-    const da = a.dateKey.localeCompare(b.dateKey)
-    if (da !== 0) return -da
-    return (b.timeSlot || '').localeCompare(a.timeSlot || '')
-  })
+  // Mismo orden que el stream SSE (`/api/bookings/stream`), para que la carga
+  // inicial y las actualizaciones en vivo no barajen las tarjetas.
+  const sorted = sortBookingsForAdmin(await readBookings())
   return NextResponse.json({ bookings: sorted })
 }
 

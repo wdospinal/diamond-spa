@@ -42,3 +42,16 @@ export function bookingDisplayName(b: BookingRecord | undefined | null): string 
   if (b.name && typeof b.name === 'string' && b.name.trim()) return b.name.trim()
   return [b.firstName, b.lastName].filter(Boolean).join(' ').trim() || 'Desconocido'
 }
+
+/**
+ * Orden del panel: día más reciente primero y, dentro del día, la hora más
+ * tardía primero. Lo comparten `GET /api/bookings` y el stream SSE para que
+ * una actualización en vivo no reordene las tarjetas respecto a la carga inicial.
+ */
+export function sortBookingsForAdmin(bookings: BookingRecord[]): BookingRecord[] {
+  return [...bookings].sort((a, b) => {
+    const byDay = a.dateKey.localeCompare(b.dateKey)
+    if (byDay !== 0) return -byDay
+    return (b.timeSlot || '').localeCompare(a.timeSlot || '')
+  })
+}
