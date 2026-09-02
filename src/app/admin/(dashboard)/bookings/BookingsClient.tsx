@@ -235,11 +235,15 @@ function LiveIndicator({ live }: { live: boolean }) {
       aria-live="polite"
       title={label}
     >
+      {/* El color va en `style` y no en una clase `bg-[#…]`: Tailwind no había
+          generado esas dos utilidades y el punto salía transparente. El tablero
+          ya pinta así los acentos de columna. */}
       <span
         aria-hidden="true"
         className={`inline-block w-1.5 h-1.5 rounded-full ${
-          live ? "bg-[#22c55e] animate-pulse" : "bg-[#fbbf24]"
+          live ? "animate-pulse" : ""
         }`}
+        style={{ backgroundColor: live ? "#22c55e" : "#fbbf24" }}
       />
       {label}
     </span>

@@ -1244,22 +1244,6 @@ export default function KanbanBoard({
             )}
           </div>
         )}
-
-        <div className="flex items-center gap-3 text-xs text-[#8a9299] font-medium">
-          <span>
-            Total:{" "}
-            <strong className="text-[#38bdf8]">
-              {filteredBookings.length}
-            </strong>
-          </span>
-          <span className="hidden sm:inline">·</span>
-          <span className="hidden sm:inline">
-            Valor:{" "}
-            <strong className="text-[#22c55e]">
-              {formatCopCurrency(totalPipelineValue)}
-            </strong>
-          </span>
-        </div>
       </div>
 
       {/* ═══════════════════════════════════════════════════════
