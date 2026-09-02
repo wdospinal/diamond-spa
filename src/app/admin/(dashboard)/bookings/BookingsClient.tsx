@@ -3,7 +3,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { hidesAdsAttribution, type AdminRole } from "@/lib/admin-roles";
+import {
+  hidesAdsAttribution,
+  usesCompactHeader,
+  type AdminRole,
+} from "@/lib/admin-roles";
 import type { BookingRecord } from "@/lib/booking-types";
 import { bookingDisplayName } from "@/lib/booking-types";
 import DualCurrency from "@/components/DualCurrency";
@@ -219,6 +223,26 @@ function AddLeadModal({
         </div>
       </form>
     </div>
+  );
+}
+
+/** Punto de estado del stream en vivo — compartido por los dos encabezados. */
+function LiveIndicator({ live }: { live: boolean }) {
+  const label = live ? "En vivo" : "Reconectando…";
+  return (
+    <span
+      className="flex items-center gap-1.5 text-[10px] font-label uppercase tracking-wider text-[#8a9299] shrink-0"
+      aria-live="polite"
+      title={label}
+    >
+      <span
+        aria-hidden="true"
+        className={`inline-block w-1.5 h-1.5 rounded-full ${
+          live ? "bg-[#22c55e] animate-pulse" : "bg-[#fbbf24]"
+        }`}
+      />
+      {label}
+    </span>
   );
 }
 
@@ -548,6 +572,8 @@ import GoogleAdsFeedModal from "@/components/admin/GoogleAdsFeedModal";
 export default function BookingsClient({ role }: { role: AdminRole }) {
   // Recepción ve solo la agenda: nada de GCLID, origen ni exportaciones.
   const showAds = !hidesAdsAttribution(role);
+  // …y su encabezado se reduce a una fila: buscar · en vivo · nuevo usuario.
+  const compactHeader = usesCompactHeader(role);
   const { replace, refresh } = useRouter();
   const [bookings, setBookings] = useState<BookingRecord[] | null | undefined>(
     undefined,
@@ -558,6 +584,9 @@ export default function BookingsClient({ role }: { role: AdminRole }) {
   const [viewMode, setViewMode] = useState<"kanban" | "table">("kanban");
   // Stream SSE conectado — se refleja en el indicador "En vivo" del encabezado.
   const [live, setLive] = useState(false);
+  // La búsqueda vive aquí porque el encabezado compacto la dibuja; el tablero
+  // la recibe y no monta la suya.
+  const [filterQuery, setFilterQuery] = useState("");
 
   const load = useCallback(async () => {
     setError("");
@@ -729,6 +758,76 @@ export default function BookingsClient({ role }: { role: AdminRole }) {
   }
   if (bookings === null) return null;
 
+  const addLeadButton = (
+    <button
+      onClick={() => setShowAddLead(true)}
+      className="shrink-0 text-xs font-bold font-label uppercase tracking-wider bg-[#38bdf8] hover:bg-[#0ea5e9] text-[#001524] px-3 py-2 md:px-4 rounded-lg transition-colors flex items-center gap-1.5 shadow-md active:scale-95"
+    >
+      <span className="material-symbols-outlined text-[16px]">add_circle</span>
+      <span className="hidden sm:inline">Nuevo usuario</span>
+      <span className="sm:hidden">Nuevo</span>
+    </button>
+  );
+
+  // Recepción: una sola fila con lo que de verdad usa. Sin título ni
+  // descripción del pipeline, que solo ocupaban alto de pantalla en el móvil.
+  if (compactHeader) {
+    return (
+      <div className="max-w-7xl mx-auto">
+        <header className="mb-4 flex items-center gap-2 sm:gap-3">
+          <div className="relative flex-1 min-w-0">
+            <span
+              className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#8a9299] text-base pointer-events-none"
+              aria-hidden="true"
+            >
+              search
+            </span>
+            <input
+              type="text"
+              value={filterQuery}
+              onChange={(e) => setFilterQuery(e.target.value)}
+              placeholder="Buscar por cliente, teléfono o servicio..."
+              aria-label="Buscar reservas"
+              className="w-full bg-[#071322] border border-[#1e3358] rounded-lg pl-9 pr-8 py-2 text-xs text-[#cfe5fa] placeholder:text-[#8a9299]/50 outline-none focus:border-[#38bdf8] transition-colors select-text"
+            />
+            {filterQuery && (
+              <button
+                type="button"
+                onClick={() => setFilterQuery("")}
+                aria-label="Limpiar búsqueda"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 leading-none text-[#8a9299] hover:text-white text-xs"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          <LiveIndicator live={live} />
+          {addLeadButton}
+        </header>
+
+        {error ? (
+          <p className="text-red-400/90 font-body mb-4">{error}</p>
+        ) : null}
+
+        <KanbanBoard
+          bookings={bookings ?? []}
+          onRefresh={load}
+          role={role}
+          externalSearch={{ query: filterQuery, onChange: setFilterQuery }}
+        />
+
+        {showAddLead && (
+          <AddLeadModal
+            onClose={() => setShowAddLead(false)}
+            onSaved={load}
+            showAds={showAds}
+          />
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-7xl mx-auto">
       <header className="mb-6 flex flex-col gap-4">
@@ -750,31 +849,13 @@ export default function BookingsClient({ role }: { role: AdminRole }) {
             </p>
             {/* El tablero se actualiza solo; el indicador dice si el stream
                 está abierto o si se está reintentando la conexión. */}
-            <p
-              className="mt-1.5 flex items-center gap-1.5 text-[10px] font-label uppercase tracking-wider text-[#8a9299]"
-              aria-live="polite"
-            >
-              <span
-                aria-hidden="true"
-                className={`inline-block w-1.5 h-1.5 rounded-full ${
-                  live ? "bg-[#22c55e] animate-pulse" : "bg-[#fbbf24]"
-                }`}
-              />
-              {live ? "En vivo" : "Reconectando…"}
-            </p>
+            <div className="mt-1.5">
+              <LiveIndicator live={live} />
+            </div>
           </div>
 
           {/* Primary action — always visible */}
-          <button
-            onClick={() => setShowAddLead(true)}
-            className="shrink-0 text-xs font-bold font-label uppercase tracking-wider bg-[#38bdf8] hover:bg-[#0ea5e9] text-[#001524] px-3 py-2 md:px-4 rounded-lg transition-colors flex items-center gap-1.5 shadow-md active:scale-95"
-          >
-            <span className="material-symbols-outlined text-[16px]">
-              add_circle
-            </span>
-            <span className="hidden sm:inline">Nuevo usuario</span>
-            <span className="sm:hidden">Nuevo</span>
-          </button>
+          {addLeadButton}
         </div>
 
         {/* Secondary actions row — wraps on mobile. Recepción no ve ninguna

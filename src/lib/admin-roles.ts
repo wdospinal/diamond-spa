@@ -46,6 +46,16 @@ export function hidesPipelineTotals(role: AdminRole): boolean {
 }
 
 /**
+ * Recepción entra al panel para despachar la agenda del día, casi siempre desde
+ * el móvil: el encabezado de /admin/bookings se reduce a una sola fila con lo
+ * único que usa —buscar, saber si el tablero está en vivo y crear un usuario—
+ * en vez del título y la descripción del pipeline, que no le dicen nada.
+ */
+export function usesCompactHeader(role: AdminRole): boolean {
+  return role === 'recepcionista'
+}
+
+/**
  * Secciones del panel por rol. `null` = visible para todos. Igual que con el
  * booleano anterior, esto decide qué enlaces muestra el Sidebar; las rutas en
  * sí no están bloqueadas por rol.

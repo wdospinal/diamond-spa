@@ -122,6 +122,14 @@ function formatCardDate(dateKey?: string): string {
   return `${month} ${Number(parts[3])}`;
 }
 
+/** "2026-08-28" → "28/08/26" */
+function formatCardDateShort(dateKey?: string): string {
+  if (!dateKey) return "";
+  const parts = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateKey.trim());
+  if (!parts) return dateKey;
+  return `${parts[3]}/${parts[2]}/${parts[1].slice(2)}`;
+}
+
 /** "14:33" o "2:33 PM" → "2:33pm" */
 function formatCardTime(timeSlot?: string): string {
   if (!timeSlot) return "";
@@ -666,10 +674,14 @@ export default function KanbanBoard({
   bookings,
   onRefresh,
   role,
+  externalSearch,
 }: {
   bookings: BookingRecord[];
   onRefresh: () => void;
   role: AdminRole;
+  /** Cuando el encabezado ya trae su propio buscador, el tablero usa ese
+   *  estado y no dibuja el suyo, para no tener dos cajas de búsqueda. */
+  externalSearch?: { query: string; onChange: (value: string) => void };
 }) {
   // Recepción trabaja la agenda, no la pauta: nada de GCLID ni origen.
   const showAds = !hidesAdsAttribution(role);
@@ -698,7 +710,11 @@ export default function KanbanBoard({
     completed: 1,
     cancelled: 1,
   });
-  const [filterQuery, setFilterQuery] = useState("");
+  const [ownFilterQuery, setOwnFilterQuery] = useState("");
+  const filterQuery = externalSearch ? externalSearch.query : ownFilterQuery;
+  const setFilterQuery = externalSearch
+    ? externalSearch.onChange
+    : setOwnFilterQuery;
   const [selectedBooking, setSelectedBooking] = useState<BookingRecord | null>(
     null,
   );
@@ -954,6 +970,24 @@ export default function KanbanBoard({
     const waNum = cleanWaNumber(b.phone);
     const isPaid = b.paymentStatus === "paid";
     const isBeingDragged = draggedId === b.id;
+    // Sin badge a la izquierda la fila no debe separarse: la hora se pega al
+    // borde en vez de dejar un hueco (recepción no ve atribución de Ads).
+    const originBadge = showAds ? (
+      <span
+        className={`inline-flex items-center px-1.5 py-0.5 rounded font-label uppercase tracking-wider font-semibold ${
+          isAds
+            ? "bg-[#38bdf8]/15 text-[#38bdf8] border border-[#38bdf8]/30"
+            : "bg-[#8a9299]/15 text-[#8a9299] border border-[#8a9299]/20"
+        }`}
+      >
+        {isAds ? (b.adgroup ? `Ads · ${b.adgroup}` : "Google Ads") : "Orgánico"}
+      </span>
+    ) : isToday ? (
+      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded font-label uppercase tracking-wider font-semibold bg-[#f59e0b]/20 text-[#fbbf24] border border-[#f59e0b]/40">
+        <span className="material-symbols-outlined text-[12px]">today</span>
+        Hoy
+      </span>
+    ) : null;
 
     return (
       <div
@@ -1047,31 +1081,12 @@ export default function KanbanBoard({
         )}
 
         {/* Origin Badge & Date */}
-        <div className="flex items-center justify-between gap-1.5 text-[10px]">
-          {showAds ? (
-            <span
-              className={`inline-flex items-center px-1.5 py-0.5 rounded font-label uppercase tracking-wider font-semibold ${
-                isAds
-                  ? "bg-[#38bdf8]/15 text-[#38bdf8] border border-[#38bdf8]/30"
-                  : "bg-[#8a9299]/15 text-[#8a9299] border border-[#8a9299]/20"
-              }`}
-            >
-              {isAds
-                ? b.adgroup
-                  ? `Ads · ${b.adgroup}`
-                  : "Google Ads"
-                : "Orgánico"}
-            </span>
-          ) : isToday ? (
-            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded font-label uppercase tracking-wider font-semibold bg-[#f59e0b]/20 text-[#fbbf24] border border-[#f59e0b]/40">
-              <span className="material-symbols-outlined text-[12px]">
-                today
-              </span>
-              Hoy
-            </span>
-          ) : (
-            <span />
-          )}
+        <div
+          className={`flex items-center gap-1.5 text-[10px] ${
+            originBadge ? "justify-between" : ""
+          }`}
+        >
+          {originBadge}
           <span className="inline-flex items-center gap-1 text-[10px] truncate">
             <span
               className={`material-symbols-outlined text-[12px] shrink-0 ${
@@ -1085,7 +1100,11 @@ export default function KanbanBoard({
                 isToday ? "text-[#fbbf24] font-bold" : "text-[#8a9299]"
               }`}
             >
-              {isToday ? "Hoy" : formatCardDate(b.dateKey)}
+              {isToday
+                ? "Hoy"
+                : showAds
+                  ? formatCardDateShort(b.dateKey)
+                  : formatCardDate(b.dateKey)}
             </span>
             <span
               className={`font-mono shrink-0 ${
@@ -1196,33 +1215,35 @@ export default function KanbanBoard({
 
       {/* Quick Search & Filter Toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-3 bg-[#0a1628]/60 p-2.5 rounded-xl border border-[#1e3358]/60">
-        <div className="relative flex-1 min-w-0 max-w-md">
-          <span
-            className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#8a9299] text-base pointer-events-none"
-            aria-hidden="true"
-          >
-            search
-          </span>
-          <input
-            type="text"
-            value={filterQuery}
-            onChange={(e) => setFilterQuery(e.target.value)}
-            placeholder={
-              showAds
-                ? "Buscar por cliente, teléfono, GCLID o servicio..."
-                : "Buscar por cliente, teléfono o servicio..."
-            }
-            className="w-full bg-[#071322] border border-[#1e3358] rounded-lg pl-9 pr-4 py-1.5 text-xs text-[#cfe5fa] placeholder:text-[#8a9299]/50 outline-none focus:border-[#38bdf8] transition-colors select-text"
-          />
-          {filterQuery && (
-            <button
-              onClick={() => setFilterQuery("")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 leading-none text-[#8a9299] hover:text-white text-xs"
+        {!externalSearch && (
+          <div className="relative flex-1 min-w-0 max-w-md">
+            <span
+              className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#8a9299] text-base pointer-events-none"
+              aria-hidden="true"
             >
-              ✕
-            </button>
-          )}
-        </div>
+              search
+            </span>
+            <input
+              type="text"
+              value={filterQuery}
+              onChange={(e) => setFilterQuery(e.target.value)}
+              placeholder={
+                showAds
+                  ? "Buscar por cliente, teléfono, GCLID o servicio..."
+                  : "Buscar por cliente, teléfono o servicio..."
+              }
+              className="w-full bg-[#071322] border border-[#1e3358] rounded-lg pl-9 pr-4 py-1.5 text-xs text-[#cfe5fa] placeholder:text-[#8a9299]/50 outline-none focus:border-[#38bdf8] transition-colors select-text"
+            />
+            {filterQuery && (
+              <button
+                onClick={() => setFilterQuery("")}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 leading-none text-[#8a9299] hover:text-white text-xs"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+        )}
 
         <div className="flex items-center gap-3 text-xs text-[#8a9299] font-medium">
           <span>
@@ -1482,7 +1503,7 @@ export default function KanbanBoard({
                         move_to_inbox
                       </span>
                       <span className="text-[10px] font-label uppercase tracking-widest">
-                        Sin tratos aquí
+                        Sin datos aquí
                       </span>
                       <span className="text-[9px] text-[#8a9299]/30 mt-0.5">
                         Arrastra una tarjeta aquí
