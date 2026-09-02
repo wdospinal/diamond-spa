@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo, useEffect, useRef } from 'react'
-import { hidesAdsAttribution, type AdminRole } from '@/lib/admin-roles'
+import { hidesAdsAttribution, hidesPipelineTotals, type AdminRole } from '@/lib/admin-roles'
 import { bogotaDay } from '@/lib/bogota'
 import type { BookingRecord } from '@/lib/booking-types'
 import { bookingDisplayName } from '@/lib/booking-types'
@@ -587,6 +587,7 @@ export default function KanbanBoard({
 }) {
   // Recepción trabaja la agenda, no la pauta: nada de GCLID ni origen.
   const showAds = !hidesAdsAttribution(role)
+  const showPipelineTotals = !hidesPipelineTotals(role)
   // Día de Bogotá para resaltar las citas de hoy. Se recalcula al cambiar el
   // set de reservas, suficiente para un tablero que se refresca solo.
   const today = useMemo(() => bogotaDay(), [])
@@ -936,32 +937,34 @@ export default function KanbanBoard({
   return (
     <div className="flex flex-col gap-5">
       {/* Pipedrive Style Pipeline Metrics Summary Bar */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 p-3 bg-[#0a1628] border border-[#1e3358] rounded-xl shadow-lg">
-        {COLUMNS.map(col => {
-          const count = grouped[col.key]?.length || 0
-          const val = stageTotals[col.key] || 0
-          return (
-            <div
-              key={col.key}
-              className="flex flex-col p-2.5 rounded-lg bg-[#071322] border border-[#172c4c] relative overflow-hidden"
-            >
+      {showPipelineTotals && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 p-3 bg-[#0a1628] border border-[#1e3358] rounded-xl shadow-lg">
+          {COLUMNS.map(col => {
+            const count = grouped[col.key]?.length || 0
+            const val = stageTotals[col.key] || 0
+            return (
               <div
-                className="absolute top-0 left-0 right-0 h-1"
-                style={{ backgroundColor: col.accentColor }}
-              />
-              <div className="flex items-center justify-between text-xs text-[#8a9299] mb-1">
-                <span className="truncate font-medium">{col.title}</span>
-                <span className="font-bold text-white px-1.5 py-0.2 bg-[#1e3358] rounded-full text-[10px]">
-                  {count}
-                </span>
+                key={col.key}
+                className="flex flex-col p-2.5 rounded-lg bg-[#071322] border border-[#172c4c] relative overflow-hidden"
+              >
+                <div
+                  className="absolute top-0 left-0 right-0 h-1"
+                  style={{ backgroundColor: col.accentColor }}
+                />
+                <div className="flex items-center justify-between text-xs text-[#8a9299] mb-1">
+                  <span className="truncate font-medium">{col.title}</span>
+                  <span className="font-bold text-white px-1.5 py-0.2 bg-[#1e3358] rounded-full text-[10px]">
+                    {count}
+                  </span>
+                </div>
+                <div className="font-headline text-sm md:text-base font-bold text-[#cfe5fa] truncate">
+                  {formatCopCurrency(val)}
+                </div>
               </div>
-              <div className="font-headline text-sm md:text-base font-bold text-[#cfe5fa] truncate">
-                {formatCopCurrency(val)}
-              </div>
-            </div>
-          )
-        })}
-      </div>
+            )
+          })}
+        </div>
+      )}
 
       {/* Quick Search & Filter Toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-3 bg-[#0a1628]/60 p-2.5 rounded-xl border border-[#1e3358]/60">

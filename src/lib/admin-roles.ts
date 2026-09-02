@@ -38,6 +38,14 @@ export function hidesAdsAttribution(role: AdminRole): boolean {
 }
 
 /**
+ * Recepción gestiona la agenda, no la caja: el resumen de totales por etapa
+ * del pipeline queda oculto para ese rol.
+ */
+export function hidesPipelineTotals(role: AdminRole): boolean {
+  return role === 'recepcionista'
+}
+
+/**
  * Secciones del panel por rol. `null` = visible para todos. Igual que con el
  * booleano anterior, esto decide qué enlaces muestra el Sidebar; las rutas en
  * sí no están bloqueadas por rol.
