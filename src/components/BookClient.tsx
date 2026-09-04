@@ -164,6 +164,9 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
   const [form, setForm] = useState({ name: '', phone: '', notes: '' })
   const [submitting, setSubmitting] = useState(false)
   const [confirmed, setConfirmed] = useState(false)
+  // Se hace scroll aquí apenas se elige un día, para que las horas disponibles
+  // no queden ocultas fuera de la pantalla en móvil.
+  const timeSlotsRef = useRef<HTMLDivElement>(null)
   // id del registro creado en la Fase 1 (nombre+teléfono, sin fecha/hora aún)
   // — la Fase 2 lo actualiza en vez de crear uno duplicado.
   const [leadId, setLeadId] = useState<string | null>(null)
@@ -219,6 +222,12 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
     setSelDay(d)
     setSelTime(null)
     trackEvent(EVENTS.BOOKING_DATE_SELECTED, { service_id: service?.id ?? '', date: `${calYear}-${calMonth + 1}-${d}` })
+    // Las horas aparecen justo debajo, pero en móvil el calendario suele ocupar
+    // toda la pantalla — sin este scroll, la persona no ve que ya hay horarios
+    // disponibles y cree que no pasó nada (mala UX detectada en Clarity).
+    setTimeout(() => {
+      timeSlotsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 120)
   }
 
   function pickTime(t: string) {
@@ -694,7 +703,7 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
 
               {/* Time slots — appear when day is selected */}
               {selDay && (
-                <div className="slide-up">
+                <div className="slide-up" ref={timeSlotsRef} style={{ scrollMarginTop: 90 }}>
                   <p style={{ color: C.sec, fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 14 }}>
                     {lang === 'en' ? 'Available times — ' : 'Horarios disponibles — '}{MONTHS(lang)[calMonth]} {selDay}
                   </p>

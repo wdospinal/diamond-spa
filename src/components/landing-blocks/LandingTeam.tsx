@@ -55,7 +55,7 @@ export function LandingTeam({ locale }: { locale: Locale }) {
             return (
               <a
                 key={therapist.name}
-                href={`#reservar-${therapist.serviceId}`}
+                href="#reservar"
                 className="shrink-0 w-[60vw] sm:w-[40vw] md:w-auto snap-center group transition-transform duration-300 block"
               >
                 <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-surface-container/50 ring-1 ring-outline/10 mb-4 shadow-sm">
