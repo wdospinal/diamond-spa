@@ -30,48 +30,56 @@ function mapPillars(items: BilingualPillar[], locale: 'en' | 'es'): Pillar[] {
   return items.map(({ icon, en, es }) => ({ icon, ...(locale === 'en' ? en : es) }))
 }
 
-type Therapist = { name: string; role: string; years: string }
+type Therapist = { name: string; role: string; years: string; specialty: string; serviceId: string }
 type BilingualTherapist = {
   name: string
-  en: { role: string; years: string }
-  es: { role: string; years: string }
+  /** Ancla del servicio en la landing (`#reservar-${serviceId}`) al que enlaza su tarjeta. */
+  serviceId: string
+  en: { role: string; years: string; specialty: string }
+  es: { role: string; years: string; specialty: string }
 }
 
 function mapTherapists(items: BilingualTherapist[], locale: 'en' | 'es'): Therapist[] {
-  return items.map(({ name, en, es }) => ({ name, ...(locale === 'en' ? en : es) }))
+  return items.map(({ name, serviceId, en, es }) => ({ name, serviceId, ...(locale === 'en' ? en : es) }))
 }
 
 /** About page team portraits — keep in sync with IMG_THERAPISTS in images.ts */
 export const THERAPISTS: BilingualTherapist[] = [
   {
     name: 'Daniela Salina',
-    en: { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience' },
-    es: { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia' },
+    serviceId: 'relaxing',
+    en: { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience', specialty: 'Relaxing massage specialist' },
+    es: { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia', specialty: 'Especialista en masaje relajante' },
   },
   {
     name: 'Sary Paez',
-    en: { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience' },
-    es: { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia' },
+    serviceId: 'deep-tissue',
+    en: { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience', specialty: 'Deep tissue specialist' },
+    es: { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia', specialty: 'Especialista en tejido profundo' },
   },
   {
     name: 'Ana Maria',
-    en: { role: 'Cosmetologist & Massage Therapist', years: '4+ years experience' },
-    es: { role: 'Cosmetóloga & Masajista', years: '3+ años de experiencia' },
+    serviceId: 'hot-stones',
+    en: { role: 'Cosmetologist & Massage Therapist', years: '4+ years experience', specialty: 'Hot stone specialist' },
+    es: { role: 'Cosmetóloga & Masajista', years: '3+ años de experiencia', specialty: 'Especialista en piedras volcánicas' },
   },
   {
     name: 'Sheyla Tinoco',
-    en: { role: 'Cosmetologist & Massage Therapist', years: '3+ years experience' },
-    es: { role: 'Cosmetóloga & Masajista', years: '4+ años de experiencia' },
+    serviceId: 'sports',
+    en: { role: 'Cosmetologist & Massage Therapist', years: '3+ years experience', specialty: 'Sports massage specialist' },
+    es: { role: 'Cosmetóloga & Masajista', years: '4+ años de experiencia', specialty: 'Especialista en masaje deportivo' },
   },
   {
     name: 'Tatiana',
-    en: { role: 'Cosmetologist & Massage Therapist', years: '3+ years experience' },
-    es: { role: 'Cosmetóloga & Masajista', years: '3+ años de experiencia' },
+    serviceId: 'relaxing',
+    en: { role: 'Cosmetologist & Massage Therapist', years: '3+ years experience', specialty: 'Focus on deep relaxation' },
+    es: { role: 'Cosmetóloga & Masajista', years: '3+ años de experiencia', specialty: 'Enfoque en relajación profunda' },
   },
   {
     name: 'Saira Bedoya',
-    en: { role: 'Cosmetologist & Massage Therapist', years: '3+ years experience' },
-    es: { role: 'Cosmetóloga & Masajista', years: '3+ años de experiencia' },
+    serviceId: 'deep-tissue',
+    en: { role: 'Cosmetologist & Massage Therapist', years: '3+ years experience', specialty: 'Focus on muscle recovery' },
+    es: { role: 'Cosmetóloga & Masajista', years: '3+ años de experiencia', specialty: 'Enfoque en recuperación muscular' },
   },
 ]
 

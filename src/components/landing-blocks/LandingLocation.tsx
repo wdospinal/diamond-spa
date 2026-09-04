@@ -45,7 +45,7 @@ export function LandingLocation({
 
             <div className="mt-4">
               <a 
-                href="https://maps.app.goo.gl/EjempLoParaElPoblado" 
+                href="https://www.google.com/maps/dir/?api=1&destination=Diamond+Spa+El+Poblado&destination_place_id=ChIJKzwytpApRI4RjIhtXLsMvK8" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="inline-block border border-outline-variant text-on-surface font-label text-sm tracking-widest uppercase px-8 py-4 rounded-sm hover:bg-surface-container transition-colors"

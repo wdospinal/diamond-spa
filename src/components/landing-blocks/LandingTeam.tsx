@@ -49,11 +49,14 @@ export function LandingTeam({ locale }: { locale: Locale }) {
           {THERAPISTS.map((therapist, i) => {
             const webpSrc = IMG_THERAPISTS_WEBP[i]
             const roleText = locale === 'es' ? therapist.es.role : therapist.en.role
+            const specialtyText = locale === 'es' ? therapist.es.specialty : therapist.en.specialty
+            const bookLabel = locale === 'es' ? 'Reservar' : 'Book'
 
             return (
-              <div
+              <a
                 key={therapist.name}
-                className="shrink-0 w-[60vw] sm:w-[40vw] md:w-auto snap-center group transition-transform duration-300"
+                href={`#reservar-${therapist.serviceId}`}
+                className="shrink-0 w-[60vw] sm:w-[40vw] md:w-auto snap-center group transition-transform duration-300 block"
               >
                 <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-surface-container/50 ring-1 ring-outline/10 mb-4 shadow-sm">
                   <Image
@@ -79,13 +82,23 @@ export function LandingTeam({ locale }: { locale: Locale }) {
                   </div>
 
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
+
+                  {/* CTA visible sobre la foto — la gente ya intenta tocar la imagen
+                      (confirmado en Clarity), así que ahora sí hace algo. Siempre visible,
+                      no solo en :hover — la mayoría del tráfico es táctil/móvil, sin hover. */}
+                  <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                    <span className="bg-primary text-on-primary text-[11px] font-label uppercase tracking-wider px-3 py-1.5 rounded-full shadow-md">
+                      {bookLabel} →
+                    </span>
+                  </div>
                 </div>
 
                 <div className="text-center md:text-left px-1 md:px-0">
                   <h3 className="font-serif text-xl md:text-lg text-on-surface mb-1 tracking-tight">{therapist.name}</h3>
                   <p className="font-label text-primary text-xs md:text-[11px] tracking-wider uppercase opacity-90">{roleText}</p>
+                  <p className="text-secondary text-xs mt-0.5 font-body">{specialtyText}</p>
                 </div>
-              </div>
+              </a>
             )
           })}
         </div>

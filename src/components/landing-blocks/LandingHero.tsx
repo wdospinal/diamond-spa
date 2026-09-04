@@ -125,10 +125,10 @@ function HeroContent({
             <span className="material-symbols-outlined text-[16px]">privacy_tip</span>
             {trust.private}
           </span>
-          <span className="flex items-center gap-1">
+          <a href="#ubicacion" className="flex items-center gap-1 hover:text-white transition-colors underline decoration-white/30 underline-offset-4">
             <span className="material-symbols-outlined text-[16px]">location_on</span>
             {trust.location}
-          </span>
+          </a>
         </div>
       </div>
     </section>
