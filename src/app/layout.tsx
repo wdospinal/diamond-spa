@@ -3,6 +3,7 @@ import { Manrope, Playfair_Display } from 'next/font/google'
 import './globals.css'
 import ClientProviders from '@/components/ClientProviders'
 import Script from 'next/script'
+import SemAntiFouc from '@/components/SemAntiFouc'
 import GlobalFloatingWhatsApp from '@/components/GlobalFloatingWhatsApp'
 import { readAllLandings } from '@/lib/landing-store'
 
@@ -92,24 +93,13 @@ y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
 
         {/*
           Anti-FOUC SEM script — runs synchronously before first paint.
-          Must be a raw <script> in this Server Component <head>, NOT next/script
-          with beforeInteractive: that Client Component re-renders a <script> on
-          the client and triggers React 19's "Encountered a script tag" warning.
-          Default trigger: ?utm_source=ads (configurable per-page from the admin).
+          Inyectado vía SemAntiFouc (useServerInsertedHTML) para evitar el aviso
+          de React 19 "Encountered a script tag while rendering React component",
+          que en Next.js 16.2+ se dispara incluso con un <script> crudo en este
+          Server Component. Default trigger: ?utm_source=ads (configurable por
+          página desde el admin).
         */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){
-  try {
-    var p = new URLSearchParams(window.location.search);
-    if (sessionStorage.getItem('sem_hide_chrome') === 'false') return;
-    var k = sessionStorage.getItem('sem_trigger_key') || 'utm_source';
-    var v = sessionStorage.getItem('sem_trigger_value') || 'ads';
-    if (p.get(k) === v) document.documentElement.classList.add('is-ads');
-  } catch(e) {}
-})();`,
-          }}
-        />
+        <SemAntiFouc />
       </head>
       <body className="bg-surface text-on-surface font-body antialiased">
         {/* Google Tag Manager (noscript) */}
