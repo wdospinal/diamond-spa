@@ -17,6 +17,8 @@ export function LandingTeam({ locale }: { locale: Locale }) {
     : 'Certified cosmetologists with years of experience in the heart of El Poblado.'
 
   const [activeIdx, setActiveIdx] = useState(0)
+  // Solo una tarjeta puede estar "abierta" a la vez — tocar otra cierra la anterior.
+  const [revealedIdx, setRevealedIdx] = useState<number | null>(null)
 
   return (
     <section className="py-24 bg-surface-container-lowest text-on-surface overflow-hidden">
@@ -48,17 +50,22 @@ export function LandingTeam({ locale }: { locale: Locale }) {
         >
           {THERAPISTS.map((therapist, i) => {
             const webpSrc = IMG_THERAPISTS_WEBP[i]
-            const roleText = locale === 'es' ? therapist.es.role : therapist.en.role
             const specialtyText = locale === 'es' ? therapist.es.specialty : therapist.en.specialty
             const bookLabel = locale === 'es' ? 'Reservar' : 'Book'
+            const isRevealed = revealedIdx === i
 
             return (
-              <a
+              <div
                 key={therapist.name}
-                href="#reservar"
-                className="shrink-0 w-[60vw] sm:w-[40vw] md:w-auto snap-center group transition-transform duration-300 block"
+                className="shrink-0 w-[60vw] sm:w-[40vw] md:w-auto snap-center"
               >
-                <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-surface-container/50 ring-1 ring-outline/10 mb-4 shadow-sm">
+                <button
+                  type="button"
+                  onClick={() => setRevealedIdx(isRevealed ? null : i)}
+                  aria-expanded={isRevealed}
+                  aria-label={therapist.name}
+                  className="relative aspect-[3/4] w-full overflow-hidden rounded-xl bg-surface-container/50 ring-1 ring-outline/10 shadow-sm block text-left cursor-pointer"
+                >
                   <Image
                     src={webpSrc}
                     alt={locale === 'es'
@@ -66,11 +73,14 @@ export function LandingTeam({ locale }: { locale: Locale }) {
                       : `${therapist.name}, therapist at Diamond Spa`}
                     fill
                     sizes="(max-width: 768px) 60vw, 20vw"
-                    className="object-cover opacity-90 group-hover:opacity-100 transition-all duration-500 md:group-hover:scale-105"
+                    className={`object-cover transition-all duration-500 ease-out ${
+                      isRevealed ? 'scale-110 blur-[2px] opacity-50' : 'opacity-90'
+                    }`}
                     unoptimized
                   />
 
-                  <div className="absolute top-3 right-3">
+                  {/* Insignia verificado — se desvanece al revelar, para no competir con el panel */}
+                  <div className={`absolute top-3 right-3 transition-opacity duration-200 ${isRevealed ? 'opacity-0' : 'opacity-100'}`}>
                     <div className="bg-surface/90 backdrop-blur-sm rounded-full p-1.5 shadow-sm border border-outline/10">
                       <span
                         className="material-symbols-outlined text-primary block"
@@ -81,24 +91,36 @@ export function LandingTeam({ locale }: { locale: Locale }) {
                     </div>
                   </div>
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
-
-                  {/* CTA visible sobre la foto — la gente ya intenta tocar la imagen
-                      (confirmado en Clarity), así que ahora sí hace algo. Siempre visible,
-                      no solo en :hover — la mayoría del tráfico es táctil/móvil, sin hover. */}
-                  <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-                    <span className="bg-primary text-on-primary text-[11px] font-label uppercase tracking-wider px-3 py-1.5 rounded-full shadow-md">
-                      {bookLabel} →
-                    </span>
+                  {/* Gradiente base + nombre — visible por defecto, se apaga al revelar */}
+                  <div className={`absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent transition-opacity duration-200 ${isRevealed ? 'opacity-0' : 'opacity-100'}`} />
+                  <div className={`absolute bottom-3 left-3 right-3 transition-opacity duration-150 ${isRevealed ? 'opacity-0' : 'opacity-100'}`}>
+                    <h3 className="font-serif text-lg text-white tracking-tight drop-shadow-sm">{therapist.name}</h3>
                   </div>
-                </div>
 
-                <div className="text-center md:text-left px-1 md:px-0">
-                  <h3 className="font-serif text-xl md:text-lg text-on-surface mb-1 tracking-tight">{therapist.name}</h3>
-                  <p className="font-label text-primary text-xs md:text-[11px] tracking-wider uppercase opacity-90">{roleText}</p>
-                  <p className="text-secondary text-xs mt-0.5 font-body">{specialtyText}</p>
-                </div>
-              </a>
+                  {/* Panel revelado — cubre la foto entera con nombre, especialidad y CTA */}
+                  <div
+                    className={`absolute inset-0 flex flex-col items-center justify-center text-center px-5 bg-black/55 transition-opacity duration-300 ${
+                      isRevealed ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                    }`}
+                  >
+                    <h3 className={`font-serif text-xl text-white mb-2 tracking-tight transition-all duration-300 delay-75 ${isRevealed ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`}>
+                      {therapist.name}
+                    </h3>
+                    <p className={`text-white/90 text-sm font-body leading-relaxed mb-5 transition-all duration-300 delay-100 ${isRevealed ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`}>
+                      {specialtyText}
+                    </p>
+                    <a
+                      href="#reservar"
+                      onClick={(e) => e.stopPropagation()}
+                      className={`inline-flex items-center gap-1.5 bg-primary text-on-primary text-xs font-label uppercase tracking-wider px-5 py-2.5 rounded-full shadow-lg hover:bg-primary/90 active:scale-95 transition-all duration-300 delay-150 ${
+                        isRevealed ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'
+                      }`}
+                    >
+                      {bookLabel} →
+                    </a>
+                  </div>
+                </button>
+              </div>
             )
           })}
         </div>
