@@ -164,6 +164,9 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
   const [form, setForm] = useState({ name: '', phone: '', notes: '' })
   const [submitting, setSubmitting] = useState(false)
   const [confirmed, setConfirmed] = useState(false)
+  // Se hace scroll aquí apenas se elige un día, para que las horas disponibles
+  // no queden ocultas fuera de la pantalla en móvil.
+  const timeSlotsRef = useRef<HTMLDivElement>(null)
   // id del registro creado en la Fase 1 (nombre+teléfono, sin fecha/hora aún)
   // — la Fase 2 lo actualiza en vez de crear uno duplicado.
   const [leadId, setLeadId] = useState<string | null>(null)
@@ -219,6 +222,12 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
     setSelDay(d)
     setSelTime(null)
     trackEvent(EVENTS.BOOKING_DATE_SELECTED, { service_id: service?.id ?? '', date: `${calYear}-${calMonth + 1}-${d}` })
+    // Las horas aparecen justo debajo, pero en móvil el calendario suele ocupar
+    // toda la pantalla — sin este scroll, la persona no ve que ya hay horarios
+    // disponibles y cree que no pasó nada (mala UX detectada en Clarity).
+    setTimeout(() => {
+      timeSlotsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 120)
   }
 
   function pickTime(t: string) {
@@ -649,52 +658,73 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
                 <span style={{ marginLeft: 'auto' }}>→</span>
               </button>
 
-              {/* Calendar */}
-              <div style={{ background: C.card, border: `1px solid ${C.cardBrd}`, borderRadius: 10, padding: 20, marginBottom: 24 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                  <button onClick={() => { if (calMonth === 0) { setCalYear(y => y - 1); setCalMonth(11) } else setCalMonth(m => m - 1); setSelDay(null); setSelTime(null) }}
-                    style={{ background: 'none', border: 'none', color: C.sec, cursor: 'pointer', padding: '4px 8px', lineHeight: 1, display: 'flex', alignItems: 'center' }}>
-                    <Icon name="chevron_left" size={22} /></button>
-                  <span style={{ color: C.text, fontSize: 14, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                    {MONTHS(lang)[calMonth]} {calYear}
+              {/* Calendar — se colapsa a un resumen chico apenas se elige un día,
+                  para liberar espacio real y que las horas se vean sin necesitar
+                  scroll (el modal en desktop tiene altura fija, ~800px máx). */}
+              {!selDay ? (
+                <div style={{ background: C.card, border: `1px solid ${C.cardBrd}`, borderRadius: 10, padding: 20, marginBottom: 24 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                    <button onClick={() => { if (calMonth === 0) { setCalYear(y => y - 1); setCalMonth(11) } else setCalMonth(m => m - 1); setSelDay(null); setSelTime(null) }}
+                      style={{ background: 'none', border: 'none', color: C.sec, cursor: 'pointer', padding: '4px 8px', lineHeight: 1, display: 'flex', alignItems: 'center' }}>
+                      <Icon name="chevron_left" size={22} /></button>
+                    <span style={{ color: C.text, fontSize: 14, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                      {MONTHS(lang)[calMonth]} {calYear}
+                    </span>
+                    <button onClick={() => { if (calMonth === 11) { setCalYear(y => y + 1); setCalMonth(0) } else setCalMonth(m => m + 1); setSelDay(null); setSelTime(null) }}
+                      style={{ background: 'none', border: 'none', color: C.sec, cursor: 'pointer', padding: '4px 8px', lineHeight: 1, display: 'flex', alignItems: 'center' }}>
+                      <Icon name="chevron_right" size={22} /></button>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', marginBottom: 8 }}>
+                    {DAYS(lang).map((d, i) => (
+                      <div key={`day-${i}`} style={{ textAlign: 'center', color: C.sec, fontSize: 11, padding: '4px 0', fontWeight: 600 }}>{d}</div>
+                    ))}
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 4 }}>
+                    {buildCal(calYear, calMonth).map(({ key, day }) => {
+                      if (!day) return <div key={key} />
+                      const past = isPast(day)
+                      const active = selDay === day
+                      return (
+                        <button
+                          key={key}
+                          disabled={past}
+                          onClick={() => pickDay(day)}
+                          className={past ? '' : 'tap-day'}
+                          style={{
+                            aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            background: active ? C.accent : 'transparent',
+                            color: past ? `${C.div}` : (active ? '#fff' : C.text),
+                            border: active ? 'none' : `1.5px solid ${active ? C.accent : 'transparent'}`,
+                            borderRadius: 6, cursor: past ? 'not-allowed' : 'pointer',
+                            fontSize: 13, fontWeight: active ? 700 : 400, transition: 'all 0.15s',
+                          }}
+                        >{day}</button>
+                      )
+                    })}
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={() => { setSelDay(null); setSelTime(null) }}
+                  style={{
+                    width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    background: C.card, border: `1px solid ${C.cardBrd}`, borderRadius: 10,
+                    padding: '14px 16px', marginBottom: 20, cursor: 'pointer',
+                  }}
+                >
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <Icon name="calendar_month" size={18} style={{ color: C.accent, flexShrink: 0 }} />
+                    <span style={{ color: C.text, fontSize: 14, fontWeight: 600 }}>{MONTHS(lang)[calMonth]} {selDay}, {calYear}</span>
                   </span>
-                  <button onClick={() => { if (calMonth === 11) { setCalYear(y => y + 1); setCalMonth(0) } else setCalMonth(m => m + 1); setSelDay(null); setSelTime(null) }}
-                    style={{ background: 'none', border: 'none', color: C.sec, cursor: 'pointer', padding: '4px 8px', lineHeight: 1, display: 'flex', alignItems: 'center' }}>
-                    <Icon name="chevron_right" size={22} /></button>
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', marginBottom: 8 }}>
-                  {DAYS(lang).map((d, i) => (
-                    <div key={`day-${i}`} style={{ textAlign: 'center', color: C.sec, fontSize: 11, padding: '4px 0', fontWeight: 600 }}>{d}</div>
-                  ))}
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 4 }}>
-                  {buildCal(calYear, calMonth).map(({ key, day }) => {
-                    if (!day) return <div key={key} />
-                    const past = isPast(day)
-                    const active = selDay === day
-                    return (
-                      <button
-                        key={key}
-                        disabled={past}
-                        onClick={() => pickDay(day)}
-                        className={past ? '' : 'tap-day'}
-                        style={{
-                          aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          background: active ? C.accent : 'transparent',
-                          color: past ? `${C.div}` : (active ? '#fff' : C.text),
-                          border: active ? 'none' : `1.5px solid ${active ? C.accent : 'transparent'}`,
-                          borderRadius: 6, cursor: past ? 'not-allowed' : 'pointer',
-                          fontSize: 13, fontWeight: active ? 700 : 400, transition: 'all 0.15s',
-                        }}
-                      >{day}</button>
-                    )
-                  })}
-                </div>
-              </div>
+                  <span style={{ color: C.accent, fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap' }}>
+                    {lang === 'en' ? 'Change date' : 'Cambiar fecha'}
+                  </span>
+                </button>
+              )}
 
               {/* Time slots — appear when day is selected */}
               {selDay && (
-                <div className="slide-up">
+                <div className="slide-up" ref={timeSlotsRef} style={{ scrollMarginTop: 16 }}>
                   <p style={{ color: C.sec, fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 14 }}>
                     {lang === 'en' ? 'Available times — ' : 'Horarios disponibles — '}{MONTHS(lang)[calMonth]} {selDay}
                   </p>
