@@ -95,6 +95,10 @@ const SERVICES = (lang: string): Service[] => [
 const MONTHS = (lang: string) => lang === 'en' ? ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] : ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 const DAYS = (lang: string) => lang === 'en' ? ['S', 'M', 'T', 'W', 'T', 'F', 'S'] : ['D', 'L', 'M', 'X', 'J', 'V', 'S']
 const TIMES = ['10:00 AM', '11:00 AM', '12:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM', '7:00 PM']
+// Domingo cierra a las 7:00 PM (SPA_HOURS): primera cita 10:30 AM y última 30 min antes del cierre.
+const SUNDAY_TIMES = ['10:30 AM', '11:30 AM', '12:30 PM', '2:30 PM', '3:30 PM', '4:30 PM', '5:30 PM', '6:30 PM']
+const timesForDay = (year: number, monthIndex: number, day: number) =>
+  new Date(year, monthIndex, day).getDay() === 0 ? SUNDAY_TIMES : TIMES
 
 function fmtCop(n: number) {
   return '$' + n.toLocaleString('es-CO').replace(/,/g, '.')
@@ -733,7 +737,7 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
                     {lang === 'en' ? 'Available times — ' : 'Horarios disponibles — '}{MONTHS(lang)[calMonth]} {selDay}
                   </p>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 }}>
-                    {TIMES.map(t => {
+                    {timesForDay(calYear, calMonth, selDay).map(t => {
                       const active = selTime === t
                       return (
                         <button
