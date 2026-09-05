@@ -439,8 +439,12 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
 
   // ── Layout ────────────────────────────────────────────────────────────────
   return (
-    <div style={{ minHeight: onClose ? '100%' : '100vh', background: C.bg, fontFamily: 'system-ui,-apple-system,sans-serif', display: 'flex', flexDirection: 'column' }}>
-      <STYLES dir={dir} />
+    // dvh, not vh: on the standalone page the step bar is the topmost chrome on
+    // phones, and vh overshoots the visual viewport while the URL bar is out.
+    <div
+      style={{ minHeight: onClose ? '100%' : '100dvh', background: C.bg, fontFamily: 'system-ui,-apple-system,sans-serif', display: 'flex', flexDirection: 'column' }}
+    >
+      <STYLES dir={dir} standalone={!onClose} />
 
       {/* ── Top bar ──────────────────────────────────────────────────────── */}
       <div style={{ position: 'sticky', top: 0, zIndex: 40, background: `${C.card}f0`, backdropFilter: 'blur(12px)', borderBottom: `1px solid ${C.div}` }}>
@@ -871,7 +875,7 @@ function StepTitle({ label, sub }: { label: string; sub: string }) {
   )
 }
 
-function STYLES({ dir }: { dir: 1 | -1 }) {
+function STYLES({ dir, standalone }: { dir: 1 | -1; standalone: boolean }) {
   return (
     <style>{`
       @keyframes stepIn  { from { opacity:0; transform:translateX(${dir > 0 ? '24px' : '-24px'}) } to { opacity:1; transform:translateX(0) } }
@@ -890,6 +894,21 @@ function STYLES({ dir }: { dir: 1 | -1 }) {
       .inp:focus { border-color: ${C.accent} !important; }
 
       * { -webkit-tap-highlight-color: transparent; }
+      ${standalone ? `
+        /* On phones the Diamond Spa fixed header and this step bar stacked up
+           and ate the top of a small viewport, pushing the current step below
+           the fold. Drop the header so the step bar is the only fixed chrome.
+           These rules are global but live in this element, so they apply only
+           while the standalone booking page is mounted and React removes them
+           on navigation. (They can't live in globals.css: the ancestor-scoping
+           :has() they'd need is stripped by Lightning CSS at our browserslist
+           targets.) */
+        @media (max-width: 767px) {
+          #global-nav { display: none; }
+          /* Drop the padding that compensated for the now-hidden fixed nav */
+          main { padding-top: 0 !important; }
+        }
+      ` : ''}
     `}</style>
   )
 }
