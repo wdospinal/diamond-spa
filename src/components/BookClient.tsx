@@ -748,7 +748,7 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
                   transition: 'all 0.18s ease',
                 }}
               >
-                <Icon name="chat" size={16} style={{ color: C.accent, flexShrink: 0 }} />
+                <Icon name="chat_bubble" size={16} style={{ color: C.accent, flexShrink: 0 }} />
                 <span>{lang === 'en' ? "I'd rather coordinate the time via WhatsApp" : 'Prefiero coordinar la hora por WhatsApp'}</span>
                 <span style={{ marginLeft: 'auto' }}>→</span>
               </button>
