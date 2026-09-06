@@ -324,11 +324,18 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
     setTimeout(() => finalizeBooking(selDay, t), 300)
   }
 
+  /**
+   * Un día no se puede reservar si ya pasó en hora de Bogotá, o si es hoy y no
+   * queda ningún bloque libre (después del cierre, por ejemplo): dejar el día
+   * habilitado solo llevaba a una grilla vacía.
+   */
   function isPast(day: number) {
-    const d = new Date(calYear, calMonth, day)
-    d.setHours(0, 0, 0, 0)
-    const n = new Date(); n.setHours(0, 0, 0, 0)
-    return d < n
+    const now = bogotaNow()
+    const cell = calYear * 10000 + calMonth * 100 + day
+    const today = now.year * 10000 + now.monthIndex * 100 + now.day
+    if (cell < today) return true
+    if (cell > today) return false
+    return availableTimes(calYear, calMonth, day, durationOf(service, priceIdx)).length === 0
   }
 
   const daySlots = selDay ? availableTimes(calYear, calMonth, selDay, durationOf(service, priceIdx)) : []
