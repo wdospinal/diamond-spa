@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react'
 import { pushEvent } from '@/lib/gtm'
 import type { Locale, Dict } from '@/lib/i18n'
-import { randomWhatsAppUrl } from '@/lib/spa'
+import { randomWhatsAppUrl, SPA_HOURS } from '@/lib/spa'
 import { EVENTS, trackEvent } from '@/lib/events'
 
 // ─── BookClient ───────────────────────────────────────────────────────────────
@@ -94,13 +94,25 @@ const SERVICES = (lang: string): Service[] => [
 
 const MONTHS = (lang: string) => lang === 'en' ? ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] : ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 const DAYS = (lang: string) => lang === 'en' ? ['S', 'M', 'T', 'W', 'T', 'F', 'S'] : ['D', 'L', 'M', 'X', 'J', 'V', 'S']
-// Grilla de horarios. Domingo cierra a las 7:00 PM (SPA_HOURS): primera cita
-// 10:30 AM y última 30 min antes del cierre. El resto de días mantiene 10:00 AM
-// – 7:00 PM. La franja de la 1 PM queda fuera (pausa) como siempre.
-const FIRST_SLOT_MIN = { sunday: 10 * 60 + 30, weekday: 10 * 60 }
-const LAST_SLOT_MIN = { sunday: 18 * 60 + 30, weekday: 19 * 60 }
+// Grilla de horarios derivada de SPA_HOURS (única fuente de verdad del negocio):
+// la primera cita es 30 min después de abrir y la última 30 min antes de cerrar,
+// para cualquier día. Hoy eso da lun–sáb 10:30 AM – 9:30 PM y dom 10:30 AM – 6:30 PM.
+const SLOT_EDGE_MIN = 30
 const LUNCH_FROM_MIN = 13 * 60
 const LUNCH_TO_MIN = 14 * 60
+const WEEKDAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as const
+
+function hhmmToMin(hhmm: string) {
+  const [h, m] = hhmm.split(':').map(Number)
+  return h * 60 + m
+}
+
+/** Apertura y cierre (en minutos) del día de la semana, según SPA_HOURS. */
+function openingFor(weekday: number) {
+  const name = WEEKDAY_NAMES[weekday]
+  const block = SPA_HOURS.find(h => (h.dayOfWeek as readonly string[]).includes(name)) ?? SPA_HOURS[0]
+  return { opens: hhmmToMin(block.opens), closes: hhmmToMin(block.closes) }
+}
 
 function fmtTime(totalMin: number) {
   const h24 = Math.floor(totalMin / 60)
@@ -115,9 +127,9 @@ function fmtTime(totalMin: number) {
  * (75, 90, 120 min) siguen con bloques de una hora.
  */
 function timesForDay(year: number, monthIndex: number, day: number, durationMin: number) {
-  const isSunday = new Date(year, monthIndex, day).getDay() === 0
-  const start = isSunday ? FIRST_SLOT_MIN.sunday : FIRST_SLOT_MIN.weekday
-  const end = isSunday ? LAST_SLOT_MIN.sunday : LAST_SLOT_MIN.weekday
+  const { opens, closes } = openingFor(new Date(year, monthIndex, day).getDay())
+  const start = opens + SLOT_EDGE_MIN
+  const end = closes - SLOT_EDGE_MIN
   const step = durationMin <= 60 ? 30 : 60
   const out: string[] = []
   for (let m = start; m <= end; m += step) {
