@@ -595,7 +595,9 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
         <div
           key={step}
           className={anim ? 'step-in' : 'step-out'}
-          style={{ maxWidth: 640, margin: '0 auto', padding: '32px 16px 120px' }}
+          // En 'details' el botón fijo ya reserva su propio espacio con el margen
+          // de la fila de confianza; los 120px dejaban un hueco muerto enorme.
+          style={{ maxWidth: 640, margin: '0 auto', padding: step === 'details' ? '24px 16px 96px' : '32px 16px 120px' }}
         >
 
           {/* ── STEP: CATEGORY ─────────────────────────────────────────── */}
@@ -860,7 +862,7 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
 
               <StepTitle label={lang === 'en' ? 'Your details' : 'Tus datos'} sub={lang === 'en' ? "We'll pick the date and time next" : 'A continuación eliges fecha y hora'} />
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 18, marginBottom: 24 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 18 }}>
                 {([
                   // name/autoComplete/inputMode son lo que hace que el navegador y
                   // los gestores de contraseñas ofrezcan autocompletar estos campos.
@@ -920,7 +922,7 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
               </div>
 
               {/* Trust row */}
-              <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 100 }}>
+              <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 8 }}>
                 {[
                   { icon: 'star', text: '4.9 en Google' },
                   { icon: 'verified', text: lang === 'en' ? '320+ clients served' : '+320 clientes atendidos' },
