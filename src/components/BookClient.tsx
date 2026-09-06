@@ -862,17 +862,26 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 18, marginBottom: 24 }}>
                 {([
-                  { id: 'name', label: lang === 'en' ? 'Full name' : 'Nombre completo', type: 'text', required: true },
-                  { id: 'phone', label: lang === 'en' ? 'Phone / WhatsApp' : 'Teléfono / WhatsApp', type: 'tel', required: true },
+                  // name/autoComplete/inputMode son lo que hace que el navegador y
+                  // los gestores de contraseñas ofrezcan autocompletar estos campos.
+                  { id: 'name', label: lang === 'en' ? 'Full name' : 'Nombre completo', type: 'text', required: true, autoComplete: 'name', inputMode: 'text', autoCapitalize: 'words', enterKeyHint: 'next' },
+                  { id: 'phone', label: lang === 'en' ? 'Phone / WhatsApp' : 'Teléfono / WhatsApp', type: 'tel', required: true, autoComplete: 'tel', inputMode: 'tel', autoCapitalize: 'none', enterKeyHint: 'done' },
                 ] as const).map(f => (
                   <div key={f.id}>
-                    <label style={{ display: 'block', color: C.sec, fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
+                    <label htmlFor={`book-${f.id}`} style={{ display: 'block', color: C.sec, fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
                       {f.label}{f.required && <span style={{ color: C.accent }}> *</span>}
                     </label>
                     <input
-                      id={f.id}
+                      id={`book-${f.id}`}
+                      name={f.id}
                       type={f.type}
                       required={f.required}
+                      autoComplete={f.autoComplete}
+                      inputMode={f.inputMode}
+                      autoCapitalize={f.autoCapitalize}
+                      autoCorrect="off"
+                      spellCheck={false}
+                      enterKeyHint={f.enterKeyHint}
                       value={form[f.id]}
                       onChange={e => setForm(p => ({ ...p, [f.id]: e.target.value }))}
                       className="inp"
@@ -887,10 +896,13 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
                   </div>
                 ))}
                 <div>
-                  <label style={{ display: 'block', color: C.sec, fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
+                  <label htmlFor="book-notes" style={{ display: 'block', color: C.sec, fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
                     {lang === 'en' ? 'Special requests' : 'Solicitudes especiales'}
                   </label>
                   <textarea
+                    id="book-notes"
+                    name="notes"
+                    autoComplete="off"
                     rows={3}
                     value={form.notes}
                     onChange={e => setForm(p => ({ ...p, notes: e.target.value }))}
@@ -976,6 +988,16 @@ function STYLES({ dir, standalone }: { dir: 1 | -1; standalone: boolean }) {
       .tap-time:hover  { border-color: ${C.accent} !important; color: ${C.text} !important; }
       .btn-confirm:hover:not(:disabled) { background: ${C.accentHov} !important; }
       .inp:focus { border-color: ${C.accent} !important; }
+      /* Chrome pinta el autofill con su propio fondo claro y rompía el tema
+         oscuro del formulario; el inset shadow lo repinta sin perder el valor. */
+      .inp:-webkit-autofill,
+      .inp:-webkit-autofill:hover,
+      .inp:-webkit-autofill:focus {
+        -webkit-text-fill-color: ${C.text};
+        -webkit-box-shadow: 0 0 0 1000px ${C.card} inset;
+        caret-color: ${C.text};
+        transition: background-color 9999s ease-out 0s;
+      }
 
       * { -webkit-tap-highlight-color: transparent; }
       ${standalone ? `
