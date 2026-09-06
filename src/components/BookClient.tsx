@@ -127,6 +127,43 @@ function timesForDay(year: number, monthIndex: number, day: number, durationMin:
   return out
 }
 
+/**
+ * Fecha y hora "ahora" en Bogotá, sin depender de la zona del navegador: el spa
+ * agenda en hora local de Medellín y la gente reserva desde cualquier huso.
+ */
+function bogotaNow() {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Bogota',
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hour12: false,
+  }).formatToParts(new Date())
+  const get = (t: string) => Number(parts.find(p => p.type === t)?.value ?? 0)
+  const hour = get('hour') % 24
+  return { year: get('year'), monthIndex: get('month') - 1, day: get('day'), minutes: hour * 60 + get('minute') }
+}
+
+/** Minutos desde medianoche de un slot con formato "6:30 PM". */
+function slotToMinutes(slot: string) {
+  const m = slot.match(/^(\d{1,2}):(\d{2}) (AM|PM)$/)
+  if (!m) return 0
+  const h = Number(m[1]) % 12 + (m[3] === 'PM' ? 12 : 0)
+  return h * 60 + Number(m[2])
+}
+
+/**
+ * Para hoy no tiene sentido ofrecer horas que ya pasaron. Se exige además
+ * MIN_LEAD_MIN de margen para que recepción alcance a confirmar.
+ */
+const MIN_LEAD_MIN = 60
+
+function availableTimes(year: number, monthIndex: number, day: number, durationMin: number) {
+  const slots = timesForDay(year, monthIndex, day, durationMin)
+  const now = bogotaNow()
+  const isToday = year === now.year && monthIndex === now.monthIndex && day === now.day
+  if (!isToday) return slots
+  return slots.filter(t => slotToMinutes(t) >= now.minutes + MIN_LEAD_MIN)
+}
+
 /** La duración real es la del precio elegido ("30 min", "60 min"…) si existe. */
 function durationOf(service: Service | null, priceIdx: number) {
   const label = service?.prices[priceIdx]?.label ?? ''
@@ -282,6 +319,7 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
     return d < n
   }
 
+  const daySlots = selDay ? availableTimes(calYear, calMonth, selDay, durationOf(service, priceIdx)) : []
   const selectedPrice = service ? service.prices[priceIdx] : null
   const progressStep = stepIndex(step)    // 0..4
   // Map to user-visible steps 1..3 (category+service → 1, price+datetime → 2, details → 3)
@@ -771,8 +809,15 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
                   <p style={{ color: C.sec, fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 14 }}>
                     {lang === 'en' ? 'Available times — ' : 'Horarios disponibles — '}{MONTHS(lang)[calMonth]} {selDay}
                   </p>
+                  {daySlots.length === 0 && (
+                    <p style={{ color: C.sec, fontSize: 13, lineHeight: 1.6 }}>
+                      {lang === 'en'
+                        ? 'No times left for today. Pick another date or coordinate by WhatsApp.'
+                        : 'Ya no quedan horarios para hoy. Elige otra fecha o coordina por WhatsApp.'}
+                    </p>
+                  )}
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 }}>
-                    {timesForDay(calYear, calMonth, selDay, durationOf(service, priceIdx)).map(t => {
+                    {daySlots.map(t => {
                       const active = selTime === t
                       return (
                         <button
