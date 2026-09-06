@@ -86,7 +86,7 @@ const SERVICES_LIST = [
   { id: "whatsapp-lead", name: "Lead WhatsApp (Recepción)" },
 ];
 
-const CARDS_PER_PAGE = 6;
+const CARDS_PER_PAGE = 10;
 
 /** Movimiento hecho en el tablero y aún no confirmado por el servidor. */
 type PendingMove = {
