@@ -82,6 +82,7 @@ const SERVICES_LIST = [
   { id: "chocotherapy", name: "Chocolaterapia" },
   { id: "facial", name: "Limpieza Facial Profunda" },
   { id: "depilacion", name: "Depilación Masculina" },
+  { id: "premium", name: "Servicio Premium" },
   { id: "whatsapp-lead", name: "Lead WhatsApp (Recepción)" },
 ];
 
@@ -1213,9 +1214,10 @@ export default function KanbanBoard({
         </div>
       )}
 
-      {/* Quick Search & Filter Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-[#0a1628]/60 p-2.5 rounded-xl border border-[#1e3358]/60">
-        {!externalSearch && (
+      {/* Quick Search & Filter Toolbar — se omite entera cuando el buscador lo
+          aporta el encabezado, para no dejar una barra vacía. */}
+      {!externalSearch && (
+        <div className="flex flex-wrap items-center justify-between gap-3 bg-[#0a1628]/60 p-2.5 rounded-xl border border-[#1e3358]/60">
           <div className="relative flex-1 min-w-0 max-w-md">
             <span
               className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#8a9299] text-base pointer-events-none"
@@ -1243,8 +1245,8 @@ export default function KanbanBoard({
               </button>
             )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* ═══════════════════════════════════════════════════════
           MOBILE VIEW — Single column with stage selector tabs
