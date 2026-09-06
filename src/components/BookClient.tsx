@@ -94,11 +94,46 @@ const SERVICES = (lang: string): Service[] => [
 
 const MONTHS = (lang: string) => lang === 'en' ? ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] : ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 const DAYS = (lang: string) => lang === 'en' ? ['S', 'M', 'T', 'W', 'T', 'F', 'S'] : ['D', 'L', 'M', 'X', 'J', 'V', 'S']
-const TIMES = ['10:00 AM', '11:00 AM', '12:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM', '7:00 PM']
-// Domingo cierra a las 7:00 PM (SPA_HOURS): primera cita 10:30 AM y última 30 min antes del cierre.
-const SUNDAY_TIMES = ['10:30 AM', '11:30 AM', '12:30 PM', '2:30 PM', '3:30 PM', '4:30 PM', '5:30 PM', '6:30 PM']
-const timesForDay = (year: number, monthIndex: number, day: number) =>
-  new Date(year, monthIndex, day).getDay() === 0 ? SUNDAY_TIMES : TIMES
+// Grilla de horarios. Domingo cierra a las 7:00 PM (SPA_HOURS): primera cita
+// 10:30 AM y última 30 min antes del cierre. El resto de días mantiene 10:00 AM
+// – 7:00 PM. La franja de la 1 PM queda fuera (pausa) como siempre.
+const FIRST_SLOT_MIN = { sunday: 10 * 60 + 30, weekday: 10 * 60 }
+const LAST_SLOT_MIN = { sunday: 18 * 60 + 30, weekday: 19 * 60 }
+const LUNCH_FROM_MIN = 13 * 60
+const LUNCH_TO_MIN = 14 * 60
+
+function fmtTime(totalMin: number) {
+  const h24 = Math.floor(totalMin / 60)
+  const m = totalMin % 60
+  const h12 = h24 % 12 === 0 ? 12 : h24 % 12
+  return `${h12}:${String(m).padStart(2, '0')} ${h24 < 12 ? 'AM' : 'PM'}`
+}
+
+/**
+ * Los servicios de 30 y 60 min caben en media hora de rejilla, así que se
+ * ofrecen bloques de 30 min para llenar mejor la agenda; los más largos
+ * (75, 90, 120 min) siguen con bloques de una hora.
+ */
+function timesForDay(year: number, monthIndex: number, day: number, durationMin: number) {
+  const isSunday = new Date(year, monthIndex, day).getDay() === 0
+  const start = isSunday ? FIRST_SLOT_MIN.sunday : FIRST_SLOT_MIN.weekday
+  const end = isSunday ? LAST_SLOT_MIN.sunday : LAST_SLOT_MIN.weekday
+  const step = durationMin <= 60 ? 30 : 60
+  const out: string[] = []
+  for (let m = start; m <= end; m += step) {
+    if (m >= LUNCH_FROM_MIN && m < LUNCH_TO_MIN) continue
+    out.push(fmtTime(m))
+  }
+  return out
+}
+
+/** La duración real es la del precio elegido ("30 min", "60 min"…) si existe. */
+function durationOf(service: Service | null, priceIdx: number) {
+  const label = service?.prices[priceIdx]?.label ?? ''
+  const match = label.match(/(\d+)\s*min/i)
+  if (match) return Number(match[1])
+  return service?.durationMin ?? 60
+}
 
 function fmtCop(n: number) {
   return '$' + n.toLocaleString('es-CO').replace(/,/g, '.')
@@ -737,7 +772,7 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
                     {lang === 'en' ? 'Available times — ' : 'Horarios disponibles — '}{MONTHS(lang)[calMonth]} {selDay}
                   </p>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 }}>
-                    {timesForDay(calYear, calMonth, selDay).map(t => {
+                    {timesForDay(calYear, calMonth, selDay, durationOf(service, priceIdx)).map(t => {
                       const active = selTime === t
                       return (
                         <button
