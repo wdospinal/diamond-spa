@@ -41,6 +41,15 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (['pending', 'paid'].includes(body.paymentStatus as string)) {
     payload.paymentStatus = body.paymentStatus as BookingRecord['paymentStatus']
   }
+  // paymentMethod solo aplica cuando el pago ya se marcó como 'paid'. Se acepta
+  // explícitamente null para poder limpiarlo si el estado vuelve a 'pending'
+  // (usamos Record<string, unknown> aquí a propósito: BookingRecord no permite
+  // null en este campo por tipo, pero sí queremos escribir null en la base).
+  if (body.paymentMethod === null) {
+    (payload as Record<string, unknown>).paymentMethod = null
+  } else if (['efectivo', 'transferencia', 'tarjeta'].includes(body.paymentMethod as string)) {
+    payload.paymentMethod = body.paymentMethod as BookingRecord['paymentMethod']
+  }
 
   if (Object.keys(payload).length === 0) {
     return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 })
