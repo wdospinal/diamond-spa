@@ -68,6 +68,7 @@ type BookingRow = {
   requests: string | null
   status: BookingRecord['status'] | null
   payment_status: BookingRecord['paymentStatus'] | null
+  payment_method: BookingRecord['paymentMethod'] | null
   source: BookingRecord['source'] | null
   gclid: string | null
   adgroup: string | null
@@ -95,6 +96,7 @@ function toRow(b: BookingRecord): BookingRow {
     requests: b.requests ?? null,
     status: b.status ?? null,
     payment_status: b.paymentStatus ?? null,
+    payment_method: b.paymentMethod ?? null,
     source: b.source ?? null,
     gclid: b.gclid ?? null,
     adgroup: b.adgroup ?? null,
@@ -123,6 +125,7 @@ function fromRow(r: BookingRow): BookingRecord {
     ...(r.requests ? { requests: r.requests } : {}),
     ...(r.status ? { status: r.status } : {}),
     ...(r.payment_status ? { paymentStatus: r.payment_status } : {}),
+    ...(r.payment_method ? { paymentMethod: r.payment_method } : {}),
     ...(r.source ? { source: r.source } : {}),
     ...(r.gclid ? { gclid: r.gclid } : {}),
     ...(r.adgroup ? { adgroup: r.adgroup } : {}),
@@ -212,14 +215,24 @@ export async function updateBooking(id: string, payload: Partial<BookingRecord>)
     if (payload.requests !== undefined) patch.requests = payload.requests
     if (payload.status !== undefined) patch.status = payload.status
     if (payload.paymentStatus !== undefined) patch.payment_status = payload.paymentStatus
+    if (payload.paymentMethod !== undefined) patch.payment_method = payload.paymentMethod
     if (Object.keys(patch).length === 0) return true
     try {
       const updated = await sbUpdate('bookings', `id=eq.${id}`, patch)
       return updated.length > 0
     } catch (err: unknown) {
-      if (patch.status === 'contacted' && String((err as Error)?.message || '').includes('bookings_status_check')) {
+      const msg = String((err as Error)?.message || '')
+      if (patch.status === 'contacted' && msg.includes('bookings_status_check')) {
         console.warn('Supabase bookings_status_check: run supabase/migrations/0005_add_contacted_status.sql in Supabase SQL editor to persist contacted in DB.')
         patch.status = 'pending'
+        const updated = await sbUpdate('bookings', `id=eq.${id}`, patch)
+        return updated.length > 0
+      }
+      // La columna payment_method todavía no existe en Supabase (falta correr la
+      // migración) — se guarda el resto del cambio igual, sin tumbar todo el guardado.
+      if (patch.payment_method !== undefined && msg.includes('payment_method')) {
+        console.warn('Supabase: falta la columna payment_method — corre supabase/migrations/0006_add_payment_method.sql en el SQL editor.')
+        delete patch.payment_method
         const updated = await sbUpdate('bookings', `id=eq.${id}`, patch)
         return updated.length > 0
       }

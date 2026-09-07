@@ -28,6 +28,8 @@ export type BookingRecord = {
   status?: 'pending' | 'contacted' | 'arrived' | 'cancelled' | 'completed'
   /** Payment status */
   paymentStatus?: 'pending' | 'paid'
+  /** Método de pago — solo aplica cuando paymentStatus es 'paid' */
+  paymentMethod?: 'efectivo' | 'transferencia' | 'tarjeta'
   /** Origin of the booking */
   source?: 'organic' | 'ads'
   /** Google Click ID — captured from ?gclid= on landing. Used for offline conversion import. */

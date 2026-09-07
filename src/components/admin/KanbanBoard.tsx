@@ -186,6 +186,9 @@ function LeadDetailModal({
   const [paymentStatus, setPaymentStatus] = useState<"pending" | "paid">(
     booking.paymentStatus || "pending",
   );
+  const [paymentMethod, setPaymentMethod] = useState<
+    "" | "efectivo" | "transferencia" | "tarjeta"
+  >(booking.paymentMethod || "");
   const [gclid, setGclid] = useState(booking.gclid || "");
   const [requests, setRequests] = useState(booking.requests || "");
   const [saving, setSaving] = useState(false);
@@ -233,6 +236,7 @@ function LeadDetailModal({
           requests: requests.trim() || undefined,
           status,
           paymentStatus,
+          paymentMethod: paymentStatus === "paid" ? (paymentMethod || null) : null,
         }),
       });
 
@@ -516,15 +520,39 @@ function LeadDetailModal({
               </label>
               <select
                 value={paymentStatus}
-                onChange={(e) =>
-                  setPaymentStatus(e.target.value as "pending" | "paid")
-                }
+                onChange={(e) => {
+                  const next = e.target.value as "pending" | "paid";
+                  setPaymentStatus(next);
+                  if (next === "pending") setPaymentMethod("");
+                }}
                 className="w-full bg-[#071322] border border-[#1e385c] text-[#cfe5fa] text-sm font-medium rounded-lg px-3 py-2 outline-none focus:border-[#38bdf8]"
               >
                 <option value="pending">Pendiente de Pago</option>
                 <option value="paid">✓ Pagado</option>
               </select>
             </div>
+
+            {paymentStatus === "paid" && (
+              <div>
+                <label className="block text-xs font-medium text-[#8a9299] mb-1">
+                  Método de Pago
+                </label>
+                <select
+                  value={paymentMethod}
+                  onChange={(e) =>
+                    setPaymentMethod(
+                      e.target.value as "" | "efectivo" | "transferencia" | "tarjeta",
+                    )
+                  }
+                  className="w-full bg-[#071322] border border-[#1e385c] text-[#cfe5fa] text-sm font-medium rounded-lg px-3 py-2 outline-none focus:border-[#38bdf8]"
+                >
+                  <option value="">Selecciona el método...</option>
+                  <option value="efectivo">💵 Efectivo</option>
+                  <option value="transferencia">🏦 Transferencia</option>
+                  <option value="tarjeta">💳 Tarjeta</option>
+                </select>
+              </div>
+            )}
           </div>
 
           <div>
