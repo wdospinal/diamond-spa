@@ -47,6 +47,14 @@ function sortByDay(list: BoldClosing[]): BoldClosing[] {
   return list.sort((a, b) => (a.day === b.day ? a.receivedAt.localeCompare(b.receivedAt) : a.day.localeCompare(b.day)))
 }
 
+/**
+ * Identidad real de un cierre. El mismo turno puede llegar por IMAP y también
+ * pegarse manualmente, por lo que el Message-ID no basta para deduplicarlo.
+ */
+export function boldClosingKey(c: Pick<BoldClosing, 'day' | 'fromLabel' | 'toLabel'>): string {
+  return JSON.stringify([c.day, c.fromLabel.trim(), c.toLabel.trim()])
+}
+
 // ─── API pública ────────────────────────────────────────────────────────────────
 
 /** Cierres ordenados por día ascendente. Rango opcional, ambos extremos inclusive. */
@@ -91,31 +99,60 @@ export async function saveClosings(rows: BoldClosing[]): Promise<{ inserted: num
   if (rows.length === 0) return { inserted: 0, skipped: 0 }
 
   // Deduplicar dentro del propio lote: Postgres rechaza un ON CONFLICT que toca
-  // la misma fila dos veces (mismo motivo que en funnel-store).
+  // el mismo turno dos veces, aunque los correos tengan Message-ID distintos.
   const batch = new Map<string, BoldClosing>()
-  for (const r of rows) batch.set(r.id, r)
+  for (const r of rows) batch.set(boldClosingKey(r), r)
   const unique = [...batch.values()]
 
-  const known = await existingIds(unique)
-  const fresh = unique.filter(r => !known.has(r.id))
+  const known = await existingClosingKeys(unique)
+  const fresh = unique.filter(r => !known.has(boldClosingKey(r)))
   const result = { inserted: fresh.length, skipped: unique.length - fresh.length }
+  if (fresh.length === 0) return result
 
   if (supabaseConfigured()) {
-    await sbUpsert('bold_closings', unique.map(toBoldRow))
+    await sbUpsert('bold_closings', fresh.map(toBoldRow))
     return result
   }
 
   if (kvConfigured()) {
     const args: (string | number)[] = ['HSET', HASH_KEY]
-    for (const r of unique) args.push(r.id, JSON.stringify(r))
+    for (const r of fresh) args.push(r.id, JSON.stringify(r))
     await kvCommand(args)
     return result
   }
 
   const map = await readFileMap()
-  for (const r of unique) map[r.id] = r
+  for (const r of fresh) map[r.id] = r
   await writeFileMap(map)
   return result
+}
+
+async function existingClosingKeys(
+  rows: Pick<BoldClosing, 'day' | 'fromLabel' | 'toLabel'>[],
+): Promise<Set<string>> {
+  if (rows.length === 0) return new Set()
+  const days = rows.map(r => r.day).sort()
+
+  if (supabaseConfigured()) {
+    const found = await sbSelect<Pick<BoldClosingRow, 'day' | 'from_label' | 'to_label'>>(
+      'bold_closings',
+      `select=day,from_label,to_label&day=gte.${days[0]}&day=lte.${days[days.length - 1]}`,
+    )
+    return new Set(
+      found.map(r =>
+        boldClosingKey({
+          day: String(r.day).slice(0, 10),
+          fromLabel: r.from_label ?? '',
+          toLabel: r.to_label ?? '',
+        }),
+      ),
+    )
+  }
+
+  const existing = kvConfigured()
+    ? await readClosings(days[0], days[days.length - 1])
+    : Object.values(await readFileMap()).filter(c => c.day >= days[0] && c.day <= days[days.length - 1])
+  return new Set(existing.map(boldClosingKey))
 }
 
 /**
