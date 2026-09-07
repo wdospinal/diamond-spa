@@ -53,7 +53,12 @@ interface RichEditorProps {
 }
 
 export default function RichEditor({ value, onChange, placeholder = 'Escribe el contenido aquí...' }: RichEditorProps) {
-  const [isHtmlMode, setIsHtmlMode] = useState(false)
+  // Si el contenido ya guardado trae estilos o etiquetas que Tiptap no entiende
+  // (style=, class=, div, span, section), abrir directo en modo HTML — si no,
+  // el editor Visual los borraría en silencio apenas carga la página.
+  const [isHtmlMode, setIsHtmlMode] = useState(() =>
+    /style\s*=|class\s*=|<div|<span|<section/i.test(value)
+  )
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -229,7 +234,29 @@ export default function RichEditor({ value, onChange, placeholder = 'Escribe el 
         </ToolBtn>
 
         <div className="ml-auto flex items-center">
-          <ToolBtn onClick={() => setIsHtmlMode(!isHtmlMode)} active={isHtmlMode} title="Ver y editar código HTML">
+          <ToolBtn
+            onClick={() => {
+              // Si vamos de HTML -> Visual, el editor de Tiptap solo entiende un
+              // set limitado de etiquetas (negrita, títulos, listas, etc.) — todo
+              // style="" o class="" personalizado que no reconozca se pierde en
+              // silencio al sincronizar. Avisamos antes de que eso pase.
+              if (isHtmlMode) {
+                const looksCustom = /style\s*=|class\s*=|<div|<span|<section/i.test(value)
+                if (
+                  looksCustom &&
+                  !window.confirm(
+                    'Tu HTML tiene estilos o etiquetas personalizadas (style, class, div, span...) que el modo Visual no puede representar — se perderían al cambiar. ¿Seguro que quieres continuar?'
+                  )
+                ) {
+                  return
+                }
+                editor.commands.setContent(value, { emitUpdate: false })
+              }
+              setIsHtmlMode(!isHtmlMode)
+            }}
+            active={isHtmlMode}
+            title="Ver y editar código HTML"
+          >
             <Code className="w-3.5 h-3.5 mr-1" />
             <span className="text-[10px] font-bold uppercase tracking-widest">{isHtmlMode ? 'Visual' : 'HTML'}</span>
           </ToolBtn>
@@ -243,9 +270,10 @@ export default function RichEditor({ value, onChange, placeholder = 'Escribe el 
             className="w-full h-[300px] min-h-[300px] bg-transparent text-primary font-mono text-[13px] outline-none resize-y leading-relaxed"
             value={value}
             onChange={(e) => {
-              const html = e.target.value
-              onChange(html)
-              editor.commands.setContent(html, { emitUpdate: false })
+              // Ya no sincroniza con el editor Visual en cada letra — eso era lo
+              // que causaba la pérdida silenciosa de estilos/etiquetas personalizadas.
+              // Ahora la sincronización solo pasa, con aviso, al cambiar a modo Visual.
+              onChange(e.target.value)
             }}
             placeholder="Escribe o pega tu código HTML aquí..."
             spellCheck={false}
