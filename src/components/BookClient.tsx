@@ -98,8 +98,6 @@ const DAYS = (lang: string) => lang === 'en' ? ['S', 'M', 'T', 'W', 'T', 'F', 'S
 // la primera cita es 30 min después de abrir y la última 30 min antes de cerrar,
 // para cualquier día. Hoy eso da lun–sáb 10:30 AM – 9:30 PM y dom 10:30 AM – 6:30 PM.
 const SLOT_EDGE_MIN = 30
-const LUNCH_FROM_MIN = 13 * 60
-const LUNCH_TO_MIN = 14 * 60
 const WEEKDAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as const
 
 function hhmmToMin(hhmm: string) {
@@ -133,7 +131,6 @@ function timesForDay(year: number, monthIndex: number, day: number, durationMin:
   const step = durationMin <= 60 ? 30 : 60
   const out: string[] = []
   for (let m = start; m <= end; m += step) {
-    if (m >= LUNCH_FROM_MIN && m < LUNCH_TO_MIN) continue
     out.push(fmtTime(m))
   }
   return out
@@ -166,7 +163,7 @@ function slotToMinutes(slot: string) {
  * Para hoy no tiene sentido ofrecer horas que ya pasaron. Se exige además
  * MIN_LEAD_MIN de margen para que recepción alcance a confirmar.
  */
-const MIN_LEAD_MIN = 60
+const MIN_LEAD_MIN = 30
 
 function availableTimes(year: number, monthIndex: number, day: number, durationMin: number) {
   const slots = timesForDay(year, monthIndex, day, durationMin)
