@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Manrope, Playfair_Display } from 'next/font/google'
+import { Manrope, Playfair_Display, Roboto } from 'next/font/google'
 import './globals.css'
 import ClientProviders from '@/components/ClientProviders'
 import Script from 'next/script'
@@ -36,6 +36,19 @@ const manrope = Manrope({
   adjustFontFallback: true,
 })
 
+/**
+ * Roboto (variable) is used only inside the admin shell (.admin-shell in
+ * globals.css). Its larger x-height and wider apertures read better than
+ * Manrope in dense dashboard UI: tables, forms and long numbers.
+ */
+const roboto = Roboto({
+  subsets: ['latin'],
+  variable: '--font-roboto',
+  display: 'swap',
+  fallback: ['system-ui', 'Arial', 'sans-serif'],
+  adjustFontFallback: true,
+})
+
 export const metadata: Metadata = {
   title: 'Diamond Spa — Spa for Men and Women in Medellín',
   description:
@@ -54,7 +67,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     .map(l => l.path)
 
   return (
-    <html lang="es" className={`dark ${playfairDisplay.variable} ${manrope.variable}`} suppressHydrationWarning>
+    <html lang="es" className={`dark ${playfairDisplay.variable} ${manrope.variable} ${roboto.variable}`} suppressHydrationWarning>
       <head>
         {/* DNS prefetch for lazy-loaded third-party content */}
         <link rel="dns-prefetch" href="https://lh3.googleusercontent.com" />

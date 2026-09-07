@@ -512,6 +512,32 @@ body {
   padding-top: 0 !important;
 }
 
+/* ─── Admin typography ───────────────────────────────────────────────────────
+   The admin is dense UI (tables, forms, amounts), so it uses Roboto instead of
+   the marketing pair Manrope/Playfair. Redefining the three font tokens on the
+   shell is enough: every font-body / font-label / font-headline utility inside
+   resolves them through var(), so no component needs to change.
+
+   tabular-nums keeps money columns aligned; the light letter-spacing and
+   text-rendering hints improve legibility of small text on the dark surface. */
+.admin-shell {
+  --font-body:     var(--font-roboto), Roboto, system-ui, sans-serif;
+  --font-label:    var(--font-roboto), Roboto, system-ui, sans-serif;
+  --font-headline: var(--font-roboto), Roboto, system-ui, sans-serif;
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  text-rendering: optimizeLegibility;
+}
+.admin-shell h1,
+.admin-shell h2,
+.admin-shell h3,
+.admin-shell h4 {
+  font-family: var(--font-headline);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
 /* ─── Admin shell ────────────────────────────────────────────────────────────
    Below lg the dashboard uses a fixed top bar plus an off-canvas drawer. These
    classes keep the bar height in one place and carry the iOS safe-area insets
