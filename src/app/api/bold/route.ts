@@ -3,6 +3,13 @@ import { cookies } from 'next/headers'
 import { adminCookieName, verifySessionToken } from '@/lib/admin-session'
 import { parseBoldClosing } from '@/lib/bold-parser'
 import { readClosings, saveClosings } from '@/lib/bold-store'
+import {
+  cycleComparison,
+  cycleLabelFor,
+  cycleRange,
+  DEFAULT_CYCLE_START_DAY,
+  shiftCycle,
+} from '@/lib/cycle'
 import type { BoldClosing } from '@/lib/bold-types'
 
 export const runtime = 'nodejs'
@@ -17,14 +24,6 @@ const BOGOTA_DAY = new Intl.DateTimeFormat('fr-CA', {
 
 function bogotaToday(): string {
   return BOGOTA_DAY.format(new Date())
-}
-
-/** Suma `delta` meses a un 'YYYY-MM' y devuelve el 'YYYY-MM' resultante. */
-function shiftMonth(month: string, delta: number): string {
-  const y = Number(month.slice(0, 4))
-  const m = Number(month.slice(5, 7))
-  const total = y * 12 + (m - 1) + delta
-  return `${Math.floor(total / 12)}-${String((total % 12) + 1).padStart(2, '0')}`
 }
 
 export interface BoldMonth {
@@ -105,25 +104,32 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Rango de fechas inválido' }, { status: 400 })
   }
 
-  const currentMonth = today.slice(0, 7)
-  const dayOfMonth = Number(today.slice(8, 10))
-  const firstMonth = shiftMonth(currentMonth, -(monthCount - 1))
-  const rangeStart = requestedFrom ?? `${firstMonth}-01`
+  const cycleStartDay = DEFAULT_CYCLE_START_DAY
+  const cycle = cycleComparison(today, cycleStartDay)
+  const currentMonth = cycle.currentLabel
+  const previousMonth = cycle.previousLabel
+  const currentCycle = cycle.current
+  const previousCycle = cycle.previous
+  const elapsedDays = cycle.elapsedDays
+  const previousComparableTo = cycle.previousComparableTo
+  const firstMonth = shiftCycle(currentMonth, -(monthCount - 1))
+  const firstCycleStart = cycleRange(firstMonth, cycleStartDay).from
+  const rangeStart = requestedFrom ?? firstCycleStart
   const rangeEnd = requestedTo ?? today
-  // Los KPIs mensuales aún necesitan el mes anterior/actual aunque el filtro
+  // Los KPIs por ciclo aún necesitan los períodos aunque el filtro
   // personalizado empiece después.
-  const readFrom = rangeStart < `${firstMonth}-01` ? rangeStart : `${firstMonth}-01`
+  const readFrom = rangeStart < firstCycleStart ? rangeStart : firstCycleStart
 
   const closings = await readClosings(readFrom)
 
   const byMonth = new Map<string, BoldMonth>()
   const byDay = new Map<string, BoldDay>()
   for (let i = 0; i < monthCount; i++) {
-    const m = shiftMonth(firstMonth, i)
+    const m = shiftCycle(firstMonth, i)
     byMonth.set(m, emptyMonth(m))
   }
   for (const c of closings) {
-    const monthAcc = byMonth.get(c.day.slice(0, 7))
+    const monthAcc = byMonth.get(cycleLabelFor(c.day, cycleStartDay))
     if (monthAcc) accumulate(monthAcc, c)
 
     if (c.day < rangeStart || c.day > rangeEnd) continue
@@ -135,28 +141,35 @@ export async function GET(req: NextRequest) {
     accumulate(dayAcc, c)
   }
 
-  const previousMonth = shiftMonth(currentMonth, -1)
-
-  // MTD: mismo número de días transcurridos en el mes anterior.
-  const mtdCurrent = emptyMonth(currentMonth)
-  const mtdPrevious = emptyMonth(previousMonth)
+  // Comparación justa: mismos días transcurridos dentro de cada ciclo.
+  const comparisonCurrent = emptyMonth(currentMonth)
+  const comparisonPrevious = emptyMonth(previousMonth)
   for (const c of closings) {
-    if (Number(c.day.slice(8, 10)) > dayOfMonth) continue
-    const m = c.day.slice(0, 7)
-    if (m === currentMonth) accumulate(mtdCurrent, c)
-    else if (m === previousMonth) accumulate(mtdPrevious, c)
+    if (c.day >= currentCycle.from && c.day <= today) accumulate(comparisonCurrent, c)
+    else if (c.day >= previousCycle.from && c.day <= previousComparableTo) {
+      accumulate(comparisonPrevious, c)
+    }
   }
 
   return NextResponse.json({
     today,
+    cycleStartDay,
     currentMonth,
     previousMonth,
+    currentCycle,
+    previousCycle,
     rangeStart,
     rangeEnd,
     months: [...byMonth.values()],
     current: byMonth.get(currentMonth) ?? emptyMonth(currentMonth),
     previous: byMonth.get(previousMonth) ?? emptyMonth(previousMonth),
-    mtd: { dayOfMonth, current: mtdCurrent, previous: mtdPrevious },
+    comparison: {
+      elapsedDays,
+      currentTo: today,
+      previousTo: previousComparableTo,
+      current: comparisonCurrent,
+      previous: comparisonPrevious,
+    },
     // Historial de cierres del rango (mes seleccionado o filtro Desde/Hasta).
     days: closings.filter(c => c.day >= rangeStart && c.day <= rangeEnd),
     // Totales por día del rango (heatmap de intensidad).

@@ -40,14 +40,23 @@ type BoldDay = {
 
 type BoldResponse = {
   today: string
+  cycleStartDay: number
   currentMonth: string
   previousMonth: string
+  currentCycle: { from: string; to: string }
+  previousCycle: { from: string; to: string }
   rangeStart: string
   rangeEnd: string
   months: BoldMonth[]
   current: BoldMonth
   previous: BoldMonth
-  mtd: { dayOfMonth: number; current: BoldMonth; previous: BoldMonth }
+  comparison: {
+    elapsedDays: number
+    currentTo: string
+    previousTo: string
+    current: BoldMonth
+    previous: BoldMonth
+  }
   days: BoldClosing[]
   daily: BoldDay[]
 }
@@ -198,7 +207,7 @@ function GrowthChart({ months }: { months: BoldMonth[] }) {
         viewBox={`0 0 ${W} ${H}`}
         className="w-full min-w-[520px] h-auto"
         role="img"
-        aria-label="Ventas de Bold por mes. Pasa el mouse o toca un punto para ver el valor."
+        aria-label="Ventas de Bold por período. Pasa el mouse o toca un punto para ver el valor."
       >
         <defs>
           <linearGradient id="boldArea" x1="0" y1="0" x2="0" y2="1">
@@ -1218,11 +1227,13 @@ export default function BoldDashboardPage() {
 
   const current = data?.current
   const previous = data?.previous
-  const mtd = data?.mtd
+  const comparison = data?.comparison
   const series = data?.months ?? []
   const hasData = series.some(m => m.grossCop > 0)
-  const monthDelta = fmtDelta(current?.grossCop ?? 0, previous?.grossCop ?? 0)
-  const mtdDelta = fmtDelta(mtd?.current.grossCop ?? 0, mtd?.previous.grossCop ?? 0)
+  const comparisonDelta = fmtDelta(
+    comparison?.current.grossCop ?? 0,
+    comparison?.previous.grossCop ?? 0,
+  )
   const ticket = current && current.transactions > 0 ? current.grossCop / current.transactions : 0
   const closings = data ? [...data.days].reverse() : []
   const pageCount = Math.max(1, Math.ceil(closings.length / PAGE_SIZE))
@@ -1236,7 +1247,7 @@ export default function BoldDashboardPage() {
           <h1 className="font-headline text-3xl md:text-4xl text-[#cfe5fa]">Ventas Bold</h1>
           {data ? (
             <p className="text-[11px] text-[#5c656d] font-body mt-2">
-              Cierres del datáfono · {monthLabel(data.currentMonth)} al día {mtd?.dayOfMonth}
+              Ciclo actual · {dayLabel(data.currentCycle.from)} al {dayLabel(data.currentCycle.to)}
             </p>
           ) : null}
         </div>
@@ -1261,7 +1272,7 @@ export default function BoldDashboardPage() {
                   months === n ? 'bg-[#1a3d52] text-[#cfe5fa]' : 'text-[#8a9299] hover:bg-[#0a2438]'
                 }`}
               >
-                {n} meses
+                {n} períodos
               </button>
             ))}
           </div>
@@ -1336,30 +1347,32 @@ export default function BoldDashboardPage() {
 
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-10">
         <Kpi
-          label="Mes actual"
+          label="Período actual"
           value={fmtCop(current?.grossCop ?? 0)}
           hint={`${current?.transactions ?? 0} transacciones · ${current?.closings ?? 0} cierres`}
         />
         <Kpi
-          label={`Mes anterior (${previous ? monthLabel(previous.month) : '—'})`}
+          label={`Período anterior (${previous ? monthLabel(previous.month) : '—'})`}
           value={fmtCop(previous?.grossCop ?? 0)}
           hint={`${previous?.transactions ?? 0} transacciones`}
         />
         <Kpi
           label="Variación"
-          value={monthDelta.text}
-          tone={monthDelta.tone}
-          hint={`A la misma altura del mes (día ${mtd?.dayOfMonth}): ${mtdDelta.text} — ${fmtCop(
-            mtd?.current.grossCop ?? 0,
-          )} vs ${fmtCop(mtd?.previous.grossCop ?? 0)}`}
+          value={comparisonDelta.text}
+          tone={comparisonDelta.tone}
+          hint={`Mismos ${comparison?.elapsedDays ?? 0} días: ${fmtCop(
+            comparison?.current.grossCop ?? 0,
+          )} vs ${fmtCop(comparison?.previous.grossCop ?? 0)} (hasta el ${
+            comparison ? dayLabel(comparison.previousTo) : '—'
+          })`}
         />
         <Kpi
           label="Ticket promedio"
           value={fmtCop(ticket)}
           hint={
             current && current.refundsCop > 0
-              ? `Anulaciones del mes: ${fmtCop(current.refundsCop)} (${current.refundCount})`
-              : 'Sin anulaciones este mes'
+              ? `Anulaciones del período: ${fmtCop(current.refundsCop)} (${current.refundCount})`
+              : 'Sin anulaciones este período'
           }
         />
       </section>
@@ -1417,7 +1430,7 @@ export default function BoldDashboardPage() {
 
       <section className="bg-[#0a2438] border border-[#42484c]/30 p-4 sm:p-6 mb-10">
         <h2 className="font-label text-xs uppercase tracking-[0.25em] text-[#8a9299] mb-4">
-          Crecimiento mes a mes
+          Crecimiento por período
         </h2>
         {hasData ? (
           <GrowthChart months={series} />

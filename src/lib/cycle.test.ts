@@ -7,6 +7,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import {
+  cycleComparison,
   cycleLabelFor,
   cycleRange,
   cycleRangeLabel,
@@ -71,4 +72,15 @@ test('el día de corte se recorta a un rango seguro', () => {
 test('la etiqueta del rango se lee sin ambigüedad', () => {
   assert.equal(cycleRangeLabel('2026-08', 25), '25 jul – 24 ago')
   assert.equal(cycleRangeLabel('2026-08', 1), '1 ago – 31 ago')
+})
+
+test('compara los mismos días transcurridos entre ciclos', () => {
+  assert.deepEqual(cycleComparison('2026-09-07', 25), {
+    currentLabel: '2026-09',
+    previousLabel: '2026-08',
+    current: { from: '2026-08-25', to: '2026-09-24' },
+    previous: { from: '2026-07-25', to: '2026-08-24' },
+    elapsedDays: 14,
+    previousComparableTo: '2026-08-07',
+  })
 })

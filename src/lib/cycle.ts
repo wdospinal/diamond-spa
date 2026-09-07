@@ -46,6 +46,13 @@ export interface CycleRange {
   to: string
 }
 
+/** Suma días naturales a una fecha ISO sin depender de la zona horaria local. */
+export function shiftDay(isoDay: string, delta: number): string {
+  const date = new Date(`${isoDay}T12:00:00Z`)
+  date.setUTCDate(date.getUTCDate() + delta)
+  return date.toISOString().slice(0, 10)
+}
+
 /**
  * Rango de fechas del período `label` ('YYYY-MM') con el corte dado.
  *
@@ -72,6 +79,36 @@ export function cycleLabelFor(isoDay: string, startDay: number): string {
   const month = isoDay.slice(0, 7)
   if (day === 1) return month
   return Number(isoDay.slice(8, 10)) >= day ? shiftCycle(month, 1) : month
+}
+
+export interface CycleComparison {
+  currentLabel: string
+  previousLabel: string
+  current: CycleRange
+  previous: CycleRange
+  elapsedDays: number
+  previousComparableTo: string
+}
+
+/** Rangos equivalentes para comparar el ciclo actual con el anterior. */
+export function cycleComparison(today: string, startDay: number): CycleComparison {
+  const currentLabel = cycleLabelFor(today, startDay)
+  const previousLabel = shiftCycle(currentLabel, -1)
+  const current = cycleRange(currentLabel, startDay)
+  const previous = cycleRange(previousLabel, startDay)
+  const elapsedDays =
+    Math.round(
+      (Date.parse(`${today}T12:00:00Z`) - Date.parse(`${current.from}T12:00:00Z`)) / 86_400_000,
+    ) + 1
+
+  return {
+    currentLabel,
+    previousLabel,
+    current,
+    previous,
+    elapsedDays,
+    previousComparableTo: shiftDay(previous.from, elapsedDays - 1),
+  }
 }
 
 const MONTHS = [
