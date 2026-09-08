@@ -45,6 +45,23 @@ const nextConfig = {
             key: 'Cache-Control',
             value: 'public, max-age=31536000, immutable',
           },
+          {
+            /**
+             * Googlebot was indexing build artefacts as if they were pages:
+             * 8 of the 24 URLs in Search Console's "Crawled - currently not
+             * indexed" bucket were /_next/static/chunks/*.js and hashed
+             * .woff2 files. They can never rank, and every one of them burns
+             * crawl budget that the 11 "Discovered - currently not indexed"
+             * pages needed.
+             *
+             * This MUST stay a header and never become a robots.txt
+             * `Disallow: /_next/`. Googlebot renders the page before indexing
+             * it; blocking the chunks would stop the render and cost us the
+             * real pages, which is far worse than the noise it removes.
+             */
+            key: 'X-Robots-Tag',
+            value: 'noindex',
+          },
         ],
       },
       {

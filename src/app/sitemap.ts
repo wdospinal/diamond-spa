@@ -58,13 +58,40 @@ function langAlternates(path: string): MetadataRoute.Sitemap[number]['alternates
   }
 }
 
+/**
+ * Longest we will wait for the blog store before giving up on it.
+ *
+ * Search Console reported `diamondspa.com.co/sitemap.xml` as "Couldn't fetch"
+ * with 0 pages discovered, while the (redirecting) www copy kept succeeding —
+ * so the only sitemap Google actually read was on the host we are trying to
+ * deprecate. The store behind readPublishedPosts() is a three-tier fallback
+ * (Supabase → KV → JSON file) with no timeout of its own, so a cold start with
+ * an unresponsive Supabase could hang past Google's fetch window and fail the
+ * whole route.
+ *
+ * A sitemap missing its blog posts is a small loss. A sitemap that fails to
+ * fetch loses all 77 URLs, so we always prefer degrading to the static paths.
+ */
+const BLOG_READ_TIMEOUT_MS = 5000
+
+function withTimeout<T>(promise: Promise<T>, ms: number, fallback: T): Promise<T> {
+  return new Promise<T>(resolve => {
+    const timer = setTimeout(() => resolve(fallback), ms)
+    promise
+      .then(value => { clearTimeout(timer); resolve(value) })
+      .catch(() => { clearTimeout(timer); resolve(fallback) })
+  })
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = []
 
   // Blog posts are read once and reused across locales — `locales` on each post
   // says which languages it was actually published in, so we never advertise an
   // /en/blog/<slug> that renders Spanish fallback copy.
-  const posts = await readPublishedPosts().catch(() => [])
+  //
+  // Degrades to [] rather than throwing: see BLOG_READ_TIMEOUT_MS above.
+  const posts = await withTimeout(readPublishedPosts(), BLOG_READ_TIMEOUT_MS, [])
 
   for (const locale of LOCALES_DISPLAY_ORDER) {
     // Static pages
