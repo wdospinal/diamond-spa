@@ -18,6 +18,7 @@ import {
 import { JsonLd } from "@/components/JsonLd";
 import { ServiceCardLink } from "@/components/ServiceCardLink";
 import LandingHead from "@/components/LandingHead";
+import { LandingTeam } from "@/components/landing-blocks/LandingTeam";
 import { mergeLandingMetadata } from "@/lib/landing-meta";
 import { getFaqCategories, getFaqItems, type FaqCategoryId } from "@/lib/faqs";
 
@@ -169,6 +170,11 @@ export default async function MasajesParaHombresPage({
             ))}
           </div>
         </section>
+
+        {/* Equipo — el mismo bloque de la home */}
+        <div className="mb-20 -mx-6 md:-mx-12">
+          <LandingTeam locale={locale} source="masajes-para-hombres" />
+        </div>
 
         {/* FAQ — pulled from the shared library so the copy and the FAQPage
             structured data below can never drift apart. */}

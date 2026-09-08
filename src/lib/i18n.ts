@@ -32,6 +32,11 @@ function mapPillars(items: BilingualPillar[], locale: 'en' | 'es'): Pillar[] {
 
 type Therapist = { name: string; role: string; years: string; specialty: string }
 type BilingualTherapist = {
+  /**
+   * Clave estable para analitica. El nombre es texto de pantalla: si alguien
+   * lo corrige, la metrica de esa terapeuta se partiria en dos. El id no cambia.
+   */
+  id: string
   name: string
   en: { role: string; years: string; specialty: string }
   es: { role: string; years: string; specialty: string }
@@ -44,31 +49,37 @@ function mapTherapists(items: BilingualTherapist[], locale: 'en' | 'es'): Therap
 /** About page team portraits — keep in sync with IMG_THERAPISTS in images.ts */
 export const THERAPISTS: BilingualTherapist[] = [
   {
+    id: 'daniela-salina',
     name: 'Daniela Salina',
     en: { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience', specialty: 'Focused on your overall wellbeing, with 5+ years in the field' },
     es: { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia', specialty: 'Enfocada en tu bienestar integral, con 5+ años en el campo' },
   },
   {
+    id: 'sary-paez',
     name: 'Sary Paez',
     en: { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience', specialty: 'Dedicated to real muscle relief and relaxation, 5+ years of experience' },
     es: { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia', specialty: 'Dedicada al alivio muscular real y la relajación, 5+ años de experiencia' },
   },
   {
+    id: 'ana-maria',
     name: 'Ana Maria',
     en: { role: 'Cosmetologist & Massage Therapist', years: '4+ years experience', specialty: 'Committed to your physical and mental wellness, certified experience' },
     es: { role: 'Cosmetóloga & Masajista', years: '3+ años de experiencia', specialty: 'Comprometida con tu bienestar físico y mental, experiencia certificada' },
   },
   {
+    id: 'sheyla-tinoco',
     name: 'Sheyla Tinoco',
     en: { role: 'Cosmetologist & Massage Therapist', years: '3+ years experience', specialty: 'Focused on real recovery and body care, certified training' },
     es: { role: 'Cosmetóloga & Masajista', years: '4+ años de experiencia', specialty: 'Enfocada en la recuperación real y el cuidado corporal, formación certificada' },
   },
   {
+    id: 'tatiana',
     name: 'Tatiana',
     en: { role: 'Cosmetologist & Massage Therapist', years: '3+ years experience', specialty: 'A calm, attentive approach to every session' },
     es: { role: 'Cosmetóloga & Masajista', years: '3+ años de experiencia', specialty: 'Un enfoque tranquilo y atento en cada sesión' },
   },
   {
+    id: 'saira-bedoya',
     name: 'Saira Bedoya',
     en: { role: 'Cosmetologist & Massage Therapist', years: '3+ years experience', specialty: 'Dedicated to genuine wellness in every session, professional training' },
     es: { role: 'Cosmetóloga & Masajista', years: '3+ años de experiencia', specialty: 'Dedicada al bienestar real en cada sesión, formación profesional' },

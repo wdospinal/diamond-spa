@@ -5,11 +5,32 @@ import { useState } from 'react'
 import { THERAPISTS } from '@/lib/i18n'
 import { IMG_THERAPISTS_WEBP } from '@/lib/images'
 import type { Locale } from '@/lib/i18n'
+import { EVENTS, trackEvent } from '@/lib/events'
 
 const TEAM_GRID_CLASS =
   'flex md:grid md:grid-cols-3 gap-4 md:gap-6 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-6 md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
 
-export function LandingTeam({ locale }: { locale: Locale }) {
+export function LandingTeam({
+  locale,
+  source = 'home',
+  bookHref,
+}: {
+  locale: Locale
+  /** Este bloque se renderiza en varias paginas. Sin esto los clics de todas
+   *  se sumarian en una sola cifra imposible de separar. */
+  source?: string
+  /**
+   * Destino del boton Reservar.
+   *
+   * `#reservar` solo hace algo en /[lang]/l/[slug]: alli LandingBookingModal
+   * escucha el hash y abre el modal. En la home y en las paginas SEO ese modal
+   * no existe, asi que el hash no llevaba a ninguna parte — el boton cambiaba
+   * la URL y nada mas. Por eso el defecto es la ruta de reserva real y solo la
+   * landing pasa `#reservar` para conservar su modal.
+   */
+  bookHref?: string
+}) {
+  const bookTarget = bookHref ?? `/${locale}/book`
   const label = locale === 'es' ? 'Talento Diamond' : 'Diamond Talent'
   const title = locale === 'es' ? 'Las manos que te cuidan' : 'The hands that take care of you'
   const subtitle = locale === 'es'
@@ -110,8 +131,19 @@ export function LandingTeam({ locale }: { locale: Locale }) {
                       {specialtyText}
                     </p>
                     <a
-                      href="#reservar"
-                      onClick={(e) => e.stopPropagation()}
+                      href={bookTarget}
+                      onClick={(e) => {
+                        // stopPropagation sigue siendo necesario: el <a> vive
+                        // dentro del <button> que abre y cierra la tarjeta.
+                        e.stopPropagation()
+                        trackEvent(EVENTS.THERAPIST_BOOK_CLICKED, {
+                          therapist_id: therapist.id,
+                          therapist_name: therapist.name,
+                          position: i + 1,
+                          source,
+                          locale,
+                        })
+                      }}
                       className={`inline-flex items-center gap-1.5 bg-primary text-on-primary text-xs font-label uppercase tracking-wider px-5 py-2.5 rounded-full shadow-lg hover:bg-primary/90 active:scale-95 transition-all duration-300 delay-150 ${
                         isRevealed ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'
                       }`}

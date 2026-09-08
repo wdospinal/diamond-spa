@@ -637,6 +637,10 @@ export default function BookingsClient({ role }: { role: AdminRole }) {
     // El servidor cierra el stream cada pocos minutos por el límite de la
     // función; cuando avisa, la reconexión es inmediata y no cuenta como caída.
     let rotating = false;
+    // Una pestaña oculta no necesita stream: mantenerlo abierto deja viva una
+    // funcion en Vercel —y su sondeo a Supabase cada 3 s— para un tablero que
+    // nadie esta mirando. Se cierra al ocultar y se reabre al volver.
+    let hidden = false;
 
     const startPolling = () => {
       if (pollTimer !== null) return;
@@ -658,7 +662,7 @@ export default function BookingsClient({ role }: { role: AdminRole }) {
     };
 
     const scheduleReconnect = (delay: number) => {
-      if (stopped || reconnectTimer !== null) return;
+      if (stopped || hidden || reconnectTimer !== null) return;
       reconnectTimer = window.setTimeout(() => {
         reconnectTimer = null;
         connect();
@@ -705,6 +709,7 @@ export default function BookingsClient({ role }: { role: AdminRole }) {
       });
 
       es.onerror = () => {
+        if (hidden) return;   // lo cerramos nosotros al ocultar la pestaña
         if (rotating) return; // relevo planificado, ya hay conexión nueva
         setLive(false);
         failures += 1;
@@ -725,6 +730,7 @@ export default function BookingsClient({ role }: { role: AdminRole }) {
     // plano, se reconecta y se refresca al instante en vez de esperar.
     const onWake = () => {
       if (document.visibilityState !== "visible") return;
+      hidden = false;
       if (!source || source.readyState !== EventSource.OPEN) {
         void load();
         clearReconnect();
@@ -732,15 +738,32 @@ export default function BookingsClient({ role }: { role: AdminRole }) {
       }
     };
 
+    // Al ocultar la pestaña soltamos el stream por completo. `onWake` ya sabe
+    // reconectar y refrescar, asi que volver a la pestaña se ve igual que antes.
+    const onHide = () => {
+      if (document.visibilityState !== "hidden") return;
+      hidden = true;
+      clearReconnect();
+      stopPolling();
+      source?.close();
+      source = null;
+      setLive(false);
+    };
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") onWake();
+      else onHide();
+    };
+
     connect();
-    document.addEventListener("visibilitychange", onWake);
+    document.addEventListener("visibilitychange", onVisibilityChange);
     window.addEventListener("focus", onWake);
 
     return () => {
       stopped = true;
       stopPolling();
       clearReconnect();
-      document.removeEventListener("visibilitychange", onWake);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
       window.removeEventListener("focus", onWake);
       source?.close();
     };

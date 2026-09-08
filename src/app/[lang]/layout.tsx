@@ -11,6 +11,8 @@ import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import SemTracker from '@/components/SemTracker'
 import { readAllLandings } from '@/lib/landing-store'
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 /**
  * Root layout for the public site.
@@ -78,6 +80,16 @@ export default async function SiteRootLayout({
 
         <ClientProviders />
         <GlobalFloatingWhatsApp disabledPaths={disabledPaths} />
+
+        {/*
+          Ambos paquetes llevaban en package.json sin montarse en ninguna parte,
+          asi que el sitio publico no reportaba nada. Importa mas de lo que
+          parece: /api/analytics-drain recibe el stream de Web Analytics y de ahi
+          salen las sesiones del embudo, de modo que sin este <Analytics /> la
+          parte alta del embudo solo veia el beacon propio (/api/funnel-hit).
+        */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )

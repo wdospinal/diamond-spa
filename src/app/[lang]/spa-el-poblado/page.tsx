@@ -6,6 +6,7 @@ import { buildAlternates, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from 
 import { SPA_ADDRESS, SPA_HOURS, SPA_RATING, SPA_GOOGLE_MAPS_URL } from '@/lib/spa'
 import { JsonLd } from '@/components/JsonLd'
 import LandingHead from '@/components/LandingHead'
+import { LandingTeam } from '@/components/landing-blocks/LandingTeam'
 import { mergeLandingMetadata } from '@/lib/landing-meta'
 
 export const revalidate = 3600
@@ -206,6 +207,11 @@ export default async function SpaElPobladoPage({ params }: { params: Promise<{ l
             </Link>
           </div>
         </section>
+
+        {/* Equipo — el mismo bloque de la home */}
+        <div className="mb-20 -mx-6 md:-mx-12">
+          <LandingTeam locale={locale} source="spa-el-poblado" />
+        </div>
 
         {/* Hours & Address */}
         <section className="mb-20 grid grid-cols-1 md:grid-cols-2 gap-6">

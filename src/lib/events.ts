@@ -21,6 +21,9 @@ export const EVENTS = {
   BOOKING_SUBMITTED:            'booking_submitted',
   BOOKING_ANOTHER_CLICKED:      'booking_another_clicked',
 
+  // Team
+  THERAPIST_BOOK_CLICKED:       'therapist_book_clicked',
+
   // Service discovery
   SERVICE_CARD_CLICKED:         'service_card_clicked',
   SERVICE_DETAIL_VIEWED:        'service_detail_viewed',
@@ -75,6 +78,14 @@ export interface BookingSubmittedPayload {
   locale: string
 }
 
+export interface TherapistBookClickedPayload {
+  therapist_id: string    // clave estable — ver THERAPISTS en i18n.ts
+  therapist_name: string  // nombre mostrado, para leer el reporte sin traducir ids
+  position: number        // 1-based; en movil el bloque es un carrusel y el orden pesa
+  source: string          // 'home' | 'landing'
+  locale: string
+}
+
 export interface ServiceCardClickedPayload {
   service_id: string
   service_name: string
@@ -103,6 +114,7 @@ interface EventPayloadMap {
   booking_time_selected:        BookingTimeSelectedPayload
   booking_submitted:            BookingSubmittedPayload
   booking_another_clicked:      { locale: string }
+  therapist_book_clicked:       TherapistBookClickedPayload
   service_card_clicked:         ServiceCardClickedPayload
   service_detail_viewed:        ServiceDetailViewedPayload
   whatsapp_clicked:             SocialClickedPayload

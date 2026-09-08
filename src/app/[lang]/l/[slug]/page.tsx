@@ -98,7 +98,7 @@ export default async function DynamicLandingPage({ params }: Props) {
           
           <LandingWhyUs {...content.whyUs} />
 
-          <LandingTeam locale={locale} />
+          <LandingTeam locale={locale} source="landing" bookHref="#reservar" />
           
           <LandingFacilities locale={locale} />
           
