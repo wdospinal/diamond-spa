@@ -156,6 +156,34 @@ function formatCopCurrency(amount: number): string {
   }).format(amount);
 }
 
+/**
+ * No existe un campo dedicado en la base de datos que diga "esto llegó por
+ * formulario" o "esto llegó por WhatsApp" — se infiere de señales que cada
+ * camino deja de forma consistente y que el modal de edición no permite
+ * tocar después, así que siguen siendo confiables aunque el equipo edite
+ * el resto de la tarjeta:
+ *   - El wizard de reserva SIEMPRE manda duración (masajes) o método
+ *     (depilación). El puente de WhatsApp nunca pide ninguno de los dos.
+ *   - El puente de WhatsApp SIEMPRE deja "Campaña: X" o la nota de "saltó
+ *     ese paso" en las notas. El wizard solo pone ahí lo que el cliente
+ *     escribe, nunca genera ese texto.
+ * Si ninguna señal aplica (p. ej. un servicio sin duración reservado por el
+ * wizard, sin nota de campaña), no se muestra nada — mejor no adivinar que
+ * adivinar mal.
+ */
+function detectChannel(b: BookingRecord): "form" | "whatsapp" | null {
+  if (b.durationMinutes != null || b.hairMethod != null) return "form";
+  const req = b.requests || "";
+  if (
+    req.startsWith("Campaña:") ||
+    req.includes("saltó ese paso") ||
+    b.serviceName === "Lead WhatsApp (Recepción Directa)"
+  ) {
+    return "whatsapp";
+  }
+  return null;
+}
+
 // ─── Modal de Edición de Lead ───────────────────────────────────────────────────
 
 function LeadDetailModal({
@@ -286,6 +314,21 @@ function LeadDetailModal({
                     : "Orgánico"}
                 </span>
               )}
+              {(() => {
+                const channel = detectChannel(booking);
+                if (!channel) return null;
+                return (
+                  <span
+                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                      channel === "form"
+                        ? "bg-[#a78bfa]/15 text-[#a78bfa] border-[#a78bfa]/30"
+                        : "bg-[#25D366]/15 text-[#25D366] border-[#25D366]/30"
+                    }`}
+                  >
+                    {channel === "form" ? "📋 Formulario" : "💬 WhatsApp"}
+                  </span>
+                );
+              })()}
             </div>
             <p className="text-[#8a9299] text-xs font-mono mt-0.5">
               ID: {booking.id}
@@ -999,6 +1042,18 @@ export default function KanbanBoard({
     const waNum = cleanWaNumber(b.phone);
     const isPaid = b.paymentStatus === "paid";
     const isBeingDragged = draggedId === b.id;
+    const channel = detectChannel(b);
+    const channelBadge = channel ? (
+      <span
+        className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded font-label uppercase tracking-wider font-semibold ${
+          channel === "form"
+            ? "bg-[#a78bfa]/15 text-[#a78bfa] border border-[#a78bfa]/30"
+            : "bg-[#25D366]/15 text-[#25D366] border border-[#25D366]/30"
+        }`}
+      >
+        {channel === "form" ? "📋 Formulario" : "💬 WhatsApp"}
+      </span>
+    ) : null;
     // Sin badge a la izquierda la fila no debe separarse: la hora se pega al
     // borde en vez de dejar un hueco (recepción no ve atribución de Ads).
     const originBadge = showAds ? (
@@ -1111,11 +1166,14 @@ export default function KanbanBoard({
 
         {/* Origin Badge & Date */}
         <div
-          className={`flex items-center gap-1.5 text-[10px] ${
-            originBadge ? "justify-between" : ""
+          className={`flex items-center gap-1.5 text-[10px] flex-wrap ${
+            originBadge || channelBadge ? "justify-between" : ""
           }`}
         >
-          {originBadge}
+          <span className="flex items-center gap-1 flex-wrap">
+            {originBadge}
+            {channelBadge}
+          </span>
           <span className="inline-flex items-center gap-1 text-[10px] truncate">
             <span
               className={`material-symbols-outlined text-[12px] shrink-0 ${
