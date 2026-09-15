@@ -115,6 +115,15 @@ function HeroContent({
           </a>
         </div>
 
+        {/* Aclara que reservar no es pagar — algunos visitantes dudan en tocar
+            "Reservar" pensando que van a tener que pagar algo ahí mismo. */}
+        <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-white/50">
+          <span className="material-symbols-outlined text-[15px]">lock_open</span>
+          {locale === 'en'
+            ? 'No prepayment needed — pay at the spa when you arrive'
+            : 'Sin pago anticipado — pagas directo en el spa al llegar'}
+        </p>
+
         {/* Trust badges */}
         <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-sm text-white/60">
           <span className="flex items-center gap-1">

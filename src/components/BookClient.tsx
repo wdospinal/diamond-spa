@@ -942,6 +942,7 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
                 {[
                   { icon: 'star', text: '4.9 en Google' },
                   { icon: 'verified', text: lang === 'en' ? '320+ clients served' : '+320 clientes atendidos' },
+                  { icon: 'lock_open', text: lang === 'en' ? 'No prepayment — pay at the spa' : 'Sin pago anticipado — pagas al llegar' },
                   { icon: 'lock', text: lang === 'en' ? 'Private arrival instructions 24h before' : 'Llegada privada 24h antes' },
                 ].map(b => (
                   <span key={b.text} style={{ color: C.sec, fontSize: 12, display: 'flex', alignItems: 'center', gap: 5 }}>

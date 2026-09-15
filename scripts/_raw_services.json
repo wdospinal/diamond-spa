@@ -1,0 +1,247 @@
+[
+  {
+    "service_name": "Deep Tissue",
+    "source": "organic",
+    "price_cop": 280000,
+    "status": "arrived",
+    "payment_status": "pending"
+  },
+  {
+    "service_name": "Duo Masaje",
+    "source": "organic",
+    "price_cop": 220000,
+    "status": "completed",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "Sports massage",
+    "source": "ads",
+    "price_cop": 140000,
+    "status": "completed",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "Deep Tissue",
+    "source": "organic",
+    "price_cop": 0,
+    "status": "completed",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "Deep Tissue",
+    "source": "organic",
+    "price_cop": 130000,
+    "status": "completed",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "Bikini",
+    "source": "organic",
+    "price_cop": 60000,
+    "status": "arrived",
+    "payment_status": "pending"
+  },
+  {
+    "service_name": "Bikini",
+    "source": "organic",
+    "price_cop": 60000,
+    "status": "arrived",
+    "payment_status": "pending"
+  },
+  {
+    "service_name": "Bikini",
+    "source": "organic",
+    "price_cop": 60000,
+    "status": "arrived",
+    "payment_status": "pending"
+  },
+  {
+    "service_name": "Masaje sensitivo",
+    "source": "organic",
+    "price_cop": 220,
+    "status": "completed",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "Sports massage",
+    "source": "ads",
+    "price_cop": 240000,
+    "status": "completed",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "Deep Tissue",
+    "source": "organic",
+    "price_cop": 280000,
+    "status": "completed",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "4 Manos",
+    "source": "organic",
+    "price_cop": 480000,
+    "status": "completed",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "Duo Masaje",
+    "source": "organic",
+    "price_cop": 380000,
+    "status": "arrived",
+    "payment_status": "pending"
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "price_cop": 0,
+    "status": "cancelled",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "Duo Masaje",
+    "source": "organic",
+    "price_cop": 400000,
+    "status": "completed",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "Relaxing massage",
+    "source": "organic",
+    "price_cop": 200000,
+    "status": "completed",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "Tejido Profundo",
+    "source": "organic",
+    "price_cop": 220000,
+    "status": "completed",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "4 Manos",
+    "source": "organic",
+    "price_cop": 600000,
+    "status": "completed",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "Chest",
+    "source": "organic",
+    "price_cop": 80000,
+    "status": "completed",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "Deep tissue",
+    "source": "ads",
+    "price_cop": 200000,
+    "status": "completed",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "Bikini",
+    "source": "organic",
+    "price_cop": 80000,
+    "status": "completed",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "price_cop": 0,
+    "status": "completed",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "price_cop": 0,
+    "status": "cancelled",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "Relaxing massage",
+    "source": "organic",
+    "price_cop": 120000,
+    "status": "arrived",
+    "payment_status": "pending"
+  },
+  {
+    "service_name": "Servicio Premium",
+    "source": "organic",
+    "price_cop": 400000,
+    "status": "completed",
+    "payment_status": "pending"
+  },
+  {
+    "service_name": "Con Piedras Volcánicas",
+    "source": "organic",
+    "price_cop": 280000,
+    "status": "completed",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "Pecho",
+    "source": "organic",
+    "price_cop": 80000,
+    "status": "arrived",
+    "payment_status": "pending"
+  },
+  {
+    "service_name": "Servicio Premium",
+    "source": "organic",
+    "price_cop": 220000,
+    "status": "completed",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "price_cop": 0,
+    "status": "arrived",
+    "payment_status": "pending"
+  },
+  {
+    "service_name": "Relaxing massage",
+    "source": "ads",
+    "price_cop": 260000,
+    "status": "completed",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "Deep tissue",
+    "source": "ads",
+    "price_cop": 220000,
+    "status": "completed",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "Masaje Relajante",
+    "source": "ads",
+    "price_cop": 120000,
+    "status": "completed",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "Masaje Relajante",
+    "source": "organic",
+    "price_cop": 120,
+    "status": "completed",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "Lead de WhatsApp (sin servicio específico)",
+    "source": "organic",
+    "price_cop": 0,
+    "status": "completed",
+    "payment_status": "paid"
+  },
+  {
+    "service_name": "Lead de WhatsApp (sin servicio específico)",
+    "source": "organic",
+    "price_cop": 0,
+    "status": "completed",
+    "payment_status": "paid"
+  }
+]
