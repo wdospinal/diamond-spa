@@ -39,13 +39,20 @@ export default function EditBlogPostPage({
   const [excerptEn, setExcerptEn] = useState('')
   const [contentEs, setContentEs] = useState('')
   const [contentEn, setContentEn] = useState('')
-  
+
   const [coverUrl,  setCoverUrl]  = useState('')
   const [category,  setCategory]  = useState('bienestar')
   const [locales,   setLocales]   = useState<('es' | 'en')[]>(['es'])
   const [slug,      setSlug]      = useState('')
   const [isDraft,   setIsDraft]   = useState(false)
   const [author,    setAuthor]    = useState('Diamond Spa')
+
+  // SEO Metadata
+  const [metaTitleEs,  setMetaTitleEs]  = useState('')
+  const [metaTitleEn,  setMetaTitleEn]  = useState('')
+  const [metaDescEs,   setMetaDescEs]   = useState('')
+  const [metaDescEn,   setMetaDescEn]   = useState('')
+  const [keywords,     setKeywords]     = useState('')
 
   const load = useCallback(async () => {
     try {
@@ -65,6 +72,12 @@ export default function EditBlogPostPage({
       setSlug(post.slug)
       setIsDraft(post.isDraft)
       setAuthor(post.authorName)
+      // SEO Metadata (optional — may not exist in older posts)
+      setMetaTitleEs(post.metaTitle?.es ?? '')
+      setMetaTitleEn(post.metaTitle?.en ?? '')
+      setMetaDescEs(post.metaDescription?.es ?? '')
+      setMetaDescEn(post.metaDescription?.en ?? '')
+      setKeywords(post.keywords ?? '')
     } finally {
       setLoading(false)
     }
@@ -93,6 +106,12 @@ export default function EditBlogPostPage({
           coverUrl: coverUrl || undefined,
           category, locales, slug,
           isDraft, authorName: author,
+          // SEO Metadata
+          metaTitleEs: metaTitleEs || undefined,
+          metaTitleEn: metaTitleEn || undefined,
+          metaDescEs:  metaDescEs  || undefined,
+          metaDescEn:  metaDescEn  || undefined,
+          keywords:    keywords    || undefined,
         }),
       })
       const data = await res.json()
@@ -121,6 +140,8 @@ export default function EditBlogPostPage({
       </div>
     )
   }
+
+  const enIsActive = locales.includes('en')
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -157,7 +178,6 @@ export default function EditBlogPostPage({
             >
               <span className="sm:hidden">Español</span>
               <span className="hidden sm:inline">Contenido en Español</span>
-              {!locales.includes('es') && ' (Inactivo)'}
             </button>
             <button
               type="button"
@@ -171,7 +191,9 @@ export default function EditBlogPostPage({
             >
               <span className="sm:hidden">Inglés</span>
               <span className="hidden sm:inline">Contenido en Inglés</span>
-              {!locales.includes('en') && ' (Inactivo)'}
+              {!enIsActive && (titleEn || excerptEn || contentEn) && (
+                <span className="ml-1.5 text-[9px] text-[#f59e0b]">⚠ Inactivo</span>
+              )}
             </button>
           </div>
 
@@ -194,23 +216,24 @@ export default function EditBlogPostPage({
               </>
             ) : (
               <>
-                <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                  <label className={labelCls}>Título (EN) {locales.includes('en') ? '*' : ''}</label>
-                  <label className="flex items-center gap-2 cursor-pointer select-none">
-                    <input type="checkbox" checked={locales.includes('en')} onChange={() => toggleLocale('en')} className="w-4 h-4 accent-[#a5cce6]" />
-                    <span className="text-[11px] text-[#a5cce6] tracking-[0.1em] uppercase">Publicar en /en/blog</span>
-                  </label>
+                {/* Info banner when EN locale is not activated */}
+                {!enIsActive && (
+                  <div className="bg-[#f59e0b]/10 border border-[#f59e0b]/30 text-[#f59e0b] px-4 py-3 text-[12px] leading-relaxed">
+                    ℹ️ Estás viendo el contenido en inglés, pero el idioma <strong>Inglés (/en)</strong> no está activado para este artículo.<br />
+                    Actívalo en la sección <strong>Configuración → Idiomas a publicar</strong> para que aparezca en <code>/en/blog/...</code>
+                  </div>
+                )}
+                <div>
+                  <label className={`${labelCls} mb-2`}>Título (EN) {enIsActive ? '*' : ''}</label>
+                  <input value={titleEn} onChange={e => setTitleEn(e.target.value)} required={enIsActive} className={`${inputCls} ${enIsActive ? '' : 'opacity-60'}`} placeholder="Ej: Benefits of a massage..." />
                 </div>
                 <div>
-                  <input value={titleEn} onChange={e => setTitleEn(e.target.value)} required={locales.includes('en')} className={`${inputCls} ${locales.includes('en') ? '' : 'opacity-50'}`} placeholder="Ej: Benefits of a massage..." />
+                  <label className={`${labelCls} mb-2`}>Extracto (EN) {enIsActive ? '*' : ''}</label>
+                  <textarea value={excerptEn} onChange={e => setExcerptEn(e.target.value)} required={enIsActive} rows={2} className={`${inputCls} resize-y ${enIsActive ? '' : 'opacity-60'}`} placeholder="Short description..." />
                 </div>
                 <div>
-                  <label className={`${labelCls} mb-2`}>Extracto (EN) {locales.includes('en') ? '*' : ''}</label>
-                  <textarea value={excerptEn} onChange={e => setExcerptEn(e.target.value)} required={locales.includes('en')} rows={2} className={`${inputCls} resize-y ${locales.includes('en') ? '' : 'opacity-50'}`} placeholder="Short description..." />
-                </div>
-                <div>
-                  <label className={`${labelCls} mb-2`}>Contenido (EN) {locales.includes('en') ? '*' : ''}</label>
-                  <div className={`transition-opacity ${locales.includes('en') ? '' : 'opacity-50'}`}>
+                  <label className={`${labelCls} mb-2`}>Contenido (EN) {enIsActive ? '*' : ''}</label>
+                  <div className={`transition-opacity ${enIsActive ? '' : 'opacity-60'}`}>
                     <RichEditor value={contentEn} onChange={setContentEn} placeholder="Write the article body in english..." />
                   </div>
                 </div>
@@ -263,7 +286,7 @@ export default function EditBlogPostPage({
             </div>
 
             <div>
-              <label className={`${labelCls} mb-2`}>Slug URL <span className="text-[9px] normal-case tracking-normal">(auto si se deja vacío)</span></label>
+              <label className={`${labelCls} mb-2`}>Slug URL <span className="text-[9px] normal-case tracking-normal">(editar con cuidado — cambia la URL pública)</span></label>
               <input value={slug} onChange={e => setSlug(e.target.value)} className={inputCls} placeholder="ejemplo-mi-post" />
             </div>
 
@@ -272,6 +295,7 @@ export default function EditBlogPostPage({
               <input value={author} onChange={e => setAuthor(e.target.value)} className={inputCls} placeholder="Diamond Spa" />
             </div>
 
+            {/* Idiomas a publicar */}
             <div className="md:col-span-2">
               <label className={`${labelCls} mb-3`}>Idiomas a publicar</label>
               <div className="flex flex-wrap gap-3">
@@ -279,11 +303,16 @@ export default function EditBlogPostPage({
                   <label key={l} className="flex items-center gap-2 cursor-pointer select-none min-h-11">
                     <input type="checkbox" checked={locales.includes(l)} onChange={() => toggleLocale(l)} className="w-4 h-4 accent-[#a5cce6]" />
                     <span className="text-xs text-[#cfe5fa]">
-                      {l === 'es' ? '🇨🇴 Español (/es)' : '🇺🇸 Inglés (/en)'}
+                      {l === 'es' ? '🇨🇴 Español — /es/blog/...' : '🇺🇸 Inglés — /en/blog/...'}
                     </span>
                   </label>
                 ))}
               </div>
+              {enIsActive && (!titleEn || !excerptEn || !contentEn) && (
+                <p className="mt-2 text-[11px] text-[#f59e0b]">
+                  ⚠ Inglés activado — completa el título, extracto y contenido en la pestaña "Inglés" antes de guardar.
+                </p>
+              )}
             </div>
 
             <div className="md:col-span-2 mt-2 pt-4 border-t border-[#1e2a35]">
@@ -294,6 +323,82 @@ export default function EditBlogPostPage({
                 </span>
               </label>
             </div>
+          </div>
+        </section>
+
+        {/* ── SEO METADATA ── */}
+        <section className="bg-[#111820] border border-[#1e2a35] p-4 sm:p-6">
+          <p className={`${labelCls} mb-1`}>Metadata SEO</p>
+          <p className="text-[#6b8299] text-[11px] mb-5">
+            Campos opcionales. Si los dejas vacíos, se usarán automáticamente el título y extracto del artículo.
+          </p>
+          <div className="flex flex-col gap-4">
+
+            {/* Meta Title */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className={`${labelCls} mb-2`}>Meta Title (ES) <span className="text-[9px] normal-case tracking-normal">máx. 60 chars</span></label>
+                <input
+                  value={metaTitleEs}
+                  onChange={e => setMetaTitleEs(e.target.value)}
+                  maxLength={60}
+                  className={inputCls}
+                  placeholder={titleEs ? `${titleEs} | Diamond Spa Medellín` : 'Ej: Título SEO en español...'}
+                />
+                <p className="text-[#6b8299] text-[10px] mt-1 text-right">{metaTitleEs.length}/60</p>
+              </div>
+              <div>
+                <label className={`${labelCls} mb-2`}>Meta Title (EN) <span className="text-[9px] normal-case tracking-normal">máx. 60 chars</span></label>
+                <input
+                  value={metaTitleEn}
+                  onChange={e => setMetaTitleEn(e.target.value)}
+                  maxLength={60}
+                  className={`${inputCls} ${enIsActive ? '' : 'opacity-60'}`}
+                  placeholder={titleEn ? `${titleEn} | Diamond Spa Medellín` : 'Ej: SEO title in english...'}
+                />
+                <p className="text-[#6b8299] text-[10px] mt-1 text-right">{metaTitleEn.length}/60</p>
+              </div>
+            </div>
+
+            {/* Meta Description */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className={`${labelCls} mb-2`}>Meta Description (ES) <span className="text-[9px] normal-case tracking-normal">máx. 160 chars</span></label>
+                <textarea
+                  value={metaDescEs}
+                  onChange={e => setMetaDescEs(e.target.value)}
+                  maxLength={160}
+                  rows={3}
+                  className={`${inputCls} resize-y`}
+                  placeholder={excerptEs || 'Descripción SEO en español...'}
+                />
+                <p className="text-[#6b8299] text-[10px] mt-1 text-right">{metaDescEs.length}/160</p>
+              </div>
+              <div>
+                <label className={`${labelCls} mb-2`}>Meta Description (EN) <span className="text-[9px] normal-case tracking-normal">máx. 160 chars</span></label>
+                <textarea
+                  value={metaDescEn}
+                  onChange={e => setMetaDescEn(e.target.value)}
+                  maxLength={160}
+                  rows={3}
+                  className={`${inputCls} resize-y ${enIsActive ? '' : 'opacity-60'}`}
+                  placeholder={excerptEn || 'SEO description in english...'}
+                />
+                <p className="text-[#6b8299] text-[10px] mt-1 text-right">{metaDescEn.length}/160</p>
+              </div>
+            </div>
+
+            {/* Keywords */}
+            <div>
+              <label className={`${labelCls} mb-2`}>Keywords <span className="text-[9px] normal-case tracking-normal">(separadas por coma)</span></label>
+              <input
+                value={keywords}
+                onChange={e => setKeywords(e.target.value)}
+                className={inputCls}
+                placeholder="masajes medellin, spa el poblado, bienestar..."
+              />
+            </div>
+
           </div>
         </section>
 

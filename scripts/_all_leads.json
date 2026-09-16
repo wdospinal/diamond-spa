@@ -1,0 +1,470 @@
+[
+  {
+    "service_name": "Deep tissue",
+    "source": "organic",
+    "status": "pending",
+    "price_cop": 220000
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "pending",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Duo Masaje",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 220000
+  },
+  {
+    "service_name": "Sports massage",
+    "source": "ads",
+    "status": "completed",
+    "price_cop": 140000
+  },
+  {
+    "service_name": "Deep Tissue",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Deep Tissue",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 130000
+  },
+  {
+    "service_name": "Bikini",
+    "source": "organic",
+    "status": "arrived",
+    "price_cop": 60000
+  },
+  {
+    "service_name": "Bikini",
+    "source": "organic",
+    "status": "arrived",
+    "price_cop": 60000
+  },
+  {
+    "service_name": "Masaje sensitivo",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 220
+  },
+  {
+    "service_name": "Sports massage",
+    "source": "ads",
+    "status": "completed",
+    "price_cop": 240000
+  },
+  {
+    "service_name": "Deep Tissue",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 280000
+  },
+  {
+    "service_name": "Underarm",
+    "source": "organic",
+    "status": "cancelled",
+    "price_cop": 20000
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "status": "contacted",
+    "price_cop": 0
+  },
+  {
+    "service_name": "4 Manos",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 480000
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "contacted",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "contacted",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Duo Masaje",
+    "source": "organic",
+    "status": "arrived",
+    "price_cop": 380000
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "status": "cancelled",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Duo Masaje",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 400000
+  },
+  {
+    "service_name": "Relaxing massage",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 200000
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "cancelled",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Tejido Profundo",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 220000
+  },
+  {
+    "service_name": "4 Manos",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 600000
+  },
+  {
+    "service_name": "Chest",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 80000
+  },
+  {
+    "service_name": "Deep tissue",
+    "source": "ads",
+    "status": "completed",
+    "price_cop": 200000
+  },
+  {
+    "service_name": "Bikini",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 80000
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "cancelled",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Deep Tissue",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 280000
+  },
+  {
+    "service_name": "Bikini",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 60000
+  },
+  {
+    "service_name": "Deep Tissue",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Deep Facial Cleansing",
+    "source": "organic",
+    "status": "pending",
+    "price_cop": 250000
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "status": "cancelled",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Relaxing massage",
+    "source": "organic",
+    "status": "arrived",
+    "price_cop": 120000
+  },
+  {
+    "service_name": "Servicio Premium",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 400000
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "contacted",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Con Piedras Volcánicas",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 280000
+  },
+  {
+    "service_name": "Servicio Premium",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 220000
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "status": "cancelled",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "cancelled",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "arrived",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Relaxing massage",
+    "source": "ads",
+    "status": "completed",
+    "price_cop": 260000
+  },
+  {
+    "service_name": "Con Piedras Volcánicas",
+    "source": "organic",
+    "status": "cancelled",
+    "price_cop": 280000
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "contacted",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Deep tissue",
+    "source": "ads",
+    "status": "completed",
+    "price_cop": 220000
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "status": "cancelled",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Masaje Relajante",
+    "source": "ads",
+    "status": "completed",
+    "price_cop": 120000
+  },
+  {
+    "service_name": "Relaxing massage",
+    "source": "ads",
+    "status": "cancelled",
+    "price_cop": 200000
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "status": "cancelled",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "status": "cancelled",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Pecho",
+    "source": "organic",
+    "status": "cancelled",
+    "price_cop": 80000
+  },
+  {
+    "service_name": "Pecho",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 80000
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "status": "cancelled",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "pending",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Masaje Relajante",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 120
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "status": "cancelled",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "cancelled",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Lead de WhatsApp (sin servicio específico)",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Lead de WhatsApp (sin servicio específico)",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "cancelled",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Masaje Sensitivo",
+    "source": "organic",
+    "status": "cancelled",
+    "price_cop": 280000
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "cancelled",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "contacted",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "contacted",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "cancelled",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "arrived",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "pending",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "arrived",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "pending",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "pending",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Relaxing massage",
+    "source": "ads",
+    "status": "completed",
+    "price_cop": 200000
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "pending",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "pending",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "pending",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Sports massage",
+    "source": "ads",
+    "status": "completed",
+    "price_cop": 300000
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "status": "pending",
+    "price_cop": 0
+  },
+  {
+    "service_name": "Lead WhatsApp (Recepción)",
+    "source": "organic",
+    "status": "completed",
+    "price_cop": 550000
+  }
+]

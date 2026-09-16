@@ -25,14 +25,22 @@ export async function generateMetadata({
   if (!post || post.isDraft) return { title: 'Artículo no encontrado | Diamond Spa' }
 
   const isEn = locale === 'en'
+
+  // Content fields — used for OG/Twitter (always the article title/excerpt)
   const title   = (isEn ? post.title.en   : post.title.es)   ?? post.title.es
   const excerpt = (isEn ? post.excerpt.en : post.excerpt.es) ?? post.excerpt.es
+
+  // SEO overrides — use metaTitle/metaDescription when set, fallback to title/excerpt
+  const seoTitle = (isEn ? post.metaTitle?.en : post.metaTitle?.es) || title
+  const seoDesc  = (isEn ? post.metaDescription?.en : post.metaDescription?.es) || excerpt
+
   const image   = post.coverUrl ?? `${BASE_URL}/og-default.jpg`
   const canonical = `${BASE_URL}/${locale}/blog/${slug}`
 
   return {
-    title: `${title} | Diamond Spa Medellín`,
-    description: excerpt,
+    title: `${seoTitle} | Diamond Spa Medellín`,
+    description: seoDesc,
+    ...(post.keywords ? { keywords: post.keywords } : {}),
     alternates: {
       canonical,
       languages: {

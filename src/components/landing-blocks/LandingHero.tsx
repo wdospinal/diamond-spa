@@ -120,8 +120,8 @@ function HeroContent({
         <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-white/50">
           <span className="material-symbols-outlined text-[15px]">lock_open</span>
           {locale === 'en'
-            ? 'No prepayment needed — pay at the spa when you arrive'
-            : 'Sin pago anticipado — pagas directo en el spa al llegar'}
+            ? 'Book now, pay nothing'
+            : 'Reserva ahora, sin pagar nada'}
         </p>
 
         {/* Trust badges */}

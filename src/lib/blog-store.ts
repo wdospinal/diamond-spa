@@ -23,6 +23,10 @@ export type BlogPost = {
   publishedAt: string                  // ISO string
   isDraft: boolean
   authorName: string
+  // ── SEO Metadata (optional, overrides title/excerpt in <head>) ────────────
+  metaTitle?: { es?: string; en?: string }
+  metaDescription?: { es?: string; en?: string }
+  keywords?: string                    // Shared keyword string for all locales
 }
 
 // ─── File fallback (local / dev) ─────────────────────────────────────────────
