@@ -6,8 +6,10 @@ import { ServiceDetailTracker } from '@/components/ServiceDetailTracker'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { SERVICES, formatCop, getServiceBySlug, getServiceByForeignSlug, getServiceSlug, type DurationMinutes, type ServiceDef } from '@/lib/services'
 import { DURATION_MINUTES } from '@/lib/constants'
-import { buildServiceAlternates, buildOpenGraph, BASE_URL, BUSINESS } from '@/lib/seo'
+import { buildServiceAlternates, buildOpenGraph, BASE_URL, BUSINESS, faqJsonLd } from '@/lib/seo'
+import { serviceFaqs, serviceSeoDescription, serviceSeoTitle } from '@/lib/service-seo'
 import { JsonLd } from '@/components/JsonLd'
+import { FaqSection } from '@/components/FaqSection'
 
 export const dynamic = 'force-static'
 
@@ -28,8 +30,8 @@ export async function generateMetadata({
   if (!service) return {}
 
   const name = locale === 'en' ? service.name.en : service.name.es
-  const description = locale === 'en' ? service.shortDesc.en : service.shortDesc.es
-  const title = `${name} — Diamond Spa Medellín`
+  const title = serviceSeoTitle(service, locale)
+  const description = serviceSeoDescription(service, locale)
   const slug = locale === 'en' ? service.slugEn : service.id
   return {
     title,
@@ -65,6 +67,7 @@ export default async function ServiceDetailPage({
   const name = locale === 'en' ? service.name.en : service.name.es
   const description = locale === 'en' ? service.description.en : service.description.es
   const slug = locale === 'en' ? service.slugEn : service.id
+  const faqs = serviceFaqs(service, locale)
 
   // Sibling services in the same category, falling back to any other service so
   // short categories still get a full row. Detail pages previously linked only
@@ -119,6 +122,7 @@ export default async function ServiceDetailPage({
     <>
       <JsonLd data={serviceJsonLd} />
       <JsonLd data={breadcrumbJsonLd} />
+      <JsonLd data={faqJsonLd(faqs)} />
       <ServiceDetailTracker serviceId={service.id} serviceName={name} locale={locale} />
       {/* Back link */}
       <div className="pt-32 pb-0 px-6 md:px-12">
@@ -228,6 +232,14 @@ export default async function ServiceDetailPage({
           })()}
         </div>
       </section>
+
+      {/* FAQ — service-specific answers (price, length, location, booking) so
+          each detail page carries unique indexable copy, not just a price table */}
+      <FaqSection
+        categories={[{ id: 'booking', icon: 'spa', label: locale === 'en' ? 'Frequently asked questions' : 'Preguntas frecuentes', items: faqs }]}
+        title={locale === 'en' ? `${name}: common questions` : `${name}: preguntas frecuentes`}
+        className="py-20 px-6 md:px-12 bg-surface"
+      />
 
       {/* Related services — internal links between sibling detail pages */}
       <section className="py-20 px-6 md:px-12 bg-surface-container-low">

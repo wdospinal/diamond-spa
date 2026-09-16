@@ -14,6 +14,9 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     title,
     description,
     alternates: buildAlternates('/privacy', locale),
+    // Boilerplate legal copy never ranks; it sat in "Crawled - currently not
+    // indexed". Keep it crawlable (follow) but out of the index and the sitemap.
+    robots: { index: false, follow: true },
     openGraph: buildOpenGraph({ title, description, path: '/privacy', locale }),
   }
 }
