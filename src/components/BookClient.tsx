@@ -563,10 +563,11 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
 
           {/* Step indicators */}
           <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 6 }}>
-            {(lang === 'en' ? ['Category', 'Service', 'Your details', 'Date & time'] : ['Categoría', 'Servicio', 'Tus datos', 'Fecha y hora']).map((label, i) => {
-              // Map step index to 4 visible stages
+            {(() => {
+              const labels = lang === 'en' ? ['Category', 'Service', 'Your details', 'Date & time'] : ['Categoría', 'Servicio', 'Tus datos', 'Fecha y hora']
               const stageMap = [0, 1, 1, 2, 3]
               const curStage = stageMap[progressStep]
+              return labels.map((label, i) => {
               const isDone = curStage > i
               const isNow = curStage === i
               return (
@@ -582,7 +583,8 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
                     }}>
                       {isDone ? '✓' : i + 1}
                     </div>
-                    {/* Hide step labels on small screens so the close button doesn't get pushed out */}
+                    {/* Hide step labels on small screens so the close button doesn't get pushed out
+                        — el texto equivalente para móvil va debajo, en su propia línea. */}
                     <span className="hidden sm:block" style={{ fontSize: 11, color: isNow ? C.text : C.sec, fontWeight: isNow ? 600 : 400, whiteSpace: 'nowrap', transition: 'color 0.3s' }}>
                       {label}
                     </span>
@@ -590,7 +592,8 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
                   {i < 3 && <div style={{ flex: 1, height: 1, background: isDone ? C.accent : C.div, margin: '0 8px', transition: 'background 0.3s' }} />}
                 </div>
               )
-            })}
+              })
+            })()}
           </div>
 
           {/* Close button (Right) */}
@@ -603,6 +606,27 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
               <Icon name="close" size={24} />
             </button>
           )}
+        </div>
+
+        {/* Resumen del paso actual, SOLO en móvil — reemplaza el texto que
+            queda oculto arriba por falta de espacio junto a los círculos. */}
+        <div className="sm:hidden" style={{ maxWidth: 640, margin: '0 auto', padding: '0 16px 10px', display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ fontSize: 12, color: C.accent, fontWeight: 700 }}>
+            {(() => {
+              const stageMap = [0, 1, 1, 2, 3]
+              return stageMap[progressStep] + 1
+            })()} / 4
+          </span>
+          <span style={{ fontSize: 12, color: C.text, fontWeight: 600 }}>
+            {(() => {
+              const labels = lang === 'en' ? ['Category', 'Service', 'Your details', 'Date & time'] : ['Categoría', 'Servicio', 'Tus datos', 'Fecha y hora']
+              const stageMap = [0, 1, 1, 2, 3]
+              return labels[stageMap[progressStep]]
+            })()}
+          </span>
+          <span style={{ fontSize: 11, color: C.sec, marginLeft: 'auto' }}>
+            {lang === 'en' ? 'Almost there' : 'Ya casi'}
+          </span>
         </div>
       </div>
 
@@ -942,7 +966,7 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
                 {[
                   { icon: 'star', text: '4.9 en Google' },
                   { icon: 'verified', text: lang === 'en' ? '320+ clients served' : '+320 clientes atendidos' },
-                  { icon: 'lock_open', text: lang === 'en' ? 'No prepayment — pay at the spa' : 'Sin pago anticipado — pagas al llegar' },
+                  { icon: 'lock_open', text: lang === 'en' ? 'Book now, pay nothing' : 'Reserva ahora, sin pagar nada' },
                   { icon: 'lock', text: lang === 'en' ? 'Private arrival instructions 24h before' : 'Llegada privada 24h antes' },
                 ].map(b => (
                   <span key={b.text} style={{ color: C.sec, fontSize: 12, display: 'flex', alignItems: 'center', gap: 5 }}>
