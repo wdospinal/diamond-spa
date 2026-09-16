@@ -89,6 +89,20 @@ export async function POST(req: NextRequest) {
     publishedAt: typeof body.publishedAt === 'string' ? body.publishedAt : new Date().toISOString(),
     isDraft: body.isDraft === true,
     authorName: typeof body.authorName === 'string' ? body.authorName : 'Diamond Spa',
+    // ── SEO Metadata (optional) ───────────────────────────────────────────────
+    metaTitle: (() => {
+      const mEs = typeof body.metaTitleEs === 'string' ? body.metaTitleEs.trim() : ''
+      const mEn = typeof body.metaTitleEn === 'string' ? body.metaTitleEn.trim() : ''
+      if (!mEs && !mEn) return undefined
+      return { ...(mEs ? { es: mEs } : {}), ...(mEn ? { en: mEn } : {}) }
+    })(),
+    metaDescription: (() => {
+      const mEs = typeof body.metaDescEs === 'string' ? body.metaDescEs.trim() : ''
+      const mEn = typeof body.metaDescEn === 'string' ? body.metaDescEn.trim() : ''
+      if (!mEs && !mEn) return undefined
+      return { ...(mEs ? { es: mEs } : {}), ...(mEn ? { en: mEn } : {}) }
+    })(),
+    keywords: typeof body.keywords === 'string' ? body.keywords.trim() || undefined : undefined,
   })
 
   return NextResponse.json({ post }, { status: existingId ? 200 : 201 })

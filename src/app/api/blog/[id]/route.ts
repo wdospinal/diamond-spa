@@ -65,6 +65,28 @@ export async function PUT(
     locales,
     isDraft: typeof body.isDraft === 'boolean' ? body.isDraft : existing.isDraft,
     authorName: typeof body.authorName === 'string' ? body.authorName : existing.authorName,
+    // ── SEO Metadata (optional, falls back to existing) ───────────────────────
+    metaTitle: (() => {
+      if ('metaTitleEs' in body || 'metaTitleEn' in body) {
+        const mEs = typeof body.metaTitleEs === 'string' ? body.metaTitleEs.trim() : ''
+        const mEn = typeof body.metaTitleEn === 'string' ? body.metaTitleEn.trim() : ''
+        if (!mEs && !mEn) return undefined
+        return { ...(mEs ? { es: mEs } : {}), ...(mEn ? { en: mEn } : {}) }
+      }
+      return existing.metaTitle
+    })(),
+    metaDescription: (() => {
+      if ('metaDescEs' in body || 'metaDescEn' in body) {
+        const mEs = typeof body.metaDescEs === 'string' ? body.metaDescEs.trim() : ''
+        const mEn = typeof body.metaDescEn === 'string' ? body.metaDescEn.trim() : ''
+        if (!mEs && !mEn) return undefined
+        return { ...(mEs ? { es: mEs } : {}), ...(mEn ? { en: mEn } : {}) }
+      }
+      return existing.metaDescription
+    })(),
+    keywords: 'keywords' in body
+      ? (typeof body.keywords === 'string' ? body.keywords.trim() || undefined : undefined)
+      : existing.keywords,
   })
 
   return NextResponse.json({ post: updated })
