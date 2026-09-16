@@ -36,9 +36,8 @@ const STATIC_PATHS: { path: string; priority: number; changeFrequency: MetadataR
   { path: '/about',                    priority: 0.7, changeFrequency: 'monthly' },
   { path: '/location',                 priority: 0.8, changeFrequency: 'monthly' },
   { path: '/history',                  priority: 0.6, changeFrequency: 'monthly' },
+  // /privacy and /terms are noindex — see their generateMetadata
   { path: '/press',                    priority: 0.4, changeFrequency: 'monthly' },
-  { path: '/privacy',                  priority: 0.3, changeFrequency: 'yearly'  },
-  { path: '/terms',                    priority: 0.3, changeFrequency: 'yearly'  },
 ]
 
 /**
