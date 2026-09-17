@@ -181,6 +181,27 @@ export async function readBookings(): Promise<BookingRecord[]> {
   return readFileBookings()
 }
 
+/**
+ * Busca una reserva reciente con el mismo teléfono, dentro de una ventana de
+ * minutos. Se usa como candado anti-duplicados en el servidor — el candado
+ * del frontend (deshabilitar el botón) solo protege contra un doble-toque
+ * en el mismo instante; esto también cubre al visitante que, al no ver
+ * ninguna confirmación visual clara, vuelve a tocar el mismo botón segundos
+ * o minutos después como una acción nueva y separada.
+ */
+export async function findRecentBookingByPhone(
+  phone: string,
+  windowMinutes: number,
+): Promise<BookingRecord | null> {
+  if (!phone) return null
+  const all = await readBookings()
+  const cutoff = Date.now() - windowMinutes * 60_000
+  const matches = all
+    .filter(b => b.phone === phone && new Date(b.createdAt).getTime() >= cutoff)
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+  return matches[0] ?? null
+}
+
 export async function appendBooking(
   input: Omit<BookingRecord, 'id' | 'createdAt'>,
 ): Promise<BookingRecord> {

@@ -24,7 +24,25 @@ const nextConfig = {
       { source: '/en/services/depilacion-espalda',    destination: '/en/services/wax-back',            permanent: true },
       { source: '/en/services/depilacion-zona-perianal', destination: '/en/services/wax-perianal',     permanent: true },
       { source: '/en/services/depilacion-cuerpo-completo', destination: '/en/services/wax-full-body',  permanent: true },
-      // Massage was briefly slugged 'sensorial' before being renamed back to 'sensitive'
+      // Massage type pages migrated from /services/[id] to /masajes/[tipo] —
+      // old URLs got ~0 organic clicks (GSC, 16mo), new slugs are keyword-
+      // researched. 308 so any residual equity transfers to the new hub.
+      { source: '/es/services/relaxing',    destination: '/es/masajes/relajante',           permanent: true },
+      { source: '/en/services/relaxing',    destination: '/en/masajes/relaxing',            permanent: true },
+      { source: '/es/services/deep-tissue', destination: '/es/masajes/deep-tissue',         permanent: true },
+      { source: '/en/services/deep-tissue', destination: '/en/masajes/deep-tissue',         permanent: true },
+      { source: '/es/services/four-hands',  destination: '/es/masajes/4-manos',             permanent: true },
+      { source: '/en/services/four-hands',  destination: '/en/masajes/four-hands',          permanent: true },
+      { source: '/es/services/duo',         destination: '/es/masajes/duo',                 permanent: true },
+      { source: '/en/services/duo',         destination: '/en/masajes/duo',                 permanent: true },
+      { source: '/es/services/hot-stones',  destination: '/es/masajes/piedras-volcanicas',  permanent: true },
+      { source: '/en/services/hot-stones',  destination: '/en/masajes/hot-stones',          permanent: true },
+      { source: '/es/services/sports',      destination: '/es/masajes/deportivo',           permanent: true },
+      { source: '/en/services/sports',      destination: '/en/masajes/sports',              permanent: true },
+      { source: '/es/services/sensitive',   destination: '/es/masajes/sensitivo',           permanent: true },
+      { source: '/en/services/sensitive',   destination: '/en/masajes/sensitive',           permanent: true },
+      // Massage was briefly slugged 'sensorial' before being renamed back to
+      // 'sensitive' — chains into the /services/sensitive → /masajes/* redirect above.
       { source: '/:lang(en|es)/services/sensorial',   destination: '/:lang/services/sensitive',        permanent: true },
       // Root → Spanish (308 permanent — prevents Soft 404 on the domain root)
       { source: '/',          destination: '/es',           permanent: true },

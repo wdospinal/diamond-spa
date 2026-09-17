@@ -10,11 +10,61 @@ export default function Navigation({ locale }: { locale: Locale }) {
   const t = getDict(locale).nav
   const waGreeting = SPA_WHATSAPP_GREETING[locale]
 
+  // TODO: move to i18n dict once the /masajes, /faciales and /depilacion
+  // taxonomy is confirmed for launch.
+  //
+  // Three pillars up front (Masajes, Faciales, Depilación) + a "Más" catch-all
+  // for everything secondary — keeps the bar at 4 items instead of 7.
+  //
+  // Masajes: fully built (hub + 7 type pages + audience pages).
+  // Faciales: NO dedicated hub yet — children point to the two existing
+  // standalone pages (hydrafacial-medellin, limpieza-facial-medellin) as a
+  // bridge until the same keyword/IA work done for Masajes happens here too.
+  // Depilación: single existing page, no dropdown needed yet.
   const links = [
-    { label: t.services, href: `/${locale}/services`, desc: t.menuServicesDesc, icon: 'spa'         },
-    { label: t.aboutUs,  href: `/${locale}/about`,    desc: t.menuAboutDesc,    icon: 'person'      },
-    { label: t.location, href: `/${locale}/location`, desc: t.menuLocationDesc, icon: 'location_on' },
-    { label: t.blog,     href: `/${locale}/blog`,     desc: t.menuBlogDesc,     icon: 'article'     },
+    {
+      label: locale === 'en' ? 'Massages' : 'Masajes',
+      href: `/${locale}/masajes`,
+      desc: locale === 'en' ? 'Explore all massage types' : 'Explora todos los tipos de masaje',
+      icon: 'self_improvement',
+      children: [
+        { label: locale === 'en' ? 'All massages' : 'Ver todos', href: `/${locale}/masajes` },
+        { label: locale === 'en' ? 'For men' : 'Para Hombres', href: `/${locale}/masajes-para-hombres` },
+        { label: locale === 'en' ? 'For women' : 'Para Mujeres', href: `/${locale}/masajes-para-mujeres` },
+      ],
+    },
+    {
+      label: locale === 'en' ? 'Facials' : 'Faciales',
+      href: null,
+      desc: locale === 'en' ? 'Skin care treatments' : 'Tratamientos para el cuidado de la piel',
+      icon: 'face',
+      children: [
+        { label: 'HydraFacial', href: `/${locale}/hydrafacial-medellin` },
+        { label: locale === 'en' ? 'Facial Cleansing' : 'Limpieza Facial', href: `/${locale}/limpieza-facial-medellin` },
+      ],
+    },
+    {
+      label: locale === 'en' ? 'Hair Removal' : 'Depilación',
+      href: `/${locale}/depilacion-medellin`,
+      desc: locale === 'en' ? 'Waxing, all zones' : 'Depilación con cera, todas las zonas',
+      icon: 'filter_vintage',
+      children: [
+        { label: locale === 'en' ? 'For men' : 'Para Hombres', href: `/${locale}/depilacion-hombres` },
+        { label: locale === 'en' ? 'For women' : 'Para Mujeres', href: `/${locale}/depilacion-mujeres` },
+      ],
+    },
+    {
+      label: locale === 'en' ? 'More' : 'Más',
+      href: null,
+      desc: locale === 'en' ? 'Full catalog, about us, location, blog' : 'Catálogo completo, nosotros, ubicación, blog',
+      icon: 'more_horiz',
+      children: [
+        { label: t.services, href: `/${locale}/services` },
+        { label: t.aboutUs,  href: `/${locale}/about`    },
+        { label: t.location, href: `/${locale}/location` },
+        { label: t.blog,     href: `/${locale}/blog`     },
+      ],
+    },
   ]
 
   const homeLinkLabel = locale === 'es'

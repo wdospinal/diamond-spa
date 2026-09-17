@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { appendBooking } from '@/lib/bookings-store'
+import { appendBooking, findRecentBookingByPhone } from '@/lib/bookings-store'
 import { clientIp, rateLimit, tooManyRequests } from '@/lib/rate-limit'
 import { readSubscriptions } from '@/lib/push-store'
 import { ensureWebPush, webpush } from '@/lib/web-push'
@@ -50,6 +50,24 @@ export async function POST(req: NextRequest) {
   const now = new Date()
   const dateKey = now.toISOString().slice(0, 10)
   const timeSlot = now.toTimeString().slice(0, 5)
+
+  // Candado anti-duplicados: si este mismo teléfono ya generó un lead de
+  // WhatsApp en los últimos 5 minutos, es casi con certeza un reintento del
+  // mismo visitante (doble toque, o volvió a tocar el botón al no ver
+  // confirmación clara) — no un lead nuevo. Se reutiliza el registro
+  // existente en vez de crear uno duplicado.
+  if (phone) {
+    try {
+      const recent = await findRecentBookingByPhone(phone, 5)
+      if (recent) {
+        return NextResponse.json({ ok: true, id: recent.id, deduped: true })
+      }
+    } catch (err) {
+      console.error('Error revisando duplicados de WhatsApp lead:', err)
+      // Si la revisión falla, seguimos con el flujo normal — mejor un
+      // duplicado ocasional que perder el lead por completo.
+    }
+  }
 
   try {
     const row = await appendBooking({

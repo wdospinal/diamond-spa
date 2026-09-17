@@ -16,9 +16,10 @@ import { getLocalizedPath } from '@/lib/routes'
 
 interface NavLink {
   label: string
-  href: string
+  href: string | null   // null = dropdown-only trigger (e.g. "Más"), not a real page
   desc: string
   icon: string
+  children?: { label: string; href: string }[]
 }
 
 export default function MobileMenuClient({
@@ -36,6 +37,7 @@ export default function MobileMenuClient({
 }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [expandedHref, setExpandedHref] = useState<string | null>(null)
   const pathname = usePathname()
   const waGreeting = SPA_WHATSAPP_GREETING[locale]
   const open = () => setMenuOpen(true)
@@ -184,32 +186,83 @@ export default function MobileMenuClient({
           {/* Navigation tiles */}
           <nav aria-label={mobileNavLabel} className="flex-1 overflow-y-auto px-5 pt-6">
             <ul className="flex flex-col gap-3">
-              {links.map(({ label, href, desc, icon }, i) => {
-                const active = pathname === href || pathname.startsWith(href + '/')
+              {links.map(({ label, href, desc, icon, children }, i) => {
+                const active = !!href && (pathname === href || pathname.startsWith(href + '/'))
+                const hasChildren = !!children?.length
+                const isExpanded = expandedHref === label
                 return (
-                  <li key={href}>
-                    <Link
-                      href={href}
-                      onClick={close}
-                      aria-current={active ? 'page' : undefined}
-                      style={{ animationDelay: `${i * 55}ms` }}
-                      className={`mobile-menu-item flex items-center gap-4 p-4 rounded-[18px] border transition-colors ${
-                        active
-                          ? 'bg-primary/[0.12] border-primary/30'
-                          : 'bg-primary/[0.06] border-transparent active:bg-primary/[0.1]'
-                      }`}
-                    >
-                      <span className="flex-none flex size-[46px] items-center justify-center rounded-[13px] bg-primary/[0.12]">
-                        <span className="material-symbols-outlined text-[22px] text-primary" aria-hidden="true">{icon}</span>
-                      </span>
-                      <span className="flex flex-col gap-1">
-                        <span className="font-label text-[15px] font-medium uppercase tracking-[0.1em] text-on-surface">
-                          {label}
+                  <li key={label}>
+                    {hasChildren ? (
+                      <button
+                        type="button"
+                        onClick={() => setExpandedHref(isExpanded ? null : label)}
+                        aria-expanded={isExpanded}
+                        style={{ animationDelay: `${i * 55}ms` }}
+                        className={`mobile-menu-item flex w-full items-center gap-4 p-4 rounded-[18px] border transition-colors text-left ${
+                          active || isExpanded
+                            ? 'bg-primary/[0.12] border-primary/30'
+                            : 'bg-primary/[0.06] border-transparent active:bg-primary/[0.1]'
+                        }`}
+                      >
+                        <span className="flex-none flex size-[46px] items-center justify-center rounded-[13px] bg-primary/[0.12]">
+                          <span className="material-symbols-outlined text-[22px] text-primary" aria-hidden="true">{icon}</span>
                         </span>
-                        <span className="text-[12px] tracking-[0.02em] text-outline">{desc}</span>
-                      </span>
-                      <span className="material-symbols-outlined ml-auto text-outline" aria-hidden="true">chevron_right</span>
-                    </Link>
+                        <span className="flex flex-col gap-1">
+                          <span className="font-label text-[15px] font-medium uppercase tracking-[0.1em] text-on-surface">
+                            {label}
+                          </span>
+                          <span className="text-[12px] tracking-[0.02em] text-outline">{desc}</span>
+                        </span>
+                        <span
+                          className={`material-symbols-outlined ml-auto text-outline transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+                          aria-hidden="true"
+                        >
+                          expand_more
+                        </span>
+                      </button>
+                    ) : (
+                      // href is guaranteed non-null here: every link with
+                      // href:null in the data always has children (see Navigation.tsx).
+                      <Link
+                        href={href!}
+                        onClick={close}
+                        aria-current={active ? 'page' : undefined}
+                        style={{ animationDelay: `${i * 55}ms` }}
+                        className={`mobile-menu-item flex items-center gap-4 p-4 rounded-[18px] border transition-colors ${
+                          active
+                            ? 'bg-primary/[0.12] border-primary/30'
+                            : 'bg-primary/[0.06] border-transparent active:bg-primary/[0.1]'
+                        }`}
+                      >
+                        <span className="flex-none flex size-[46px] items-center justify-center rounded-[13px] bg-primary/[0.12]">
+                          <span className="material-symbols-outlined text-[22px] text-primary" aria-hidden="true">{icon}</span>
+                        </span>
+                        <span className="flex flex-col gap-1">
+                          <span className="font-label text-[15px] font-medium uppercase tracking-[0.1em] text-on-surface">
+                            {label}
+                          </span>
+                          <span className="text-[12px] tracking-[0.02em] text-outline">{desc}</span>
+                        </span>
+                        <span className="material-symbols-outlined ml-auto text-outline" aria-hidden="true">chevron_right</span>
+                      </Link>
+                    )}
+
+                    {hasChildren && isExpanded && (
+                      <ul className="flex flex-col gap-1.5 mt-1.5 ml-4 pl-4 border-l border-primary/20">
+                        {children!.map(c => (
+                          <li key={c.href}>
+                            <Link
+                              href={c.href}
+                              onClick={close}
+                              className="flex items-center justify-between p-3 rounded-[12px] text-on-surface/80 active:bg-primary/[0.06] transition-colors"
+                            >
+                              <span className="font-label text-[13px] uppercase tracking-[0.08em]">{c.label}</span>
+                              <span className="material-symbols-outlined text-[18px] text-outline" aria-hidden="true">chevron_right</span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </li>
                 )
               })}

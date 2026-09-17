@@ -64,6 +64,10 @@ export default function WhatsAppBridgeModal() {
   const [source, setSource] = useState<string>('site')
   const [locale, setLocale] = useState<'es' | 'en'>('es')
   const inputRef = useRef<HTMLInputElement>(null)
+  // Candado síncrono — useState solo actualiza en el siguiente render, y eso
+  // dejaba una ventana real donde 2 toques rápidos podían pasar la revisión
+  // de isSubmitting antes de que el primero terminara.
+  const submittingRef = useRef(false)
 
   useEffect(() => {
     const handleOpen = (e: Event) => {
@@ -74,6 +78,7 @@ export default function WhatsAppBridgeModal() {
       setCountryCode(prev => (isEn && prev === '+57' ? '+1' : prev))
       setCustomText(customEvent.detail?.text)
       setSource(customEvent.detail?.source || 'site')
+      submittingRef.current = false
       setIsOpen(true)
       document.body.style.overflow = 'hidden'
       setTimeout(() => {
@@ -94,7 +99,8 @@ export default function WhatsAppBridgeModal() {
 
   const handleConnect = async (e?: React.FormEvent) => {
     if (e) e.preventDefault()
-    if (isSubmitting) return
+    if (isSubmitting || submittingRef.current) return
+    submittingRef.current = true
     setIsSubmitting(true)
 
     const cleanNumber = phone.replace(/\D/g, '')

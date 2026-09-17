@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { pushEvent } from '@/lib/gtm'
 import type { Locale, Dict } from '@/lib/i18n'
 import { randomWhatsAppUrl, SPA_HOURS } from '@/lib/spa'
@@ -210,12 +211,25 @@ function buildCal(year: number, month: number): Cell[] {
 }
 
 // ─── Main component ───────────────────────────────────────────────────────────
-export default function BookClient({ locale, t, allowedServiceIds, initialServiceId, onClose }: { locale: string; t: Dict['book']; allowedServiceIds?: string[]; initialServiceId?: string; onClose?: () => void }) {
+export default function BookClient({ locale, t, allowedServiceIds, initialServiceId, initialPriceIdx, onClose }: { locale: string; t: Dict['book']; allowedServiceIds?: string[]; initialServiceId?: string; initialPriceIdx?: number; onClose?: () => void }) {
   const lang = (locale === 'en' ? 'en' : 'es') as Locale
 
-  const initialSvc = initialServiceId
-    ? SERVICES(lang).find(s => s.id === initialServiceId) ?? null
+  // Falls back to ?service=&duration= in the URL when neither prop is passed
+  // — covers the plain /book route (no server-side prop wiring needed) while
+  // leaving explicit-prop callers (the #reservar modal) completely untouched.
+  const searchParams = useSearchParams()
+  const resolvedServiceId = initialServiceId ?? searchParams.get('service') ?? undefined
+
+  const initialSvc = resolvedServiceId
+    ? SERVICES(lang).find(s => s.id === resolvedServiceId) ?? null
     : null;
+
+  const urlDuration = searchParams.get('duration')
+  const resolvedPriceIdx = initialPriceIdx ?? (
+    initialSvc && urlDuration
+      ? (idx => (idx >= 0 ? idx : undefined))(initialSvc.prices.findIndex(p => p.label.startsWith(urlDuration)))
+      : undefined
+  )
 
   const initialCategory = initialSvc
     ? initialSvc.category
@@ -223,9 +237,12 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
       ? SERVICES(lang).find(s => allowedServiceIds.includes(s.id))?.category ?? null
       : null);
 
+  // With a service AND a duration pre-selected (e.g. a /masajes/[tipo] page's
+  // CTA), skip straight past both the service picker and the duration step —
+  // landing on 'details' (name/phone) so the very next screen is date/time.
   let initialStep: StepId = allowedServiceIds ? 'service' : 'category';
   if (initialSvc) {
-    initialStep = initialSvc.prices.length > 1 ? 'price' : 'details';
+    initialStep = (resolvedPriceIdx !== undefined || initialSvc.prices.length <= 1) ? 'details' : 'price';
   }
 
   const [step, setStep] = useState<StepId>(initialStep)
@@ -235,7 +252,7 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
   // selections
   const [category, setCategory] = useState<Category | null>(initialCategory)
   const [service, setService] = useState<Service | null>(initialSvc)
-  const [priceIdx, setPriceIdx] = useState<number>(0)
+  const [priceIdx, setPriceIdx] = useState<number>(resolvedPriceIdx ?? 0)
 
   // datetime
   const today = new Date()
@@ -248,6 +265,7 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
   // mensaje de WhatsApp), y un campo menos reduce fricción en el wizard.
   const [form, setForm] = useState({ name: '', phone: '', notes: '' })
   const [submitting, setSubmitting] = useState(false)
+  const submittingRef = useRef(false)
   const [confirmed, setConfirmed] = useState(false)
   // Se hace scroll aquí apenas se elige un día, para que las horas disponibles
   // no queden ocultas fuera de la pantalla en móvil.
@@ -256,6 +274,7 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
   // — la Fase 2 lo actualiza en vez de crear uno duplicado.
   const [leadId, setLeadId] = useState<string | null>(null)
   const [creatingLead, setCreatingLead] = useState(false)
+  const creatingLeadRef = useRef(false)
 
   const scrollRef = useRef<HTMLDivElement>(null)
 
@@ -371,7 +390,13 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
   // Best-effort: if it fails, finalizeBooking() below falls back to creating
   // the full record itself, so nothing blocks the visitor from proceeding.
   async function createLead() {
-    if (!service || !form.name.trim() || !form.phone.trim() || leadId) return
+    // creatingLeadRef es un candado SÍNCRONO — a diferencia de useState, se
+    // actualiza al instante, no en el siguiente render. Esto es lo que de
+    // verdad evita el duplicado real que encontramos: dos toques rápidos en
+    // "Continuar" antes de que la primera petición terminara y guardara el
+    // leadId (que sí depende de un render, y por eso no bastaba solo).
+    if (!service || !form.name.trim() || !form.phone.trim() || leadId || creatingLeadRef.current) return
+    creatingLeadRef.current = true
     setCreatingLead(true)
     const { bookingSource, adgroup, gclid } = getAttribution()
 
@@ -403,6 +428,7 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
         if (data?.id) setLeadId(data.id)
       }
     } catch { /* best-effort — finalizeBooking() will create the row instead */ }
+    creatingLeadRef.current = false
     setCreatingLead(false)
   }
 
@@ -412,7 +438,8 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
   // lead already exists (leadId), this UPDATES that same row via `id` instead
   // of creating a duplicate.
   async function finalizeBooking(day: number | null, time: string | null) {
-    if (!service || !form.name.trim() || !form.phone.trim()) return
+    if (!service || !form.name.trim() || !form.phone.trim() || submittingRef.current) return
+    submittingRef.current = true
     setSubmitting(true)
 
     const isTbd = day === null || time === null
@@ -495,6 +522,7 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
       pushEvent('whatsapp_lead_ads', waTrackPayload)
     }
 
+    submittingRef.current = false
     setSubmitting(false)
     setConfirmed(true)
   }

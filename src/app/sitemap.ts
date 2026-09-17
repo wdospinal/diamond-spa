@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { BASE_URL, X_DEFAULT_LOCALE } from '@/lib/seo'
-import { SERVICES } from '@/lib/services'
+import { SERVICES, getServiceById } from '@/lib/services'
+import { MASAJES_TYPE_SEO, slugForMasajeType } from '@/lib/masajes-category'
 import { LOCALES_DISPLAY_ORDER } from '@/lib/constants'
 import { readPublishedPosts } from '@/lib/blog-store'
 import type { Locale } from '@/lib/constants/locale'
@@ -23,6 +24,7 @@ const DEPLOYED_AT = new Date()
 const STATIC_PATHS: { path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency'] }[] = [
   { path: '',                          priority: 1.0, changeFrequency: 'weekly'  },
   { path: '/services',                 priority: 0.9, changeFrequency: 'weekly'  },
+  { path: '/masajes',                  priority: 0.9, changeFrequency: 'weekly'  },
   { path: '/masajes-para-hombres',     priority: 0.9, changeFrequency: 'monthly' },
   { path: '/masajes-para-mujeres',     priority: 0.9, changeFrequency: 'monthly' },
   { path: '/depilacion-medellin',      priority: 0.9, changeFrequency: 'monthly' },
@@ -117,6 +119,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             es: `${BASE_URL}/es/services/${svc.id}`,
             en: `${BASE_URL}/en/services/${svc.slugEn}`,
             'x-default': `${BASE_URL}/${X_DEFAULT_LOCALE}/services/${X_DEFAULT_LOCALE === 'en' ? svc.slugEn : svc.id}`,
+          },
+        },
+      })
+    }
+
+    // Massage type pages under /masajes/[tipo] — ES uses keyword-optimized
+    // slugs (e.g. "piedras-volcanicas"), EN reuses the existing services.ts slugEn.
+    for (const entry of MASAJES_TYPE_SEO) {
+      const svc = getServiceById(entry.serviceId)
+      if (!svc) continue
+      const slug = slugForMasajeType(entry, locale as Locale, svc)
+      entries.push({
+        url: `${BASE_URL}/${locale}/masajes/${slug}`,
+        lastModified: DEPLOYED_AT,
+        changeFrequency: 'monthly',
+        priority: 0.75,
+        alternates: {
+          languages: {
+            es: `${BASE_URL}/es/masajes/${entry.slugEs}`,
+            en: `${BASE_URL}/en/masajes/${svc.slugEn}`,
+            'x-default': `${BASE_URL}/${X_DEFAULT_LOCALE}/masajes/${X_DEFAULT_LOCALE === 'en' ? svc.slugEn : entry.slugEs}`,
           },
         },
       })
