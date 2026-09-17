@@ -1,0 +1,832 @@
+[
+  {
+    "id": "66bd37af-1222-4307-b700-5aadb512a2c5",
+    "created_at": "2026-09-17T21:07:45.322+00:00",
+    "name": null,
+    "phone": "",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "CjwKCAjwn67VBhBnEiwAXUIN1VdzRPwmopAM73BxK8ZHnAUlc0IdMvwjU10_R8H2Xt2vTWVCftwDuBoC2ekQAvD_BwE",
+    "status": "pending"
+  },
+  {
+    "id": "fb01b4b4-1c08-447d-a1f2-5a96f1b37d0c",
+    "created_at": "2026-09-17T21:02:03.23+00:00",
+    "name": null,
+    "phone": "+573235106537",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "CjwKCAjwn67VBhBnEiwAXUIN1V5mOvC5-sI01xC2n7cN31sFnK4tH_-bhg-PDBWFXCA0x-luqtXUpRoC9pQQAvD_BwE",
+    "status": "pending"
+  },
+  {
+    "id": "ad7319dd-f0eb-4d46-9dcc-4789b31195b5",
+    "created_at": "2026-09-17T03:21:09.355+00:00",
+    "name": null,
+    "phone": "+13059346940",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "gclid": null,
+    "status": "pending"
+  },
+  {
+    "id": "6b7e1df5-cc59-4e3e-b8fa-868977f6fb3d",
+    "created_at": "2026-09-17T03:20:51.842+00:00",
+    "name": null,
+    "phone": "+13059346940",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "gclid": null,
+    "status": "pending"
+  },
+  {
+    "id": "fe35f0ca-eb71-4120-a56e-349dc002f8aa",
+    "created_at": "2026-09-16T15:43:36.801+00:00",
+    "name": null,
+    "phone": "",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "CjwKCAjw_KjVBhAHEiwAnC0N9Pyt1pNtqBYImzzZDBRIzGCyEDA5D3WhNiahRWjKgSbN0E0jcXtSiBoC0tsQAvD_BwE",
+    "status": "pending"
+  },
+  {
+    "id": "838ca9c8-74d4-414e-85bd-7804ebc062ca",
+    "created_at": "2026-09-15T20:39:43.864+00:00",
+    "name": "Hyjah Messiah",
+    "phone": "6672340679",
+    "service_name": "Deep Facial Cleansing",
+    "source": "organic",
+    "gclid": null,
+    "status": "pending"
+  },
+  {
+    "id": "272e8664-8cc8-4416-9c24-d326fae19361",
+    "created_at": "2026-09-15T20:37:40.214+00:00",
+    "name": "Hyjah Messiah",
+    "phone": "6672340679",
+    "service_name": "Deep tissue",
+    "source": "organic",
+    "gclid": null,
+    "status": "pending"
+  },
+  {
+    "id": "1a21f1fa-d481-4ab8-8a08-fc62e5f1ee84",
+    "created_at": "2026-09-15T16:00:35.319+00:00",
+    "name": "Casey Miller",
+    "phone": "4782324928",
+    "service_name": "Lead WhatsApp (Recepción)",
+    "source": "organic",
+    "gclid": null,
+    "status": "completed"
+  },
+  {
+    "id": "24807e5c-f338-45d8-b2b1-1463974d7517",
+    "created_at": "2026-09-14T20:19:47.223+00:00",
+    "name": null,
+    "phone": "",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "CjwKCAjwtp7VBhBjEiwAJfpV-1DptNcwEXLwUtA45XhhUmAAi5cxlaynidB02Cy-yfXsGx9WWqP27RoCMAgQAvD_BwE",
+    "status": "pending"
+  },
+  {
+    "id": "9398e62c-5e4b-4d30-b526-86dc9b48e90e",
+    "created_at": "2026-09-14T18:31:19.368+00:00",
+    "name": "Andre V. Williams",
+    "phone": "2677453008",
+    "service_name": "Sports massage",
+    "source": "ads",
+    "gclid": "CjwKCAjwtp7VBhBjEiwAJfpV-xRrqCJ6cWk_lVf8SHMF3fq1qA50kBytTCmiXveJQYkkTv2aUiCzkRoC1IUQAvD_BwE",
+    "status": "completed"
+  },
+  {
+    "id": "8711b1bf-189e-4218-ba71-fe428697cfcd",
+    "created_at": "2026-09-14T15:32:43.94+00:00",
+    "name": null,
+    "phone": "+15195043531",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "gclid": null,
+    "status": "completed"
+  },
+  {
+    "id": "6ba50fc6-2928-4c0c-a92c-7571937f3a5c",
+    "created_at": "2026-09-14T15:09:27.416+00:00",
+    "name": null,
+    "phone": "+573022896713",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "CjwKCAjwtp7VBhBjEiwAJfpV-wRuci0a12Ij8jC6ZbgVTK2-n-pKUUabLOyvflCn-wPQsLQ92X3p9RoC7U0QAvD_BwE",
+    "status": "pending"
+  },
+  {
+    "id": "4353e65e-bd57-4e3e-a4b7-ca8f84e3427f",
+    "created_at": "2026-09-13T20:38:08.817+00:00",
+    "name": null,
+    "phone": "",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "Cj0KCQjwk5nVBhDiARIsAHNGqaddFeyZ3eOx9g1zZ2CQBWn0LJbzs-ojmDz5JGF4D9YA6KwW1V11xFgaAtxREALw_wcB",
+    "status": "pending"
+  },
+  {
+    "id": "8efc165b-17f0-44da-9d7f-d67b644b8520",
+    "created_at": "2026-09-13T03:33:22.997+00:00",
+    "name": "Ethan Davila",
+    "phone": "0659736242",
+    "service_name": "Pecho",
+    "source": "organic",
+    "gclid": null,
+    "status": "completed"
+  },
+  {
+    "id": "f41866cd-688d-4258-9e2a-6c5fcf734336",
+    "created_at": "2026-09-12T22:05:51.905+00:00",
+    "name": null,
+    "phone": "+573239779107",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "Cj0KCQjw8JPVBhD-ARIsAO691sEfmHFIKFgj5cvbjioCrUyg9HbdGrlFuifGPTZcPLBM4QWK5whAiAsaApp5EALw_wcB",
+    "status": "pending"
+  },
+  {
+    "id": "7c9bf2f0-8150-4fbb-9519-9190ad6263d2",
+    "created_at": "2026-09-11T23:59:29.694+00:00",
+    "name": "Austin Lantz",
+    "phone": "19108591970",
+    "service_name": "Relaxing massage",
+    "source": "ads",
+    "gclid": "Cj0KCQjwzY7VBhDwARIsAFtPvBQW3K8HHEy2sWcWQW-xMrFBKFQX7IFlSimGyTqMxdc7b7z2mQgBod8aAoTREALw_wcB",
+    "status": "completed"
+  },
+  {
+    "id": "cc4b56a2-f2bb-4af3-93d3-d619391041ec",
+    "created_at": "2026-09-11T20:23:13.416+00:00",
+    "name": null,
+    "phone": "+13006166289",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "Cj0KCQjwzY7VBhDwARIsAFtPvBR3lKk8a0j2Bvt7cHzURqOf67uuPV3PHoCVgevoQlRPm9s5OBa7SZ4aAlseEALw_wcB",
+    "status": "pending"
+  },
+  {
+    "id": "2c3f931c-da8b-4ab8-a476-f8c9dc6d096c",
+    "created_at": "2026-09-11T16:16:39.356+00:00",
+    "name": null,
+    "phone": "",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "Cj0KCQjwzY7VBhDwARIsAFtPvBS36mInTlqn3Xq9HfaB0NN8dEVYlQgkgKAdpnKA_Mys2nidDx2lML0aAmUYEALw_wcB",
+    "status": "arrived"
+  },
+  {
+    "id": "109d078d-9ea1-4a2b-97cb-c8a4ac712314",
+    "created_at": "2026-09-11T03:41:35.233+00:00",
+    "name": null,
+    "phone": "",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": null,
+    "status": "arrived"
+  },
+  {
+    "id": "46f3ae34-5d2e-40e0-84a3-e978634d5f0d",
+    "created_at": "2026-09-10T23:58:09.382+00:00",
+    "name": null,
+    "phone": "",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "EAIaIQobChMI1ZzeyZvllgMV-hEMAh175itTEBAYASAAEgJsNfD_BwE",
+    "status": "pending"
+  },
+  {
+    "id": "fd160ed7-1fdb-430a-9547-0ce3225756a6",
+    "created_at": "2026-09-10T23:04:03.287+00:00",
+    "name": "MT",
+    "phone": "+19739536177",
+    "service_name": "Deep Tissue",
+    "source": "organic",
+    "gclid": null,
+    "status": "completed"
+  },
+  {
+    "id": "0829f479-a8bf-45ac-a863-52bf4e6b1681",
+    "created_at": "2026-09-10T16:54:38.837+00:00",
+    "name": null,
+    "phone": "",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "EAIaIQobChMIyN7RkL3klgMVA5paBR2cyABkEAAYASAAEgITk_D_BwE",
+    "status": "cancelled"
+  },
+  {
+    "id": "2a7ee39c-506f-4075-a39d-a14cb254ebea",
+    "created_at": "2026-09-09T22:32:55.824+00:00",
+    "name": null,
+    "phone": "",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "EAIaIQobChMI9cDT08bilgMVsrZaBR22mSCwEAAYASAAEgLz1_D_BwE",
+    "status": "pending"
+  },
+  {
+    "id": "a103e003-3d6f-4d10-a913-4ff101af2f14",
+    "created_at": "2026-09-09T18:02:07.298+00:00",
+    "name": null,
+    "phone": "",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "Cj0KCQjwh4TVBhCWARIsAG0czmof8U7z9YiXUpWJ0AyYV-Ly6Q1rWUAxjsieKc5YlDu8kblMIJe3CikaAhh6EALw_wcB",
+    "status": "pending"
+  },
+  {
+    "id": "97a75d0a-2999-446d-b247-bb0d6801b0be",
+    "created_at": "2026-09-08T21:53:20.85+00:00",
+    "name": null,
+    "phone": "+573217729554",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "Cj0KCQjw5P7UBhDaARIsAOSlS1NPrbBuVme0HEdMCLVcS3p75AzLKAJ1Oa1fr2vmWVeKGOUfVBQAW0kaAjVvEALw_wcB",
+    "status": "contacted"
+  },
+  {
+    "id": "7b3efeff-5023-4bc3-8c68-ebf3d01df3bf",
+    "created_at": "2026-09-08T21:15:50.078+00:00",
+    "name": null,
+    "phone": "",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "Cj0KCQjw5P7UBhDaARIsAOSlS1NLujsj4BaqrfWLgwfZMSl6Q0IFPIK_ZjosKePOqGuvlLBGTJ_4aN4aAsV-EALw_wcB",
+    "status": "pending"
+  },
+  {
+    "id": "0ddfccb1-d55a-4c2e-9a7b-32c4e6bd159a",
+    "created_at": "2026-09-08T20:15:51.998+00:00",
+    "name": null,
+    "phone": "",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": null,
+    "status": "contacted"
+  },
+  {
+    "id": "06c8fca8-22a0-45e9-a21b-27f06d97c9f9",
+    "created_at": "2026-09-08T16:14:24.317+00:00",
+    "name": null,
+    "phone": "",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "Cj0KCQjw5P7UBhDaARIsAOSlS1PCieYJxXlmzIJv-KU17wrFdAIxmJ8CwhARmkATBVvEOAYitadL9A8aAlOfEALw_wcB",
+    "status": "cancelled"
+  },
+  {
+    "id": "09a5b717-4d5d-4674-8488-818ceb7e3d82",
+    "created_at": "2026-09-07T18:38:35.012+00:00",
+    "name": null,
+    "phone": "+12153568789",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "gclid": null,
+    "status": "cancelled"
+  },
+  {
+    "id": "da8f33ee-6fe1-4757-8179-a726e35f7e65",
+    "created_at": "2026-09-07T15:12:03.424+00:00",
+    "name": null,
+    "phone": "+573178875737",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "gclid": null,
+    "status": "completed"
+  },
+  {
+    "id": "355a3255-1127-43c4-aac6-cbd3fe1debe2",
+    "created_at": "2026-09-06T20:04:01.486+00:00",
+    "name": null,
+    "phone": "+16047935016",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "CjwKCAjwnvTUBhBoEiwAZNDxZywvknq898ZVrhjq6Jspwi90hLRtBWAlVOUrFjUW36okx6zFddX8HxoCXTEQAvD_BwE",
+    "status": "contacted"
+  },
+  {
+    "id": "a9d0449b-7536-4ae3-9daa-cbed501f94c1",
+    "created_at": "2026-09-06T19:06:10.655+00:00",
+    "name": "Ziad wael",
+    "phone": "3204783743",
+    "service_name": "Masaje Relajante",
+    "source": "organic",
+    "gclid": null,
+    "status": "completed"
+  },
+  {
+    "id": "0c26e48c-e174-4f39-98d1-3bf87a968f47",
+    "created_at": "2026-09-06T14:00:51.033+00:00",
+    "name": "Jennifer Mendez",
+    "phone": "3176416217",
+    "service_name": "Bikini",
+    "source": "organic",
+    "gclid": null,
+    "status": "completed"
+  },
+  {
+    "id": "f7ad6f60-1acb-4372-8acb-789cb202d4c4",
+    "created_at": "2026-09-06T01:18:17.977+00:00",
+    "name": null,
+    "phone": "+14049147312",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "gclid": null,
+    "status": "contacted"
+  },
+  {
+    "id": "1bfce685-77aa-482d-a0cf-b1d5eb47df48",
+    "created_at": "2026-09-05T22:22:18.783+00:00",
+    "name": "Eduardo Silva",
+    "phone": "3218327741",
+    "service_name": "Lead de WhatsApp (sin servicio específico)",
+    "source": "organic",
+    "gclid": null,
+    "status": "completed"
+  },
+  {
+    "id": "9db18a75-dd08-472e-ad4b-a2b54c97c4ef",
+    "created_at": "2026-09-05T20:49:46.455+00:00",
+    "name": "Mauricio Bedoya",
+    "phone": "3006125616",
+    "service_name": "Masaje Sensitivo",
+    "source": "organic",
+    "gclid": null,
+    "status": "cancelled"
+  },
+  {
+    "id": "846fa539-fd6f-4a84-ab8a-055f387c8abf",
+    "created_at": "2026-09-05T20:10:59.978+00:00",
+    "name": "Eduardo silva",
+    "phone": "+573218327741",
+    "service_name": "Masaje sensitivo",
+    "source": "organic",
+    "gclid": null,
+    "status": "completed"
+  },
+  {
+    "id": "2001f590-8057-4e91-98c0-9e63ca38392f",
+    "created_at": "2026-09-05T19:02:35.461+00:00",
+    "name": null,
+    "phone": "+3333684274557",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "gclid": null,
+    "status": "cancelled"
+  },
+  {
+    "id": "eb361574-f14a-4bd0-9a5d-29a562c31184",
+    "created_at": "2026-09-05T18:40:04.645+00:00",
+    "name": null,
+    "phone": "+19287322155",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "Cj0KCQjw--7UBhCpARIsAGJBptiwIaCkuN9EH1sASxQ1v68I23VwGZREupV08JG3-7k38e5g1noQGxwaAqgAEALw_wcB",
+    "status": "cancelled"
+  },
+  {
+    "id": "f9bc93e3-1bab-4020-ade0-371276878cbd",
+    "created_at": "2026-09-05T16:01:09.318+00:00",
+    "name": null,
+    "phone": "+34722216913",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "Cj0KCQjw--7UBhCpARIsAGJBptghPnzUuQ0338bw0Uq3rbFQ37dIVhuDsNCfb3BpQCGyx8hJRYJMtPsaApJSEALw_wcB",
+    "status": "contacted"
+  },
+  {
+    "id": "b3af1472-c506-4164-913f-3c3dd9cf641c",
+    "created_at": "2026-09-05T00:21:33.063+00:00",
+    "name": null,
+    "phone": "+573228065201",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "Cj0KCQjw2OnUBhC2ARIsACKyfaGwvCp8AqFPrc6JtQen3hnR_5KyygDyfzxnbf5Z-blM1WNMk_clgikaAluGEALw_wcB",
+    "status": "cancelled"
+  },
+  {
+    "id": "60b1992a-c553-4461-bf65-9b855e977873",
+    "created_at": "2026-09-04T23:21:59.725+00:00",
+    "name": "Roy Hermann",
+    "phone": "+4915777290382",
+    "service_name": "Deep Tissue",
+    "source": "organic",
+    "gclid": "Cj0KCQjw2OnUBhC2ARIsACKyfaHkMKol5vVPmZdmvD5qPAAO71Ed3z6qSbVO9Ukhw_Wf3zAr-nBHwG0aAjs0EALw_wcB",
+    "status": "completed"
+  },
+  {
+    "id": "6d026ec9-05da-45d6-a358-f52eebd15bae",
+    "created_at": "2026-09-04T22:42:48.282+00:00",
+    "name": ".",
+    "phone": "311",
+    "service_name": "Deep Tissue",
+    "source": "organic",
+    "gclid": null,
+    "status": "completed"
+  },
+  {
+    "id": "eb333509-9134-4186-b2c8-52504c08a675",
+    "created_at": "2026-09-04T22:23:03.365+00:00",
+    "name": ".",
+    "phone": "311",
+    "service_name": "Lead de WhatsApp (sin servicio específico)",
+    "source": "organic",
+    "gclid": null,
+    "status": "completed"
+  },
+  {
+    "id": "2fd2066c-40e1-4644-adad-dd4a5e2087a9",
+    "created_at": "2026-09-04T21:04:08.426+00:00",
+    "name": "Martin Guibord",
+    "phone": "+4386804050",
+    "service_name": "Sports massage",
+    "source": "ads",
+    "gclid": "Cj0KCQjw2OnUBhC2ARIsACKyfaHLmfo0fru03-Co5ir7QlXLT8zPJ3xfGv8q_Y9jcJwZstDvOer9ikYaAl0zEALw_wcB",
+    "status": "completed"
+  },
+  {
+    "id": "093023cc-175b-430c-8229-931cdefd7b51",
+    "created_at": "2026-09-04T20:17:44.155+00:00",
+    "name": null,
+    "phone": "+14077210627",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "gclid": null,
+    "status": "cancelled"
+  },
+  {
+    "id": "3b02924b-806d-4aed-92b4-591fcbcf4023",
+    "created_at": "2026-09-03T18:44:37.355+00:00",
+    "name": "Shayan Yerrapragada",
+    "phone": "3185055388",
+    "service_name": "Deep Tissue",
+    "source": "organic",
+    "gclid": null,
+    "status": "completed"
+  },
+  {
+    "id": "0156ad3e-30ff-4d56-a9ac-af2eb98105c2",
+    "created_at": "2026-09-01T18:17:21.084+00:00",
+    "name": null,
+    "phone": "+573042470746",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "gclid": null,
+    "status": "cancelled"
+  },
+  {
+    "id": "5059f06d-c8ea-4dee-8800-c89839f4817d",
+    "created_at": "2026-09-01T00:00:56.186+00:00",
+    "name": null,
+    "phone": "+573022775567",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "CjwKCAjwzNTUBhAjEiwA7zcvWn0pUjkhrH0e0wbbUYtJnmFV1eXKXoUnxx-veXISetgM24zF2dFVuBoCx9YQAvD_BwE",
+    "status": "arrived"
+  },
+  {
+    "id": "23f17f0c-3734-4df2-91aa-ad59aa53fd98",
+    "created_at": "2026-08-31T21:31:14.998+00:00",
+    "name": null,
+    "phone": "+573208199431",
+    "service_name": "Servicio Premium",
+    "source": "organic",
+    "gclid": null,
+    "status": "completed"
+  },
+  {
+    "id": "c9957587-b453-4a49-ac30-e9e80f894f3b",
+    "created_at": "2026-08-31T16:25:55.938+00:00",
+    "name": "Ethan Davila Levy",
+    "phone": "+330659736242",
+    "service_name": "Pecho",
+    "source": "organic",
+    "gclid": null,
+    "status": "cancelled"
+  },
+  {
+    "id": "b81d1b1e-24c4-4013-b029-58f3bddb59b9",
+    "created_at": "2026-08-31T12:08:40.863+00:00",
+    "name": null,
+    "phone": "+14048678525",
+    "service_name": "Servicio Premium",
+    "source": "organic",
+    "gclid": null,
+    "status": "completed"
+  },
+  {
+    "id": "b0944979-37e1-4240-9e5d-d2d11a3701c3",
+    "created_at": "2026-08-30T20:05:02.098+00:00",
+    "name": "Hison Dallas",
+    "phone": "+13473198474",
+    "service_name": "Relaxing massage",
+    "source": "organic",
+    "gclid": null,
+    "status": "arrived"
+  },
+  {
+    "id": "ea433678-7c7f-4a2b-ab9e-6466254082aa",
+    "created_at": "2026-08-30T03:05:52.024+00:00",
+    "name": null,
+    "phone": "+573147804437",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "gclid": null,
+    "status": "cancelled"
+  },
+  {
+    "id": "553598fa-2187-4c94-9c31-2cd93c4d0328",
+    "created_at": "2026-08-30T00:39:26.782+00:00",
+    "name": "Jay",
+    "phone": "573007461939",
+    "service_name": "Con Piedras Volcánicas",
+    "source": "organic",
+    "gclid": null,
+    "status": "cancelled"
+  },
+  {
+    "id": "8e78e2ec-1c3b-443a-a713-d247926df3f2",
+    "created_at": "2026-08-29T23:51:49.961+00:00",
+    "name": null,
+    "phone": "",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "Cj0KCQjwhsrUBhDxARIsAN3AQSemxHo1-kNgFvG-c6lfOunGYX-EWcv34i47m4ppaqalG4aIKwKLryAaAlZ8EALw_wcB",
+    "status": "contacted"
+  },
+  {
+    "id": "b1c423b2-8e3f-493d-81bc-65808d09a7ab",
+    "created_at": "2026-08-29T23:21:19.459+00:00",
+    "name": null,
+    "phone": "+573016289286",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "EAIaIQobChMI35jnhP3GlgMValNHAR0qnhQ8EAAYAyAAEgIN8vD_BwE",
+    "status": "contacted"
+  },
+  {
+    "id": "70603126-bdbf-4814-8746-e6fcde5b1a5d",
+    "created_at": "2026-08-29T21:25:20.062+00:00",
+    "name": null,
+    "phone": "+573015307508",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "Cj0KCQjwhsrUBhDxARIsAN3AQSceJOKL5b8r2B1h7ZvbM-rwFv9jzGOyqD_I2UdtJ9OYsUO9Yjfu_DQaAhMFEALw_wcB",
+    "status": "cancelled"
+  },
+  {
+    "id": "3805643d-8550-4a29-abed-e878a8cca84a",
+    "created_at": "2026-08-29T00:36:18.761+00:00",
+    "name": null,
+    "phone": "+573124503374",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "CjwKCAjw48TUBhBREiwAK0GnQXnyo1A3wIUcARPJopqn4-gO4WwrCtxBoJrW85hgXS41ECbiBNIsdRoCjaUQAvD_BwE",
+    "status": "cancelled"
+  },
+  {
+    "id": "9db0ab9e-e539-4815-aa77-a6f5cb5b13eb",
+    "created_at": "2026-08-28T21:56:14.99+00:00",
+    "name": "Jayson tavares",
+    "phone": "573007461939",
+    "service_name": "Relaxing massage",
+    "source": "ads",
+    "gclid": "EAIaIQobChMIrKPy3qbElgMVEKJaBR2oBwfjEAAYASAFEgIfkvD_BwE",
+    "status": "completed"
+  },
+  {
+    "id": "50aa7b3e-424e-4623-acfe-2289524190b4",
+    "created_at": "2026-08-28T19:58:15.517+00:00",
+    "name": "Zain Yaqub",
+    "phone": "12028053908",
+    "service_name": "Deep tissue",
+    "source": "ads",
+    "gclid": "EAIaIQobChMI7P685o3ElgMVN7RaBR3bsCoREAAYASAAEgL0AvD_BwE",
+    "status": "completed"
+  },
+  {
+    "id": "90a2c1ac-e96b-4d7e-81e0-54617b6de9d0",
+    "created_at": "2026-08-28T15:57:38.104+00:00",
+    "name": "Magaly Lopez",
+    "phone": "(787) 646-6800",
+    "service_name": "Con Piedras Volcánicas",
+    "source": "organic",
+    "gclid": null,
+    "status": "completed"
+  },
+  {
+    "id": "75814f75-7aa8-4d0c-99a8-e1f519e15e5a",
+    "created_at": "2026-08-27T16:17:51.399+00:00",
+    "name": null,
+    "phone": "+573197178301",
+    "service_name": "Masaje Relajante",
+    "source": "ads",
+    "gclid": "CjwKCAjwwL_UBhAjEiwAEhuT5Hvpvs5z_NkoUo5V4V6Lzen7trH6H8t3_RUTm0uLSXKcK-Je49_LPBoCdwIQAvD_BwE",
+    "status": "completed"
+  },
+  {
+    "id": "fdb34815-cc5d-44d9-b096-aa451ba6edec",
+    "created_at": "2026-08-27T04:14:55.745+00:00",
+    "name": "Andrea Motara",
+    "phone": "12462409771",
+    "service_name": "Relaxing massage",
+    "source": "ads",
+    "gclid": "Cj0KCQjwnbrUBhDOARIsAKKhPpfv5yTk1N8BCPqgbhayvyUxnZYbPCwgzpmRT9jyZ0f_ZJW7aUdt-XMaAug5EALw_wcB",
+    "status": "cancelled"
+  },
+  {
+    "id": "bb14d7e2-165c-4431-b554-a56d72c623dc",
+    "created_at": "2026-08-27T02:19:13.381+00:00",
+    "name": null,
+    "phone": "+15142144100",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "gclid": null,
+    "status": "cancelled"
+  },
+  {
+    "id": "0376d161-faac-4c1c-bf47-9bb4f4ea75b6",
+    "created_at": "2026-08-26T21:38:25.124+00:00",
+    "name": null,
+    "phone": "+18134154481",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "gclid": null,
+    "status": "cancelled"
+  },
+  {
+    "id": "09a9b9d0-78d5-440d-a7e0-03f4d28ef231",
+    "created_at": "2026-08-26T18:10:58.233+00:00",
+    "name": null,
+    "phone": "+573176402343",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "organic",
+    "gclid": null,
+    "status": "cancelled"
+  },
+  {
+    "id": "87079f64-d493-4073-8010-fc5ece1e4cd3",
+    "created_at": "2026-08-24T22:55:01.865+00:00",
+    "name": "Henry Trapenberg",
+    "phone": "+59995212413",
+    "service_name": "Duo Masaje",
+    "source": "organic",
+    "gclid": null,
+    "status": "completed"
+  },
+  {
+    "id": "354dc306-68ba-4afc-b646-27cbc7bce892",
+    "created_at": "2026-08-23T18:11:35.574+00:00",
+    "name": null,
+    "phone": "+50761756250",
+    "service_name": "Lead WhatsApp (Recepción Directa)",
+    "source": "ads",
+    "gclid": "CjwKCAjwtKrUBhAhEiwAr77ZojZ8ZUkfXpkwNDwKYcBbzj6SPep7hUcZ6reyCnIp8myMFVK6HU_uWhoCEL0QAvD_BwE",
+    "status": "cancelled"
+  },
+  {
+    "id": "e5f06c34-a298-4224-8d2d-c7863483234e",
+    "created_at": "2026-08-19T15:36:25.001+00:00",
+    "name": "Brent Gardner",
+    "phone": "0014102595018",
+    "service_name": "4 Manos",
+    "source": "organic",
+    "gclid": null,
+    "status": "completed"
+  },
+  {
+    "id": "02f99434-2987-4799-9d37-d4da7fcc536b",
+    "created_at": "2026-08-18T06:04:43.469+00:00",
+    "name": "Jorge Rodriguez Editado",
+    "phone": "3195204060",
+    "service_name": "Tejido Profundo",
+    "source": "organic",
+    "gclid": null,
+    "status": "completed"
+  },
+  {
+    "id": "ff6fa1d5-627e-4ddd-bb8a-b4da98886a6a",
+    "created_at": "2026-08-15T23:03:15.7+00:00",
+    "name": "Aaron Bryson",
+    "phone": "+15127836888",
+    "service_name": "Deep Tissue",
+    "source": "organic",
+    "gclid": null,
+    "status": "completed"
+  },
+  {
+    "id": "81c17985-35c8-49cf-bf59-59d59ef3b9d8",
+    "created_at": "2026-08-08T05:29:32.674+00:00",
+    "name": "Nicole Schiller",
+    "phone": "14015367245",
+    "service_name": "Underarm",
+    "source": "organic",
+    "gclid": null,
+    "status": "cancelled"
+  },
+  {
+    "id": "e575775f-80f1-4ba1-9ccc-fe4875c689de",
+    "created_at": "2026-08-02T12:35:38.181+00:00",
+    "name": "Sylvester Berg",
+    "phone": "+2975606404",
+    "service_name": "Relaxing massage",
+    "source": "organic",
+    "gclid": null,
+    "status": "completed"
+  },
+  {
+    "id": "91ae39a6-bece-4a71-b141-e285f836330f",
+    "created_at": "2026-07-31T02:24:48.195+00:00",
+    "name": "Jeremy Pekoff",
+    "phone": "+15164746674",
+    "service_name": "4 Manos",
+    "source": "organic",
+    "gclid": null,
+    "status": "completed"
+  },
+  {
+    "id": "cc5d6b43-37ce-45e0-9f84-8b1ecf381ad3",
+    "created_at": "2026-07-28T01:45:19.116+00:00",
+    "name": "Juliana Cardona Nieto",
+    "phone": "3113311008",
+    "service_name": "Duo Masaje",
+    "source": "organic",
+    "gclid": null,
+    "status": "arrived"
+  },
+  {
+    "id": "cdfb0a74-2924-4571-bbbf-19ded5e070c7",
+    "created_at": "2026-07-27T12:39:05.286+00:00",
+    "name": "Salomé Cransac",
+    "phone": "+33785688938",
+    "service_name": "Bikini",
+    "source": "organic",
+    "gclid": null,
+    "status": "arrived"
+  },
+  {
+    "id": "5df4a912-3391-457a-abf1-d72f4c9b5ab7",
+    "created_at": "2026-07-27T04:17:34.403+00:00",
+    "name": "Salomé Cransac",
+    "phone": "+33785688938",
+    "service_name": "Bikini",
+    "source": "organic",
+    "gclid": null,
+    "status": "arrived"
+  },
+  {
+    "id": "8ef12b91-54de-44ff-becc-7ebef635692d",
+    "created_at": "2026-07-26T20:36:58.437+00:00",
+    "name": "Cécile Janicot",
+    "phone": "+33668775573",
+    "service_name": "Bikini",
+    "source": "organic",
+    "gclid": null,
+    "status": "completed"
+  },
+  {
+    "id": "80883cd5-e56e-4b6e-88e7-333c857a2fbb",
+    "created_at": "2026-07-25T23:30:46.867+00:00",
+    "name": "Victor Silva",
+    "phone": "+13865691918",
+    "service_name": "Chest",
+    "source": "organic",
+    "gclid": null,
+    "status": "completed"
+  },
+  {
+    "id": "994a7a6a-799b-4cf5-aeff-3e8c559562d5",
+    "created_at": "2026-07-23T19:59:12.335+00:00",
+    "name": "Michael Mcguire",
+    "phone": "6108006225",
+    "service_name": "Sports massage",
+    "source": "ads",
+    "gclid": "EAIaIQobChMIiK2P0crplQMVUrIDAB1tChxiEBAYASAAEgJqyfD_BwE",
+    "status": "completed"
+  },
+  {
+    "id": "44e953d5-d180-4618-bc09-72cdc2f73eda",
+    "created_at": "2026-07-21T04:43:35.757+00:00",
+    "name": "Jeremy Pekoff",
+    "phone": "5164746674",
+    "service_name": "Deep tissue",
+    "source": "ads",
+    "gclid": "Cj0KCQjwjvfSBhDpARIsAEiOpSszHNZxiGraOB30s8RF2B2XWl0gV5csd_Kjv1GvqR0W2g4QwKtVzaMaAtuFEALw_wcB",
+    "status": "completed"
+  },
+  {
+    "id": "0a06d778-455e-4e33-9c67-9b3bc15fcc89",
+    "created_at": "2026-07-20T19:08:42.431+00:00",
+    "name": "Vivian Chavez",
+    "phone": "+12039192452",
+    "service_name": "Duo Masaje",
+    "source": "organic",
+    "gclid": null,
+    "status": "completed"
+  }
+]

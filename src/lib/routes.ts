@@ -1,4 +1,5 @@
-import { SERVICES } from '@/lib/services'
+import { SERVICES, getServiceById } from '@/lib/services'
+import { getMasajeTypeBySlug, slugForMasajeType } from '@/lib/masajes-category'
 import { type Locale } from '@/lib/i18n'
 
 /**
@@ -26,6 +27,23 @@ export function getLocalizedPath(pathname: string | null, targetLocale: Locale):
       // Preserve any additional segments after the slug (if they exist)
       const rest = segments.slice(3).join('/')
       return `/${targetLocale}/services/${targetSlug}${rest ? `/${rest}` : ''}`
+    }
+  }
+
+  // Handle translated dynamic routes: /masajes/[tipo] — ES slugs are keyword-
+  // optimized (e.g. "piedras-volcanicas") and differ from the EN slugEn values.
+  if (baseRoute === 'masajes' && segments.length > 2) {
+    const currentLocale: Locale = segments[0] === 'en' ? 'en' : 'es'
+    const slug = segments[2]
+    const entry = getMasajeTypeBySlug(slug, currentLocale)
+
+    if (entry) {
+      const service = getServiceById(entry.serviceId)
+      if (service) {
+        const targetSlug = slugForMasajeType(entry, targetLocale, service)
+        const rest = segments.slice(3).join('/')
+        return `/${targetLocale}/masajes/${targetSlug}${rest ? `/${rest}` : ''}`
+      }
     }
   }
 

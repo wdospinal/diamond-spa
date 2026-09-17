@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { appendBooking, readBookings, updateBooking } from '@/lib/bookings-store'
+import { appendBooking, readBookings, updateBooking, findRecentBookingByPhone } from '@/lib/bookings-store'
 import { adminCookieName, verifySessionToken } from '@/lib/admin-session'
 import { getServiceById, getServicePrice, serviceDisplayName } from '@/lib/services'
 import { parseTimeSlot } from '@/lib/parse-time-slot'
@@ -192,6 +192,27 @@ export async function POST(req: NextRequest) {
       }
       // existingId not found (edge case, e.g. storage fallback changed
       // between calls) — fall through and create a fresh row instead.
+    }
+
+    // Candado anti-duplicados para la creación genuina de Fase 1: si este
+    // mismo teléfono ya creó un lead en los últimos 5 minutos (p. ej. un
+    // doble toque en "Continuar" antes de que la primera petición terminara
+    // y guardara el leadId), se reutiliza ese registro en vez de crear otro.
+    if (!existingId) {
+      try {
+        const recent = await findRecentBookingByPhone(phone, 5)
+        if (recent) {
+          if (hasDateTime) {
+            await updateBooking(recent.id, { dateKey, timeSlot: finalTimeSlot, scheduledAt, ...(requests ? { requests } : {}) })
+            await sendFullNotifications(recent.id)
+          }
+          return NextResponse.json({ ok: true, id: recent.id, deduped: true })
+        }
+      } catch (err) {
+        console.error('Error revisando duplicados de reserva:', err)
+        // Si la revisión falla, seguimos con el flujo normal — mejor un
+        // duplicado ocasional que perder la reserva por completo.
+      }
     }
 
     const row = await appendBooking({
