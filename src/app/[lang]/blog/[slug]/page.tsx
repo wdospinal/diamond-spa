@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
-import { readPublishedPosts, getPostBySlug } from '@/lib/blog-store'
+import { readPublishedPosts, getPostBySlugForLocale, slugForLocale } from '@/lib/blog-store'
 import { BASE_URL, X_DEFAULT_LOCALE } from '@/lib/seo'
 import { SPA_NAME_FULL, SPA_LOGO } from '@/lib/spa'
 
@@ -21,7 +21,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { lang, slug } = await params
   const locale = isLocale(lang) ? lang : 'es'
-  const post = await getPostBySlug(slug)
+  const post = await getPostBySlugForLocale(slug, locale)
   if (!post || post.isDraft) return { title: 'Artículo no encontrado | Diamond Spa' }
 
   const isEn = locale === 'en'
@@ -36,6 +36,9 @@ export async function generateMetadata({
 
   const image   = post.coverUrl ?? `${BASE_URL}/og-default.jpg`
   const canonical = `${BASE_URL}/${locale}/blog/${slug}`
+  const esSlug = slugForLocale(post, 'es')
+  const enSlug = slugForLocale(post, 'en')
+  const defaultSlug = X_DEFAULT_LOCALE === 'en' ? enSlug : esSlug
 
   return {
     title: `${seoTitle} | Diamond Spa Medellín`,
@@ -44,9 +47,9 @@ export async function generateMetadata({
     alternates: {
       canonical,
       languages: {
-        es: `${BASE_URL}/es/blog/${slug}`,
-        en: `${BASE_URL}/en/blog/${slug}`,
-        'x-default': `${BASE_URL}/${X_DEFAULT_LOCALE}/blog/${slug}`,
+        es: `${BASE_URL}/es/blog/${esSlug}`,
+        en: `${BASE_URL}/en/blog/${enSlug}`,
+        'x-default': `${BASE_URL}/${X_DEFAULT_LOCALE}/blog/${defaultSlug}`,
       },
     },
     openGraph: {
@@ -77,7 +80,7 @@ export default async function BlogPostPage({
   const locale = lang as Locale
   const isEn = locale === 'en'
 
-  const post = await getPostBySlug(slug)
+  const post = await getPostBySlugForLocale(slug, locale)
   if (!post || post.isDraft) notFound()
   // If this locale isn't published, 404
   if (!post.locales.includes(locale)) notFound()
