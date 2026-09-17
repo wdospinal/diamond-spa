@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
-import { readPublishedPosts, type BlogCategory } from '@/lib/blog-store'
+import { readPublishedPosts, slugForLocale, type BlogCategory } from '@/lib/blog-store'
 import { buildOpenGraph } from '@/lib/seo'
 import { BASE_URL, X_DEFAULT_LOCALE } from '@/lib/seo'
 
@@ -121,6 +121,7 @@ export default async function BlogIndexPage({
               const title   = isEn ? (post.title.en   ?? post.title.es)   : post.title.es
               const excerpt = isEn ? (post.excerpt.en ?? post.excerpt.es) : post.excerpt.es
               const catLabel = CATEGORY_LABELS[post.category]?.[locale] ?? post.category
+              const postSlug = slugForLocale(post, locale)
               const date = new Date(post.publishedAt).toLocaleDateString(
                 locale === 'en' ? 'en-US' : 'es-CO',
                 { year: 'numeric', month: 'long', day: 'numeric' }
@@ -134,7 +135,7 @@ export default async function BlogIndexPage({
                 >
                   {/* Cover */}
                   {post.coverUrl ? (
-                    <Link href={`/${locale}/blog/${post.slug}`} className="block overflow-hidden h-52 shrink-0">
+                    <Link href={`/${locale}/blog/${postSlug}`} className="block overflow-hidden h-52 shrink-0">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={post.coverUrl}
@@ -161,7 +162,7 @@ export default async function BlogIndexPage({
                     </div>
 
                     {/* Title */}
-                    <Link href={`/${locale}/blog/${post.slug}`} className="block flex-1">
+                    <Link href={`/${locale}/blog/${postSlug}`} className="block flex-1">
                       <h2 className="font-headline text-xl text-on-surface group-hover:text-primary transition-colors duration-200 leading-tight mb-3">
                         {title}
                       </h2>
@@ -172,7 +173,7 @@ export default async function BlogIndexPage({
 
                     {/* CTA */}
                     <Link
-                      href={`/${locale}/blog/${post.slug}`}
+                      href={`/${locale}/blog/${postSlug}`}
                       className="mt-6 inline-flex items-center gap-2 font-label text-[10px] tracking-[0.2em] uppercase text-primary/60 hover:text-primary transition-colors"
                     >
                       {isEn ? 'Read more' : 'Leer más'}

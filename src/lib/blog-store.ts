@@ -13,7 +13,8 @@ export type BlogCategory = 'bienestar' | 'novedades' | 'servicios'
 
 export type BlogPost = {
   id: string
-  slug: string                         // URL slug e.g. "beneficios-masaje-relajante"
+  slug: string                         // URL slug for /es/blog/[slug] — e.g. "beneficios-masaje-relajante"
+  slugEn?: string                      // Optional URL slug for /en/blog/[slug]; falls back to `slug` when unset
   title: { es: string; en?: string }
   excerpt: { es: string; en?: string }
   content: { es: string; en?: string } // Rich HTML content
@@ -89,6 +90,25 @@ export async function readPublishedPosts(locale?: 'es' | 'en'): Promise<BlogPost
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
   const all = await readAllPosts()
   return all.find(p => p.slug === slug) ?? null
+}
+
+// Locale-aware lookup for the public blog pages: on /en/blog/[slug] this
+// matches `slugEn` first, then falls back to `slug` for posts that don't
+// have a dedicated English slug yet (fully backward-compatible).
+export async function getPostBySlugForLocale(
+  slug: string,
+  locale: 'es' | 'en',
+): Promise<BlogPost | null> {
+  const all = await readAllPosts()
+  if (locale === 'en') {
+    return all.find(p => p.slugEn === slug) ?? all.find(p => p.slug === slug) ?? null
+  }
+  return all.find(p => p.slug === slug) ?? null
+}
+
+// Given a post, resolve the slug to use for a given locale's URL.
+export function slugForLocale(post: BlogPost, locale: 'es' | 'en'): string {
+  return locale === 'en' ? (post.slugEn ?? post.slug) : post.slug
 }
 
 export async function getPostById(id: string): Promise<BlogPost | null> {
