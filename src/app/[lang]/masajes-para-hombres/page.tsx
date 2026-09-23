@@ -8,7 +8,7 @@ import {
   serviceShortDesc,
 } from "@/lib/services";
 import { SERVICE_DETAIL_FROM_MASAJES } from "@/lib/service-detail-nav";
-import { getServiceSlug } from "@/lib/services";
+import { serviceHref } from "@/lib/routes";
 import {
   buildAlternates,
   buildOpenGraph,
@@ -120,7 +120,7 @@ export default async function MasajesParaHombresPage({
                 </p>
                 <div className="flex gap-4 mt-2">
                   <ServiceCardLink
-                    href={`/${locale}/services/${getServiceSlug(m, locale)}`}
+                    href={serviceHref(m, locale)}
                     from={SERVICE_DETAIL_FROM_MASAJES}
                     className="text-primary font-label text-xs tracking-widest uppercase hover:opacity-80 transition-opacity"
                   >

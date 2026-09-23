@@ -8,6 +8,7 @@ import { JsonLd } from '@/components/JsonLd'
 import LandingHead from '@/components/LandingHead'
 import { LandingTeam } from '@/components/landing-blocks/LandingTeam'
 import { mergeLandingMetadata } from '@/lib/landing-meta'
+import { serviceHref } from '@/lib/routes'
 
 export const revalidate = 3600
 
@@ -30,10 +31,10 @@ const content = {
     ],
     servicesTitle: 'Services at Diamond Spa El Poblado',
     services: [
-      { name: 'Relaxing Massage', desc: 'Gentle, rhythmic strokes to release tension and restore calm. From $120,000 COP.', href: '/services/relaxing' },
-      { name: 'Deep Tissue Massage', desc: 'Targeted pressure to release deep muscle knots and chronic tension. From $130,000 COP.', href: '/services/deep-tissue' },
-      { name: 'HydraFacial', desc: 'Medical-grade facial rejuvenation. Deeply cleanses, exfoliates, and hydrates.', href: '/services/hidrafacial' },
-      { name: 'Sports Massage', desc: 'Recovery and performance for athletes and active professionals. From $130,000 COP.', href: '/services/sports' },
+      { name: 'Relaxing Massage', desc: 'Gentle, rhythmic strokes to release tension and restore calm. From $120,000 COP.', serviceId: 'relaxing' },
+      { name: 'Deep Tissue Massage', desc: 'Targeted pressure to release deep muscle knots and chronic tension. From $130,000 COP.', serviceId: 'deep-tissue' },
+      { name: 'HydraFacial', desc: 'Medical-grade facial rejuvenation. Deeply cleanses, exfoliates, and hydrates.', serviceId: 'hidrafacial' },
+      { name: 'Sports Massage', desc: 'Recovery and performance for athletes and active professionals. From $130,000 COP.', serviceId: 'sports' },
     ],
     hoursTitle: 'Opening Hours',
     addressTitle: 'Location',
@@ -84,10 +85,10 @@ const content = {
     ],
     servicesTitle: 'Servicios en Diamond Spa El Poblado',
     services: [
-      { name: 'Masaje Relajante', desc: 'Movimientos suaves y rítmicos para liberar tensión y restaurar la calma. Desde $120.000 COP.', href: '/services/relaxing' },
-      { name: 'Deep Tissue', desc: 'Presión dirigida para liberar nudos musculares profundos y tensión crónica. Desde $130.000 COP.', href: '/services/deep-tissue' },
-      { name: 'HydraFacial', desc: 'Rejuvenecimiento facial de grado médico. Limpia, exfolia e hidrata en profundidad.', href: '/services/hidrafacial' },
-      { name: 'Masaje Deportivo', desc: 'Recuperación y rendimiento para deportistas y profesionales activos. Desde $130.000 COP.', href: '/services/sports' },
+      { name: 'Masaje Relajante', desc: 'Movimientos suaves y rítmicos para liberar tensión y restaurar la calma. Desde $120.000 COP.', serviceId: 'relaxing' },
+      { name: 'Deep Tissue', desc: 'Presión dirigida para liberar nudos musculares profundos y tensión crónica. Desde $130.000 COP.', serviceId: 'deep-tissue' },
+      { name: 'HydraFacial', desc: 'Rejuvenecimiento facial de grado médico. Limpia, exfolia e hidrata en profundidad.', serviceId: 'hidrafacial' },
+      { name: 'Masaje Deportivo', desc: 'Recuperación y rendimiento para deportistas y profesionales activos. Desde $130.000 COP.', serviceId: 'sports' },
     ],
     hoursTitle: 'Horarios de Atención',
     addressTitle: 'Ubicación',
@@ -193,7 +194,7 @@ export default async function SpaElPobladoPage({ params }: { params: Promise<{ l
                 <h3 className="font-headline text-xl text-on-surface tracking-tighter">{svc.name}</h3>
                 <p className="text-zinc-400 font-body text-sm leading-relaxed flex-1">{svc.desc}</p>
                 <Link
-                  href={`/${locale}${svc.href}`}
+                  href={serviceHref(svc.serviceId, locale)}
                   className="text-primary font-label text-xs tracking-widest uppercase hover:opacity-80 transition-opacity"
                 >
                   {locale === 'es' ? 'Ver detalles →' : 'View details →'}
