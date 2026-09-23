@@ -31,6 +31,8 @@ export default function Footer({ locale }: { locale: Locale }) {
         <div className="flex flex-col gap-3">
           <p className="text-on-surface font-label text-xs tracking-widest uppercase mb-2">{t.aboutUsLabel}</p>
           <Link href={`/${locale}/services`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.services}</Link>
+          {/* /es/massage-medellin redirects to /es/masajes, so each locale links to its own "massage in Medellín" page. */}
+          <Link href={locale === 'en' ? '/en/massage-medellin' : '/es/masajes'} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.massageMedellin}</Link>
           <Link href={`/${locale}/masajes-para-hombres`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.massagesForMen}</Link>
           <Link href={`/${locale}/masajes-para-mujeres`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.massagesForWomen}</Link>
           <Link href={`/${locale}/depilacion-medellin`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.hairRemoval}</Link>

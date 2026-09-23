@@ -1,4 +1,4 @@
-import { SERVICES, getServiceById, type ServiceDef } from '@/lib/services'
+import { SERVICES, getServiceById, getServiceBySlug, type ServiceDef } from '@/lib/services'
 import { MASAJES_TYPE_SEO, getMasajeTypeBySlug, slugForMasajeType } from '@/lib/masajes-category'
 import { type Locale } from '@/lib/i18n'
 
@@ -17,6 +17,31 @@ export function serviceHref(service: ServiceDef | string, locale: Locale): strin
   const masaje = MASAJES_TYPE_SEO.find(t => t.serviceId === svc.id)
   if (masaje) return `/${locale}/masajes/${slugForMasajeType(masaje, locale, svc)}`
   return `/${locale}/services/${locale === 'en' ? svc.slugEn : svc.id}`
+}
+
+/**
+ * Slugs that no longer belong to any service but still have a 308 in
+ * next.config.mjs, mapped to the service id they became.
+ */
+const RETIRED_SERVICE_SLUGS: Record<string, string> = {
+  sensorial: 'sensitive',
+}
+
+/**
+ * Rewrites service links inside stored HTML (blog posts written in the admin
+ * editor) to their current canonical URL. Post bodies live in the database and
+ * keep whatever URL the author pasted at the time, so after the /services →
+ * /masajes move they kept linking through 308s. Unknown slugs are left as-is.
+ */
+export function canonicalizeServiceLinks(html: string): string {
+  return html.replace(
+    /href="(?:https?:\/\/(?:www\.)?diamondspa\.com\.co)?\/(en|es)\/services\/([a-z0-9-]+)"/g,
+    (match, lang: Locale, rawSlug: string) => {
+      const slug = RETIRED_SERVICE_SLUGS[rawSlug] ?? rawSlug
+      const svc = getServiceBySlug(slug, lang) ?? getServiceBySlug(slug, lang === 'en' ? 'es' : 'en')
+      return svc ? `href="${serviceHref(svc, lang)}"` : match
+    },
+  )
 }
 
 /** True when the service's canonical page lives under /masajes, not /services. */
@@ -68,6 +93,10 @@ export function getLocalizedPath(pathname: string | null, targetLocale: Locale):
       }
     }
   }
+
+  // /en/massage-medellin has no Spanish twin: /es/massage-medellin 308s to the
+  // /es/masajes hub, so link there directly instead of through the redirect.
+  if (baseRoute === 'massage-medellin' && targetLocale === 'es') return '/es/masajes'
 
   // Blog posts: a post may be published in one locale only, and EN may use its
   // own slugEn — neither is knowable from the path here. Reusing the slug

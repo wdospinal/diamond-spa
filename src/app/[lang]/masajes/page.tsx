@@ -65,7 +65,7 @@ export default async function MasajesHubPage({
             href={`/${locale}/masajes-para-hombres`}
             className="px-5 py-2.5 font-label text-[10px] tracking-[0.2em] uppercase border border-primary/30 text-primary hover:bg-primary hover:text-on-primary transition-all duration-200"
           >
-            {isEn ? 'For men' : 'Para Hombres'}
+            {isEn ? 'Massages for men' : 'Masajes para hombres'}
           </Link>
           <Link
             href={`/${locale}/masajes-para-mujeres`}
