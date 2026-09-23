@@ -14,7 +14,8 @@ import {
   SPA_MAP_EMBED_SRC,
   randomWhatsAppUrl,
 } from '@/lib/spa'
-import { SERVICES, formatCop, getServiceSlug, type ServiceDef, type DurationMinutes } from '@/lib/services'
+import { SERVICES, formatCop, type ServiceDef, type DurationMinutes } from '@/lib/services'
+import { serviceHref } from '@/lib/routes'
 import { STATIC_REVIEWS } from '@/lib/reviews'
 import { ReviewsGrid } from '@/components/ReviewsGrid'
 import MapEmbed from '@/components/MapEmbed'
@@ -311,7 +312,7 @@ export default async function SpaNearMePage({ params }: { params: Promise<{ lang
                   <h4 className="font-headline text-xl text-on-surface">{isEn ? s.name.en : s.name.es}</h4>
                   <p className="font-body text-secondary text-sm leading-relaxed flex-1">{isEn ? s.shortDesc.en : s.shortDesc.es}</p>
                   <p className="font-label text-primary text-xs"><ServicePrice service={s} locale={locale} /></p>
-                  <Link href={`/${locale}/services/${getServiceSlug(s, locale)}`} className="font-label text-xs uppercase tracking-widest text-outline hover:text-primary transition-colors">
+                  <Link href={serviceHref(s, locale)} className="font-label text-xs uppercase tracking-widest text-outline hover:text-primary transition-colors">
                     {isEn ? 'Learn more →' : 'Ver más →'}
                   </Link>
                 </div>
@@ -331,7 +332,7 @@ export default async function SpaNearMePage({ params }: { params: Promise<{ lang
                   <h4 className="font-headline text-xl text-on-surface">{isEn ? s.name.en : s.name.es}</h4>
                   <p className="font-body text-secondary text-sm leading-relaxed flex-1">{isEn ? s.shortDesc.en : s.shortDesc.es}</p>
                   <p className="font-label text-primary text-xs"><ServicePrice service={s} locale={locale} /></p>
-                  <Link href={`/${locale}/services/${getServiceSlug(s, locale)}`} className="font-label text-xs uppercase tracking-widest text-outline hover:text-primary transition-colors">
+                  <Link href={serviceHref(s, locale)} className="font-label text-xs uppercase tracking-widest text-outline hover:text-primary transition-colors">
                     {isEn ? 'Learn more →' : 'Ver más →'}
                   </Link>
                 </div>
@@ -351,7 +352,7 @@ export default async function SpaNearMePage({ params }: { params: Promise<{ lang
                   <h4 className="font-headline text-xl text-on-surface">{isEn ? s.name.en : s.name.es}</h4>
                   <p className="font-body text-secondary text-sm leading-relaxed flex-1">{isEn ? s.shortDesc.en : s.shortDesc.es}</p>
                   <p className="font-label text-primary text-xs"><ServicePrice service={s} locale={locale} /></p>
-                  <Link href={`/${locale}/services/${getServiceSlug(s, locale)}`} className="font-label text-xs uppercase tracking-widest text-outline hover:text-primary transition-colors">
+                  <Link href={serviceHref(s, locale)} className="font-label text-xs uppercase tracking-widest text-outline hover:text-primary transition-colors">
                     {isEn ? 'Learn more →' : 'Ver más →'}
                   </Link>
                 </div>

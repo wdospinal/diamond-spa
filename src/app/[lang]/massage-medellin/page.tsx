@@ -7,6 +7,7 @@ import { SPA_ADDRESS, SPA_PHONES, SPA_RATING } from '@/lib/spa'
 import { JsonLd } from '@/components/JsonLd'
 import LandingHead from '@/components/LandingHead'
 import { mergeLandingMetadata } from '@/lib/landing-meta'
+import { serviceHref } from '@/lib/routes'
 
 // ISR: re-render at most once per hour so admin metadata changes propagate
 export const revalidate = 3600
@@ -29,28 +30,28 @@ const content = {
         desc: 'Long, gentle strokes to release built-up tension and restore a deep sense of calm. Ideal for stress relief and mental reset.',
         price: 'From $120,000 COP',
         durations: '30 / 60 / 90 min',
-        href: '/services/relaxing',
+        serviceId: 'relaxing',
       },
       {
         name: 'Deep Tissue Massage',
         desc: 'Slow, firm pressure targeting deep muscle layers. Perfect for chronic pain, posture issues, and athletic recovery.',
         price: 'From $130,000 COP',
         durations: '30 / 60 / 90 min',
-        href: '/services/deep-tissue',
+        serviceId: 'deep-tissue',
       },
       {
         name: 'Sports Massage',
         desc: 'Technique-focused bodywork for active people. Enhances performance, prevents injury, and speeds up recovery.',
         price: 'From $130,000 COP',
         durations: '30 / 60 / 90 min',
-        href: '/services/sports',
+        serviceId: 'sports',
       },
       {
         name: '4-Hands Massage',
         desc: 'Two therapists working in synchrony. Double the coverage, double the relaxation. A truly immersive experience.',
         price: 'From $220,000 COP',
         durations: '60 / 90 min',
-        href: '/services/four-hands',
+        serviceId: 'four-hands',
       },
     ],
     whyTitle: 'Why Diamond Spa for Massages in Medellín?',
@@ -105,28 +106,28 @@ const content = {
         desc: 'Movimientos largos y suaves para liberar la tensión acumulada y restaurar una profunda sensación de calma. Ideal para alivio del estrés.',
         price: 'Desde $120.000 COP',
         durations: '30 / 60 / 90 min',
-        href: '/services/relaxing',
+        serviceId: 'relaxing',
       },
       {
         name: 'Deep Tissue',
         desc: 'Presión lenta y firme sobre las capas musculares profundas. Perfecto para dolor crónico, problemas posturales y recuperación atlética.',
         price: 'Desde $130.000 COP',
         durations: '30 / 60 / 90 min',
-        href: '/services/deep-tissue',
+        serviceId: 'deep-tissue',
       },
       {
         name: 'Masaje Deportivo',
         desc: 'Trabajo corporal enfocado para personas activas. Mejora el rendimiento, previene lesiones y acelera la recuperación.',
         price: 'Desde $130.000 COP',
         durations: '30 / 60 / 90 min',
-        href: '/services/sports',
+        serviceId: 'sports',
       },
       {
         name: '4 Manos',
         desc: 'Dos terapeutas trabajando en sincronía. El doble de cobertura, el doble de relajación. Una experiencia verdaderamente inmersiva.',
         price: 'Desde $220.000 COP',
         durations: '60 / 90 min',
-        href: '/services/four-hands',
+        serviceId: 'four-hands',
       },
     ],
     whyTitle: '¿Por qué Diamond Spa para masajes en Medellín?',
@@ -227,7 +228,7 @@ export default async function MassageMedellinPage({ params }: { params: Promise<
                   <span className="font-label text-outline text-xs tracking-widest">{m.durations}</span>
                 </div>
                 <Link
-                  href={`/${locale}${m.href}`}
+                  href={serviceHref(m.serviceId, locale)}
                   className="text-primary font-label text-xs tracking-widest uppercase hover:opacity-80 transition-opacity"
                 >
                   {locale === 'es' ? 'Ver detalles →' : 'View details →'}

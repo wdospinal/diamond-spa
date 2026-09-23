@@ -36,9 +36,13 @@ export async function generateMetadata({
 
   const image   = post.coverUrl ?? `${BASE_URL}/og-default.jpg`
   const canonical = `${BASE_URL}/${locale}/blog/${slug}`
-  const esSlug = slugForLocale(post, 'es')
-  const enSlug = slugForLocale(post, 'en')
-  const defaultSlug = X_DEFAULT_LOCALE === 'en' ? enSlug : esSlug
+  // hreflang only for the locales this post is actually published in —
+  // declaring an /en alternate for a Spanish-only post points Google at a 404.
+  const languages: Record<string, string> = Object.fromEntries(
+    post.locales.map(l => [l, `${BASE_URL}/${l}/blog/${slugForLocale(post, l)}`]),
+  )
+  const defaultLocale = post.locales.includes(X_DEFAULT_LOCALE) ? X_DEFAULT_LOCALE : post.locales[0]
+  languages['x-default'] = `${BASE_URL}/${defaultLocale}/blog/${slugForLocale(post, defaultLocale)}`
 
   return {
     title: `${seoTitle} | Diamond Spa Medellín`,
@@ -46,11 +50,7 @@ export async function generateMetadata({
     ...(post.keywords ? { keywords: post.keywords } : {}),
     alternates: {
       canonical,
-      languages: {
-        es: `${BASE_URL}/es/blog/${esSlug}`,
-        en: `${BASE_URL}/en/blog/${enSlug}`,
-        'x-default': `${BASE_URL}/${X_DEFAULT_LOCALE}/blog/${defaultSlug}`,
-      },
+      languages,
     },
     openGraph: {
       title,

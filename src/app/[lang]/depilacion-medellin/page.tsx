@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { isLocale, type Locale } from '@/lib/i18n'
 import { SERVICES, formatCop } from '@/lib/services'
+import { serviceHref } from '@/lib/routes'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
 import { SPA_ADDRESS, SPA_PHONES, SPA_RATING } from '@/lib/spa'
 import { JsonLd } from '@/components/JsonLd'
@@ -209,7 +210,7 @@ export default async function DepilacionMedellinPage({ params }: { params: Promi
                   <tr key={s.id} className="group hover:bg-surface-container/50 transition-colors">
                     <td className="py-4 pr-6 text-on-surface">
                       <Link
-                        href={`/${locale}/services/${s.id}`}
+                        href={serviceHref(s.id, locale)}
                         className="hover:text-primary transition-colors"
                       >
                         {s.name[locale]}

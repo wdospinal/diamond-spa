@@ -539,20 +539,20 @@ function DailyTransactionsChart({
   const bars = useMemo(() => {
     const range = cycleRange(selected, cycleStartDay)
     const byDay = new Map(daily.map(d => [d.day, d]))
-    const out: { day: string; dayNum: number; transactions: number; grossCop: number }[] = []
+    const out: { day: string; dayNum: number; month: string; transactions: number; grossCop: number }[] =
+      []
     const cursor = parseDay(range.from)
-    let i = 1
     while (toIsoDay(cursor) <= range.to && toIsoDay(cursor) <= today) {
       const day = toIsoDay(cursor)
       const found = byDay.get(day)
       out.push({
         day,
-        dayNum: i,
+        dayNum: Number(day.slice(8, 10)),
+        month: day.slice(0, 7),
         transactions: found?.transactions ?? 0,
         grossCop: found?.grossCop ?? 0,
       })
       cursor.setUTCDate(cursor.getUTCDate() + 1)
-      i += 1
     }
     return out
   }, [cycleStartDay, daily, selected, today])
@@ -569,7 +569,7 @@ function DailyTransactionsChart({
   const padLeft = 30
   const padRight = 10
   const padTop = 16
-  const padBottom = 30
+  const padBottom = 42
 
   const max = Math.max(...bars.map(b => b.transactions), 1)
   const step = Math.max(1, Math.ceil(max / 4))
@@ -591,7 +591,7 @@ function DailyTransactionsChart({
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-4">
-        <label className="block sm:w-56">
+        <label className="block sm:w-72">
           <span className="block font-label text-[10px] uppercase tracking-[0.2em] text-[#8a9299] mb-2">
             Período
           </span>
@@ -715,7 +715,7 @@ function DailyTransactionsChart({
                 {i % labelEvery === 0 || i === bars.length - 1 ? (
                   <text
                     x={cx(i)}
-                    y={H - 12}
+                    y={H - 26}
                     fill={active === i ? '#cfe5fa' : '#8a9299'}
                     fontSize="10"
                     textAnchor="middle"
@@ -724,6 +724,23 @@ function DailyTransactionsChart({
                   </text>
                 ) : null}
               </g>
+            )
+          })}
+
+          {bars.map((b, i) => {
+            const prev = i === 0 ? null : bars[i - 1]
+            if (prev && prev.month === b.month) return null
+            return (
+              <text
+                key={`month-${b.month}`}
+                x={cx(i)}
+                y={H - 10}
+                fill="#5c656d"
+                fontSize="10"
+                textAnchor="middle"
+              >
+                {MONTH_SHORT.format(parseDay(b.day)).replace('.', '')}
+              </text>
             )
           })}
 

@@ -5,6 +5,7 @@ import { ServiceDetailBackLink } from '@/components/ServiceDetailBackLink'
 import { ServiceDetailTracker } from '@/components/ServiceDetailTracker'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { SERVICES, formatCop, getServiceBySlug, getServiceByForeignSlug, getServiceSlug, type DurationMinutes, type ServiceDef } from '@/lib/services'
+import { serviceHref } from '@/lib/routes'
 import { DURATION_MINUTES } from '@/lib/constants'
 import { buildServiceAlternates, buildOpenGraph, BASE_URL, BUSINESS, faqJsonLd } from '@/lib/seo'
 import { serviceFaqs, serviceSeoDescription, serviceSeoTitle } from '@/lib/service-seo'
@@ -251,7 +252,7 @@ export default async function ServiceDetailPage({
             {related.map(r => (
               <li key={r.id} className="bg-surface-container-low">
                 <Link
-                  href={`/${locale}/services/${getServiceSlug(r, locale)}`}
+                  href={serviceHref(r, locale)}
                   className="group flex flex-col gap-2 p-8 hover:bg-surface-container-high transition-colors"
                 >
                   <span className="font-headline text-on-surface text-xl group-hover:text-primary transition-colors">

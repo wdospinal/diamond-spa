@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { type Locale } from '@/lib/i18n'
 import { getHairRemovalServices, formatCop, serviceShortDesc, type ServiceDef } from '@/lib/services'
+import { serviceHref } from '@/lib/routes'
 import { DEPILACION_GENDER_SEO, type DepilacionGender } from '@/lib/depilacion-gender'
 
 export default function DepilacionGenderPage({
@@ -38,7 +39,7 @@ export default function DepilacionGenderPage({
               key={service.id}
               className="group flex flex-col bg-surface-container border border-outline-variant/20 hover:border-primary/40 transition-all duration-300 p-6"
             >
-              <Link href={`/${locale}/services/${service.id}`} className="flex flex-col flex-1">
+              <Link href={serviceHref(service, locale)} className="flex flex-col flex-1">
                 <h2 className="font-headline text-xl text-on-surface group-hover:text-primary transition-colors duration-200 leading-tight mb-3">
                   {isEn ? service.name.en : service.name.es}
                 </h2>

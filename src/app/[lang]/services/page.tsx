@@ -4,7 +4,8 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { IMG_HERO_SERVICES, IMG_HERO_SERVICES_H } from '@/lib/images'
-import { SERVICES, formatCop, getServiceSlug, type DurationMinutes, type ServiceDef } from '@/lib/services'
+import { SERVICES, formatCop, type DurationMinutes, type ServiceDef } from '@/lib/services'
+import { serviceHref } from '@/lib/routes'
 import { DURATION_MINUTES } from '@/lib/constants'
 import { buildAlternates, buildOpenGraph } from '@/lib/seo'
 import { SPA_WHATSAPP_GREETING, randomWhatsAppUrl } from '@/lib/spa'
@@ -151,7 +152,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ lang:
                         {t.bookSession}
                       </Link>
                       <Link
-                        href={`/${locale}/services/${getServiceSlug(service, locale)}`}
+                        href={serviceHref(service, locale)}
                         className="inline-flex min-h-[3rem] w-full flex-1 items-center justify-center border border-outline-variant/50 px-6 py-3 font-label text-xs font-bold uppercase tracking-[0.15em] text-secondary transition-all hover:border-primary hover:text-on-surface sm:min-w-0 md:w-full md:flex-none"
                       >
                         {t.learnMore}
@@ -210,7 +211,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ lang:
                         {t.bookSession}
                       </Link>
                       <Link
-                        href={`/${locale}/services/${getServiceSlug(service, locale)}`}
+                        href={serviceHref(service, locale)}
                         className="inline-flex min-h-[3rem] w-full flex-1 items-center justify-center border border-outline-variant/50 px-6 py-3 font-label text-xs font-bold uppercase tracking-[0.15em] text-secondary transition-all hover:border-primary hover:text-on-surface sm:min-w-0 md:w-full md:flex-none"
                       >
                         {t.learnMore}
@@ -277,7 +278,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ lang:
                         {t.bookSession}
                       </Link>
                       <Link
-                        href={`/${locale}/services/${getServiceSlug(service, locale)}`}
+                        href={serviceHref(service, locale)}
                         className="inline-flex min-h-[3rem] w-full flex-1 items-center justify-center border border-outline-variant/50 px-6 py-3 font-label text-xs font-bold uppercase tracking-[0.15em] text-secondary transition-all hover:border-primary hover:text-on-surface sm:min-w-0 md:w-full md:flex-none"
                       >
                         {t.learnMore}

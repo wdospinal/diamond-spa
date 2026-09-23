@@ -1,64 +1,54 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-
   async redirects() {
     return [
-      // www → non-www (permanent 308 so Google consolidates to diamondspa.com.co)
       {
         source: '/:path*',
         has: [{ type: 'host', value: 'www.diamondspa.com.co' }],
         destination: 'https://diamondspa.com.co/:path*',
         permanent: true,
       },
-      // Old English service URLs with Spanish slugs → English slugs (308 permanent)
-      { source: '/en/services/hidrafacial',           destination: '/en/services/hydrafacial',         permanent: true },
+      { source: '/en/services/hidrafacial', destination: '/en/services/hydrafacial', permanent: true },
       { source: '/en/services/limpieza-facial-profunda', destination: '/en/services/deep-facial-cleanse', permanent: true },
-      { source: '/en/services/limpieza-facial-basica',   destination: '/en/services/basic-facial-cleanse', permanent: true },
-      { source: '/en/services/hidratacion-facial',    destination: '/en/services/facial-hydration',    permanent: true },
-      { source: '/en/services/limpieza-espalda',      destination: '/en/services/back-cleanse',        permanent: true },
-      { source: '/en/services/depilacion-axila',      destination: '/en/services/wax-underarm',        permanent: true },
-      { source: '/en/services/depilacion-bikini',     destination: '/en/services/wax-bikini',          permanent: true },
-      { source: '/en/services/depilacion-media-pierna', destination: '/en/services/wax-half-leg',      permanent: true },
-      { source: '/en/services/depilacion-pierna-completa', destination: '/en/services/wax-full-leg',   permanent: true },
-      { source: '/en/services/depilacion-pecho',      destination: '/en/services/wax-chest',           permanent: true },
-      { source: '/en/services/depilacion-espalda',    destination: '/en/services/wax-back',            permanent: true },
-      { source: '/en/services/depilacion-zona-perianal', destination: '/en/services/wax-perianal',     permanent: true },
-      { source: '/en/services/depilacion-cuerpo-completo', destination: '/en/services/wax-full-body',  permanent: true },
-      // Massage type pages migrated from /services/[id] to /masajes/[tipo] —
-      // old URLs got ~0 organic clicks (GSC, 16mo), new slugs are keyword-
-      // researched. 308 so any residual equity transfers to the new hub.
-      { source: '/es/services/relaxing',    destination: '/es/masajes/relajante',           permanent: true },
-      { source: '/en/services/relaxing',    destination: '/en/masajes/relaxing',            permanent: true },
-      { source: '/es/services/deep-tissue', destination: '/es/masajes/deep-tissue',         permanent: true },
-      { source: '/en/services/deep-tissue', destination: '/en/masajes/deep-tissue',         permanent: true },
-      { source: '/es/services/four-hands',  destination: '/es/masajes/4-manos',             permanent: true },
-      { source: '/en/services/four-hands',  destination: '/en/masajes/four-hands',          permanent: true },
-      { source: '/es/services/duo',         destination: '/es/masajes/duo',                 permanent: true },
-      { source: '/en/services/duo',         destination: '/en/masajes/duo',                 permanent: true },
-      { source: '/es/services/hot-stones',  destination: '/es/masajes/piedras-volcanicas',  permanent: true },
-      { source: '/en/services/hot-stones',  destination: '/en/masajes/hot-stones',          permanent: true },
-      { source: '/es/services/sports',      destination: '/es/masajes/deportivo',           permanent: true },
-      { source: '/en/services/sports',      destination: '/en/masajes/sports',              permanent: true },
-      { source: '/es/services/sensitive',   destination: '/es/masajes/sensitivo',           permanent: true },
-      { source: '/en/services/sensitive',   destination: '/en/masajes/sensitive',           permanent: true },
-      // Massage was briefly slugged 'sensorial' before being renamed back to
-      // 'sensitive' — chains into the /services/sensitive → /masajes/* redirect above.
-      { source: '/:lang(en|es)/services/sensorial',   destination: '/:lang/services/sensitive',        permanent: true },
-      // Root → Spanish (308 permanent — prevents Soft 404 on the domain root)
-      { source: '/',          destination: '/es',           permanent: true },
-      // lang-less paths → Spanish (permanent so Google treats /es/* as canonical)
-      { source: '/services',  destination: '/es/services',  permanent: true },
-      { source: '/about',     destination: '/es/about',     permanent: true },
-      { source: '/location',  destination: '/es/location',  permanent: true },
-      { source: '/book',      destination: '/es/book',      permanent: true },
-      { source: '/history',   destination: '/es/history',   permanent: true },
+      { source: '/en/services/limpieza-facial-basica', destination: '/en/services/basic-facial-cleanse', permanent: true },
+      { source: '/en/services/hidratacion-facial', destination: '/en/services/facial-hydration', permanent: true },
+      { source: '/en/services/limpieza-espalda', destination: '/en/services/back-cleanse', permanent: true },
+      { source: '/en/services/depilacion-axila', destination: '/en/services/wax-underarm', permanent: true },
+      { source: '/en/services/depilacion-bikini', destination: '/en/services/wax-bikini', permanent: true },
+      { source: '/en/services/depilacion-media-pierna', destination: '/en/services/wax-half-leg', permanent: true },
+      { source: '/en/services/depilacion-pierna-completa', destination: '/en/services/wax-full-leg', permanent: true },
+      { source: '/en/services/depilacion-pecho', destination: '/en/services/wax-chest', permanent: true },
+      { source: '/en/services/depilacion-espalda', destination: '/en/services/wax-back', permanent: true },
+      { source: '/en/services/depilacion-zona-perianal', destination: '/en/services/wax-perianal', permanent: true },
+      { source: '/en/services/depilacion-cuerpo-completo', destination: '/en/services/wax-full-body', permanent: true },
+      { source: '/es/services/relaxing', destination: '/es/masajes/relajante', permanent: true },
+      { source: '/en/services/relaxing', destination: '/en/masajes/relaxing', permanent: true },
+      { source: '/es/services/deep-tissue', destination: '/es/masajes/deep-tissue', permanent: true },
+      { source: '/en/services/deep-tissue', destination: '/en/masajes/deep-tissue', permanent: true },
+      { source: '/es/services/four-hands', destination: '/es/masajes/4-manos', permanent: true },
+      { source: '/en/services/four-hands', destination: '/en/masajes/four-hands', permanent: true },
+      { source: '/es/services/duo', destination: '/es/masajes/duo', permanent: true },
+      { source: '/en/services/duo', destination: '/en/masajes/duo', permanent: true },
+      { source: '/es/services/hot-stones', destination: '/es/masajes/piedras-volcanicas', permanent: true },
+      { source: '/en/services/hot-stones', destination: '/en/masajes/hot-stones', permanent: true },
+      { source: '/es/services/sports', destination: '/es/masajes/deportivo', permanent: true },
+      { source: '/en/services/sports', destination: '/en/masajes/sports', permanent: true },
+      { source: '/es/services/sensitive', destination: '/es/masajes/sensitivo', permanent: true },
+      { source: '/en/services/sensitive', destination: '/en/masajes/sensitive', permanent: true },
+      { source: '/es/services/sensorial', destination: '/es/masajes/sensitivo', permanent: true },
+      { source: '/en/services/sensorial', destination: '/en/masajes/sensitive', permanent: true },
+      { source: '/', destination: '/es', permanent: true },
+      { source: '/services', destination: '/es/services', permanent: true },
+      { source: '/about', destination: '/es/about', permanent: true },
+      { source: '/location', destination: '/es/location', permanent: true },
+      { source: '/book', destination: '/es/book', permanent: true },
+      { source: '/history', destination: '/es/history', permanent: true },
     ]
   },
 
   async headers() {
     return [
       {
-        // Immutable cache for all Next.js hashed static chunks (JS/CSS)
         source: '/_next/static/:path*',
         headers: [
           {
@@ -66,26 +56,12 @@ const nextConfig = {
             value: 'public, max-age=31536000, immutable',
           },
           {
-            /**
-             * Googlebot was indexing build artefacts as if they were pages:
-             * 8 of the 24 URLs in Search Console's "Crawled - currently not
-             * indexed" bucket were /_next/static/chunks/*.js and hashed
-             * .woff2 files. They can never rank, and every one of them burns
-             * crawl budget that the 11 "Discovered - currently not indexed"
-             * pages needed.
-             *
-             * This MUST stay a header and never become a robots.txt
-             * `Disallow: /_next/`. Googlebot renders the page before indexing
-             * it; blocking the chunks would stop the render and cost us the
-             * real pages, which is far worse than the noise it removes.
-             */
             key: 'X-Robots-Tag',
             value: 'noindex',
           },
         ],
       },
       {
-        // Long cache for public images (AVIF + WebP fallbacks)
         source: '/:path*.avif',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },
@@ -102,7 +78,6 @@ const nextConfig = {
         headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },
       {
-        // Self-hosted icon font — version is baked into the filename, safe to cache forever
         source: '/:path*.woff2',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },
@@ -110,29 +85,7 @@ const nextConfig = {
   },
 
   images: {
-    /**
-     * AVIF browser-support detection — how it works:
-     *
-     * When a browser requests an image through /_next/image, it sends an
-     * Accept header, e.g.:  Accept: image/avif,image/webp,image/*
-     *
-     * Next.js reads that header and serves the best format the browser supports:
-     *   - AVIF  → Chrome 85+, Firefox 93+, Safari 16+  (≈96 % of users, 2025)
-     *   - WebP  → all modern browsers that don't yet support AVIF
-     *   - JPEG  → legacy fallback (IE, very old Safari)
-     *
-     * The converted image is cached on Vercel's CDN edge, so the transcode
-     * only happens once per (image × width × format) triple.
-     *
-     * Local source files are now .avif (avg. 67 % smaller than the old .webp
-     * sources).  For AVIF-capable browsers the pipeline is:
-     *   read AVIF source → resize → serve AVIF  (no format conversion)
-     * For WebP-only browsers:
-     *   read AVIF source → resize + transcode → serve WebP  (cached)
-     */
     formats: ['image/avif', 'image/webp'],
-    // Next 16 rejects any quality not listed here with a 400. The hero/relax
-    // images use quality={65}, so it must be declared alongside the default 75.
     qualities: [65, 75],
     remotePatterns: [
       {
@@ -146,7 +99,6 @@ const nextConfig = {
         pathname: '/**',
       },
       {
-        // Dicebear avatar API — used for static review author photos
         protocol: 'https',
         hostname: 'api.dicebear.com',
         pathname: '/**',

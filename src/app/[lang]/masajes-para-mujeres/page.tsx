@@ -2,7 +2,8 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { isLocale, type Locale } from '@/lib/i18n'
-import { getMassageServices, getFacialServices, getHairRemovalServices, serviceDisplayName, serviceShortDesc, formatCop, getServiceSlug } from '@/lib/services'
+import { getMassageServices, getFacialServices, getHairRemovalServices, serviceDisplayName, serviceShortDesc, formatCop } from '@/lib/services'
+import { serviceHref } from '@/lib/routes'
 import { SERVICE_DETAIL_FROM_MUJERES } from '@/lib/service-detail-nav'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
 import { SPA_ADDRESS, SPA_PHONES, SPA_RATING } from '@/lib/spa'
@@ -181,7 +182,7 @@ export default async function MasajesParaMujeresPage({ params }: { params: Promi
                 </p>
                 <div className="flex gap-4 mt-2">
                   <ServiceCardLink
-                    href={`/${locale}/services/${getServiceSlug(m, locale)}`}
+                    href={serviceHref(m, locale)}
                     from={SERVICE_DETAIL_FROM_MUJERES}
                     className="text-primary font-label text-xs tracking-widest uppercase hover:opacity-80 transition-opacity"
                   >
@@ -230,7 +231,7 @@ export default async function MasajesParaMujeresPage({ params }: { params: Promi
                   )}
                   <div className="flex gap-4 mt-2">
                     <ServiceCardLink
-                      href={`/${locale}/services/${getServiceSlug(s, locale)}`}
+                      href={serviceHref(s, locale)}
                       from={SERVICE_DETAIL_FROM_MUJERES}
                       className="text-primary font-label text-xs tracking-widest uppercase hover:opacity-80 transition-opacity"
                     >
@@ -274,7 +275,7 @@ export default async function MasajesParaMujeresPage({ params }: { params: Promi
                   )}
                   <div className="flex gap-4 mt-2">
                     <ServiceCardLink
-                      href={`/${locale}/services/${getServiceSlug(s, locale)}`}
+                      href={serviceHref(s, locale)}
                       from={SERVICE_DETAIL_FROM_MUJERES}
                       className="text-primary font-label text-xs tracking-widest uppercase hover:opacity-80 transition-opacity"
                     >

@@ -7,6 +7,7 @@ import { SPA_ADDRESS, SPA_RATING } from '@/lib/spa'
 import { JsonLd } from '@/components/JsonLd'
 import LandingHead from '@/components/LandingHead'
 import { mergeLandingMetadata } from '@/lib/landing-meta'
+import { serviceHref } from '@/lib/routes'
 
 export const revalidate = 3600
 
@@ -30,8 +31,8 @@ const content = {
     treatmentsTitle: 'Our Facial Treatments',
     treatments: [
       { name: 'HydraFacial', desc: 'Our most advanced facial treatment. 3-step process: deep cleanse, gentle acid exfoliation, and intense hydration with hyaluronic acid and antioxidants.', href: '/hydrafacial-medellin' },
-      { name: 'Deep Facial Cleanse', desc: 'Manual and mechanical extraction of impurities, blackheads, and excess sebum. Ideal for oily or congested skin.', href: '/services/limpieza-facial-profunda' },
-      { name: 'Basic Facial Cleanse', desc: 'A quick yet effective cleanse and hydration session. Perfect for regular maintenance or as part of a spa day.', href: '/services/limpieza-facial-basica' },
+      { name: 'Deep Facial Cleanse', desc: 'Manual and mechanical extraction of impurities, blackheads, and excess sebum. Ideal for oily or congested skin.', serviceId: 'limpieza-facial-profunda' },
+      { name: 'Basic Facial Cleanse', desc: 'A quick yet effective cleanse and hydration session. Perfect for regular maintenance or as part of a spa day.', serviceId: 'limpieza-facial-basica' },
     ],
     processTitle: 'Our Process',
     steps: [
@@ -89,8 +90,8 @@ const content = {
     treatmentsTitle: 'Nuestros Tratamientos Faciales',
     treatments: [
       { name: 'HydraFacial', desc: 'Nuestro tratamiento facial más avanzado. Proceso de 3 pasos: limpieza profunda, exfoliación suave con ácidos e hidratación intensa con ácido hialurónico y antioxidantes.', href: '/hydrafacial-medellin' },
-      { name: 'Limpieza Facial Profunda', desc: 'Extracción manual y mecánica de impurezas, puntos negros y exceso de sebo. Ideal para pieles grasas o congestionadas.', href: '/services/limpieza-facial-profunda' },
-      { name: 'Limpieza Facial Básica', desc: 'Una sesión de limpieza e hidratación rápida pero efectiva. Perfecta para mantenimiento regular o como parte de un día de spa.', href: '/services/limpieza-facial-basica' },
+      { name: 'Limpieza Facial Profunda', desc: 'Extracción manual y mecánica de impurezas, puntos negros y exceso de sebo. Ideal para pieles grasas o congestionadas.', serviceId: 'limpieza-facial-profunda' },
+      { name: 'Limpieza Facial Básica', desc: 'Una sesión de limpieza e hidratación rápida pero efectiva. Perfecta para mantenimiento regular o como parte de un día de spa.', serviceId: 'limpieza-facial-basica' },
     ],
     processTitle: 'Nuestro Proceso',
     steps: [
@@ -198,7 +199,7 @@ export default async function LimpiezaFacialPage({ params }: { params: Promise<{
                 <h3 className="font-headline text-xl text-on-surface tracking-tighter">{t.name}</h3>
                 <p className="text-zinc-400 font-body text-sm leading-relaxed flex-1">{t.desc}</p>
                 <Link
-                  href={`/${locale}${t.href}`}
+                  href={'serviceId' in t ? serviceHref(t.serviceId, locale) : `/${locale}${t.href}`}
                   className="text-primary font-label text-xs tracking-widest uppercase hover:opacity-80 transition-opacity"
                 >
                   {locale === 'es' ? 'Ver detalles →' : 'View details →'}

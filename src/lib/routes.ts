@@ -1,6 +1,28 @@
-import { SERVICES, getServiceById } from '@/lib/services'
-import { getMasajeTypeBySlug, slugForMasajeType } from '@/lib/masajes-category'
+import { SERVICES, getServiceById, type ServiceDef } from '@/lib/services'
+import { MASAJES_TYPE_SEO, getMasajeTypeBySlug, slugForMasajeType } from '@/lib/masajes-category'
 import { type Locale } from '@/lib/i18n'
+
+/**
+ * Canonical, locale-prefixed URL of a service's detail page.
+ *
+ * Massage types moved from /services/[id] to /masajes/[tipo], and EN service
+ * pages use English slugs. Links built by hand kept pointing at the old URLs,
+ * so every one of them cost Googlebot a 308 hop (Search Console: 17 "Page with
+ * redirect", and the waxing/blog pages stuck in "Discovered - currently not
+ * indexed"). Always build service links through this.
+ */
+export function serviceHref(service: ServiceDef | string, locale: Locale): string {
+  const svc = typeof service === 'string' ? getServiceById(service) : service
+  if (!svc) throw new Error(`serviceHref: unknown service "${service}"`)
+  const masaje = MASAJES_TYPE_SEO.find(t => t.serviceId === svc.id)
+  if (masaje) return `/${locale}/masajes/${slugForMasajeType(masaje, locale, svc)}`
+  return `/${locale}/services/${locale === 'en' ? svc.slugEn : svc.id}`
+}
+
+/** True when the service's canonical page lives under /masajes, not /services. */
+export function isMasajeService(serviceId: string): boolean {
+  return MASAJES_TYPE_SEO.some(t => t.serviceId === serviceId)
+}
 
 /**
  * Given a current pathname and a target locale, returns the properly localized path.
@@ -45,6 +67,14 @@ export function getLocalizedPath(pathname: string | null, targetLocale: Locale):
         return `/${targetLocale}/masajes/${targetSlug}${rest ? `/${rest}` : ''}`
       }
     }
+  }
+
+  // Blog posts: a post may be published in one locale only, and EN may use its
+  // own slugEn — neither is knowable from the path here. Reusing the slug
+  // linked Spanish-only posts to an /en URL that 404s, so switch to the
+  // target locale's blog index, which always exists.
+  if (baseRoute === 'blog' && segments.length > 2) {
+    return segments[0] === targetLocale ? pathname : `/${targetLocale}/blog`
   }
 
   // Fallback: Naive replacement for routes that don't change their slug (e.g. /about, /book)

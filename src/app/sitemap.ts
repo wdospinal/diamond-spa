@@ -5,6 +5,7 @@ import { MASAJES_TYPE_SEO, slugForMasajeType } from '@/lib/masajes-category'
 import { LOCALES_DISPLAY_ORDER } from '@/lib/constants'
 import { readPublishedPosts } from '@/lib/blog-store'
 import type { Locale } from '@/lib/constants/locale'
+import { isMasajeService } from '@/lib/routes'
 
 // The blog section is data-backed (Supabase → KV → JSON), so the sitemap can't
 // be fully static. Re-generate hourly instead of on every request.
@@ -106,8 +107,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })
     }
 
-    // Service detail pages — English uses English slugs, Spanish uses Spanish
+    // Service detail pages — English uses English slugs, Spanish uses Spanish.
+    // Massage types are skipped: their /services/<id> URLs 308 to /masajes/<tipo>
+    // (listed below), and redirecting URLs in a sitemap were 14 of the entries
+    // Search Console reported under "Page with redirect".
     for (const svc of SERVICES) {
+      if (isMasajeService(svc.id)) continue
       const slug = locale === 'en' ? svc.slugEn : svc.id
       entries.push({
         url: `${BASE_URL}/${locale}/services/${slug}`,
