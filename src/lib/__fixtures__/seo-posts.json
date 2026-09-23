@@ -1,0 +1,39 @@
+[
+  {
+    "id": "fixture-bilingual",
+    "slug": "beneficios-masaje-relajante",
+    "slugEn": "relaxing-massage-benefits",
+    "title": { "es": "Beneficios del masaje relajante", "en": "Relaxing massage benefits" },
+    "excerpt": { "es": "Resumen", "en": "Summary" },
+    "content": { "es": "<p>es</p>", "en": "<p>en</p>" },
+    "category": "bienestar",
+    "locales": ["es", "en"],
+    "publishedAt": "2026-08-01T00:00:00.000Z",
+    "isDraft": false,
+    "authorName": "Diamond Spa"
+  },
+  {
+    "id": "fixture-es-only",
+    "slug": "spas-de-medellin",
+    "title": { "es": "Spas de Medellín" },
+    "excerpt": { "es": "Resumen" },
+    "content": { "es": "<p>es</p>" },
+    "category": "bienestar",
+    "locales": ["es"],
+    "publishedAt": "2026-07-02T00:00:00.000Z",
+    "isDraft": false,
+    "authorName": "Diamond Spa"
+  },
+  {
+    "id": "fixture-draft",
+    "slug": "borrador-sin-publicar",
+    "title": { "es": "Borrador" },
+    "excerpt": { "es": "Resumen" },
+    "content": { "es": "<p>es</p>" },
+    "category": "bienestar",
+    "locales": ["es", "en"],
+    "publishedAt": "2026-09-01T00:00:00.000Z",
+    "isDraft": true,
+    "authorName": "Diamond Spa"
+  }
+]

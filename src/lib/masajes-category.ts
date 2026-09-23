@@ -40,7 +40,7 @@ export type MasajeTypeSeo = {
 
 export const MASAJES_HUB_SEO = {
   metaTitle: {
-    es: 'Masajes Terapéuticos en Medellín | Diamond Spa',
+    es: 'Masajes en Medellín — Relajante, Deep Tissue, Deportivo y más | Diamond Spa El Poblado',
     en: 'Therapeutic Massages in Medellín | Diamond Spa',
   },
   metaDescription: {
@@ -48,7 +48,7 @@ export const MASAJES_HUB_SEO = {
     en: 'Discover Diamond Spa\u2019s 7 therapeutic massage types in El Poblado: relaxing, deep tissue, sports, hot stones and more. Book online.',
   },
   h1: {
-    es: 'Masajes Terapéuticos en Medellín: Elige tu Experiencia',
+    es: 'Masajes en Medellín: Elige tu Experiencia',
     en: 'Therapeutic Massages in Medellín: Choose Your Experience',
   },
   kwPrincipal: 'masajes terapéuticos',

@@ -2,7 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { isLocale, type Locale } from '@/lib/i18n'
-import { buildAlternates, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
+import { BASE_URL, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
 import { SPA_ADDRESS, SPA_PHONES, SPA_RATING } from '@/lib/spa'
 import { JsonLd } from '@/components/JsonLd'
 import LandingHead from '@/components/LandingHead'
@@ -176,7 +176,9 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     locale,
     { title: c.metaTitle, description: c.metaDesc },
     {
-      alternates: buildAlternates('/massage-medellin', locale),
+      // English-only page: /es/massage-medellin 308s to /es/masajes (see
+      // next.config.mjs), so there is no Spanish twin to declare as hreflang.
+      alternates: { canonical: `${BASE_URL}/en/massage-medellin` },
       openGraph: buildOpenGraph({ title: c.metaTitle, description: c.metaDesc, path: '/massage-medellin', locale }),
     },
   )

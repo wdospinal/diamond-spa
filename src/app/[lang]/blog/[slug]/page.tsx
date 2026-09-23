@@ -2,8 +2,9 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
-import { readPublishedPosts, getPostBySlugForLocale, slugForLocale } from '@/lib/blog-store'
-import { BASE_URL, X_DEFAULT_LOCALE } from '@/lib/seo'
+import { readPublishedPosts, getPostBySlugForLocale, blogPostUrl, blogPostLanguages } from '@/lib/blog-store'
+import { BASE_URL } from '@/lib/seo'
+import { canonicalizeServiceLinks } from '@/lib/routes'
 import { SPA_NAME_FULL, SPA_LOGO } from '@/lib/spa'
 
 export const dynamic = 'force-dynamic'
@@ -35,14 +36,10 @@ export async function generateMetadata({
   const seoDesc  = (isEn ? post.metaDescription?.en : post.metaDescription?.es) || excerpt
 
   const image   = post.coverUrl ?? `${BASE_URL}/og-default.jpg`
-  const canonical = `${BASE_URL}/${locale}/blog/${slug}`
-  // hreflang only for the locales this post is actually published in —
-  // declaring an /en alternate for a Spanish-only post points Google at a 404.
-  const languages: Record<string, string> = Object.fromEntries(
-    post.locales.map(l => [l, `${BASE_URL}/${l}/blog/${slugForLocale(post, l)}`]),
-  )
-  const defaultLocale = post.locales.includes(X_DEFAULT_LOCALE) ? X_DEFAULT_LOCALE : post.locales[0]
-  languages['x-default'] = `${BASE_URL}/${defaultLocale}/blog/${slugForLocale(post, defaultLocale)}`
+  // Canonical from the post, not the requested slug: /en/blog/<es-slug> also
+  // renders a post that has a slugEn, and must not claim to be canonical.
+  const canonical = blogPostUrl(post, locale)
+  const languages = blogPostLanguages(post)
 
   return {
     title: `${seoTitle} | Diamond Spa Medellín`,
@@ -86,7 +83,7 @@ export default async function BlogPostPage({
   if (!post.locales.includes(locale)) notFound()
 
   const title   = (isEn ? post.title.en   : post.title.es)   ?? post.title.es
-  const content = (isEn ? post.content.en : post.content.es) ?? post.content.es
+  const content = canonicalizeServiceLinks((isEn ? post.content.en : post.content.es) ?? post.content.es)
   const catLabel = CATEGORY_LABELS[post.category]?.[locale] ?? post.category
 
   const date = new Date(post.publishedAt).toLocaleDateString(
@@ -95,7 +92,7 @@ export default async function BlogPostPage({
   )
 
   // JSON-LD Article schema
-  const canonical = `${BASE_URL}/${locale}/blog/${slug}`
+  const canonical = blogPostUrl(post, locale)
   const image = post.coverUrl ?? `${BASE_URL}/og-default.jpg`
   const jsonLd = {
     '@context': 'https://schema.org',

@@ -131,7 +131,7 @@ const dict = {
 
     home: {
       tagline: SPA_TAGLINE.en,
-      h1: ['Massage & Spa in Medellín', 'for Men and Women.'],
+      h1: ['Spa in Medellín', 'El Poblado.'],
       body: SPA_DESCRIPTION.en,
       bookSession: 'Book Your Session Now',
       exploreServices: 'Explore Services',
@@ -355,7 +355,7 @@ const dict = {
     },
 
     masajesParaHombres: {
-      metaTitle: `Massages for Men in Medellín ⭐ ${SPA_RATING.value} — From $120,000 COP | Diamond Spa`,
+      metaTitle: `Massages & Spa for Men in Medellín ⭐ ${SPA_RATING.value} — From $120,000 COP | Diamond Spa`,
       metaDesc:
         `Top-rated spa for men in El Poblado, Medellín. Relaxing, Deep Tissue, Sports & 4-Hands. Private rooms · ${SPA_RATING.count} five-star reviews. Book online in 60 seconds.`,
       ogImageAlt: 'Massages for Men in Medellín — Diamond Spa',
@@ -405,6 +405,7 @@ const dict = {
       tagline: 'Where deep wellness meets simple luxury. A space created with love in El Poblado, designed to disconnect from daily life and return to your center.',
       aboutUsLabel: 'About us',
       services: 'Services',
+      massageMedellin: 'Massage in Medellín',
       massagesForMen: 'Massages for Men',
       massagesForWomen: 'Massages for Women',
       hairRemoval: 'Hair Removal',
@@ -448,7 +449,7 @@ const dict = {
 
     home: {
       tagline: SPA_TAGLINE.es,
-      h1: ['Masajes y Spa en Medellín', 'para Hombres y Mujeres.'],
+      h1: ['Spa en Medellín', 'El Poblado.'],
       body: SPA_DESCRIPTION.es,
       bookSession: 'Reserva tu Cita',
       exploreServices: 'Explorar Servicios',
@@ -672,7 +673,7 @@ const dict = {
     },
 
     masajesParaHombres: {
-      metaTitle: `Masajes para Hombres en Medellín ⭐ ${SPA_RATING.value} — Desde $120.000 COP | Diamond Spa`,
+      metaTitle: `Masajes y Spa para Hombres en Medellín ⭐ ${SPA_RATING.value} — Desde $120.000 COP | Diamond Spa`,
       metaDesc:
         `Spa para hombres en El Poblado, Medellín. Relajante, Deep Tissue, Deportivo y 4 Manos. Cabinas privadas · ${SPA_RATING.count} reseñas ⭐ ${SPA_RATING.value}. Reserva ahora.`,
       ogImageAlt: 'Masajes para Hombres en Medellín — Diamond Spa',
@@ -722,6 +723,7 @@ const dict = {
       tagline: 'Donde el bienestar profundo se une con la sencillez del lujo. Un espacio creado con amor en El Poblado, diseñado para que desconectes del día a día y vuelvas a tu centro.',
       aboutUsLabel: 'Sobre nosotros',
       services: 'Servicios',
+      massageMedellin: 'Masajes en Medellín',
       massagesForMen: 'Masajes para Hombres',
       massagesForWomen: 'Masajes para Mujeres',
       hairRemoval: 'Depilación',

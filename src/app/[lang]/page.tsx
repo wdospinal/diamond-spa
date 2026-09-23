@@ -39,12 +39,17 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   const { lang } = await params
   const locale = isLocale(lang) ? lang : 'es'
   const rating = getPlaceRating()
+  // The homepage owns the brand and the broad "spa medellín / el poblado"
+  // queries. It deliberately does NOT target "para hombres" or "massage":
+  // Search Console showed the homepage ranking (at 5-9) for those while the
+  // pages built for them — /masajes-para-hombres and /en/massage-medellin —
+  // got almost no impressions. One page per query group.
   const title = locale === 'en'
-    ? `Diamond Spa Medellín — Spa for Men and Women | El Poblado ⭐ ${rating.value}`
-    : `Diamond Spa Medellín — Masajes y Spa para Hombres y Mujeres | El Poblado ⭐ ${rating.value}`
+    ? `Diamond Spa Medellín — Spa in El Poblado: Massages, Facials & Hair Removal ⭐ ${rating.value}`
+    : `Diamond Spa Medellín — Spa en El Poblado: Masajes, Faciales y Depilación ⭐ ${rating.value}`
   const description = locale === 'en'
-    ? `Spa in El Poblado, Medellín. Massages, facials & hair removal for men and women. ⭐ ${rating.value} · ${rating.count} Google reviews. From $120,000 COP — book now.`
-    : `Spa en El Poblado, Medellín. Masajes, faciales y depilación para hombres y mujeres. ⭐ ${rating.value} · ${rating.count} reseñas. Desde $120.000 COP — reserva ahora.`
+    ? `Spa in El Poblado, Medellín. Massages, facials & hair removal in private rooms. ⭐ ${rating.value} · ${rating.count} Google reviews. From $120,000 COP — book now.`
+    : `Spa en El Poblado, Medellín. Masajes, faciales y depilación en cabinas privadas. ⭐ ${rating.value} · ${rating.count} reseñas. Desde $120.000 COP — reserva ahora.`
   return {
     title,
     description,

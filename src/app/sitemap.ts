@@ -3,7 +3,7 @@ import { BASE_URL, X_DEFAULT_LOCALE } from '@/lib/seo'
 import { SERVICES, getServiceById } from '@/lib/services'
 import { MASAJES_TYPE_SEO, slugForMasajeType } from '@/lib/masajes-category'
 import { LOCALES_DISPLAY_ORDER } from '@/lib/constants'
-import { readPublishedPosts } from '@/lib/blog-store'
+import { readPublishedPosts, blogPostUrl, blogPostLanguages } from '@/lib/blog-store'
 import type { Locale } from '@/lib/constants/locale'
 import { isMasajeService } from '@/lib/routes'
 
@@ -22,7 +22,13 @@ export const revalidate = 3600
  */
 const DEPLOYED_AT = new Date()
 
-const STATIC_PATHS: { path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency'] }[] = [
+const STATIC_PATHS: {
+  path: string
+  priority: number
+  changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency']
+  /** Set for pages that exist in one locale only — listed once, with no hreflang pair. */
+  onlyLocale?: Locale
+}[] = [
   { path: '',                          priority: 1.0, changeFrequency: 'weekly'  },
   { path: '/services',                 priority: 0.9, changeFrequency: 'weekly'  },
   { path: '/masajes',                  priority: 0.9, changeFrequency: 'weekly'  },
@@ -33,7 +39,8 @@ const STATIC_PATHS: { path: string; priority: number; changeFrequency: MetadataR
   { path: '/dia-de-spa',               priority: 0.9, changeFrequency: 'weekly'  },
   { path: '/spa-el-poblado',           priority: 0.9, changeFrequency: 'weekly'  },
   { path: '/limpieza-facial-medellin', priority: 0.9, changeFrequency: 'weekly'  },
-  { path: '/massage-medellin',         priority: 0.9, changeFrequency: 'weekly'  },
+  // EN only: /es/massage-medellin 308s to /es/masajes, the Spanish "masajes medellín" page.
+  { path: '/massage-medellin',         priority: 0.9, changeFrequency: 'weekly', onlyLocale: 'en' },
   { path: '/spa-near-me',              priority: 0.9, changeFrequency: 'monthly' },
   { path: '/blog',                     priority: 0.7, changeFrequency: 'weekly'  },
   { path: '/about',                    priority: 0.7, changeFrequency: 'monthly' },
@@ -97,13 +104,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   for (const locale of LOCALES_DISPLAY_ORDER) {
     // Static pages
-    for (const { path, priority, changeFrequency } of STATIC_PATHS) {
+    for (const { path, priority, changeFrequency, onlyLocale } of STATIC_PATHS) {
+      if (onlyLocale && onlyLocale !== locale) continue
       entries.push({
         url: `${BASE_URL}/${locale}${path}`,
         lastModified: DEPLOYED_AT,
         changeFrequency,
         priority,
-        alternates: langAlternates(path),
+        ...(onlyLocale ? {} : { alternates: langAlternates(path) }),
       })
     }
 
@@ -155,16 +163,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     for (const post of posts) {
       if (!post.locales.includes(locale as Locale)) continue
       entries.push({
-        url: `${BASE_URL}/${locale}/blog/${post.slug}`,
+        url: blogPostUrl(post, locale as Locale),
         lastModified: new Date(post.publishedAt),
         changeFrequency: 'monthly',
         priority: 0.6,
-        alternates: {
-          languages: Object.fromEntries([
-            ...post.locales.map(l => [l, `${BASE_URL}/${l}/blog/${post.slug}`]),
-            ['x-default', `${BASE_URL}/${post.locales.includes(X_DEFAULT_LOCALE) ? X_DEFAULT_LOCALE : post.locales[0]}/blog/${post.slug}`],
-          ]),
-        },
+        alternates: { languages: blogPostLanguages(post) },
       })
     }
   }

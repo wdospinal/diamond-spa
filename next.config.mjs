@@ -37,6 +37,7 @@ const nextConfig = {
       { source: '/en/services/sensitive', destination: '/en/masajes/sensitive', permanent: true },
       { source: '/es/services/sensorial', destination: '/es/masajes/sensitivo', permanent: true },
       { source: '/en/services/sensorial', destination: '/en/masajes/sensitive', permanent: true },
+      { source: '/es/massage-medellin', destination: '/es/masajes', permanent: true },
       { source: '/', destination: '/es', permanent: true },
       { source: '/services', destination: '/es/services', permanent: true },
       { source: '/about', destination: '/es/about', permanent: true },

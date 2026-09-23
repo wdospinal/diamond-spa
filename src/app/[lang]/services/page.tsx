@@ -99,7 +99,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ lang:
               href={`/${locale}/masajes-para-hombres`}
               className="font-label text-primary text-xs tracking-widest uppercase inline-flex items-center gap-1 whitespace-nowrap hover:gap-2 transition-all shrink-0"
             >
-              {locale === 'es' ? 'Ver página para hombres' : 'View men\'s page'} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
+              {locale === 'es' ? 'Ver masajes para hombres' : 'See massages for men'} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
             </Link>
           </div>
 

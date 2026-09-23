@@ -3,6 +3,7 @@ import { dirname, join } from 'path'
 import { randomUUID } from 'crypto'
 import { kvCommand, kvConfigured } from '@/lib/kv'
 import { sbDelete, sbSelect, sbUpsert, supabaseConfigured } from '@/lib/supabase'
+import { BASE_URL, X_DEFAULT_LOCALE } from '@/lib/seo'
 
 // Backend preference: Supabase (`blog_posts` table, full post in a jsonb `data`
 // column) → Vercel KV → data/posts.json. Schema: supabase/migrations/0001_init.sql.
@@ -109,6 +110,31 @@ export async function getPostBySlugForLocale(
 // Given a post, resolve the slug to use for a given locale's URL.
 export function slugForLocale(post: BlogPost, locale: 'es' | 'en'): string {
   return locale === 'en' ? (post.slugEn ?? post.slug) : post.slug
+}
+
+type PostUrlFields = Pick<BlogPost, 'slug' | 'slugEn' | 'locales'>
+
+/**
+ * Absolute URL of a post in one locale. The sitemap, the canonical tag and
+ * hreflang all go through this so they can never disagree — the sitemap used
+ * to build EN URLs from `slug`, ignoring `slugEn`, while the page used
+ * slugForLocale().
+ */
+export function blogPostUrl(post: PostUrlFields, locale: 'es' | 'en'): string {
+  return `${BASE_URL}/${locale}/blog/${slugForLocale(post as BlogPost, locale)}`
+}
+
+/**
+ * hreflang map for a post: only the locales it is published in, plus
+ * x-default. Declaring an /en alternate for a Spanish-only post points Google
+ * at a 404.
+ */
+export function blogPostLanguages(post: PostUrlFields): Record<string, string> {
+  const defaultLocale = post.locales.includes(X_DEFAULT_LOCALE) ? X_DEFAULT_LOCALE : post.locales[0]
+  return {
+    ...Object.fromEntries(post.locales.map(l => [l, blogPostUrl(post, l)])),
+    'x-default': blogPostUrl(post, defaultLocale),
+  }
 }
 
 export async function getPostById(id: string): Promise<BlogPost | null> {
