@@ -2,8 +2,9 @@
  * Períodos contables del spa.
  *
  * La contabilidad no corta el último día del mes: el corte configurado (por
- * defecto el 25) define el período. Así, con corte 25, «agosto 2026» va del
- * 25 de julio al 24 de agosto — el tramo que cae mayoritariamente en agosto.
+ * defecto el 26) define el período. Así, con cierre el día 25, «agosto 2026»
+ * va del 26 de julio al 25 de agosto — el tramo que cae mayoritariamente en
+ * agosto.
  *
  * El día de corte se limita a 1–28 a propósito: un corte el 29, 30 o 31 no
  * existe en febrero y produciría rangos inválidos una vez al año.
@@ -12,7 +13,7 @@
  * que tratarlo aparte (no hay «día 0» del mes anterior).
  */
 
-export const DEFAULT_CYCLE_START_DAY = 25
+export const DEFAULT_CYCLE_START_DAY = 26
 export const MIN_CYCLE_START_DAY = 1
 export const MAX_CYCLE_START_DAY = 28
 

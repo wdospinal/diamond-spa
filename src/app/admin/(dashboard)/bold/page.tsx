@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { SPA_HOURS } from '@/lib/spa'
+import { cycleLabelFor, cycleRange, cycleRangeLabel } from '@/lib/cycle'
 
 type BoldMonth = {
   month: string
@@ -156,6 +157,10 @@ function monthLong(month: string): string {
   return MONTH_LONG.format(new Date(Date.UTC(Number(y), Number(m) - 1, 1)))
 }
 
+function periodLabel(month: string, cycleStartDay: number): string {
+  return `${capitalize(monthLong(month))} · ${cycleRangeLabel(month, cycleStartDay)}`
+}
+
 function fmtDelta(current: number, previous: number): { text: string; tone: string } {
   if (!previous) {
     return { text: current ? 'sin base de comparación' : '—', tone: 'text-[#8a9299]' }
@@ -293,6 +298,54 @@ function GrowthChart({ months }: { months: BoldMonth[] }) {
       <p className="sr-only" aria-live="polite">
         {activeMonth ? `${monthLabel(activeMonth.month)}: ${fmtCop(activeMonth.grossCop)}` : ''}
       </p>
+    </div>
+  )
+}
+
+function AverageTicketChart({
+  months,
+  cycleStartDay,
+}: {
+  months: BoldMonth[]
+  cycleStartDay: number
+}) {
+  const rows = months.map(month => ({
+    ...month,
+    averageCop: month.transactions > 0 ? month.grossCop / month.transactions : 0,
+  }))
+  const max = Math.max(...rows.map(row => row.averageCop), 1)
+
+  return (
+    <div className="space-y-3">
+      {rows.map(row => (
+        <div
+          key={row.month}
+          className="grid grid-cols-[minmax(8rem,1fr)_minmax(7rem,2fr)_auto] items-center gap-3"
+        >
+          <div className="min-w-0">
+            <p className="text-xs text-[#cfe5fa] font-body truncate">
+              {capitalize(monthLong(row.month))}
+            </p>
+            <p className="text-[10px] text-[#5c656d] font-body">
+              {cycleRangeLabel(row.month, cycleStartDay)}
+            </p>
+          </div>
+          <div className="h-2 bg-[#001524] overflow-hidden" aria-hidden="true">
+            <div
+              className="h-full bg-[#a5cce6]/70"
+              style={{ width: `${(row.averageCop / max) * 100}%` }}
+            />
+          </div>
+          <div className="text-right">
+            <p className="font-body text-sm tabular-nums text-[#cfe5fa]">
+              {row.transactions > 0 ? fmtCop(row.averageCop) : '—'}
+            </p>
+            <p className="text-[10px] text-[#5c656d] font-body tabular-nums">
+              {row.transactions} {row.transactions === 1 ? 'transacción' : 'transacciones'}
+            </p>
+          </div>
+        </div>
+      ))}
     </div>
   )
 }
@@ -451,41 +504,46 @@ function IncomeHeatmap({
 }
 
 /**
- * Barras: transacciones por día del mes elegido. El filtro es por mes, así que
- * cada barra es un día natural del mes — incluidos los días sin cierres, que
- * quedan en cero para que los huecos se vean.
+ * Barras: transacciones por día del período contable elegido. Incluye los días
+ * sin cierres para que los huecos se vean.
  */
 function DailyTransactionsChart({
   daily,
   currentMonth,
   today,
+  cycleStartDay,
 }: {
   daily: BoldDay[]
   currentMonth: string
   today: string
+  cycleStartDay: number
 }) {
   const [month, setMonth] = useState(currentMonth)
   const [hover, setHover] = useState<number | null>(null)
   const [pinned, setPinned] = useState<number | null>(null)
   const active = hover ?? pinned
 
-  /** Meses con al menos un cierre dentro del rango cargado, del más reciente al más viejo. */
+  /** Períodos con al menos un cierre dentro del rango cargado, del más reciente al más viejo. */
   const monthOptions = useMemo(() => {
-    const set = new Set(daily.filter(d => d.closings > 0).map(d => d.day.slice(0, 7)))
+    const set = new Set(
+      daily
+        .filter(d => d.closings > 0)
+        .map(d => cycleLabelFor(d.day, cycleStartDay)),
+    )
     return [...set].sort((a, b) => b.localeCompare(a))
-  }, [daily])
+  }, [cycleStartDay, daily])
 
-  // El rango de fechas puede dejar fuera el mes elegido; en ese caso caemos al más reciente.
+  // El rango de fechas puede dejar fuera el período elegido; en ese caso caemos al más reciente.
   const selected = monthOptions.includes(month) ? month : (monthOptions[0] ?? currentMonth)
 
   const bars = useMemo(() => {
-    const [y, m] = selected.split('-').map(Number)
-    const daysInMonth = new Date(Date.UTC(y!, m!, 0)).getUTCDate()
+    const range = cycleRange(selected, cycleStartDay)
     const byDay = new Map(daily.map(d => [d.day, d]))
     const out: { day: string; dayNum: number; transactions: number; grossCop: number }[] = []
-    for (let i = 1; i <= daysInMonth; i++) {
-      const day = `${selected}-${String(i).padStart(2, '0')}`
-      if (day > today) break
+    const cursor = parseDay(range.from)
+    let i = 1
+    while (toIsoDay(cursor) <= range.to && toIsoDay(cursor) <= today) {
+      const day = toIsoDay(cursor)
       const found = byDay.get(day)
       out.push({
         day,
@@ -493,9 +551,11 @@ function DailyTransactionsChart({
         transactions: found?.transactions ?? 0,
         grossCop: found?.grossCop ?? 0,
       })
+      cursor.setUTCDate(cursor.getUTCDate() + 1)
+      i += 1
     }
     return out
-  }, [daily, selected, today])
+  }, [cycleStartDay, daily, selected, today])
 
   const total = bars.reduce((s, b) => s + b.transactions, 0)
   const activeDays = bars.filter(b => b.transactions > 0).length
@@ -533,7 +593,7 @@ function DailyTransactionsChart({
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-4">
         <label className="block sm:w-56">
           <span className="block font-label text-[10px] uppercase tracking-[0.2em] text-[#8a9299] mb-2">
-            Mes
+            Período
           </span>
           <select
             value={selected}
@@ -546,11 +606,11 @@ function DailyTransactionsChart({
             className="w-full min-h-11 bg-[#001524] border border-[#42484c]/50 px-3 text-sm text-[#cfe5fa] font-body [color-scheme:dark] focus:outline-none focus:border-[#a5cce6]/60 cursor-pointer disabled:opacity-50"
           >
             {monthOptions.length === 0 ? (
-              <option value={selected}>{capitalize(monthLong(selected))}</option>
+              <option value={selected}>{periodLabel(selected, cycleStartDay)}</option>
             ) : (
               monthOptions.map(m => (
                 <option key={m} value={m}>
-                  {capitalize(monthLong(m))}
+                  {periodLabel(m, cycleStartDay)}
                 </option>
               ))
             )}
@@ -576,7 +636,7 @@ function DailyTransactionsChart({
           viewBox={`0 0 ${W} ${H}`}
           className="w-full min-w-[520px] h-auto"
           role="img"
-          aria-label={`Transacciones por día en ${monthLong(selected)}. Pasa el mouse o toca una barra para ver el detalle.`}
+          aria-label={`Transacciones por día en el período ${periodLabel(selected, cycleStartDay)}. Pasa el mouse o toca una barra para ver el detalle.`}
         >
           {[1, 2, 3, 4].map(i => {
             const v = step * i
@@ -680,7 +740,7 @@ function DailyTransactionsChart({
                 strokeOpacity="0.45"
               />
               <text x={tooltipX + 12} y={tooltipY + 18} fill="#8a9299" fontSize="11">
-                {capitalize(weekdayLabel(activeBar.day))} {activeBar.dayNum}
+                {capitalize(weekdayLabel(activeBar.day))} · {dayLabel(activeBar.day)}
               </text>
               <text x={tooltipX + 12} y={tooltipY + 35} fill="#cfe5fa" fontSize="13" fontWeight="600">
                 {activeBar.transactions}{' '}
@@ -704,10 +764,9 @@ function DailyTransactionsChart({
 
 /**
  * Barras horizontales: transacciones agregadas por día de la semana, con una
- * barra por mes dentro de cada día. Responde a "¿qué día de qué mes trae más
- * citas?" comparando, por ejemplo, todos los viernes de agosto contra los de
- * julio. Se limita a los últimos meses del rango cargado para que las barras
- * sigan siendo legibles.
+ * barra por período dentro de cada día. Compara, por ejemplo, todos los viernes
+ * del período de agosto contra los de julio. Se limita a los últimos períodos
+ * del rango cargado para que las barras sigan siendo legibles.
  */
 const MONTH_COLORS = ['#a5cce6', '#7fc9a6', '#e0b46c', '#c97b63', '#b39ddb', '#d98cb3'] as const
 const MAX_MONTHS = MONTH_COLORS.length
@@ -726,18 +785,28 @@ function weekdayName(index: number): string {
 const TOTAL_KEY = '*'
 const TOTAL_COLOR = '#a5cce6'
 
-function WeekdayByMonthChart({ daily }: { daily: BoldDay[] }) {
+function WeekdayByMonthChart({
+  daily,
+  cycleStartDay,
+}: {
+  daily: BoldDay[]
+  cycleStartDay: number
+}) {
   const [hidden, setHidden] = useState<string[]>([])
   const [combined, setCombined] = useState(false)
   const [hover, setHover] = useState<string | null>(null)
   const [pinned, setPinned] = useState<string | null>(null)
   const active = hover ?? pinned
 
-  /** Meses con cierres, del más viejo al más nuevo, recortados a los más recientes. */
+  /** Períodos con cierres, del más viejo al más nuevo, recortados a los más recientes. */
   const months = useMemo(() => {
-    const set = new Set(daily.filter(d => d.closings > 0).map(d => d.day.slice(0, 7)))
+    const set = new Set(
+      daily
+        .filter(d => d.closings > 0)
+        .map(d => cycleLabelFor(d.day, cycleStartDay)),
+    )
     return [...set].sort().slice(-MAX_MONTHS)
-  }, [daily])
+  }, [cycleStartDay, daily])
 
   const colorOf = useCallback(
     (month: string) =>
@@ -754,7 +823,7 @@ function WeekdayByMonthChart({ daily }: { daily: BoldDay[] }) {
     const map = new Map<string, { transactions: number; grossCop: number; days: number }>()
     for (const d of daily) {
       if (d.closings <= 0) continue
-      const month = d.day.slice(0, 7)
+      const month = cycleLabelFor(d.day, cycleStartDay)
       if (!months.includes(month)) continue
       const key = `${weekdayIndex(d.day)}|${month}`
       const cell = map.get(key) ?? { transactions: 0, grossCop: 0, days: 0 }
@@ -764,7 +833,7 @@ function WeekdayByMonthChart({ daily }: { daily: BoldDay[] }) {
       map.set(key, cell)
     }
     return map
-  }, [daily, months])
+  }, [cycleStartDay, daily, months])
 
   const cellOf = (weekday: number, month: string) => {
     if (month === TOTAL_KEY) {
@@ -784,7 +853,7 @@ function WeekdayByMonthChart({ daily }: { daily: BoldDay[] }) {
     return cells.get(`${weekday}|${month}`) ?? { transactions: 0, grossCop: 0, days: 0 }
   }
 
-  /** Series dibujadas: un carril por mes, o uno solo con la suma. */
+  /** Series dibujadas: un carril por período, o uno solo con la suma. */
   const series = combined ? [TOTAL_KEY] : visible
 
   const max = Math.max(
@@ -873,7 +942,7 @@ function WeekdayByMonthChart({ daily }: { daily: BoldDay[] }) {
               className="inline-block w-2.5 h-2.5"
               style={{ backgroundColor: TOTAL_COLOR, opacity: combined ? 1 : 0.35 }}
             />
-            {combined ? 'Ver por mes' : 'Sumar meses'}
+            {combined ? 'Ver por período' : 'Sumar períodos'}
           </button>
           {months.map(m => {
             const off = hidden.includes(m)
@@ -908,7 +977,7 @@ function WeekdayByMonthChart({ daily }: { daily: BoldDay[] }) {
               </span>
             </>
           ) : (
-            'Sin transacciones en los meses seleccionados.'
+            'Sin transacciones en los períodos seleccionados.'
           )}
         </p>
       </div>
@@ -920,8 +989,8 @@ function WeekdayByMonthChart({ daily }: { daily: BoldDay[] }) {
           role="img"
           aria-label={
             combined
-              ? 'Transacciones por día de la semana, sumando todos los meses visibles. Pasa el mouse o toca una barra para ver el detalle.'
-              : 'Transacciones por día de la semana, comparadas mes a mes. Pasa el mouse o toca una barra para ver el detalle.'
+              ? 'Transacciones por día de la semana, sumando todos los períodos visibles. Pasa el mouse o toca una barra para ver el detalle.'
+              : 'Transacciones por día de la semana, comparadas por período. Pasa el mouse o toca una barra para ver el detalle.'
           }
         >
           {[0, 1, 2, 3, 4].map(i => {
@@ -982,7 +1051,7 @@ function WeekdayByMonthChart({ daily }: { daily: BoldDay[] }) {
                       className="cursor-pointer"
                       role="button"
                       tabIndex={0}
-                      aria-label={`${weekdayName(w)} ${m === TOTAL_KEY ? '(todos los meses)' : `de ${monthLong(m)}`}: ${cell.transactions} transacciones en ${cell.days} ${cell.days === 1 ? 'día' : 'días'}, ${fmtCop(cell.grossCop)}`}
+                      aria-label={`${weekdayName(w)} ${m === TOTAL_KEY ? '(todos los períodos)' : `del período ${periodLabel(m, cycleStartDay)}`}: ${cell.transactions} transacciones en ${cell.days} ${cell.days === 1 ? 'día' : 'días'}, ${fmtCop(cell.grossCop)}`}
                       onMouseEnter={() => setHover(key)}
                       onMouseLeave={() => setHover(null)}
                       onClick={() => setPinned(p => (p === key ? null : key))}
@@ -1024,8 +1093,8 @@ function WeekdayByMonthChart({ daily }: { daily: BoldDay[] }) {
               <text x={tooltipX + 12} y={tooltipY + 18} fill="#8a9299" fontSize="11">
                 {capitalize(weekdayName(activeCell.weekday))} ·{' '}
                 {activeCell.month === TOTAL_KEY
-                  ? 'Todos los meses'
-                  : capitalize(monthLong(activeCell.month))}
+                  ? 'Todos los períodos'
+                  : periodLabel(activeCell.month, cycleStartDay)}
               </text>
               <text x={tooltipX + 12} y={tooltipY + 36} fill="#cfe5fa" fontSize="13" fontWeight="600">
                 {activeCell.transactions}{' '}
@@ -1043,7 +1112,7 @@ function WeekdayByMonthChart({ daily }: { daily: BoldDay[] }) {
       </div>
       <p className="sr-only" aria-live="polite">
         {activeCell
-          ? `${weekdayName(activeCell.weekday)} ${activeCell.month === TOTAL_KEY ? '(todos los meses)' : `de ${monthLong(activeCell.month)}`}: ${activeCell.transactions} transacciones, ${fmtCop(activeCell.grossCop)}`
+          ? `${weekdayName(activeCell.weekday)} ${activeCell.month === TOTAL_KEY ? '(todos los períodos)' : `del período ${periodLabel(activeCell.month, cycleStartDay)}`}: ${activeCell.transactions} transacciones, ${fmtCop(activeCell.grossCop)}`
           : ''}
       </p>
     </div>
@@ -1349,12 +1418,16 @@ export default function BoldDashboardPage() {
         <Kpi
           label="Período actual"
           value={fmtCop(current?.grossCop ?? 0)}
-          hint={`${current?.transactions ?? 0} transacciones · ${current?.closings ?? 0} cierres`}
+          hint={`${current?.transactions ?? 0} transacciones · ${current?.closings ?? 0} cierres${
+            data ? ` · ${cycleRangeLabel(data.currentMonth, data.cycleStartDay)}` : ''
+          }`}
         />
         <Kpi
           label={`Período anterior (${previous ? monthLabel(previous.month) : '—'})`}
           value={fmtCop(previous?.grossCop ?? 0)}
-          hint={`${previous?.transactions ?? 0} transacciones`}
+          hint={`${previous?.transactions ?? 0} transacciones${
+            data ? ` · ${cycleRangeLabel(data.previousMonth, data.cycleStartDay)}` : ''
+          }`}
         />
         <Kpi
           label="Variación"
@@ -1403,6 +1476,7 @@ export default function BoldDashboardPage() {
             daily={data.daily}
             currentMonth={data.currentMonth}
             today={data.today}
+            cycleStartDay={data.cycleStartDay}
           />
         ) : (
           <p className="py-10 text-center text-[#8a9299] font-body text-sm">
@@ -1413,17 +1487,33 @@ export default function BoldDashboardPage() {
 
       <section className="bg-[#0a2438] border border-[#42484c]/30 p-4 sm:p-6 mb-10">
         <h2 className="font-label text-xs uppercase tracking-[0.25em] text-[#8a9299] mb-1">
-          Días de la semana por mes
+          Días de la semana por período
         </h2>
         <p className="text-[11px] text-[#5c656d] font-body mb-4">
-          Suma de transacciones de cada día de la semana, un color por mes. Toca un mes en la
-          leyenda para ocultarlo, o «Sumar meses» para ver una sola barra por día.
+          Suma de transacciones de cada día de la semana, un color por período. Toca un período en
+          la leyenda para ocultarlo, o «Sumar períodos» para ver una sola barra por día.
         </p>
         {data && data.daily.length > 0 ? (
-          <WeekdayByMonthChart daily={data.daily} />
+          <WeekdayByMonthChart daily={data.daily} cycleStartDay={data.cycleStartDay} />
         ) : (
           <p className="py-10 text-center text-[#8a9299] font-body text-sm">
             Aún no hay cierres para graficar. Sincroniza el buzón o pega un correo de Bold.
+          </p>
+        )}
+      </section>
+
+      <section className="bg-[#0a2438] border border-[#42484c]/30 p-4 sm:p-6 mb-10">
+        <h2 className="font-label text-xs uppercase tracking-[0.25em] text-[#8a9299] mb-1">
+          Ticket promedio por período
+        </h2>
+        <p className="text-[11px] text-[#5c656d] font-body mb-5">
+          Ventas brutas divididas entre transacciones para cada corte del 26 al 25.
+        </p>
+        {hasData && data ? (
+          <AverageTicketChart months={series} cycleStartDay={data.cycleStartDay} />
+        ) : (
+          <p className="py-10 text-center text-[#8a9299] font-body text-sm">
+            Aún no hay transacciones para calcular el ticket promedio.
           </p>
         )}
       </section>
