@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { getServiceById, serviceDisplayName, serviceShortDesc } from '@/lib/services'
 import { Locale } from '@/lib/i18n'
 import { formatCopValue } from '@/lib/format-currency'
@@ -142,6 +142,19 @@ export function LandingServices({
   const expandedService = expandedId ? getServiceById(expandedId) : null
   const expandedPain = expandedId ? PAIN_SOLUTIONS[expandedId] : null
   const isEn = locale === 'en'
+
+  // Deep link desde los recursos de precio de Google Ads — ?svc=relaxing
+  // abre directo la tarjeta de ese servicio, sin que la persona tenga que
+  // buscarla. Solo se abre si el id existe en el catálogo Y está entre los
+  // servicios que esta landing muestra — nunca se inventa uno.
+  useEffect(() => {
+    const svc = new URLSearchParams(window.location.search).get('svc')
+    if (svc && serviceIds.includes(svc) && getServiceById(svc)) {
+      setExpandedId(svc)
+      trackAdsClick('svc_deeplink', svc)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <section id="servicios" className="py-12 sm:py-18 bg-white scroll-mt-16">
