@@ -8,6 +8,7 @@ import { JsonLd } from '@/components/JsonLd'
 import LandingHead from '@/components/LandingHead'
 import { mergeLandingMetadata } from '@/lib/landing-meta'
 import { serviceHref } from '@/lib/routes'
+import { LandingTeam } from '@/components/landing-blocks/LandingTeam'
 
 // ISR: re-render at most once per hour so admin metadata changes propagate
 export const revalidate = 3600
@@ -258,6 +259,11 @@ export default async function MassageMedellinPage({ params }: { params: Promise<
             ))}
           </div>
         </section>
+
+        {/* Equipo — el mismo bloque de la home */}
+        <div className="mb-20 -mx-6 md:-mx-12">
+          <LandingTeam locale={locale} source="massage-medellin" />
+        </div>
 
         {/* FAQ */}
         <section className="mb-20">

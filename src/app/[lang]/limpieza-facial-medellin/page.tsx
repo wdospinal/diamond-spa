@@ -8,6 +8,15 @@ import { JsonLd } from '@/components/JsonLd'
 import LandingHead from '@/components/LandingHead'
 import { mergeLandingMetadata } from '@/lib/landing-meta'
 import { serviceHref } from '@/lib/routes'
+import { formatCop, getServicePrice } from '@/lib/services'
+
+// Prices come from the service catalogue so this page can't drift from the menu.
+const cop = (id: string) => getServicePrice(id, null) ?? 0
+const DEEP = formatCop(cop('limpieza-facial-profunda'))
+const HYDRA = formatCop(cop('hidrafacial'))
+const BASIC = formatCop(cop('limpieza-facial-basica'))
+/** Short form for meta descriptions, which get truncated past ~160 chars. */
+const k = (id: string) => `($${cop(id) / 1000}k)`
 
 export const revalidate = 3600
 
@@ -15,7 +24,7 @@ const content = {
   en: {
     metaTitle: 'Facial Cleansing in Medellín — Deep, HydraFacial & Basic | Diamond Spa El Poblado',
     metaDesc:
-      `Facial cleansing in El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reviews. Deep ($250k), HydraFacial ($350k) & basic ($150k). Certified cosmetologists — book now.`,
+      `Facial cleansing in El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reviews. Deep ${k('limpieza-facial-profunda')}, HydraFacial ${k('hidrafacial')} & basic ${k('limpieza-facial-basica')}. Certified cosmetologists — book now.`,
     heroLabel: 'Facials · El Poblado, Medellín',
     h1: 'Facial Cleansing in Medellín',
     heroBody:
@@ -55,7 +64,7 @@ const content = {
       {
         question: 'How much does a facial cleansing cost in Medellín?',
         answer:
-          'Facial treatments at Diamond Spa vary by type. Express facials start from approximately $80,000 COP. Deep facial cleansing and HydraFacial sessions are priced according to the specific treatment. Contact us for a personalised quote.',
+          `At Diamond Spa, basic facial cleansing costs ${BASIC} (45 min), deep facial cleansing with manual extraction ${DEEP} (60 min) and HydraFacial ${HYDRA} (90 min). No prepayment — you pay at the spa.`,
       },
       {
         question: 'How often should I get a professional facial cleansing?',
@@ -74,7 +83,7 @@ const content = {
   es: {
     metaTitle: 'Limpieza Facial en Medellín — Profunda, HydraFacial y Básica | Diamond Spa El Poblado',
     metaDesc:
-      `Limpieza facial en El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reseñas. Profunda ($250k), HydraFacial ($350k) y básica ($150k). Cosmetólogas certificadas — reserva.`,
+      `Limpieza facial en El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reseñas. Profunda ${k('limpieza-facial-profunda')}, HydraFacial ${k('hidrafacial')} y básica ${k('limpieza-facial-basica')}. Cosmetólogas certificadas — reserva.`,
     heroLabel: 'Faciales · El Poblado, Medellín',
     h1: 'Limpieza Facial en Medellín',
     heroBody:
@@ -114,7 +123,7 @@ const content = {
       {
         question: '¿Cuánto cuesta una limpieza facial en Medellín?',
         answer:
-          'Los tratamientos faciales en Diamond Spa varían según el tipo. Los faciales express comienzan desde aproximadamente $80.000 COP. La limpieza facial profunda y el HydraFacial tienen precios según el tratamiento específico. Contáctanos para una cotización personalizada.',
+          `En Diamond Spa la limpieza facial básica cuesta ${BASIC} (45 min), la limpieza facial profunda con extracción manual ${DEEP} (60 min) y el HydraFacial ${HYDRA} (90 min). Sin pago anticipado: pagas en el spa.`,
       },
       {
         question: '¿Con qué frecuencia debo hacerme una limpieza facial profesional?',
