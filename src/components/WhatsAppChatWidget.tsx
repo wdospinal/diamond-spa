@@ -108,7 +108,7 @@ const COPY = {
     askCategory: '¿Qué tipo de servicio te interesa?',
     askSvc: '¿Cuál servicio específico?',
     askDur: '¿Qué duración o modalidad prefieres?',
-    askDate: '¿Qué día te viene bien?',
+    askDate: '¿Qué día te viene bien? (Esto no te compromete a nada — solo nos ayuda a coordinar mejor contigo)',
     askTime: '¿A qué hora te gustaría tu cita?',
     talkAdvisor: 'Hablar con un asesor →',
     talkAdvisorConnecting: '¡Perfecto! Te transferimos con nuestro asesor en WhatsApp…',
@@ -134,7 +134,7 @@ const COPY = {
     askCategory: 'What type of service are you interested in?',
     askSvc: 'Which specific service?',
     askDur: 'What duration or option do you prefer?',
-    askDate: 'What day works for you?',
+    askDate: "What day works for you? (This doesn't commit you to anything — it just helps us coordinate better)",
     askTime: 'What time would you like your appointment?',
     talkAdvisor: 'Talk to an advisor →',
     talkAdvisorConnecting: 'Perfect! Connecting you with an advisor on WhatsApp…',
@@ -252,7 +252,8 @@ export default function WhatsAppChatWidget({
     setWPriceIdx(0)
     if (s.prices.length <= 1) {
       setStep('date')
-      pushBotMessage(t.askDate)
+      const onlyPrice = s.prices[0]?.value ? ` (${wFmtPrice(s.prices[0].value)})` : ''
+      pushBotMessage(`${s.name}${onlyPrice} 👍\n\n${t.askDate}`)
     } else {
       setStep('dur')
       pushBotMessage(t.askDur)
@@ -265,7 +266,11 @@ export default function WhatsAppChatWidget({
     setMessages(prev => [...prev, { from: 'user', text: `${optLabel}${optPrice}` }])
     setWPriceIdx(idx)
     setStep('date')
-    pushBotMessage(t.askDate)
+    // Un solo mensaje que confirma lo elegido Y aclara que elegir día no es
+    // un compromiso — resuelve las dos cosas juntas en vez de dos avisos
+    // separados, que se sentirían redundantes.
+    const svcSummary = wSvc ? `${wSvc.name} · ${optLabel}${optPrice}` : ''
+    pushBotMessage(`${svcSummary} 👍\n\n${t.askDate}`)
   }
 
   function pickDay(d: number) {
@@ -437,6 +442,8 @@ export default function WhatsAppChatWidget({
         if (service) extras.push(locale === 'en' ? `I'm interested in: ${service}.` : `Me interesa: ${service}.`)
         const durLabel = wSvc?.prices[wPriceIdx]?.label
         if (durLabel) extras.push(locale === 'en' ? `Option: ${durLabel}.` : `Opción: ${durLabel}.`)
+        const priceVal = wSvc?.prices[wPriceIdx]?.value
+        if (priceVal) extras.push(locale === 'en' ? `Price: ${wFmtPrice(priceVal)}.` : `Precio: ${wFmtPrice(priceVal)}.`)
         if (wDay) {
           const ds = new Date(wCalY, wCalMo, wDay).toLocaleDateString(locale === 'en' ? 'en-US' : 'es-CO', { weekday: 'long', day: 'numeric', month: 'long' })
           extras.push(locale === 'en' ? `Date: ${ds}.` : `Fecha: ${ds}.`)
