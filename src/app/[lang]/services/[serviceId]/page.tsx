@@ -11,6 +11,16 @@ import { buildServiceAlternates, buildOpenGraph, BASE_URL, BUSINESS, faqJsonLd }
 import { serviceFaqs, serviceSeoDescription, serviceSeoTitle } from '@/lib/service-seo'
 import { JsonLd } from '@/components/JsonLd'
 import { FaqSection } from '@/components/FaqSection'
+import { getServiceContent } from '@/lib/service-content'
+import { serviceFromPrice } from '@/lib/service-seo'
+import { ServiceQuickFacts } from '@/components/service-detail/ServiceQuickFacts'
+import { ServiceTrustStrip } from '@/components/service-detail/ServiceTrustStrip'
+import { ServiceWhatIs } from '@/components/service-detail/ServiceWhatIs'
+import { ServiceBenefits } from '@/components/service-detail/ServiceBenefits'
+import { ServiceProtocol } from '@/components/service-detail/ServiceProtocol'
+import { ServiceSuitability } from '@/components/service-detail/ServiceSuitability'
+import { ServiceAftercare } from '@/components/service-detail/ServiceAftercare'
+import { ServiceComparison } from '@/components/service-detail/ServiceComparison'
 
 export const dynamic = 'force-static'
 
@@ -68,7 +78,13 @@ export default async function ServiceDetailPage({
   const name = locale === 'en' ? service.name.en : service.name.es
   const description = locale === 'en' ? service.description.en : service.description.es
   const slug = locale === 'en' ? service.slugEn : service.id
-  const faqs = serviceFaqs(service, locale)
+  // Hand-written long-form sections for the services we compete on in search
+  // (see lib/service-content.ts). Everything else keeps the generated template.
+  const content = getServiceContent(service.id)
+  const faqs = [
+    ...serviceFaqs(service, locale),
+    ...(content?.faqs.map(f => ({ question: f.question[locale], answer: f.answer[locale] })) ?? []),
+  ]
 
   // Sibling services in the same category, falling back to any other service so
   // short categories still get a full row. Detail pages previously linked only
@@ -91,6 +107,8 @@ export default async function ServiceDetailPage({
     '@type': 'Service',
     name,
     description,
+    url: `${BASE_URL}/${locale}/services/${slug}`,
+    serviceType: locale === 'en' ? service.category.en : service.category.es,
     provider: {
       '@type': 'HealthAndBeautyBusiness',
       name: BUSINESS.name,
@@ -145,11 +163,22 @@ export default async function ServiceDetailPage({
             {locale === 'en' ? service.category.en : service.category.es}
           </span>
           <h1 className="font-headline text-5xl md:text-7xl text-on-surface font-light leading-tight mb-10">
-            {name}
+            {content ? content.h1[locale] : name}
           </h1>
           <p className="font-body text-xl md:text-2xl text-secondary leading-relaxed font-light">
             {description}
           </p>
+          {content && (
+            <div className="mt-10 flex flex-col gap-8">
+              <ServiceTrustStrip locale={locale} />
+              <Link
+                href={`/${locale}/book?service=${service.id}`}
+                className="self-start bg-primary text-on-primary px-10 py-5 font-label text-xs font-bold uppercase tracking-[0.2em] hover:bg-white transition-all"
+              >
+                {t.bookThisService}
+              </Link>
+            </div>
+          )}
         </div>
       </header>
 
@@ -191,7 +220,11 @@ export default async function ServiceDetailPage({
             </>
           )}
 
-          {service.pricingModel === 'flat' && (
+          {content && (
+            <ServiceQuickFacts facts={content.quickFacts} price={formatCop(serviceFromPrice(service))} locale={locale} />
+          )}
+
+          {!content && service.pricingModel === 'flat' && (
             <div className="bg-surface p-6 md:p-8 flex flex-col gap-3 w-full">
               <span className="font-label text-outline text-[10px] uppercase tracking-widest">
                 {locale === 'en' ? 'Price' : 'Precio'}
@@ -234,6 +267,17 @@ export default async function ServiceDetailPage({
         </div>
       </section>
 
+      {content && (
+        <>
+          <ServiceWhatIs content={content.whatIs} locale={locale} />
+          <ServiceBenefits content={content.benefits} locale={locale} />
+          <ServiceProtocol content={content.protocol} locale={locale} />
+          <ServiceSuitability content={content.suitability} locale={locale} />
+          <ServiceAftercare content={content.aftercare} locale={locale} />
+          <ServiceComparison content={content.compare} currentId={service.id} locale={locale} />
+        </>
+      )}
+
       {/* FAQ — service-specific answers (price, length, location, booking) so
           each detail page carries unique indexable copy, not just a price table */}
       <FaqSection
@@ -248,6 +292,15 @@ export default async function ServiceDetailPage({
           <h2 className="font-label text-outline text-xs uppercase tracking-widest mb-8">
             {t.relatedServices}
           </h2>
+          {content?.hub && (
+            <Link
+              href={`/${locale}${content.hub.path}`}
+              className="inline-flex items-center gap-2 mb-8 font-label text-primary text-xs uppercase tracking-widest hover:opacity-80 transition-opacity"
+            >
+              {content.hub.anchor[locale]}
+              <span className="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
+            </Link>
+          )}
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-outline-variant/20">
             {related.map(r => (
               <li key={r.id} className="bg-surface-container-low">
