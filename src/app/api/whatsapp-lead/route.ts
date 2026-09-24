@@ -48,8 +48,12 @@ export async function POST(req: NextRequest) {
   const source = (gclid || adgroup || body.source === 'ads') ? ('ads' as const) : ('organic' as const)
 
   const now = new Date()
-  const dateKey = now.toISOString().slice(0, 10)
-  const timeSlot = now.toTimeString().slice(0, 5)
+  const dateKey = typeof body.dateKey === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(body.dateKey) ? body.dateKey : now.toISOString().slice(0, 10)
+  const timeSlot = typeof body.timeSlot === 'string' && body.timeSlot.trim() ? body.timeSlot.trim() : now.toTimeString().slice(0, 5)
+  const serviceName = typeof body.serviceName === 'string' && body.serviceName.trim() ? body.serviceName.trim() : 'Lead WhatsApp (Recepción Directa)'
+  const serviceId = typeof body.serviceId === 'string' && body.serviceId.trim() ? body.serviceId.trim() : 'whatsapp-lead'
+  const priceCop = typeof body.priceCop === 'number' && body.priceCop > 0 ? body.priceCop : 0
+  const durationMinutes = typeof body.durationMinutes === 'number' && body.durationMinutes > 0 ? body.durationMinutes : null
 
   // Candado anti-duplicados: si este mismo teléfono ya generó un lead de
   // WhatsApp en los últimos 5 minutos, es casi con certeza un reintento del
@@ -74,12 +78,12 @@ export async function POST(req: NextRequest) {
       dateKey,
       timeSlot,
       scheduledAt: now.toISOString(),
-      serviceId: 'whatsapp-lead',
-      serviceName: 'Lead WhatsApp (Recepción Directa)',
-      durationMinutes: null,
-      priceCop: 0,
-      price: 0,
-      duration: 'N/A',
+      serviceId,
+      serviceName,
+      durationMinutes,
+      priceCop,
+      price: priceCop ? Math.round(priceCop / 4000) : 0,
+      duration: durationMinutes ? `${durationMinutes} min` : 'N/A',
       name,
       phone,
       requests: [

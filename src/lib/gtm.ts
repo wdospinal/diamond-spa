@@ -17,4 +17,11 @@ export function pushEvent(
   if (typeof window === 'undefined') return
   ;(window as any).dataLayer = (window as any).dataLayer || []
   ;(window as any).dataLayer.push({ event: eventName, ...params })
+  if (typeof (window as any).gtag === 'function') {
+    try {
+      ;(window as any).gtag('event', eventName, params)
+    } catch {
+      // ignore
+    }
+  }
 }
