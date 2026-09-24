@@ -1,9 +1,11 @@
 'use client'
 
 import { useEffect, useState, useRef } from 'react'
+import { usePathname } from 'next/navigation'
 import { randomWhatsAppUrl } from '@/lib/phones'
 import { pushEvent } from '@/lib/gtm'
 import { EVENTS, trackEvent } from '@/lib/events'
+import WhatsAppChatWidget from '@/components/WhatsAppChatWidget'
 
 interface WhatsAppBridgeDetail {
   text?: string
@@ -56,13 +58,26 @@ export function openWhatsAppBridge(detail?: WhatsAppBridgeDetail) {
 }
 
 export default function WhatsAppBridgeModal() {
+  const nextPathname = usePathname() || ''
+  const [pathname, setPathname] = useState(nextPathname)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setPathname(window.location.pathname)
+    }
+  }, [nextPathname])
+
+  const effectivePath = pathname || nextPathname || (typeof window !== 'undefined' ? window.location.pathname : '')
+  const isPautaLanding = effectivePath.includes('/l/oferta-masajes')
+  const isEn = effectivePath.startsWith('/en')
+  const locale: 'es' | 'en' = isEn ? 'en' : 'es'
+
   const [isOpen, setIsOpen] = useState(false)
   const [phone, setPhone] = useState('')
-  const [countryCode, setCountryCode] = useState('+57')
+  const [countryCode, setCountryCode] = useState(isEn ? '+1' : '+57')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [customText, setCustomText] = useState<string | undefined>(undefined)
   const [source, setSource] = useState<string>('site')
-  const [locale, setLocale] = useState<'es' | 'en'>('es')
   const inputRef = useRef<HTMLInputElement>(null)
   // Candado síncrono — useState solo actualiza en el siguiente render, y eso
   // dejaba una ventana real donde 2 toques rápidos podían pasar la revisión
@@ -70,17 +85,20 @@ export default function WhatsAppBridgeModal() {
   const submittingRef = useRef(false)
 
   useEffect(() => {
+    // Keep default country code aligned with locale
+    setCountryCode(prev => (isEn && prev === '+57' ? '+1' : prev))
+  }, [isEn])
+
+  useEffect(() => {
     const handleOpen = (e: Event) => {
       const customEvent = e as CustomEvent<WhatsAppBridgeDetail>
-      const isEn = window.location.pathname.startsWith('/en')
-      setLocale(isEn ? 'en' : 'es')
-      // If English, default country code to +1 if not set yet, otherwise +57
-      setCountryCode(prev => (isEn && prev === '+57' ? '+1' : prev))
       setCustomText(customEvent.detail?.text)
       setSource(customEvent.detail?.source || 'site')
       submittingRef.current = false
       setIsOpen(true)
-      document.body.style.overflow = 'hidden'
+      if (!isPautaLanding || (typeof window !== 'undefined' && window.innerWidth < 640)) {
+        document.body.style.overflow = 'hidden'
+      }
       setTimeout(() => {
         inputRef.current?.focus()
       }, 150)
@@ -90,7 +108,7 @@ export default function WhatsAppBridgeModal() {
     return () => {
       window.removeEventListener('open-whatsapp-bridge', handleOpen)
     }
-  }, [])
+  }, [isPautaLanding])
 
   const closeModal = () => {
     setIsOpen(false)
@@ -201,6 +219,18 @@ export default function WhatsAppBridgeModal() {
   }
 
   if (!isOpen) return null
+
+  if (isPautaLanding) {
+    return (
+      <WhatsAppChatWidget
+        locale={locale}
+        isOpen={isOpen}
+        onClose={closeModal}
+        customText={customText}
+      />
+    )
+  }
+
   const t = I18N_TEXTS[locale] || I18N_TEXTS.es
 
   return (

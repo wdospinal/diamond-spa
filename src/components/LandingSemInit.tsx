@@ -40,8 +40,8 @@ export default function LandingSemInit({ triggerKey, triggerValue, hideChrome }:
       // This overrides whatever the inline script may have set.
       document.documentElement.classList.toggle('is-ads', shouldHide)
 
-      // Always persist gclid if present — needed for offline conversion import in Google Ads.
-      const gclid = params.get('gclid')
+      // Always persist gclid if present (and wbraid/gbraid for iOS) — needed for offline conversion import in Google Ads.
+      const gclid = params.get('gclid') || params.get('wbraid') || params.get('gbraid')
       if (gclid) sessionStorage.setItem('gclid', gclid)
 
       // Persist to sessionStorage so the layout.tsx script uses the
