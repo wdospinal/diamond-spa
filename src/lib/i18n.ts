@@ -73,12 +73,6 @@ export const THERAPISTS: BilingualTherapist[] = [
     es: { role: 'Cosmetóloga & Masajista', years: '4+ años de experiencia', specialty: 'Enfocada en la recuperación real y el cuidado corporal, formación certificada' },
   },
   {
-    id: 'tatiana',
-    name: 'Tatiana',
-    en: { role: 'Cosmetologist & Massage Therapist', years: '3+ years experience', specialty: 'A calm, attentive approach to every session' },
-    es: { role: 'Cosmetóloga & Masajista', years: '3+ años de experiencia', specialty: 'Un enfoque tranquilo y atento en cada sesión' },
-  },
-  {
     id: 'saira-bedoya',
     name: 'Saira Bedoya',
     en: { role: 'Cosmetologist & Massage Therapist', years: '3+ years experience', specialty: 'Dedicated to genuine wellness in every session, professional training' },

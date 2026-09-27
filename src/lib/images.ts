@@ -80,7 +80,6 @@ export const IMG_THERAPISTS = [
   '/therapists/sary.avif',     // Sary Paez
   '/therapists/ana-maria.avif',  // Ana Maria
   '/therapists/sheyla-tinoco.avif',  // Sheyla Tinoco
-  '/therapists/tatiana.avif',  // Tatiana
   '/therapists/saira-bedoya.avif',  // Saira Bedoya
 ]
 
@@ -90,6 +89,5 @@ export const IMG_THERAPISTS_WEBP = [
   '/therapists/sary.webp',
   '/therapists/ana-maria.webp',
   '/therapists/sheyla-tinoco.webp',
-  '/therapists/tatiana.webp',
   '/therapists/saira-bedoya.webp',
 ]
