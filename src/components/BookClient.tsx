@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { pushEvent } from '@/lib/gtm'
+import { userDataFor } from '@/lib/user-data'
 import type { Locale, Dict } from '@/lib/i18n'
 import { randomWhatsAppUrl, SPA_HOURS } from '@/lib/spa'
 import { EVENTS, trackEvent } from '@/lib/events'
@@ -510,7 +511,9 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
       submitPayload.adgroup = adgroup
     }
 
-    pushEvent('booking_submit', submitPayload)
+    // user_data (teléfono en E.164) lo lee la etiqueta de conversiones mejoradas
+    // de Google Ads en GTM; si el teléfono no es válido, el evento sale sin él.
+    pushEvent('booking_submit', { ...submitPayload, ...userDataFor(form.phone) })
 
     // WhatsApp tracking — mismo patrón que WhatsAppLink.tsx, para que GTM
     // capture esta reserva (la ruta principal del wizard) como evento real.
@@ -519,7 +522,7 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
     if (adgroup) waTrackPayload.adgroup = adgroup
     pushEvent('whatsapp_click', waTrackPayload)
     if (bookingSource === 'ads' || adgroup || sessionStorage.getItem('sem_trigger_key')) {
-      pushEvent('whatsapp_lead_ads', waTrackPayload)
+      pushEvent('whatsapp_lead_ads', { ...waTrackPayload, ...userDataFor(form.phone) })
     }
 
     submittingRef.current = false

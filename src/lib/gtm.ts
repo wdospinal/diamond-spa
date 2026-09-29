@@ -1,3 +1,5 @@
+import type { UserData } from '@/lib/user-data'
+
 /**
  * GTM dataLayer helper.
  *
@@ -12,14 +14,17 @@
  */
 export function pushEvent(
   eventName: string,
-  params: Record<string, string | number | boolean> = {},
+  params: Record<string, string | number | boolean | UserData> = {},
 ): void {
   if (typeof window === 'undefined') return
   ;(window as any).dataLayer = (window as any).dataLayer || []
   ;(window as any).dataLayer.push({ event: eventName, ...params })
   if (typeof (window as any).gtag === 'function') {
+    // user_data (teléfono) es solo para la etiqueta de Google Ads en GTM;
+    // nunca se replica como parámetro de evento en gtag/GA4.
+    const { user_data: _omit, ...analyticsParams } = params
     try {
-      ;(window as any).gtag('event', eventName, params)
+      ;(window as any).gtag('event', eventName, analyticsParams)
     } catch {
       // ignore
     }
