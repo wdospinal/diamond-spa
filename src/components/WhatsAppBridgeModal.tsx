@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { randomWhatsAppUrl } from '@/lib/phones'
 import { pushEvent } from '@/lib/gtm'
+import { userDataFor } from '@/lib/user-data'
 import { EVENTS, trackEvent } from '@/lib/events'
 import WhatsAppChatWidget from '@/components/WhatsAppChatWidget'
 
@@ -159,6 +160,8 @@ export default function WhatsAppBridgeModal() {
         locale,
         ...(gclid ? { gclid } : {}),
         ...(adgroup ? { adgroup } : {}),
+        // Teléfono opcional en el modal: si lo saltó, sale sin user_data.
+        ...userDataFor(fullPhone),
       })
     }
 

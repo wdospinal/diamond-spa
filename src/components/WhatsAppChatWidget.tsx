@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { randomWhatsAppUrl, SPA_HOURS } from '@/lib/spa'
 import { pushEvent } from '@/lib/gtm'
+import { userDataFor } from '@/lib/user-data'
 import { EVENTS, trackEvent } from '@/lib/events'
 
 const COUNTRY_CODES = [
@@ -316,6 +317,7 @@ export default function WhatsAppChatWidget({
       pushEvent('whatsapp_lead_ads', {
         source: 'landing_chat_widget', button: 'talk_advisor', locale,
         ...(gclid ? { gclid } : {}), ...(adgroup ? { adgroup } : {}),
+        ...userDataFor(phone),
       })
     }
 
@@ -375,6 +377,7 @@ export default function WhatsAppChatWidget({
       pushEvent('whatsapp_lead_ads', {
         source: 'landing_chat_widget', button: 'chat_widget', locale,
         ...(gclid ? { gclid } : {}), ...(adgroup ? { adgroup } : {}),
+        ...userDataFor(fullPhone),
       })
     }
 
@@ -385,6 +388,7 @@ export default function WhatsAppChatWidget({
         ...(gclid ? { gclid } : {}),
         ...(adgroup ? { adgroup } : {}),
         ...(campaign ? { campaign } : {}),
+        ...userDataFor(fullPhone),
       })
       trackEvent(EVENTS.BOOKING_SUBMITTED, {
         service_id: wSvc?.id ?? 'custom',
