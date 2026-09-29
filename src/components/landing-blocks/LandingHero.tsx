@@ -39,8 +39,12 @@ function HeroContent({
     }
   } else if (locale === 'en') {
     if (adgroup === 'medellin') {
-      displayH1 = 'Massage Therapy in Medellín, El Poblado'
-      displaySubtitle = 'Premium massages in El Poblado. Certified therapists, private rooms, and deep tissue specialists.'
+      // Reordenado para acercarse al orden literal de la keyword real
+      // "massage el poblado medellin" (3/10 de Nivel de Calidad pese a
+      // convertir bien) -- antes decía "Medellín, El Poblado", invertido
+      // respecto a como la gente realmente busca.
+      displayH1 = 'Massage in El Poblado, Medellín'
+      displaySubtitle = 'Premium massage therapy in El Poblado, Medellín. Certified therapists, private rooms, and deep tissue specialists.'
     } else if (adgroup === 'men') {
       displayH1 = 'Exclusive Massages for Men in Medellín'
       displaySubtitle = 'The ultimate spa for men. Relaxing massages, certified therapists, and luxury private rooms.'
