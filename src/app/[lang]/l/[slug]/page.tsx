@@ -4,6 +4,7 @@ import { isLocale, Locale, getDict } from '@/lib/i18n'
 import { getLandingByPath } from '@/lib/landing-store'
 import { buildAlternates, buildOpenGraph } from '@/lib/seo'
 import { mergeLandingMetadata } from '@/lib/landing-meta'
+import { isMenOnlyLandingSlug } from '@/lib/landing-audience'
 import { JsonLd } from '@/components/JsonLd'
 import LandingHead from '@/components/LandingHead'
 import LandingSemInit from '@/components/LandingSemInit'
@@ -49,6 +50,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     {
       alternates: buildAlternates(path, locale),
       openGraph: buildOpenGraph({ title, description, path, locale }),
+      // La pauta solo para hombres no hereda las palabras clave generales del sitio
+      // (incluyen "spa para mujeres"); Google ignora esta etiqueta, pero así la pauta queda solo para hombres.
+      // Las demás landings siguen igual.
+      ...(isMenOnlyLandingSlug(slug) ? { keywords: null } : {}),
     }
   )
 }

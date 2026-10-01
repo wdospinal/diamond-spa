@@ -3,6 +3,7 @@ import { getDict, type Locale } from '@/lib/i18n'
 import { PHONES } from '@/lib/phones'
 import { SPA_EMAIL, SPA_INSTAGRAM, SPA_TIKTOK, SPA_WHATSAPP_GREETING } from '@/lib/spa'
 import WhatsAppLink from '@/components/WhatsAppLink'
+import HideWomenOnLanding from '@/components/HideWomenOnLanding'
 import { IGIcon, WAIcon, MailIcon, TikTokIcon } from '@/components/SocialIcons'
 import { TrackedSocialLink } from '@/components/TrackedSocialLink'
 
@@ -34,7 +35,10 @@ export default function Footer({ locale }: { locale: Locale }) {
           {/* /es/massage-medellin redirects to /es/masajes, so each locale links to its own "massage in Medellín" page. */}
           <Link href={locale === 'en' ? '/en/massage-medellin' : '/es/masajes'} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.massageMedellin}</Link>
           <Link href={`/${locale}/masajes-para-hombres`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.massagesForMen}</Link>
-          <Link href={`/${locale}/masajes-para-mujeres`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.massagesForWomen}</Link>
+          {/* Mientras la pauta sea solo para hombres, este enlace no se muestra en /l/oferta-masajes (ver landing-audience.ts). */}
+          <HideWomenOnLanding>
+            <Link href={`/${locale}/masajes-para-mujeres`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.massagesForWomen}</Link>
+          </HideWomenOnLanding>
           <Link href={`/${locale}/depilacion-medellin`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.hairRemoval}</Link>
           <Link href={`/${locale}/limpieza-facial-medellin`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.facials}</Link>
           {/*

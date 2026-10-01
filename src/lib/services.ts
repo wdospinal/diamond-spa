@@ -129,12 +129,12 @@ export const SERVICES = [
     categoryId: 'massages' as const,
     pricingModel: 'duration' as const,
     shortDesc: {
-      en: 'Discover a relaxation experience designed to stimulate your senses through gentle movements and textured elements. Ideal for releasing stress, promoting calm, and enjoying a moment of well-being in an exclusive atmosphere.',
-      es: 'Descubre una experiencia de relajación diseñada para estimular los sentidos mediante movimientos suaves y elementos de textura. Ideal para liberar el estrés, promover la calma y disfrutar de un momento de bienestar en un ambiente exclusivo.',
+      en: 'A full-body massage with gentle, slow movements to release tension. Ideal for releasing stress, promoting calm, and enjoying a moment of well-being in a calm, private atmosphere.',
+      es: 'Masaje de cuerpo completo con movimientos suaves y lentos para soltar la tensión. Ideal para liberar el estrés, promover la calma y disfrutar de un momento de bienestar en un ambiente tranquilo y privado.',
     },
     description: {
-      en: 'Discover a relaxation experience designed to stimulate your senses through gentle movements and textured elements. Ideal for releasing stress, promoting calm, and enjoying a moment of well-being in an exclusive atmosphere.',
-      es: 'Descubre una experiencia de relajación diseñada para estimular los sentidos mediante movimientos suaves y elementos de textura. Ideal para liberar el estrés, promover la calma y disfrutar de un momento de bienestar en un ambiente exclusivo.',
+      en: 'A full-body massage with gentle, slow movements to release tension. Ideal for releasing stress, promoting calm, and enjoying a moment of well-being in a calm, private atmosphere.',
+      es: 'Masaje de cuerpo completo con movimientos suaves y lentos para soltar la tensión. Ideal para liberar el estrés, promover la calma y disfrutar de un momento de bienestar en un ambiente tranquilo y privado.',
     },
     prices: { 30: 130_000, 60: 220_000, 90: 280_000 },
   },

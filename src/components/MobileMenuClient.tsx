@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { usePathname } from 'next/navigation'
 import { type Locale } from '@/lib/i18n'
+import { withoutWomenOnLanding } from '@/lib/landing-audience'
 import { LOCALES_DISPLAY_ORDER } from '@/lib/constants'
 import { IMG_LOGOTIPO, IMG_LOGOTIPO_WEBP } from '@/lib/images'
 import { randomWhatsAppUrl } from '@/lib/phones'
@@ -39,6 +40,7 @@ export default function MobileMenuClient({
   const [mounted, setMounted] = useState(false)
   const [expandedHref, setExpandedHref] = useState<string | null>(null)
   const pathname = usePathname()
+  const visibleLinks = withoutWomenOnLanding(links, pathname)
   const waGreeting = SPA_WHATSAPP_GREETING[locale]
   const open = () => setMenuOpen(true)
   const close = () => setMenuOpen(false)
@@ -186,7 +188,7 @@ export default function MobileMenuClient({
           {/* Navigation tiles */}
           <nav aria-label={mobileNavLabel} className="flex-1 overflow-y-auto px-5 pt-6">
             <ul className="flex flex-col gap-3">
-              {links.map(({ label, href, desc, icon, children }, i) => {
+              {visibleLinks.map(({ label, href, desc, icon, children }, i) => {
                 const active = !!href && (pathname === href || pathname.startsWith(href + '/'))
                 const hasChildren = !!children?.length
                 const isExpanded = expandedHref === label

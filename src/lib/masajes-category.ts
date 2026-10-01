@@ -192,8 +192,8 @@ export const MASAJES_TYPE_SEO: MasajeTypeSeo[] = [
       en: ['Heat relaxes muscles at a deep level', 'Improves local blood circulation', 'Allows deeper pressure with less discomfort', 'A uniquely warm, soothing sensation'],
     },
     idealFor: {
-      es: 'Ideal si sientes frío con facilidad o buscas una experiencia sensorial distinta a un masaje tradicional.',
-      en: 'Ideal if you get cold easily or want a sensory experience different from a traditional massage.',
+      es: 'Ideal si sientes frío con facilidad o buscas algo distinto a un masaje tradicional.',
+      en: 'Ideal if you get cold easily or want something different from a traditional massage.',
     },
   },
   {
@@ -232,24 +232,24 @@ export const MASAJES_TYPE_SEO: MasajeTypeSeo[] = [
       en: 'Sensitive Massage in Medellín | Diamond Spa',
     },
     metaDescription: {
-      es: 'Una experiencia sensorial completa. Movimientos suaves y elementos de textura que despiertan los sentidos en un ambiente exclusivo y privado.',
-      en: 'A complete sensory experience. Gentle movements and textured elements that awaken the senses in an exclusive, private setting.',
+      es: 'Masaje de cuerpo completo con movimientos suaves y lentos para soltar la tensión, en un ambiente tranquilo y privado en El Poblado.',
+      en: 'A full-body massage with gentle, slow movements to release tension, in a calm, private setting in El Poblado.',
     },
     h1: { es: 'Masaje Sensitivo en Medellín', en: 'Sensitive Massage in Medellín' },
     keywords: 'masajes sensorial, masaje sensitivo, masaje californiano sensitivo, masaje relajante sensitivo',
     kwPrincipal: 'masajes sensorial (30, Medio)',
     kwSecundarias: ['masaje sensitivo', 'masaje sensorial', 'masaje californiano sensitivo', 'masaje relajante sensitivo'],
     intro: {
-      es: 'El masaje sensitivo trabaja con movimientos suaves y elementos de textura variada, diseñado para despertar los sentidos más allá de lo que logra un masaje convencional. Una experiencia sensorial completa en un ambiente exclusivo y privado.',
-      en: 'Sensitive massage uses gentle movements and varied textures, designed to awaken the senses beyond what a conventional massage achieves. A complete sensory experience in an exclusive, private setting.',
+      es: 'El masaje sensitivo es de cuerpo completo: movimientos suaves y lentos para soltar la tensión, sin presión profunda y sin prisa. Una experiencia de calma en un ambiente tranquilo y privado.',
+      en: 'Sensitive massage is a full-body massage: gentle, slow movements to release tension, with no deep pressure and no rush. A calming experience in a quiet, private setting.',
     },
     benefits: {
-      es: ['Estimulación sensorial completa', 'Ambiente exclusivo y privado', 'Experiencia distinta a un masaje convencional', 'Ideal para desconectar de la rutina'],
-      en: ['Complete sensory stimulation', 'Exclusive, private setting', 'An experience unlike a conventional massage', 'Perfect for disconnecting from routine'],
+      es: ['Movimientos suaves y lentos', 'Sin presión profunda', 'Ambiente tranquilo y privado', 'Ideal para desconectar de la rutina'],
+      en: ['Gentle, slow movements', 'No deep pressure', 'Calm, private setting', 'Perfect for disconnecting from routine'],
     },
     idealFor: {
-      es: 'Ideal si buscas algo diferente a lo convencional, una experiencia sensorial completa.',
-      en: 'Ideal if you\u2019re looking for something different from the conventional, a complete sensory experience.',
+      es: 'Ideal si buscas un masaje suave y lento para desconectar, sin presión profunda.',
+      en: 'Ideal if you\u2019re looking for a gentle, slow massage to switch off, without deep pressure.',
     },
   },
 ]

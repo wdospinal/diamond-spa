@@ -11,7 +11,7 @@ const IMAGES = [
   },
   {
     src: '/images-ads/galeria/galeria2.png',
-    title: { es: 'Suite Para Dos', en: 'Couples Suite' }
+    title: { es: 'Suite Para Dos', en: 'Suite for Two' }
   },
   {
     src: '/images-ads/galeria/galeria3.png',

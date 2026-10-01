@@ -54,6 +54,8 @@ export async function POST(req: NextRequest) {
   const serviceId = typeof body.serviceId === 'string' && body.serviceId.trim() ? body.serviceId.trim() : 'whatsapp-lead'
   const priceCop = typeof body.priceCop === 'number' && body.priceCop > 0 ? body.priceCop : 0
   const durationMinutes = typeof body.durationMinutes === 'number' && body.durationMinutes > 0 ? body.durationMinutes : null
+  // Detalle que arma el chat (por ejemplo, una línea por persona en reservas de 2). Antes se descartaba.
+  const detail = typeof body.requests === 'string' && body.requests.trim() ? body.requests.trim().slice(0, 600) : undefined
 
   // Candado anti-duplicados: si este mismo teléfono ya generó un lead de
   // WhatsApp en los últimos 5 minutos, es casi con certeza un reintento del
@@ -87,6 +89,7 @@ export async function POST(req: NextRequest) {
       name,
       phone,
       requests: [
+        detail ?? null,
         campaign ? `Campaña: ${campaign}` : null,
         !phone ? '⚠ Sin teléfono — el visitante saltó ese paso. Complétalo aquí cuando lo obtengas de la conversación real de WhatsApp.' : null,
       ].filter(Boolean).join(' · ') || undefined,
