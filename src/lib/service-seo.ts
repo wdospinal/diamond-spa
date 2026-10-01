@@ -41,6 +41,79 @@ export function serviceSearchName(s: ServiceDef, locale: Locale): string {
   return name
 }
 
+/**
+ * H1 for detail pages without hand-written content. The bare catalogue name
+ * ("Bikini", "Pecho") gave Google a one-word heading on a template page; the
+ * waxing pages sat in "Discovered - currently not indexed" with it.
+ */
+export function serviceH1(s: ServiceDef, locale: Locale): string {
+  const name = serviceSearchName(s, locale)
+  return locale === 'en' ? `${name} in Medellín` : `${name} en Medellín`
+}
+
+type HubLink = { path: string; anchor: string }
+
+/** Category guide a detail page links up to, so every template page has a path to its hub. */
+export function serviceCategoryHub(s: ServiceDef, locale: Locale): HubLink | undefined {
+  if (s.categoryId === 'hair-removal') {
+    return {
+      path: '/depilacion-medellin',
+      anchor: locale === 'en' ? 'Hair removal in Medellín: all areas and prices' : 'Depilación en Medellín: todas las zonas y precios',
+    }
+  }
+  if (s.categoryId === 'facials') {
+    return {
+      path: '/limpieza-facial-medellin',
+      anchor: locale === 'en' ? 'Facials in Medellín: compare all treatments' : 'Limpieza facial en Medellín: compara todos los tratamientos',
+    }
+  }
+  return undefined
+}
+
+type MethodCard = { icon: string; title: string; body: string }
+
+/**
+ * Wax vs machine copy, shared by /depilacion-medellin and every waxing detail
+ * page so the site says one thing about the two methods.
+ */
+export const HAIR_REMOVAL_METHODS: Record<Locale, MethodCard[]> = {
+  en: [
+    {
+      icon: 'local_fire_department',
+      title: 'Hot Wax',
+      body: 'Warm wax adheres precisely to the hair, removing it from the root for long-lasting results of 3–4 weeks. Ideal for most skin types and areas.',
+    },
+    {
+      icon: 'electric_bolt',
+      title: 'Electric Machine',
+      body: 'Gentler approach for sensitive skin and delicate areas. The machine pulls hair efficiently with minimal irritation — perfect for frequent treatments.',
+    },
+  ],
+  es: [
+    {
+      icon: 'local_fire_department',
+      title: 'Cera Caliente',
+      body: 'La cera caliente se adhiere con precisión al vello, removiéndolo desde la raíz para resultados duraderos de 3–4 semanas. Ideal para la mayoría de tipos de piel y zonas.',
+    },
+    {
+      icon: 'electric_bolt',
+      title: 'Máquina Eléctrica',
+      body: 'Enfoque más suave para pieles sensibles y zonas delicadas. La máquina extrae el vello eficientemente con mínima irritación — perfecta para tratamientos frecuentes.',
+    },
+  ],
+}
+
+export const HAIR_REMOVAL_METHOD_FAQ: Record<Locale, Faq> = {
+  en: {
+    question: 'Is wax or machine hair removal better?',
+    answer: 'Wax provides longer-lasting results (3–4 weeks) and is ideal for most areas. Machine is gentler on sensitive skin and delicate zones. Our cosmetologists advise you based on your skin type and the area being treated.',
+  },
+  es: {
+    question: '¿Qué es mejor: cera o máquina?',
+    answer: 'La cera ofrece resultados más duraderos (3-4 semanas) y es ideal para la mayoría de zonas. La máquina es más suave para pieles sensibles y zonas delicadas. Nuestras cosmetólogas te asesoran según tu tipo de piel y la zona a tratar.',
+  },
+}
+
 export function serviceSeoTitle(s: ServiceDef, locale: Locale): string {
   const name = serviceSearchName(s, locale)
   const from = formatCop(serviceFromPrice(s))
@@ -99,6 +172,8 @@ export function serviceFaqs(s: ServiceDef, locale: Locale): Faq[] {
       answer: priceAnswer(s, locale, name),
     },
   ]
+
+  if (s.categoryId === 'hair-removal') faqs.push(HAIR_REMOVAL_METHOD_FAQ[locale])
 
   if (s.pricingModel === 'duration') {
     faqs.push({
