@@ -11,6 +11,7 @@ import { TherapistCard } from '@/components/TherapistCard'
 import { FaqSection } from '@/components/FaqSection'
 import { getFaqCategories, getFaqItems } from '@/lib/faqs'
 import { JsonLd } from '@/components/JsonLd'
+import { LocationSection } from '@/components/LocationSection'
 
 // TODO: Update images
 const HERO_IMG = IMG_HERO_ABOUT
@@ -201,6 +202,9 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
           </div>
         </div>
       </section>
+
+      {/* ADDRESS + MAP */}
+      <LocationSection locale={locale} />
     </>
   )
 }
