@@ -135,8 +135,8 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
           es: '¿Qué spas hay cerca del Parque Lleras?',
         },
         a: {
-          en: `Diamond Spa is a short walk from Parque Lleras, at ${SPA_ADDRESS.full}. It is a quiet street a few blocks away from the nightlife area, which keeps the space calm while staying central and easy to reach on foot.`,
-          es: `Diamond Spa está a pocos minutos caminando del Parque Lleras, en ${SPA_ADDRESS.full}. Es una calle tranquila a unas cuadras de la zona de rumba, lo que mantiene el ambiente silencioso sin perder la ubicación céntrica y de fácil acceso a pie.`,
+          en: `Diamond Spa is a 10-minute walk from Parque Lleras, at ${SPA_ADDRESS.full}. It is a quiet street a few blocks away from the nightlife area, which keeps the space calm while staying central and easy to reach on foot.`,
+          es: `Diamond Spa está a 10 minutos caminando del Parque Lleras, en ${SPA_ADDRESS.full}. Es una calle tranquila a unas cuadras de la zona de rumba, lo que mantiene el ambiente silencioso sin perder la ubicación céntrica y de fácil acceso a pie.`,
         },
       },
       {
@@ -1040,8 +1040,8 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
           es: '¿Se puede llegar caminando desde el Parque Lleras?',
         },
         a: {
-          en: 'Yes, it is a walkable distance of roughly 10 to 15 minutes. Keep in mind that El Poblado is hilly, so if you would rather arrive relaxed, a short taxi ride is easier.',
-          es: 'Sí, es una distancia caminable de unos 10 a 15 minutos. Ten en cuenta que El Poblado tiene pendientes, así que si prefieres llegar descansado, un taxi corto resulta más cómodo.',
+          en: 'Yes, it is a walkable distance of roughly 10 minutes. Keep in mind that El Poblado is hilly, so if you would rather arrive relaxed, a short taxi ride is easier.',
+          es: 'Sí, es una distancia caminable de unos 10 minutos. Ten en cuenta que El Poblado tiene pendientes, así que si prefieres llegar descansado, un taxi corto resulta más cómodo.',
         },
       },
       {
@@ -1151,8 +1151,8 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
           es: 'El mejor spa cerca del Parque Lleras',
         },
         a: {
-          en: 'Diamond Spa is a 10 to 15 minute walk from Parque Lleras, on a quiet street away from the noise but still central. Massages, facials and waxing, all by appointment.',
-          es: 'Diamond Spa está a 10 o 15 minutos caminando del Parque Lleras, en una calle tranquila lejos del ruido pero igualmente céntrica. Masajes, faciales y depilación, todo con cita previa.',
+          en: 'Diamond Spa is a 10-minute walk from Parque Lleras, on a quiet street away from the noise but still central. Massages, facials and waxing, all by appointment.',
+          es: 'Diamond Spa está a 10 minutos caminando del Parque Lleras, en una calle tranquila lejos del ruido pero igualmente céntrica. Masajes, faciales y depilación, todo con cita previa.',
         },
       },
       {
