@@ -106,6 +106,10 @@ export default async function ServicesPage({ params }: { params: Promise<{ lang:
           {/* ── SECTION 1: EXCLUSIVE MASSAGES ─────────────────────────────── */}
           <div className="mb-20">
             <h2 className="font-headline text-3xl md:text-4xl text-on-surface font-light mb-2">{t.sectionMassages}</h2>
+            {/* Each price section links to its category guide: /services is the price list, the guides own the "X en Medellín" searches. */}
+            <Link href={locale === 'en' ? '/en/massage-medellin' : '/es/masajes'} className="inline-flex items-center gap-1 mb-6 font-label text-primary text-xs tracking-widest uppercase hover:gap-2 transition-all">
+              {locale === 'en' ? 'Guide: massage in Medellín' : 'Guía: masajes en Medellín'} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
+            </Link>
             <div className="w-12 h-px bg-primary mb-10" />
             <div className="divide-y divide-outline-variant/15">
               {massages.map((service, idx) => {
@@ -167,6 +171,9 @@ export default async function ServicesPage({ params }: { params: Promise<{ lang:
           {/* ── SECTION 2: FACIALS & SKIN CARE ────────────────────────────── */}
           <div className="mb-20">
             <h2 className="font-headline text-3xl md:text-4xl text-on-surface font-light mb-2">{t.sectionFacials}</h2>
+            <Link href={`/${locale}/limpieza-facial-medellin`} className="inline-flex items-center gap-1 mb-6 font-label text-primary text-xs tracking-widest uppercase hover:gap-2 transition-all">
+              {locale === 'en' ? 'Guide: facials in Medellín' : 'Guía: limpieza facial en Medellín'} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
+            </Link>
             <div className="w-12 h-px bg-primary mb-10" />
             <div className="divide-y divide-outline-variant/15">
               {facials.map((service, idx) => {
@@ -226,6 +233,9 @@ export default async function ServicesPage({ params }: { params: Promise<{ lang:
           {/* ── SECTION 3: HAIR REMOVAL ────────────────────────────────────── */}
           <div className="mb-20">
             <h2 className="font-headline text-3xl md:text-4xl text-on-surface font-light mb-2">{t.sectionHairRemoval}</h2>
+            <Link href={`/${locale}/depilacion-medellin`} className="inline-flex items-center gap-1 mb-6 font-label text-primary text-xs tracking-widest uppercase hover:gap-2 transition-all">
+              {locale === 'en' ? 'Guide: hair removal in Medellín' : 'Guía: depilación en Medellín'} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
+            </Link>
             <div className="w-12 h-px bg-primary mb-10" />
             <div className="divide-y divide-outline-variant/15">
               {hairRemoval.map((service, idx) => {

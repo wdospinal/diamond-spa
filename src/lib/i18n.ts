@@ -155,11 +155,14 @@ const dict = {
     },
 
     services: {
-      metaTitle: 'Massages & Services for Men and Women — Diamond Spa Medellín',
-      metaDesc: `Massages & spa in El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reviews. Deep tissue, sports, 4-hands, facials & hair removal. From $120,000 COP — book now.`,
+      // /services is the price list. It used to repeat "for men and women",
+      // which belongs to /masajes-para-hombres and /masajes-para-mujeres, and
+      // Google left it in "Crawled - currently not indexed" as a duplicate.
+      metaTitle: 'Spa Prices in Medellín — Massages, Facials & Hair Removal | Diamond Spa',
+      metaDesc: `Full price list for Diamond Spa in El Poblado, Medellín: massages by 30, 60 or 90 minutes, facials and wax or machine hair removal. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reviews. Prices in COP.`,
       label: 'The Selection',
-      title: 'Massages & Services in Medellín',
-      subtitle: 'Massages for men and women in El Poblado: relaxing, sports, deep tissue and more. Facials and hair removal. Transparent COP pricing.',
+      title: 'Services & Prices',
+      subtitle: 'Every massage, facial and hair removal service at our El Poblado spa, with its price in COP: by 30, 60 or 90 minutes, or by wax or machine.',
       pricingNote: 'All prices in Colombian pesos (COP).',
       sectionMassages: 'Exclusive Massages',
       sectionFacials: 'Facials & Skin Care',
@@ -473,11 +476,11 @@ const dict = {
     },
 
     services: {
-      metaTitle: 'Masajes y Servicios para Hombres y Mujeres — Diamond Spa Medellín',
-      metaDesc: `Masajes y spa en El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reseñas. Deep tissue, deportivo, 4 manos, faciales y depilación. Desde $120.000 COP — agenda hoy.`,
+      metaTitle: 'Precios de Spa en Medellín — Masajes, Faciales y Depilación | Diamond Spa',
+      metaDesc: `Lista completa de precios de Diamond Spa en El Poblado, Medellín: masajes por 30, 60 o 90 minutos, faciales y depilación con cera o máquina. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reseñas. Precios en COP.`,
       label: 'La Selección',
-      title: 'Masajes y Servicios en Medellín',
-      subtitle: 'Masajes para hombres y mujeres en El Poblado: relajantes, deportivos, deep tissue y más. Faciales y depilación. Precios transparentes en COP.',
+      title: 'Servicios y Precios',
+      subtitle: 'Todos los masajes, faciales y servicios de depilación de nuestro spa en El Poblado, con su precio en COP: por 30, 60 o 90 minutos, o con cera o máquina.',
       pricingNote: 'Todos los precios en pesos colombianos (COP).',
       sectionMassages: 'Masajes Exclusivos',
       sectionFacials: 'Faciales y Cuidado de la Piel',
