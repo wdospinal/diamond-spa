@@ -6,7 +6,7 @@ import { randomWhatsAppUrl } from '@/lib/phones'
 import { pushEvent } from '@/lib/gtm'
 import { userDataFor } from '@/lib/user-data'
 import { EVENTS, trackEvent } from '@/lib/events'
-import WhatsAppChatWidget from '@/components/WhatsAppChatWidget'
+import PautaChatWidget from '@/components/PautaChatWidget'
 
 interface WhatsAppBridgeDetail {
   text?: string
@@ -224,14 +224,8 @@ export default function WhatsAppBridgeModal() {
   if (!isOpen) return null
 
   if (isPautaLanding) {
-    return (
-      <WhatsAppChatWidget
-        locale={locale}
-        isOpen={isOpen}
-        onClose={closeModal}
-        customText={customText}
-      />
-    )
+    // Chat de la pauta, en el idioma de la página (/es o /en).
+    return <PautaChatWidget onClose={closeModal} customText={customText} locale={locale} />
   }
 
   const t = I18N_TEXTS[locale] || I18N_TEXTS.es

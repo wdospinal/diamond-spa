@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { type Locale } from '@/lib/i18n'
+import { withoutWomenOnLanding } from '@/lib/landing-audience'
 import { LOCALES_DISPLAY_ORDER } from '@/lib/constants'
 
 import { getLocalizedPath } from '@/lib/routes'
@@ -29,6 +30,7 @@ export default function NavLinksClient({
   locale: Locale
 }) {
   const pathname = usePathname()
+  const visibleLinks = withoutWomenOnLanding(links, pathname)
   const [openIdx, setOpenIdx] = useState<number | null>(null)
   const openTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -92,7 +94,7 @@ export default function NavLinksClient({
     <>
       {/* Nav links */}
       <div className="hidden md:flex gap-10 items-center" ref={navRef}>
-        {links.map(({ label, href, children }, idx) => {
+        {visibleLinks.map(({ label, href, children }, idx) => {
           const active = isActive(href)
           const hasChildren = !!children?.length
           const isOpen = openIdx === idx

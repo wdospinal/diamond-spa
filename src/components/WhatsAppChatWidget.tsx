@@ -111,8 +111,8 @@ const COPY = {
     askDur: '¿Qué duración o modalidad prefieres?',
     askDate: '¿Qué día te viene bien? (Esto no te compromete a nada — solo nos ayuda a coordinar mejor contigo)',
     askTime: '¿A qué hora te gustaría tu cita?',
-    talkAdvisor: 'Hablar con un asesor →',
-    talkAdvisorConnecting: '¡Perfecto! Te transferimos con nuestro asesor en WhatsApp…',
+    talkAdvisor: 'Hablar con una asesora →',
+    talkAdvisorConnecting: '¡Perfecto! Te transferimos con nuestra asesora en WhatsApp…',
     closing: '¡Perfecto! Te estamos conectando por WhatsApp…',
     namePlaceholder: 'Escribe tu nombre…',
     phonePlaceholder: '312 345 6789',
@@ -327,7 +327,7 @@ export default function WhatsAppChatWidget({
         const body = JSON.stringify({
           phone: phone || undefined,
           name: name.trim() || undefined,
-          requests: locale === 'en' ? 'Talk to an advisor' : 'Hablar con un asesor',
+          requests: locale === 'en' ? 'Talk to an advisor' : 'Hablar con una asesora',
           gclid: gclid || undefined,
           adgroup: adgroup || undefined,
           campaign: campaign || undefined,
@@ -344,7 +344,7 @@ export default function WhatsAppChatWidget({
 
     const greet = locale === 'en'
       ? 'Hello, I would like to speak with an advisor at Diamond Spa.'
-      : 'Hola, me gustaría hablar con un asesor de Diamond Spa.'
+      : 'Hola, me gustaría hablar con una asesora de Diamond Spa.'
     const namePart = name.trim() ? (locale === 'en' ? ` My name is ${name.trim()}.` : ` Mi nombre es ${name.trim()}.`) : ''
     const msg = `${greet}${namePart}`
 

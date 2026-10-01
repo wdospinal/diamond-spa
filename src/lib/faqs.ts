@@ -135,8 +135,8 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
           es: '¿Qué spas hay cerca del Parque Lleras?',
         },
         a: {
-          en: `Diamond Spa is a short walk from Parque Lleras, at ${SPA_ADDRESS.full}. It is a quiet street a few blocks away from the nightlife area, which keeps the space calm while staying central and easy to reach on foot.`,
-          es: `Diamond Spa está a pocos minutos caminando del Parque Lleras, en ${SPA_ADDRESS.full}. Es una calle tranquila a unas cuadras de la zona de rumba, lo que mantiene el ambiente silencioso sin perder la ubicación céntrica y de fácil acceso a pie.`,
+          en: `Diamond Spa is a 10-minute walk from Parque Lleras, at ${SPA_ADDRESS.full}. It is a quiet street a few blocks away from the nightlife area, which keeps the space calm while staying central and easy to reach on foot.`,
+          es: `Diamond Spa está a 10 minutos caminando del Parque Lleras, en ${SPA_ADDRESS.full}. Es una calle tranquila a unas cuadras de la zona de rumba, lo que mantiene el ambiente silencioso sin perder la ubicación céntrica y de fácil acceso a pie.`,
         },
       },
       {
@@ -424,8 +424,8 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
           es: '¿Qué es un masaje sensitivo?',
         },
         a: {
-          en: `It is a slow, enveloping full-body massage that works on skin sensitivity and the nervous system rather than on deep muscle. The emphasis is on continuous, unhurried contact and full-body awareness. It costs ${dur('sensitive', 60)} for 60 minutes.`,
-          es: `Es un masaje de cuerpo completo, lento y envolvente, que trabaja la sensibilidad de la piel y el sistema nervioso más que el músculo profundo. El énfasis está en el contacto continuo, sin prisa, y en la conciencia corporal. Cuesta ${dur('sensitive', 60)} por 60 minutos.`,
+          en: `It is a full-body massage with gentle, slow movements to release tension, with no deep pressure. The emphasis is on continuous, unhurried contact. It costs ${dur('sensitive', 60)} for 60 minutes.`,
+          es: `Es un masaje de cuerpo completo, con movimientos suaves y lentos para soltar la tensión y sin presión profunda. El énfasis está en el contacto continuo y sin prisa. Cuesta ${dur('sensitive', 60)} por 60 minutos.`,
         },
       },
       {
@@ -473,8 +473,8 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
           es: '¿Dónde hacer un masaje en pareja en Medellín?',
         },
         a: {
-          en: `At Diamond Spa the Duo massage is designed for exactly that: two people, side by side in the same private room, each with their own therapist. It costs ${dur('duo', 60)} for 60 minutes and ${dur('duo', 90)} for 90.`,
-          es: `En Diamond Spa el Duo Masaje está pensado exactamente para eso: dos personas, lado a lado en la misma sala privada, cada una con su propia terapeuta. Cuesta ${dur('duo', 60)} por 60 minutos y ${dur('duo', 90)} por 90.`,
+          en: `At Diamond Spa the Duo massage is designed for exactly that: two people, side by side in the same private room, each with their own therapist. It costs ${dur('duo', 60)} for 60 minutes and ${dur('duo', 90)} for 90, for both with the same technique.`,
+          es: `En Diamond Spa el Duo Masaje está pensado exactamente para eso: dos personas, lado a lado en la misma sala privada, cada una con su propia terapeuta. Cuesta ${dur('duo', 60)} por 60 minutos y ${dur('duo', 90)} por 90, para las dos con la misma técnica.`,
         },
       },
       {
@@ -483,8 +483,8 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
           es: '¿Los spas en Medellín tienen sala privada para parejas?',
         },
         a: {
-          en: 'At Diamond Spa, yes — the Duo massage takes place in a closed room reserved only for the two of you, with two tables and two therapists. You can choose the same technique or different ones.',
-          es: 'En Diamond Spa, sí: el Duo Masaje se realiza en una sala cerrada reservada solo para ustedes dos, con dos camillas y dos terapeutas. Pueden elegir la misma técnica o técnicas diferentes.',
+          en: 'At Diamond Spa, yes — the Duo massage takes place in a closed room reserved only for the two of you, with two tables and two therapists. You can choose the same technique or different ones; with different techniques the price changes and reception confirms it for you.',
+          es: 'En Diamond Spa, sí: el Duo Masaje se realiza en una sala cerrada reservada solo para ustedes dos, con dos camillas y dos terapeutas. Pueden elegir la misma técnica o técnicas diferentes; con técnicas distintas el precio cambia y recepción se lo confirma.',
         },
       },
       {
@@ -875,8 +875,8 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
           es: '¿Puedo reservar para dos personas al mismo tiempo?',
         },
         a: {
-          en: `Yes — that is the Duo massage, in a private room with two tables and two therapists (${dur('duo', 60)} for 60 minutes). Because it uses two therapists at once, book it further ahead than a single session.`,
-          es: `Sí: es el Duo Masaje, en sala privada con dos camillas y dos terapeutas (${dur('duo', 60)} por 60 minutos). Como ocupa dos terapeutas a la vez, resérvalo con más anticipación que una sesión individual.`,
+          en: `Yes — that is the Duo massage, in a private room with two tables and two therapists (${dur('duo', 60)} for 60 minutes with the same technique). Because it uses two therapists at once, book it further ahead than a single session.`,
+          es: `Sí: es el Duo Masaje, en sala privada con dos camillas y dos terapeutas (${dur('duo', 60)} por 60 minutos con la misma técnica). Como ocupa dos terapeutas a la vez, resérvalo con más anticipación que una sesión individual.`,
         },
       },
     ],
@@ -949,8 +949,8 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
           es: '¿Se acostumbra dar propina en un spa en Colombia?',
         },
         a: {
-          en: 'It is not mandatory and it is not automatically added. It is a common gesture when you are happy with the session, but nobody expects it and the price you were quoted is the full price.',
-          es: 'No es obligatoria ni se agrega automáticamente. Es un gesto frecuente cuando quedas contento con la sesión, pero nadie la espera y el precio que te cotizamos es el precio completo.',
+          en: 'We do not ask for tips and none is added automatically. Tipping is voluntary, and the price you were quoted is the full price.',
+          es: 'No pedimos propina ni se agrega automáticamente. La propina es voluntaria, y el precio que te cotizamos es el precio completo.',
         },
       },
       {
@@ -959,8 +959,8 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
           es: '¿Cuánto de propina se deja a un terapeuta en Medellín?',
         },
         a: {
-          en: 'When people do tip, the usual range is around 10% of the service. It is entirely optional and can be handed directly to the therapist.',
-          es: 'Cuando se da propina, el rango habitual ronda el 10% del servicio. Es totalmente opcional y puede entregarse directamente a la terapeuta.',
+          en: 'There is no set amount: we do not ask for tips, and tipping is voluntary. The price you were quoted is the full price.',
+          es: 'No hay un monto fijo: no pedimos propina y dejarla es voluntario. El precio que te cotizamos es el precio completo.',
         },
       },
       {
@@ -991,8 +991,8 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
           // @needs-confirmation — invoicing
         },
         a: {
-          en: `Yes, if you request it. Tell us when booking or before paying, and provide the billing details so we can issue it correctly. You can also arrange it in advance on WhatsApp (${WA_1}).`,
-          es: `Sí, si la solicitas. Indícalo al reservar o antes de pagar y entréganos los datos de facturación para emitirla correctamente. También puedes coordinarlo con anticipación por WhatsApp (${WA_1}).`,
+          en: `Yes, if you request it. Ask for it at the register when you pay, with your billing details; you can also arrange it in advance on WhatsApp (${WA_1}).`,
+          es: `Sí, si la solicitas. Pídela en caja al pagar, con tus datos de facturación; también puedes coordinarlo con anticipación por WhatsApp (${WA_1}).`,
         },
       },
     ],
@@ -1040,8 +1040,8 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
           es: '¿Se puede llegar caminando desde el Parque Lleras?',
         },
         a: {
-          en: 'Yes, it is a walkable distance of roughly 10 to 15 minutes. Keep in mind that El Poblado is hilly, so if you would rather arrive relaxed, a short taxi ride is easier.',
-          es: 'Sí, es una distancia caminable de unos 10 a 15 minutos. Ten en cuenta que El Poblado tiene pendientes, así que si prefieres llegar descansado, un taxi corto resulta más cómodo.',
+          en: 'Yes, it is a walkable distance of roughly 10 minutes. Keep in mind that El Poblado is hilly, so if you would rather arrive relaxed, a short taxi ride is easier.',
+          es: 'Sí, es una distancia caminable de unos 10 minutos. Ten en cuenta que El Poblado tiene pendientes, así que si prefieres llegar descansado, un taxi corto resulta más cómodo.',
         },
       },
       {
@@ -1151,8 +1151,8 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
           es: 'El mejor spa cerca del Parque Lleras',
         },
         a: {
-          en: 'Diamond Spa is a 10 to 15 minute walk from Parque Lleras, on a quiet street away from the noise but still central. Massages, facials and waxing, all by appointment.',
-          es: 'Diamond Spa está a 10 o 15 minutos caminando del Parque Lleras, en una calle tranquila lejos del ruido pero igualmente céntrica. Masajes, faciales y depilación, todo con cita previa.',
+          en: 'Diamond Spa is a 10-minute walk from Parque Lleras, on a quiet street away from the noise but still central. Massages, facials and waxing, all by appointment.',
+          es: 'Diamond Spa está a 10 minutos caminando del Parque Lleras, en una calle tranquila lejos del ruido pero igualmente céntrica. Masajes, faciales y depilación, todo con cita previa.',
         },
       },
       {
@@ -1161,8 +1161,8 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
           es: 'Precio del masaje en pareja en Medellín',
         },
         a: {
-          en: `The Duo massage — two people, one private room, two therapists — is ${dur('duo', 60)} for 60 minutes and ${dur('duo', 90)} for 90 minutes, covering both people.`,
-          es: `El Duo Masaje —dos personas, una sala privada, dos terapeutas— cuesta ${dur('duo', 60)} por 60 minutos y ${dur('duo', 90)} por 90 minutos, para las dos personas.`,
+          en: `The Duo massage — two people, one private room, two therapists — is ${dur('duo', 60)} for 60 minutes and ${dur('duo', 90)} for 90 minutes, covering both people with the same technique.`,
+          es: `El Duo Masaje —dos personas, una sala privada, dos terapeutas— cuesta ${dur('duo', 60)} por 60 minutos y ${dur('duo', 90)} por 90 minutos, para las dos personas con la misma técnica.`,
         },
       },
       {
@@ -1181,8 +1181,8 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
           es: '¿Hay que dar propina en un spa en Colombia?',
         },
         a: {
-          en: 'No. Tipping is not required and it is never added automatically. If you were happy with the session, around 10% is a common gesture, but the quoted price is complete on its own.',
-          es: 'No. La propina no es obligatoria y nunca se agrega automáticamente. Si quedaste contento con la sesión, alrededor del 10% es un gesto frecuente, pero el precio cotizado es completo por sí solo.',
+          en: 'No. We do not ask for tips and none is ever added automatically; tipping is voluntary, and the quoted price is complete on its own.',
+          es: 'No. No pedimos propina y nunca se agrega automáticamente; dejarla es voluntario, y el precio cotizado es completo por sí solo.',
         },
       },
       {

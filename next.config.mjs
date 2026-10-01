@@ -52,10 +52,11 @@ const nextConfig = {
       {
         source: '/_next/static/:path*',
         headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
+          // Solo en producción: en desarrollo, con "immutable" el navegador seguía
+          // mostrando el JavaScript viejo después de cada cambio.
+          ...(process.env.NODE_ENV === 'production'
+            ? [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }]
+            : []),
           {
             key: 'X-Robots-Tag',
             value: 'noindex',

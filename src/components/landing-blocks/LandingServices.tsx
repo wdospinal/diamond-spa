@@ -110,22 +110,22 @@ const PAIN_SOLUTIONS: Record<
     detail:  { es: 'Para deportistas, runners o quienes llegaron con piernas cargadas. Fusión de masaje fuerte, pistola de percusión y estiramientos asistidos.', en: 'For athletes, runners or heavy-legged travelers. Combination of deep massage, percussion gun and assisted stretching.' },
   },
   sensitive: {
-    badge:   { es: 'Sensaciones · Relajación total', en: 'Senses · Total relaxation'    },
-    hook:    { es: 'Movimientos suaves y texturas que estimulan los sentidos y disuelven la tensión.',  en: 'Gentle movements and textured elements that stimulate the senses and melt tension away.' },
-    bullets: { es: ['Ultra suave', 'Estimula sentidos', 'Ambiente exclusivo'],          en: ['Ultra-gentle', 'Sensory stimulation', 'Exclusive atmosphere']           },
-    detail:  { es: 'Para quienes buscan una relajación sensorial profunda, sin presión, en un ambiente íntimo y privado.', en: 'For those seeking deep sensory relaxation without pressure, in a private and intimate setting.' },
+    badge:   { es: 'Calma · Relajación total', en: 'Calm · Total relaxation'    },
+    hook:    { es: 'Movimientos suaves y lentos para soltar la tensión.',  en: 'Gentle, slow movements to release tension.' },
+    bullets: { es: ['Ultra suave', 'Ritmo lento', 'Ambiente tranquilo'],          en: ['Ultra-gentle', 'Slow pace', 'Calm atmosphere']           },
+    detail:  { es: 'Para quienes buscan una relajación profunda, sin presión, con movimientos lentos y continuos, en una cabina privada.', en: 'For those seeking deep relaxation without pressure, with slow, continuous movements, in a private room.' },
   },
   'four-hands': {
     badge:   { es: '2 Terapeutas · Doble alivio',  en: '2 Therapists · Double relief'  },
     hook:    { es: 'Cuatro manos sincronizadas que saturan el sistema nervioso de la mejor manera.', en: 'Four synchronized hands that overwhelm the nervous system — in the best possible way.' },
     bullets: { es: ['4 manos simultáneas', 'Relajación sin igual', 'Sincronización perfecta'], en: ['4 simultaneous hands', 'Unmatched relaxation', 'Perfect synchrony'] },
-    detail:  { es: 'La mente no puede seguir el ritmo de dos terapeutas y simplemente se rinde. Profundidad de relajación imposible con un solo terapeuta.', en: 'The mind cannot track two therapists and simply surrenders. Relaxation depth impossible with a single therapist.' },
+    detail:  { es: 'La mente no puede seguir el ritmo de dos terapeutas y simplemente se rinde. Profundidad de relajación imposible con una sola terapeuta.', en: 'The mind cannot track two therapists and simply surrenders. Relaxation depth impossible with a single therapist.' },
   },
   duo: {
-    badge:   { es: 'Parejas · Sesión compartida',  en: 'Couples · Shared session'      },
-    hook:    { es: 'Dos personas, una sala privada, dos terapeutas dedicados.',         en: 'Two people, one private room, two dedicated therapists.'                  },
+    badge:   { es: 'Dos personas · Sesión compartida',  en: 'Two people · Shared session'      },
+    hook:    { es: 'Dos personas, una sala privada, dos terapeutas dedicadas.',         en: 'Two people, one private room, two dedicated therapists.'                  },
     bullets: { es: ['Sala privada doble', 'Técnicas independientes', 'Sin prisas'],     en: ['Private double room', 'Custom techniques', 'Unhurried pace']            },
-    detail:  { es: 'Perfecta para parejas o amigos. Cada persona tiene su propio terapeuta y pueden elegir técnicas distintas en la misma sala.', en: 'Perfect for couples or friends. Each person gets their own therapist and can choose different techniques in the same room.' },
+    detail:  { es: 'Perfecta para ir con un amigo o un familiar. Cada persona tiene su propia terapeuta y pueden elegir técnicas distintas en la misma sala.', en: 'Perfect for going with a friend or family member. Each person gets their own therapist and can choose different techniques in the same room.' },
   },
 }
 
