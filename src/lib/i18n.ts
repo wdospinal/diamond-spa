@@ -50,13 +50,13 @@ function mapTherapists(items: BilingualTherapist[], locale: 'en' | 'es'): Therap
 export const THERAPISTS: BilingualTherapist[] = [
   {
     id: 'daniela-salina',
-    name: 'Daniela Salina',
+    name: 'Daniela',
     en: { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience', specialty: 'Focused on your overall wellbeing, with 5+ years in the field' },
     es: { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia', specialty: 'Enfocada en tu bienestar integral, con 5+ años en el campo' },
   },
   {
     id: 'sary-paez',
-    name: 'Sary Paez',
+    name: 'Sary',
     en: { role: 'Cosmetologist & Massage Therapist', years: '5+ years experience', specialty: 'Dedicated to real muscle relief and relaxation, 5+ years of experience' },
     es: { role: 'Cosmetóloga & Masajista', years: '5+ años de experiencia', specialty: 'Dedicada al alivio muscular real y la relajación, 5+ años de experiencia' },
   },
@@ -68,13 +68,13 @@ export const THERAPISTS: BilingualTherapist[] = [
   },
   {
     id: 'sheyla-tinoco',
-    name: 'Sheyla Tinoco',
+    name: 'Sheyla',
     en: { role: 'Cosmetologist & Massage Therapist', years: '3+ years experience', specialty: 'Focused on real recovery and body care, certified training' },
     es: { role: 'Cosmetóloga & Masajista', years: '4+ años de experiencia', specialty: 'Enfocada en la recuperación real y el cuidado corporal, formación certificada' },
   },
   {
     id: 'saira-bedoya',
-    name: 'Saira Bedoya',
+    name: 'Saira',
     en: { role: 'Cosmetologist & Massage Therapist', years: '3+ years experience', specialty: 'Dedicated to genuine wellness in every session, professional training' },
     es: { role: 'Cosmetóloga & Masajista', years: '3+ años de experiencia', specialty: 'Dedicada al bienestar real en cada sesión, formación profesional' },
   },
