@@ -35,6 +35,17 @@ const SITE_NAME = SPA_NAME_FULL
  */
 export const X_DEFAULT_LOCALE: 'es' | 'en' = 'es'
 
+/**
+ * Appends the brand to a page title unless it already names it. Blog posts get
+ * their meta title from the admin, where authors often end it with
+ * "| Diamond Spa" already; appending again produced
+ * "… | Diamond Spa | Diamond Spa Medellín", which spends a third of the ~60
+ * characters Google shows on the brand twice.
+ */
+export function withBrand(title: string, brand = 'Diamond Spa Medellín'): string {
+  return /diamond\s*spa/i.test(title) ? title : `${title} | ${brand}`
+}
+
 export function buildAlternates(path: string, locale: 'es' | 'en' = 'es'): Metadata['alternates'] {
   const base = path === '' ? '' : path
   return {
