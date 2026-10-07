@@ -8,7 +8,7 @@ import { SERVICES, formatCop, getServiceBySlug, getServiceByForeignSlug, getServ
 import { serviceHref } from '@/lib/routes'
 import { DURATION_MINUTES } from '@/lib/constants'
 import { buildServiceAlternates, buildOpenGraph, BASE_URL, BUSINESS, faqJsonLd } from '@/lib/seo'
-import { serviceFaqs, serviceSeoDescription, serviceSeoTitle } from '@/lib/service-seo'
+import { HAIR_REMOVAL_METHODS, serviceCategoryHub, serviceFaqs, serviceH1, serviceSeoDescription, serviceSeoTitle } from '@/lib/service-seo'
 import { JsonLd } from '@/components/JsonLd'
 import { FaqSection } from '@/components/FaqSection'
 import { getServiceContent } from '@/lib/service-content'
@@ -91,10 +91,21 @@ export default async function ServiceDetailPage({
   // to /book (which is noindex), leaving all 20 of them as dead ends in the link
   // graph — several never got crawled at all ("Discovered - currently not
   // indexed"). Linking siblings gives Googlebot a path between them.
+  //
+  // Siblings start after the current service and wrap around. Taking the first
+  // four in catalogue order meant every waxing page linked to the same four
+  // (axila, bikini, media pierna, pierna completa) and the last ones got no
+  // sibling links at all.
+  const siblings = SERVICES.filter(s => s.categoryId === service.categoryId)
+  const at = siblings.findIndex(s => s.id === service.id)
   const related = [
-    ...SERVICES.filter(s => s.id !== service.id && s.categoryId === service.categoryId),
-    ...SERVICES.filter(s => s.id !== service.id && s.categoryId !== service.categoryId),
+    ...siblings.slice(at + 1),
+    ...siblings.slice(0, at),
+    ...SERVICES.filter(s => s.categoryId !== service.categoryId),
   ].slice(0, 4)
+  const hub = content?.hub
+    ? { path: content.hub.path, anchor: content.hub.anchor[locale] }
+    : serviceCategoryHub(service, locale)
 
   // Build Service price for JSON-LD
   const servicePrice: number =
@@ -163,7 +174,7 @@ export default async function ServiceDetailPage({
             {locale === 'en' ? service.category.en : service.category.es}
           </span>
           <h1 className="font-headline text-5xl md:text-7xl text-on-surface font-light leading-tight mb-10">
-            {content ? content.h1[locale] : name}
+            {content ? content.h1[locale] : serviceH1(service, locale)}
           </h1>
           <p className="font-body text-xl md:text-2xl text-secondary leading-relaxed font-light">
             {description}
@@ -267,6 +278,27 @@ export default async function ServiceDetailPage({
         </div>
       </section>
 
+      {/* Wax vs machine — the waxing pages were near-identical templates;
+          this gives each one the method comparison its search intent expects. */}
+      {!content && service.pricingModel === 'wax-machine' && (
+        <section className="py-16 px-6 md:px-12 bg-surface">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="font-headline text-2xl md:text-3xl text-on-surface tracking-tighter mb-10">
+              {locale === 'en' ? 'Wax or machine: which to choose?' : 'Cera o máquina: ¿cuál elegir?'}
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {HAIR_REMOVAL_METHODS[locale].map(m => (
+                <div key={m.title} className="bg-surface-container p-8">
+                  <span className="material-symbols-outlined text-primary text-3xl mb-4 block" aria-hidden="true">{m.icon}</span>
+                  <h3 className="font-headline text-xl text-on-surface tracking-tighter mb-3">{m.title}</h3>
+                  <p className="text-zinc-400 font-body text-sm leading-relaxed">{m.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {content && (
         <>
           <ServiceWhatIs content={content.whatIs} locale={locale} />
@@ -292,12 +324,12 @@ export default async function ServiceDetailPage({
           <h2 className="font-label text-outline text-xs uppercase tracking-widest mb-8">
             {t.relatedServices}
           </h2>
-          {content?.hub && (
+          {hub && (
             <Link
-              href={`/${locale}${content.hub.path}`}
+              href={`/${locale}${hub.path}`}
               className="inline-flex items-center gap-2 mb-8 font-label text-primary text-xs uppercase tracking-widest hover:opacity-80 transition-opacity"
             >
-              {content.hub.anchor[locale]}
+              {hub.anchor}
               <span className="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
             </Link>
           )}

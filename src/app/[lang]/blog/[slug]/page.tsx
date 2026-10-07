@@ -3,7 +3,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { readPublishedPosts, getPostBySlugForLocale, blogPostUrl, blogPostLanguages } from '@/lib/blog-store'
-import { BASE_URL } from '@/lib/seo'
+import { BASE_URL, withBrand } from '@/lib/seo'
 import { canonicalizeServiceLinks } from '@/lib/routes'
 import { SPA_NAME_FULL, SPA_LOGO } from '@/lib/spa'
 
@@ -42,7 +42,7 @@ export async function generateMetadata({
   const languages = blogPostLanguages(post)
 
   return {
-    title: `${seoTitle} | Diamond Spa Medellín`,
+    title: withBrand(seoTitle),
     description: seoDesc,
     ...(post.keywords ? { keywords: post.keywords } : {}),
     alternates: {

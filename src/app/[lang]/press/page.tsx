@@ -4,7 +4,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph } from '@/lib/seo'
-import { SPA_EMAIL, SPA_INSTAGRAM, SPA_TIKTOK, SPA_ADDRESS, SPA_NAME_FULL } from '@/lib/spa'
+import { SPA_EMAIL, SPA_INSTAGRAM, SPA_TIKTOK, SPA_ADDRESS, SPA_NAME_FULL, SPA_RATING, SPA_HOURS } from '@/lib/spa'
 import { IGIcon, MailIcon, TikTokIcon } from '@/components/SocialIcons'
 import { TrackedSocialLink } from '@/components/TrackedSocialLink'
 
@@ -122,10 +122,12 @@ export default async function PressPage({ params }: { params: Promise<{ lang: st
                   [isEn ? 'Full name' : 'Nombre completo', SPA_NAME_FULL],
                   [isEn ? 'Location' : 'Ubicación', SPA_ADDRESS.full],
                   [isEn ? 'Neighbourhood' : 'Barrio', `${SPA_ADDRESS.neighborhood}, ${SPA_ADDRESS.city}`],
-                  [isEn ? 'Rating' : 'Calificación', '4.9 ★ Google (102+ reviews)'],
+                  // Rating and hours come from lib/spa so they can't go stale; this
+                  // page said "102+ reviews" long after the count passed 120.
+                  [isEn ? 'Rating' : 'Calificación', `${SPA_RATING.value} ★ Google (${SPA_RATING.count} ${isEn ? 'reviews' : 'reseñas'})`],
                   [isEn ? 'Languages' : 'Idiomas', isEn ? 'Spanish & English' : 'Español e Inglés'],
-                  [isEn ? 'Hours (Mon–Sat)' : 'Horario (Lun–Sáb)', '10:00 AM – 10:00 PM'],
-                  [isEn ? 'Hours (Sun)' : 'Horario (Dom)', '10:00 AM – 7:00 PM'],
+                  [isEn ? 'Hours (Mon–Sat)' : 'Horario (Lun–Sáb)', SPA_HOURS[0].display],
+                  [isEn ? 'Hours (Sun)' : 'Horario (Dom)', SPA_HOURS[1].display],
                 ].map(([label, value]) => (
                   <div key={label} className="flex gap-4 py-3 border-b border-outline-variant/10">
                     <span className="font-label text-[10px] uppercase tracking-widest text-outline w-32 shrink-0 pt-0.5">{label}</span>

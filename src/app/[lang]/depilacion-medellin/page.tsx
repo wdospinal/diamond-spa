@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { isLocale, type Locale } from '@/lib/i18n'
 import { SERVICES, formatCop } from '@/lib/services'
 import { serviceHref } from '@/lib/routes'
+import { HAIR_REMOVAL_METHODS, HAIR_REMOVAL_METHOD_FAQ } from '@/lib/service-seo'
 import { buildAlternates, buildOpenGraph, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
 import { SPA_ADDRESS, SPA_PHONES, SPA_RATING } from '@/lib/spa'
 import { JsonLd } from '@/components/JsonLd'
@@ -26,18 +27,7 @@ const content = {
       'Diamond Spa offers professional hair removal in El Poblado, Medellín. Available with hot wax or electric machine, performed by certified cosmetologists in private rooms. From underarms to full body, with the highest hygiene standards.',
     bookCta: 'Book Hair Removal',
     methodsTitle: 'Hair Removal Methods',
-    methods: [
-      {
-        icon: 'local_fire_department',
-        title: 'Hot Wax',
-        body: 'Warm wax adheres precisely to the hair, removing it from the root for long-lasting results of 3–4 weeks. Ideal for most skin types and areas.',
-      },
-      {
-        icon: 'electric_bolt',
-        title: 'Electric Machine',
-        body: 'Gentler approach for sensitive skin and delicate areas. The machine pulls hair efficiently with minimal irritation — perfect for frequent treatments.',
-      },
-    ],
+    methods: HAIR_REMOVAL_METHODS.en,
     servicesTitle: 'Our Hair Removal Services',
     waxLabel: 'Wax',
     machineLabel: 'Machine',
@@ -57,10 +47,7 @@ const content = {
         question: 'How much does hair removal cost in Medellín?',
         answer: 'Hair removal prices at Diamond Spa start from $20,000 COP (underarm with machine) and go up to $400,000 COP (full body with wax). See the full price table above.',
       },
-      {
-        question: 'Is wax or machine hair removal better?',
-        answer: 'Wax provides longer-lasting results (3–4 weeks) and is ideal for most areas. Machine is gentler on sensitive skin and delicate zones. Our cosmetologists advise you based on your skin type and the area being treated.',
-      },
+      HAIR_REMOVAL_METHOD_FAQ.en,
       {
         question: 'Do you offer hair removal for both men and women?',
         answer: 'Yes, Diamond Spa offers hair removal for men and women. We have services for chest, back, and full body that are very popular with men, as well as bikini, legs, and underarms for women.',
@@ -84,18 +71,7 @@ const content = {
       'Diamond Spa ofrece depilación profesional en El Poblado, Medellín. Disponible con cera caliente o máquina eléctrica, por cosmetólogas certificadas en cabinas privadas. Desde axilas hasta cuerpo completo, con los más altos estándares de higiene.',
     bookCta: 'Reservar Depilación',
     methodsTitle: 'Métodos de Depilación',
-    methods: [
-      {
-        icon: 'local_fire_department',
-        title: 'Cera Caliente',
-        body: 'La cera caliente se adhiere con precisión al vello, removiéndolo desde la raíz para resultados duraderos de 3–4 semanas. Ideal para la mayoría de tipos de piel y zonas.',
-      },
-      {
-        icon: 'electric_bolt',
-        title: 'Máquina Eléctrica',
-        body: 'Enfoque más suave para pieles sensibles y zonas delicadas. La máquina extrae el vello eficientemente con mínima irritación — perfecta para tratamientos frecuentes.',
-      },
-    ],
+    methods: HAIR_REMOVAL_METHODS.es,
     servicesTitle: 'Nuestros Servicios de Depilación',
     waxLabel: 'Cera',
     machineLabel: 'Máquina',
@@ -115,10 +91,7 @@ const content = {
         question: '¿Cuánto cuesta la depilación en Medellín?',
         answer: 'Los precios de depilación en Diamond Spa comienzan desde $20.000 COP (axilas con máquina) hasta $400.000 COP (cuerpo completo con cera). Ver la tabla completa de precios arriba.',
       },
-      {
-        question: '¿Qué es mejor: cera o máquina?',
-        answer: 'La cera ofrece resultados más duraderos (3-4 semanas) y es ideal para la mayoría de zonas. La máquina es más suave para pieles sensibles y zonas delicadas. Nuestras cosmetólogas te asesoran según tu tipo de piel y la zona a tratar.',
-      },
+      HAIR_REMOVAL_METHOD_FAQ.es,
       {
         question: '¿Hacen depilación para hombres y mujeres?',
         answer: 'Sí, Diamond Spa ofrece depilación para hombres y mujeres. Tenemos servicios de pecho, espalda y cuerpo completo muy solicitados por hombres, además de bikini, piernas y axilas para mujeres.',
