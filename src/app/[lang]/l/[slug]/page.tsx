@@ -25,8 +25,8 @@ import { LandingTeam } from '@/components/landing-blocks/LandingTeam'
 import { LandingFacilities } from '@/components/landing-blocks/LandingFacilities'
 import { LandingBookingModal } from '@/components/landing-blocks/LandingBookingModal'
 import { LANDING_SERVICE_VIDEOS } from '@/lib/landing-service-videos'
-import { LandingProofStrip } from '@/components/landing-blocks/LandingProofStrip'
-import { LandingTherapistPeek } from '@/components/landing-blocks/LandingTherapistPeek'
+import { LandingTherapistShowcase } from '@/components/landing-blocks/LandingTherapistShowcase'
+import { LandingGuide } from '@/components/landing-blocks/LandingGuide'
 import { LandingSocialFollow } from '@/components/landing-blocks/LandingSocialFollow'
 import { LandingStickyBook } from '@/components/landing-blocks/LandingStickyBook'
 
@@ -103,20 +103,18 @@ export default async function DynamicLandingPage({ params }: Props) {
           <LandingHeader phoneText={phoneText} locale={locale} trustNav />
 
           <main className="flex-1">
-            <LandingHero {...content.hero} locale={locale} />
+            {/* Prueba: portada = H1 (intención de búsqueda) + terapeutas + reservar */}
+            <LandingHero {...content.hero} locale={locale} showcase={<LandingTherapistShowcase />} />
             <LandingTrustBar {...content.trustBar} />
-            <LandingProofStrip />
-            <LandingTherapistPeek />
 
-            {/* Servicios se queda arriba (destino de "View Services") con un video por tarjeta */}
+            {/* Después los servicios (destino de "View Services"), con video al tocar */}
             <LandingServices {...content.services} locale={locale} videos={LANDING_SERVICE_VIDEOS} />
+            <LandingGuide href="#ubicacion" label="Next: find us in El Poblado" />
 
-            <div id="therapists" className="scroll-mt-16">
-              <LandingTeam locale={locale} source="landing" bookHref="#reservar" />
-            </div>
-
+            {/* Después la ubicación, siempre guiando al siguiente paso */}
             <LandingLocation {...content.location} locale={locale} />
             <LandingFacilities locale={locale} />
+            <LandingGuide href="#reviews" label="What our clients say" dark />
 
             <div id="reviews" className="scroll-mt-16">
               {content.testimonials && <LandingTestimonials {...content.testimonials} />}
