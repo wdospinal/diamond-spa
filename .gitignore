@@ -43,6 +43,7 @@ next-env.d.ts
 /data/push-subs.json
 # cierres de Bold fallback (local / self-hosted; prod usa Supabase o KV)
 /data/bold-closings.json
+/data/bold-sales.json
 
 # Movimientos de caja capturados por WhatsApp — datos financieros, nunca al repo.
 /data/ledger-entries.json

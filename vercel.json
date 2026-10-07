@@ -1,6 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "crons": [
-    { "path": "/api/bold/sync", "schedule": "0 13 * * *" }
+    { "path": "/api/bold/sync", "schedule": "0 13 * * *" },
+    { "path": "/api/bold/sync?slot=10am", "schedule": "0 15 * * *" },
+    { "path": "/api/bold/sync?slot=2pm", "schedule": "0 19 * * *" },
+    { "path": "/api/bold/sync?slot=6pm", "schedule": "0 23 * * *" },
+    { "path": "/api/bold/sync?slot=10pm", "schedule": "0 3 * * *" }
   ]
 }

@@ -39,6 +39,26 @@ type BoldDay = {
   closings: number
 }
 
+type BoldSale = {
+  id: string
+  day: string
+  occurredAt: string
+  subtotalCop: number
+  tipCop: number
+  totalCop: number
+  cardLabel: string
+  last4: string
+}
+
+type BoldLive = {
+  lastClosedDay: string | null
+  subtotalCop: number
+  tipCop: number
+  totalCop: number
+  count: number
+  sales: BoldSale[]
+}
+
 type BoldResponse = {
   today: string
   cycleStartDay: number
@@ -60,6 +80,8 @@ type BoldResponse = {
   }
   days: BoldClosing[]
   daily: BoldDay[]
+  /** null si la tabla de compras aún no existe. */
+  live: BoldLive | null
 }
 
 const RANGES = [6, 12, 24]
@@ -1136,6 +1158,67 @@ function WeekdayByMonthChart({
   )
 }
 
+const BOGOTA_TIME = new Intl.DateTimeFormat('es-CO', {
+  hour: 'numeric',
+  minute: '2-digit',
+  timeZone: 'America/Bogota',
+})
+
+/**
+ * Compras de Bold que todavía no cubre un cierre: la suma de los subtotales de
+ * los correos "Compra por $", hasta que llega el cierre y los reemplaza.
+ */
+function LiveSalesCard({ live }: { live: BoldLive }) {
+  const byDay = new Map<string, BoldSale[]>()
+  for (const s of live.sales) byDay.set(s.day, [...(byDay.get(s.day) ?? []), s])
+
+  return (
+    <section className="border border-[#7fc9a6]/30 bg-[#0a2438]/40 p-4 sm:p-5 mb-10">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+        <div>
+          <p className="font-label text-[10px] uppercase tracking-[0.2em] text-[#7fc9a6]">
+            En vivo · ventas sin cierre todavía
+          </p>
+          <p className="font-headline text-2xl sm:text-3xl mt-2 tabular-nums text-[#cfe5fa]">
+            {fmtCop(live.subtotalCop)}
+          </p>
+          <p className="text-[11px] text-[#5c656d] font-body mt-1.5 leading-snug">
+            {live.count} {live.count === 1 ? 'compra' : 'compras'}
+            {live.lastClosedDay ? ` después del último cierre (${dayLabel(live.lastClosedDay)})` : ' hoy'}
+            {live.tipCop > 0 ? ` · propinas ${fmtCop(live.tipCop)}` : ''}
+          </p>
+        </div>
+        <p className="text-[11px] text-[#5c656d] font-body sm:text-right sm:max-w-56 leading-snug">
+          Se actualiza a las 10am, 2pm, 6pm y 10pm. Cuando llega el cierre de Bold de un día, ese día pasa a contar por el cierre.
+        </p>
+      </div>
+      {byDay.size > 0 ? (
+        <div className="mt-4 space-y-3">
+          {[...byDay.entries()].map(([day, sales]) => (
+            <div key={day}>
+              <p className="font-label text-[10px] uppercase tracking-[0.15em] text-[#8a9299] mb-1.5">
+                {capitalize(weekdayLabel(day))} {dayLabel(day)} ·{' '}
+                {fmtCop(sales.reduce((n, s) => n + s.subtotalCop, 0))}
+              </p>
+              <ul className="divide-y divide-[#42484c]/30 border-t border-[#42484c]/30">
+                {sales.map(s => (
+                  <li key={s.id} className="flex items-center justify-between gap-3 py-2 text-sm font-body">
+                    <span className="text-[#8a9299] tabular-nums">{BOGOTA_TIME.format(new Date(s.occurredAt))}</span>
+                    <span className="flex-1 truncate text-[#5c656d]">
+                      {[s.cardLabel, s.last4 ? `•••${s.last4}` : ''].filter(Boolean).join(' ')}
+                    </span>
+                    <span className="text-[#cfe5fa] tabular-nums">{fmtCop(s.subtotalCop)}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      ) : null}
+    </section>
+  )
+}
+
 function Kpi({
   label,
   value,
@@ -1239,6 +1322,7 @@ export default function BoldDashboardPage() {
         inserted?: number
         skipped?: number
         ignoredCount?: number
+        sales?: { inserted: number }
       }
       if (res.status === 401) {
         replace('/admin/login')
@@ -1253,6 +1337,7 @@ export default function BoldDashboardPage() {
           `Correos revisados: ${body.scanned ?? 0}`,
           `cierres nuevos: ${body.inserted ?? 0}`,
           `ya registrados: ${body.skipped ?? 0}`,
+          `compras nuevas: ${body.sales?.inserted ?? 0}`,
           ...(body.ignoredCount ? [`otros correos de Bold: ${body.ignoredCount}`] : []),
         ].join(' · '),
       )
@@ -1466,6 +1551,8 @@ export default function BoldDashboardPage() {
           }
         />
       </section>
+
+      {data?.live ? <LiveSalesCard live={data.live} /> : null}
 
       <section className="bg-[#0a2438] border border-[#42484c]/30 p-4 sm:p-6 mb-10">
         <h2 className="font-label text-xs uppercase tracking-[0.25em] text-[#8a9299] mb-4">

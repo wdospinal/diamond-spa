@@ -77,3 +77,71 @@ export function fromBoldRow(r: BoldClosingRow): BoldClosing {
     source: r.source === 'manual' ? 'manual' : 'imap',
   }
 }
+
+/**
+ * Bold — correo "Compra por $ X en Diamond spa", uno por cada pago aprobado en
+ * el datáfono. Llega minutos después de la compra, así que permite ver las
+ * ventas del día en curso antes de que llegue el cierre; el cierre sigue siendo
+ * la cifra oficial y las compras que ya cubre no se vuelven a sumar.
+ */
+export interface BoldSale {
+  /** "ID Transacción Bold" (p. ej. CPE2HPGI16CH), o el Message-ID si no viene. Clave de deduplicación. */
+  id: string
+  /** YYYY-MM-DD (Bogotá) de la compra. */
+  day: string
+  /** ISO de la compra, tomada del cuerpo del correo (hora de Bogotá). */
+  occurredAt: string
+  /** ISO del header `Date` del correo. */
+  receivedAt: string
+  subtotalCop: number
+  tipCop: number
+  totalCop: number
+  /** "App label" del correo: Mastercard, Visa Prepaid… */
+  cardLabel: string
+  /** Últimos 4 dígitos del medio de pago, si vienen. */
+  last4: string
+  messageId: string
+}
+
+export interface BoldSaleRow {
+  id: string
+  day: string
+  occurred_at: string
+  received_at: string
+  subtotal_cop: number
+  tip_cop: number
+  total_cop: number
+  card_label: string
+  last4: string
+  message_id: string
+}
+
+export function toBoldSaleRow(s: BoldSale): BoldSaleRow {
+  return {
+    id: s.id,
+    day: s.day,
+    occurred_at: s.occurredAt,
+    received_at: s.receivedAt,
+    subtotal_cop: s.subtotalCop,
+    tip_cop: s.tipCop,
+    total_cop: s.totalCop,
+    card_label: s.cardLabel,
+    last4: s.last4,
+    message_id: s.messageId,
+  }
+}
+
+export function fromBoldSaleRow(r: BoldSaleRow): BoldSale {
+  return {
+    id: r.id,
+    day: String(r.day).slice(0, 10),
+    occurredAt: new Date(r.occurred_at).toISOString(),
+    receivedAt: new Date(r.received_at).toISOString(),
+    subtotalCop: Number(r.subtotal_cop) || 0,
+    tipCop: Number(r.tip_cop) || 0,
+    totalCop: Number(r.total_cop) || 0,
+    cardLabel: r.card_label ?? '',
+    last4: r.last4 ?? '',
+    messageId: r.message_id ?? '',
+  }
+}

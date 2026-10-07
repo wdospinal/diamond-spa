@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { adminCookieName, verifySessionToken } from '@/lib/admin-session'
 import { parseBoldClosing } from '@/lib/bold-parser'
+import { parseBoldSale } from '@/lib/bold-sale-parser'
 import { saveClosings } from '@/lib/bold-store'
+import { saveSales } from '@/lib/bold-sales-store'
 import { fetchMessages, imapConfigured } from '@/lib/imap'
 import { decodeHeaderValue, parseMessage } from '@/lib/mime'
-import type { BoldClosing } from '@/lib/bold-types'
+import type { BoldClosing, BoldSale } from '@/lib/bold-types'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -26,7 +28,9 @@ async function authorize(req: NextRequest): Promise<boolean> {
 }
 
 /**
- * Lee el buzón por IMAP, parsea los correos de cierre de Bold y los guarda.
+ * Lee el buzón por IMAP, parsea los correos de Bold y los guarda: los cierres
+ * de ventas y las compras individuales ("Compra por $ X en Diamond spa"), que
+ * permiten seguir las ventas del día antes de que llegue el cierre.
  *
  * Query:
  *  - `?since=YYYY-MM-DD` desde cuándo buscar (por defecto, 5 días atrás).
@@ -79,10 +83,11 @@ async function sync(req: NextRequest) {
   }
 
   const closings: BoldClosing[] = []
-  // Bold manda más cosas que cierres al mismo remitente (avisos de pago,
-  // comunicaciones comerciales). Que un correo no sea un cierre es lo normal,
-  // no un fallo, así que va aparte de `errors` — y con el asunto, que es lo
-  // único que permite distinguir "no era un cierre" de "el cierre cambió de
+  const sales: BoldSale[] = []
+  // Bold manda más cosas que cierres y compras al mismo remitente
+  // (comunicaciones comerciales). Que un correo no sea ninguno de los dos es lo
+  // normal, no un fallo, así que va aparte de `errors` — y con el asunto, que es
+  // lo único que permite distinguir "no era un cierre" de "el cierre cambió de
   // formato y dejamos de reconocerlo".
   const ignored: { messageId: string; subject: string; date: string }[] = []
   for (const msg of messages) {
@@ -90,7 +95,9 @@ async function sync(req: NextRequest) {
       const { text } = parseMessage(msg.raw)
       const receivedAt = msg.date ? new Date(msg.date) : undefined
       const closing = parseBoldClosing(text, { messageId: msg.messageId, receivedAt, source: 'imap' })
+      const sale = closing ? null : parseBoldSale(text, { messageId: msg.messageId, receivedAt })
       if (closing) closings.push(closing)
+      else if (sale) sales.push(sale)
       else ignored.push({ messageId: msg.messageId, subject: decodeHeaderValue(msg.subject), date: msg.date })
     } catch (e: unknown) {
       errors.push(`${msg.messageId}: ${(e as Error).message}`)
@@ -98,6 +105,16 @@ async function sync(req: NextRequest) {
   }
 
   const saved = dry ? { inserted: 0, skipped: 0 } : await saveClosings(closings)
+  // Las compras van aparte: si su tabla aún no existe (migración 0016 sin
+  // aplicar), los cierres se guardan igual y el fallo queda en `errors`.
+  let savedSales = { inserted: 0, skipped: 0 }
+  if (!dry) {
+    try {
+      savedSales = await saveSales(sales)
+    } catch (e: unknown) {
+      errors.push(`compras: ${(e as Error).message}`)
+    }
+  }
 
   return NextResponse.json({
     dry,
@@ -110,9 +127,10 @@ async function sync(req: NextRequest) {
     parsed: closings.length,
     inserted: saved.inserted,
     skipped: saved.skipped,
+    sales: { parsed: sales.length, inserted: savedSales.inserted, skipped: savedSales.skipped },
     ignoredCount: ignored.length,
     errors,
-    ...(dry ? { closings, ignored } : {}),
+    ...(dry ? { closings, saleList: sales, ignored } : {}),
   })
 }
 

@@ -3,6 +3,8 @@ import { cookies } from 'next/headers'
 import { adminCookieName, verifySessionToken } from '@/lib/admin-session'
 import { parseBoldClosing } from '@/lib/bold-parser'
 import { readClosings, saveClosings } from '@/lib/bold-store'
+import { readSalesAfterDay } from '@/lib/bold-sales-store'
+import { shiftDay } from '@/lib/bogota'
 import {
   cycleComparison,
   cycleLabelFor,
@@ -10,7 +12,7 @@ import {
   DEFAULT_CYCLE_START_DAY,
   shiftCycle,
 } from '@/lib/cycle'
-import type { BoldClosing } from '@/lib/bold-types'
+import type { BoldClosing, BoldSale } from '@/lib/bold-types'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -62,6 +64,37 @@ function accumulate(acc: BoldMonth | BoldDay, c: BoldClosing): void {
   acc.refundsCop += c.refundsCop
   acc.refundCount += c.refundCount
   acc.closings += 1
+}
+
+/** Compras de Bold de los días que todavía no tienen cierre. */
+export interface BoldLive {
+  /** Último día con cierre; se suman las compras de los días siguientes. */
+  lastClosedDay: string | null
+  subtotalCop: number
+  tipCop: number
+  totalCop: number
+  count: number
+  sales: BoldSale[]
+}
+
+/**
+ * Ventas en curso: las compras ("Compra por $") de los días posteriores al
+ * último cierre. Bold manda el cierre de un día uno o dos días después, así
+ * que mientras no llega, la suma de los comprobantes es la mejor cifra del día;
+ * cuando llega, ese día sale de aquí y cuenta el cierre. Sin cierres previos,
+ * se toman las de hoy.
+ */
+async function liveSales(closings: BoldClosing[], today: string): Promise<BoldLive> {
+  const lastClosedDay = closings.reduce<string | null>((max, c) => (!max || c.day > max ? c.day : max), null)
+  const sales = await readSalesAfterDay(lastClosedDay ?? shiftDay(today, -1))
+  return {
+    lastClosedDay,
+    subtotalCop: sales.reduce((n, s) => n + s.subtotalCop, 0),
+    tipCop: sales.reduce((n, s) => n + s.tipCop, 0),
+    totalCop: sales.reduce((n, s) => n + s.totalCop, 0),
+    count: sales.length,
+    sales,
+  }
 }
 
 async function requireAdmin(): Promise<boolean> {
@@ -121,6 +154,8 @@ export async function GET(req: NextRequest) {
   const readFrom = rangeStart < firstCycleStart ? rangeStart : firstCycleStart
 
   const closings = await readClosings(readFrom)
+  // Si la tabla de compras aún no existe, el panel sigue funcionando sin ellas.
+  const live = await liveSales(closings, today).catch(() => null)
 
   const byMonth = new Map<string, BoldMonth>()
   const byDay = new Map<string, BoldDay>()
@@ -174,6 +209,7 @@ export async function GET(req: NextRequest) {
     days: closings.filter(c => c.day >= rangeStart && c.day <= rangeEnd),
     // Totales por día del rango (heatmap de intensidad).
     daily: [...byDay.values()].sort((a, b) => a.day.localeCompare(b.day)),
+    live,
   })
 }
 
