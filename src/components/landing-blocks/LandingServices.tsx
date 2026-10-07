@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { getServiceById, serviceDisplayName, serviceShortDesc } from '@/lib/services'
 import { Locale } from '@/lib/i18n'
 import { formatCopValue } from '@/lib/format-currency'
@@ -129,15 +129,67 @@ const PAIN_SOLUTIONS: Record<
   },
 }
 
+// Video dentro de la tarjeta: muestra solo el póster y se reproduce únicamente
+// cuando la persona lo toca (preload="none"; nada se descarga antes del clic).
+function CardVideo({
+  id, name, video, poster, playing, onPlay, isEn,
+}: {
+  id: string; name: string; video: string; poster: string
+  playing: boolean; onPlay: (id: string | null) => void; isEn: boolean
+}) {
+  const ref = useRef<HTMLVideoElement>(null)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    if (playing) el.play().catch(() => {})
+    else el.pause()
+  }, [playing])
+
+  return (
+    <div
+      className="relative aspect-[4/5] -mx-4 -mt-4 mb-4 rounded-t-2xl overflow-hidden bg-[#0a1628]"
+      onClick={(e) => { e.stopPropagation(); onPlay(playing ? null : id) }}
+      onKeyDown={(e) => e.stopPropagation()}
+    >
+      <video
+        ref={ref}
+        className="absolute inset-0 w-full h-full object-cover"
+        src={video}
+        poster={poster}
+        preload="none"
+        playsInline
+        muted
+        onEnded={() => onPlay(null)}
+        aria-label={isEn ? `${name} at Diamond Spa` : `${name} en Diamond Spa`}
+      />
+      {!playing && (
+        <button
+          type="button"
+          className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/25"
+          aria-label={isEn ? `Watch the ${name} video` : `Ver el video de ${name}`}
+        >
+          <span className="w-14 h-14 rounded-full bg-white/90 text-[#0a1628] flex items-center justify-center text-lg shadow-lg pl-1">▶</span>
+          <span className="text-white text-[11px] font-medium tracking-wide drop-shadow">{isEn ? 'Watch 15 sec' : 'Ver 15 seg'}</span>
+        </button>
+      )}
+    </div>
+  )
+}
+
 export function LandingServices({
   title,
   serviceIds,
   locale,
+  videos,
 }: {
   title: string
   serviceIds: string[]
   locale: Locale
+  /** Opcional: video por servicio (solo landing de pauta en inglés v1) */
+  videos?: Record<string, { video: string; poster: string }>
 }) {
+  const [playingId, setPlayingId] = useState<string | null>(null)
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const expandedService = expandedId ? getServiceById(expandedId) : null
   const expandedPain = expandedId ? PAIN_SOLUTIONS[expandedId] : null
@@ -166,12 +218,18 @@ export function LandingServices({
             {title}
           </h2>
           <p className="text-gray-400 text-xs sm:text-sm">
-            {isEn ? 'Prices from $120,000 COP · No hidden fees.' : 'Desde $120.000 COP · Sin costos ocultos.'}
+            {videos
+              // Con videos, el encabezado invita a verlos; el precio queda al final de cada tarjeta
+              ? (isEn ? 'Tap a video to see the session · Private room · Certified therapist' : 'Toca un video para ver la sesión · Cabina privada · Terapeuta certificada')
+              : (isEn ? 'Prices from $120,000 COP · No hidden fees.' : 'Desde $120.000 COP · Sin costos ocultos.')}
           </p>
         </div>
 
         {/* ── 4 Tarjetas — grid 1 col móvil, 2 tablet, 4 desktop ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5">
+        <div className={videos
+          // Con videos: en móvil, carrusel deslizable que deja ver la siguiente tarjeta
+          ? 'flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5 overflow-x-auto sm:overflow-visible snap-x snap-mandatory -mx-4 px-4 sm:mx-0 sm:px-0 pb-3 [&>*]:snap-center [&>*]:shrink-0 [&>*]:w-[78%] sm:[&>*]:w-auto'
+          : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5'}>
           {serviceIds.map((id) => {
             const s = getServiceById(id)
             if (!s) return null
@@ -200,6 +258,18 @@ export function LandingServices({
                 }}
                 className="group text-left border border-gray-200 hover:border-[#C9A876]/70 rounded-2xl p-4 flex flex-col bg-white hover:shadow-md transition-all cursor-pointer active:scale-[0.99] select-none"
               >
+                {videos?.[id] && (
+                  <CardVideo
+                    id={id}
+                    name={name}
+                    video={videos[id].video}
+                    poster={videos[id].poster}
+                    playing={playingId === id}
+                    onPlay={setPlayingId}
+                    isEn={isEn}
+                  />
+                )}
+
                 {/* Fila: ícono + badge pill */}
                 <div className="flex items-center gap-2.5 mb-3">
                   <span className="w-9 h-9 rounded-lg bg-[#C9A876]/10 text-[#C9A876] flex items-center justify-center shrink-0 group-hover:bg-[#C9A876] group-hover:text-white transition-colors">

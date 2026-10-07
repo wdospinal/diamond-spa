@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense } from 'react'
+import { Suspense, type ReactNode } from 'react'
 import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
 import { GoogleReviewBadge } from '@/components/GoogleReviewBadge'
@@ -14,6 +14,8 @@ function HeroContent({
   primaryCtaText,
   secondaryCtaText,
   locale = 'es',
+  showcase,
+  servicesFirst = false,
 }: {
   h1: string
   subtitle: string
@@ -21,6 +23,8 @@ function HeroContent({
   primaryCtaText: string
   secondaryCtaText: string
   locale?: 'es' | 'en'
+  showcase?: ReactNode
+  servicesFirst?: boolean
 }) {
   const searchParams = useSearchParams()
   const adgroup = searchParams?.get('adgroup') ?? ''
@@ -89,20 +93,25 @@ function HeroContent({
         />
       </div>
 
-      <div className="relative z-20 max-w-5xl mx-auto px-6 pt-28 pb-20 text-center">
+      <div className={`relative z-20 max-w-5xl mx-auto px-6 text-center ${showcase ? 'w-full min-w-0 pt-8 pb-12' : 'pt-28 pb-20'}`}>
 
         <h1 className="font-serif text-4xl md:text-5xl leading-tight mb-4">
           {displayH1}
         </h1>
-        <p className="text-white/80 text-lg max-w-2xl mx-auto mb-10">
+        <p className={`text-white/80 text-lg max-w-2xl mx-auto ${showcase ? 'mb-6' : 'mb-10'}`}>
           {displaySubtitle}
         </p>
+
+        {/* Opcional: bloque extra en la portada (prueba EN: las terapeutas primero) */}
+        {showcase}
 
         <div className="mb-6 flex justify-center">
           <GoogleReviewBadge locale={locale} />
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center">
+        {/* servicesFirst (landings de pauta): "Ver servicios" va primero y "Reservar"
+            después. Solo cambia el orden visual; los enlaces y el tracking son los mismos. */}
+        <div className={`flex ${servicesFirst ? 'flex-col-reverse sm:flex-row-reverse' : 'flex-col sm:flex-row'} gap-4 w-full sm:w-auto justify-center`}>
           <a
             href="#reservar"
             onClick={() => trackAdsClick('hero')}
@@ -156,6 +165,8 @@ export function LandingHero(props: {
   primaryCtaText: string
   secondaryCtaText: string
   locale?: 'es' | 'en'
+  showcase?: ReactNode
+  servicesFirst?: boolean
 }) {
   return (
     <Suspense fallback={

@@ -24,6 +24,17 @@ import { LandingFooter } from '@/components/landing-blocks/LandingFooter'
 import { LandingTeam } from '@/components/landing-blocks/LandingTeam'
 import { LandingFacilities } from '@/components/landing-blocks/LandingFacilities'
 import { LandingBookingModal } from '@/components/landing-blocks/LandingBookingModal'
+import { LANDING_SERVICE_VIDEOS } from '@/lib/landing-service-videos'
+import { LandingTherapistShowcase } from '@/components/landing-blocks/LandingTherapistShowcase'
+import { LandingGuide } from '@/components/landing-blocks/LandingGuide'
+import { LandingSocialFollow } from '@/components/landing-blocks/LandingSocialFollow'
+import { LandingStickyBook } from '@/components/landing-blocks/LandingStickyBook'
+import { LandingProofStrip } from '@/components/landing-blocks/LandingProofStrip'
+import { LandingTherapistPeek } from '@/components/landing-blocks/LandingTherapistPeek'
+
+// "Confianza primero" para las landings de pauta. Inglés: terapeutas en la portada.
+// Español: la versión v2. Las demás landings no cambian.
+const TRUST_FIRST_LANDINGS = ['oferta-masajes']
 
 export const revalidate = 3600
 
@@ -78,6 +89,91 @@ export default async function DynamicLandingPage({ params }: Props) {
 
   const phoneText = content.finalCta.phoneText || "+57 313 838 3838"
   const allowedServiceIds = content.services?.serviceIds
+  const trustFirst = TRUST_FIRST_LANDINGS.includes(slug)
+
+  if (trustFirst) {
+    // Orden: deseo (reels) → confianza (terapeutas, ubicación, reseñas, redes)
+    // → precios (tarjetas de servicios) → dudas (FAQ) → reserva.
+    // Los componentes de reserva, modal y eventos son los mismos de siempre.
+    return (
+      <>
+        <LandingSemInit triggerKey={sem.semTriggerKey} triggerValue={sem.semTriggerValue} hideChrome={sem.hideChrome} />
+        <LandingHead path={path} locale={locale} />
+        {seoData?.jsonLd && <JsonLd data={JSON.parse(seoData.jsonLd)} />}
+
+        <div className="landing-page-container bg-surface min-h-screen flex flex-col font-body">
+          <LandingHeader phoneText={phoneText} locale={locale} trustNav />
+
+          {locale === 'en' ? (
+          <main className="flex-1">
+            {/* Inglés (prueba): portada = H1 (intención de búsqueda) + terapeutas con ficha y reservar */}
+            <LandingHero {...content.hero} locale={locale} servicesFirst showcase={<LandingTherapistShowcase locale={locale} />} />
+            <LandingTrustBar {...content.trustBar} />
+
+            {/* Después los servicios (destino de "View Services"), con video al tocar */}
+            <LandingServices {...content.services} locale={locale} videos={LANDING_SERVICE_VIDEOS} />
+            <LandingGuide href="#ubicacion" label="Next: find us in El Poblado" />
+
+            {/* Después la ubicación, siempre guiando al siguiente paso */}
+            <LandingLocation {...content.location} locale={locale} />
+            <LandingFacilities locale={locale} />
+            <LandingGuide href="#reviews" label="What our clients say" dark />
+
+            <div id="reviews" className="scroll-mt-16">
+              {content.testimonials && <LandingTestimonials {...content.testimonials} />}
+              <LandingSocialFollow locale={locale} />
+            </div>
+
+            {content.faqs && content.faqs.items && content.faqs.items.length > 0 && (
+              <LandingFAQ {...content.faqs} />
+            )}
+
+            <LandingFinalCTA {...content.finalCta} locale={locale} />
+          </main>
+          ) : (
+          <main className="flex-1">
+            {/* Español: la versión v2 (prueba social + caras → servicios con video → equipo) */}
+            <LandingHero {...content.hero} locale={locale} servicesFirst />
+            <LandingTrustBar {...content.trustBar} />
+            <LandingProofStrip locale={locale} />
+            <LandingTherapistPeek locale={locale} />
+
+            {/* Servicios se queda arriba (destino de "Ver servicios") con un video por tarjeta */}
+            <LandingServices {...content.services} locale={locale} videos={LANDING_SERVICE_VIDEOS} />
+
+            <div id="therapists" className="scroll-mt-16">
+              <LandingTeam locale={locale} source="landing" bookHref="#reservar" />
+            </div>
+
+            <LandingLocation {...content.location} locale={locale} />
+            <LandingFacilities locale={locale} />
+
+            <div id="reviews" className="scroll-mt-16">
+              {content.testimonials && <LandingTestimonials {...content.testimonials} />}
+              <LandingSocialFollow locale={locale} />
+            </div>
+
+            {content.faqs && content.faqs.items && content.faqs.items.length > 0 && (
+              <LandingFAQ {...content.faqs} />
+            )}
+
+            <LandingFinalCTA {...content.finalCta} locale={locale} />
+          </main>
+          )}
+
+          <LandingFooter
+            phoneText={phoneText}
+            address={content.location.address}
+            hours={content.location.hours}
+            locale={locale}
+          />
+
+          <LandingBookingModal locale={locale} t={t} allowedServiceIds={allowedServiceIds} />
+          <LandingStickyBook locale={locale} />
+        </div>
+      </>
+    )
+  }
 
   return (
     <>
