@@ -55,20 +55,35 @@ function LanguageSwitcher({ locale, t }: { locale: Locale, t: (typeof LABELS)['e
   )
 }
 
-// Menú "mapa de confianza" (solo la landing de pauta en inglés, v1). Las demás
+// Menú "mapa de confianza" (solo las landings de pauta). Las demás
 // landings siguen con el menú de siempre porque `trustNav` llega en false.
-const TRUST_NAV = [
-  { href: '#servicios', label: 'Massages' },
-  { href: '#therapists', label: 'Therapists' },
-  { href: '#ubicacion', label: 'Location' },
-  { href: '#reviews', label: 'Reviews 4.9★' },
-  { href: '#faq', label: 'FAQ' },
-]
+const TRUST_NAV = {
+  en: [
+    { href: '#servicios', label: 'Massages' },
+    { href: '#therapists', label: 'Therapists' },
+    { href: '#ubicacion', label: 'Location' },
+    { href: '#reviews', label: 'Reviews 4.9★' },
+    { href: '#faq', label: 'FAQ' },
+  ],
+  es: [
+    { href: '#servicios', label: 'Masajes' },
+    { href: '#therapists', label: 'Terapeutas' },
+    { href: '#ubicacion', label: 'Ubicación' },
+    { href: '#reviews', label: 'Reseñas 4.9★' },
+    { href: '#faq', label: 'Preguntas' },
+  ],
+}
+const TRUST_MENU_NOTE = {
+  en: '4.9 on Google · Open Mon–Sat until 10 PM',
+  es: '4.9 en Google · Abierto lun–sáb hasta las 10 PM',
+}
 
 export function LandingHeader({ phoneText, locale = 'es', trustNav = false }: { phoneText: string, locale?: Locale, trustNav?: boolean }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const t = LABELS[locale] || LABELS['es']
+  const trustLinks = locale === 'en' ? TRUST_NAV.en : TRUST_NAV.es
+  const trustNote = locale === 'en' ? TRUST_MENU_NOTE.en : TRUST_MENU_NOTE.es
 
   return (
     <header id="landing-header" className="fixed top-0 left-0 right-0 z-50 bg-surface/90 backdrop-blur-md border-b border-outline-variant/20">
@@ -83,7 +98,7 @@ export function LandingHeader({ phoneText, locale = 'es', trustNav = false }: { 
         {/* Desktop Nav */}
         {trustNav ? (
         <nav className="hidden md:flex items-center gap-6">
-          {TRUST_NAV.map((item) => (
+          {trustLinks.map((item) => (
             <a key={item.href} href={item.href} className="text-sm font-label uppercase tracking-widest text-zinc-400 hover:text-primary transition-colors">{item.label}</a>
           ))}
         </nav>
@@ -126,9 +141,9 @@ export function LandingHeader({ phoneText, locale = 'es', trustNav = false }: { 
       {isMenuOpen && trustNav && (
         <div className="md:hidden absolute top-16 left-0 right-0 bg-surface border-b border-outline-variant/20 py-5 px-4 flex flex-col gap-4 shadow-xl">
           <p className="text-xs text-zinc-400">
-            <span className="text-[#F5B301]">★★★★★</span> 4.9 on Google · Open Mon–Sat until 10 PM
+            <span className="text-[#F5B301]">★★★★★</span> {trustNote}
           </p>
-          {TRUST_NAV.map((item) => (
+          {trustLinks.map((item) => (
             <a key={item.href} href={item.href} onClick={() => setIsMenuOpen(false)} className="text-sm font-label uppercase tracking-widest text-on-surface hover:text-primary">{item.label}</a>
           ))}
           <a href="#reservar" onClick={() => setIsMenuOpen(false)} className="mt-1 text-center bg-[#25D366] text-black font-label text-sm tracking-widest uppercase py-3 rounded-sm">{t.bookNow}</a>

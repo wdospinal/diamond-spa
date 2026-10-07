@@ -15,6 +15,7 @@ function HeroContent({
   secondaryCtaText,
   locale = 'es',
   showcase,
+  servicesFirst = false,
 }: {
   h1: string
   subtitle: string
@@ -23,6 +24,7 @@ function HeroContent({
   secondaryCtaText: string
   locale?: 'es' | 'en'
   showcase?: ReactNode
+  servicesFirst?: boolean
 }) {
   const searchParams = useSearchParams()
   const adgroup = searchParams?.get('adgroup') ?? ''
@@ -107,7 +109,9 @@ function HeroContent({
           <GoogleReviewBadge locale={locale} />
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center">
+        {/* servicesFirst (landings de pauta): "Ver servicios" va primero y "Reservar"
+            después. Solo cambia el orden visual; los enlaces y el tracking son los mismos. */}
+        <div className={`flex ${servicesFirst ? 'flex-col-reverse sm:flex-row-reverse' : 'flex-col sm:flex-row'} gap-4 w-full sm:w-auto justify-center`}>
           <a
             href="#reservar"
             onClick={() => trackAdsClick('hero')}
@@ -162,6 +166,7 @@ export function LandingHero(props: {
   secondaryCtaText: string
   locale?: 'es' | 'en'
   showcase?: ReactNode
+  servicesFirst?: boolean
 }) {
   return (
     <Suspense fallback={

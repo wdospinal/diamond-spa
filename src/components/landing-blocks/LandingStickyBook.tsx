@@ -5,7 +5,8 @@ import { useEffect, useState } from 'react'
 // Botón fijo de reserva en móvil (landing de pauta en inglés, v1). Aparece al
 // pasar el hero. Deja libre la esquina derecha para la burbuja de WhatsApp.
 // Abre el mismo modal (#reservar); no dispara eventos nuevos.
-export function LandingStickyBook({ label = 'Book your session' }: { label?: string }) {
+export function LandingStickyBook({ locale = 'en' }: { locale?: 'es' | 'en' }) {
+  const label = locale === 'es' ? 'Reserva tu sesión' : 'Book your session'
   const [show, setShow] = useState(false)
 
   useEffect(() => {

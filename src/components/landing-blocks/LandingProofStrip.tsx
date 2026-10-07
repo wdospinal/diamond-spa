@@ -27,20 +27,21 @@ function Stars() {
 }
 
 /** Franja corta bajo el hero: calificación de Google + redes. */
-export function LandingProofStrip() {
+export function LandingProofStrip({ locale = 'en' }: { locale?: 'es' | 'en' }) {
+  const isEs = locale === 'es'
   return (
     <div className="bg-white border-b border-gray-100">
       <div className="max-w-screen-xl mx-auto px-4 py-3 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-gray-700">
         <a href={SPA_GOOGLE_MAPS_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-[#0a1628]">
           <Stars />
           <span className="font-semibold">{SPA_RATING.value}</span>
-          <span className="text-gray-500 underline underline-offset-4 decoration-gray-300">{SPA_RATING.count} Google reviews</span>
+          <span className="text-gray-500 underline underline-offset-4 decoration-gray-300">{SPA_RATING.count} {isEs ? 'reseñas en Google' : 'Google reviews'}</span>
         </a>
         <span className="hidden sm:inline text-gray-300">|</span>
         <div className="flex items-center gap-3 text-gray-600">
-          <span className="text-gray-500">Follow us</span>
-          <a href={SPA_INSTAGRAM} target="_blank" rel="noopener noreferrer" aria-label="Diamond Spa on Instagram" className="hover:text-[#0a1628]"><InstagramIcon /></a>
-          <a href={SPA_TIKTOK} target="_blank" rel="noopener noreferrer" aria-label="Diamond Spa on TikTok" className="hover:text-[#0a1628]"><TikTokIcon /></a>
+          <span className="text-gray-500">{isEs ? 'Síguenos' : 'Follow us'}</span>
+          <a href={SPA_INSTAGRAM} target="_blank" rel="noopener noreferrer" aria-label={isEs ? 'Diamond Spa en Instagram' : 'Diamond Spa on Instagram'} className="hover:text-[#0a1628]"><InstagramIcon /></a>
+          <a href={SPA_TIKTOK} target="_blank" rel="noopener noreferrer" aria-label={isEs ? 'Diamond Spa en TikTok' : 'Diamond Spa on TikTok'} className="hover:text-[#0a1628]"><TikTokIcon /></a>
         </div>
       </div>
     </div>

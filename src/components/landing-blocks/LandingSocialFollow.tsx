@@ -3,7 +3,7 @@ import { InstagramIcon, TikTokIcon } from './LandingProofStrip'
 
 // Cierre de la sección de reseñas (landing de pauta en inglés, v1): todas las
 // reseñas en Google + redes sociales. Enlaces simples, sin eventos nuevos.
-export function LandingSocialFollow() {
+export function LandingSocialFollow({ locale = 'en' }: { locale?: 'es' | 'en' }) {
   return (
     <div className="bg-surface pb-16 -mt-8">
       <div className="max-w-3xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -13,7 +13,9 @@ export function LandingSocialFollow() {
           rel="noopener noreferrer"
           className="w-full sm:w-auto text-center border border-outline-variant/40 text-on-surface text-sm px-5 py-3 rounded-full hover:border-primary transition-colors"
         >
-          See all {SPA_RATING.count} reviews on Google · {SPA_RATING.value} ★
+          {locale === 'es'
+            ? `Ver las ${SPA_RATING.count} reseñas en Google · ${SPA_RATING.value} ★`
+            : `See all ${SPA_RATING.count} reviews on Google · ${SPA_RATING.value} ★`}
         </a>
         <a
           href={SPA_INSTAGRAM}
