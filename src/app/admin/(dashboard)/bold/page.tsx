@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { SPA_HOURS } from '@/lib/spa'
-import { cycleLabelFor, cycleRange, cycleRangeLabel } from '@/lib/cycle'
+import { cycleLabelFor, cycleRangeLabel } from '@/lib/cycle'
 
 type BoldMonth = {
   month: string
@@ -529,42 +529,61 @@ function IncomeHeatmap({
  * Barras: transacciones por día del período contable elegido. Incluye los días
  * sin cierres para que los huecos se vean.
  */
+const DAILY_WINDOWS = [
+  { key: '30', label: '30 días', days: 30 },
+  { key: '60', label: '60 días', days: 60 },
+  { key: '90', label: '90 días', days: 90 },
+  { key: 'all', label: 'Todo', days: null },
+] as const
+type DailyWindow = (typeof DAILY_WINDOWS)[number]['key']
+type DailyMetric = 'transactions' | 'grossCop'
+
+/** Paso de eje “redondo” (1, 2, 2.5, 5 × 10ⁿ) para que las líneas guía caigan en cifras legibles. */
+function niceStep(raw: number, integer: boolean): number {
+  if (raw <= 0) return 1
+  const mag = 10 ** Math.floor(Math.log10(raw))
+  const norm = raw / mag
+  const nice = norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 2.5 ? 2.5 : norm <= 5 ? 5 : 10
+  const step = nice * mag
+  return integer ? Math.max(1, Math.ceil(step)) : step
+}
+
 function DailyTransactionsChart({
   daily,
-  currentMonth,
   today,
-  cycleStartDay,
+  rangeStart,
+  rangeEnd,
 }: {
   daily: BoldDay[]
-  currentMonth: string
   today: string
-  cycleStartDay: number
+  rangeStart: string
+  rangeEnd: string
 }) {
-  const [month, setMonth] = useState(currentMonth)
+  const [windowKey, setWindowKey] = useState<DailyWindow>('30')
+  const [metric, setMetric] = useState<DailyMetric>('transactions')
   const [hover, setHover] = useState<number | null>(null)
   const [pinned, setPinned] = useState<number | null>(null)
   const active = hover ?? pinned
-
-  /** Períodos con al menos un cierre dentro del rango cargado, del más reciente al más viejo. */
-  const monthOptions = useMemo(() => {
-    const set = new Set(
-      daily
-        .filter(d => d.closings > 0)
-        .map(d => cycleLabelFor(d.day, cycleStartDay)),
-    )
-    return [...set].sort((a, b) => b.localeCompare(a))
-  }, [cycleStartDay, daily])
-
-  // El rango de fechas puede dejar fuera el período elegido; en ese caso caemos al más reciente.
-  const selected = monthOptions.includes(month) ? month : (monthOptions[0] ?? currentMonth)
+  const isMoney = metric === 'grossCop'
 
   const bars = useMemo(() => {
-    const range = cycleRange(selected, cycleStartDay)
+    // Si hay un filtro de fechas, la ventana termina donde termina el filtro.
+    const end = rangeEnd < today ? rangeEnd : today
+    const firstSale = daily.find(d => d.closings > 0)?.day ?? rangeStart
+    const days = DAILY_WINDOWS.find(w => w.key === windowKey)?.days ?? null
+    let start = firstSale
+    if (days !== null) {
+      const from = parseDay(end)
+      from.setUTCDate(from.getUTCDate() - (days - 1))
+      start = toIsoDay(from)
+    }
+    if (start < rangeStart) start = rangeStart
+
     const byDay = new Map(daily.map(d => [d.day, d]))
     const out: { day: string; dayNum: number; month: string; transactions: number; grossCop: number }[] =
       []
-    const cursor = parseDay(range.from)
-    while (toIsoDay(cursor) <= range.to && toIsoDay(cursor) <= today) {
+    const cursor = parseDay(start)
+    while (toIsoDay(cursor) <= end) {
       const day = toIsoDay(cursor)
       const found = byDay.get(day)
       out.push({
@@ -577,76 +596,132 @@ function DailyTransactionsChart({
       cursor.setUTCDate(cursor.getUTCDate() + 1)
     }
     return out
-  }, [cycleStartDay, daily, selected, today])
+  }, [daily, rangeEnd, rangeStart, today, windowKey])
 
-  const total = bars.reduce((s, b) => s + b.transactions, 0)
-  const activeDays = bars.filter(b => b.transactions > 0).length
+  const valueOf = (b: (typeof bars)[number]) => b[metric]
+  const fmtValue = (n: number) => (isMoney ? fmtCop(n) : String(n))
+  const fmtAxis = (n: number) => (isMoney ? COP_COMPACT.format(n) : String(n))
+
+  const totalTx = bars.reduce((s, b) => s + b.transactions, 0)
+  const totalCop = bars.reduce((s, b) => s + b.grossCop, 0)
+  const activeDays = bars.filter(b => b.transactions > 0 || b.grossCop > 0).length
   const best = bars.reduce<(typeof bars)[number] | null>(
-    (top, b) => (b.transactions > (top?.transactions ?? 0) ? b : top),
+    (top, b) => (valueOf(b) > (top ? valueOf(top) : 0) ? b : top),
     null,
   )
 
   const W = 720
   const H = 240
-  const padLeft = 30
+  const padLeft = isMoney ? 44 : 30
   const padRight = 10
   const padTop = 16
   const padBottom = 42
 
-  const max = Math.max(...bars.map(b => b.transactions), 1)
-  const step = Math.max(1, Math.ceil(max / 4))
+  const max = Math.max(...bars.map(valueOf), 1)
+  const step = niceStep(max / 4, !isMoney)
   const scaleMax = step * 4
   const innerW = W - padLeft - padRight
   const slot = bars.length > 0 ? innerW / bars.length : innerW
-  const barW = Math.max(3, Math.min(slot * 0.68, 26))
+  const barW = Math.max(1, Math.min(slot * 0.68, 26))
   const cx = (i: number) => padLeft + slot * (i + 0.5)
   const y = (v: number) => H - padBottom - (v / scaleMax) * (H - padTop - padBottom)
 
-  const labelEvery = bars.length > 16 ? 2 : 1
+  // Unas 16 etiquetas de día como máximo; en ventanas largas solo se ven los meses.
+  const labelEvery = Math.max(1, Math.ceil(bars.length / 16))
+  const showDayLabels = bars.length <= 120
+  const longRange = bars.length > 366
+  const monthLabels = useMemo(() => {
+    const out: { i: number; text: string }[] = []
+    let lastX = -Infinity
+    bars.forEach((b, i) => {
+      if (i > 0 && bars[i - 1]!.month === b.month) return
+      const x = padLeft + slot * (i + 0.5)
+      if (x - lastX < 34) return
+      lastX = x
+      const name = MONTH_SHORT.format(parseDay(b.day)).replace('.', '')
+      out.push({ i, text: longRange || b.month.endsWith('-01') ? `${name} ${b.day.slice(2, 4)}` : name })
+    })
+    return out
+  }, [bars, longRange, padLeft, slot])
+
   const activeBar = active !== null ? bars[active] : null
   const tooltipW = 176
   const tooltipH = 58
   const tooltipX =
     active !== null ? Math.min(Math.max(cx(active) - tooltipW / 2, 4), W - tooltipW - 4) : 0
-  const tooltipY = activeBar ? Math.max(y(activeBar.transactions) - tooltipH - 10, 2) : 0
+  const tooltipY = activeBar ? Math.max(y(valueOf(activeBar)) - tooltipH - 10, 2) : 0
+  const windowLabel =
+    windowKey === 'all' ? 'todo el tiempo' : `los últimos ${windowKey} días`
+
+  const resetSelection = () => {
+    setHover(null)
+    setPinned(null)
+  }
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-4">
-        <label className="block sm:w-72">
-          <span className="block font-label text-[10px] uppercase tracking-[0.2em] text-[#8a9299] mb-2">
-            Período
-          </span>
-          <select
-            value={selected}
-            onChange={e => {
-              setMonth(e.target.value)
-              setHover(null)
-              setPinned(null)
-            }}
-            disabled={monthOptions.length === 0}
-            className="w-full min-h-11 bg-[#001524] border border-[#42484c]/50 px-3 text-sm text-[#cfe5fa] font-body [color-scheme:dark] focus:outline-none focus:border-[#a5cce6]/60 cursor-pointer disabled:opacity-50"
-          >
-            {monthOptions.length === 0 ? (
-              <option value={selected}>{periodLabel(selected, cycleStartDay)}</option>
-            ) : (
-              monthOptions.map(m => (
-                <option key={m} value={m}>
-                  {periodLabel(m, cycleStartDay)}
-                </option>
-              ))
-            )}
-          </select>
-        </label>
+      <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-3 mb-4">
+        <div className="flex flex-col sm:flex-row gap-2">
+          <div className="flex border border-[#42484c]/50 w-full sm:w-auto" role="group" aria-label="Período">
+            {DAILY_WINDOWS.map(w => (
+              <button
+                key={w.key}
+                type="button"
+                onClick={() => {
+                  setWindowKey(w.key)
+                  resetSelection()
+                }}
+                aria-pressed={windowKey === w.key}
+                className={`flex-1 sm:flex-initial font-label text-[10px] uppercase tracking-[0.15em] px-3 min-h-11 sm:min-h-9 transition-colors cursor-pointer ${
+                  windowKey === w.key ? 'bg-[#1a3d52] text-[#cfe5fa]' : 'text-[#8a9299] hover:bg-[#001524]'
+                }`}
+              >
+                {w.label}
+              </button>
+            ))}
+          </div>
+          <div className="flex border border-[#42484c]/50 w-full sm:w-auto" role="group" aria-label="Métrica">
+            {(
+              [
+                ['transactions', 'Transacciones'],
+                ['grossCop', 'Dinero'],
+              ] as const
+            ).map(([key, label]) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => {
+                  setMetric(key)
+                  resetSelection()
+                }}
+                aria-pressed={metric === key}
+                className={`flex-1 sm:flex-initial font-label text-[10px] uppercase tracking-[0.15em] px-3 min-h-11 sm:min-h-9 transition-colors cursor-pointer ${
+                  metric === key ? 'bg-[#1a3d52] text-[#cfe5fa]' : 'text-[#8a9299] hover:bg-[#001524]'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
         <p className="text-[11px] text-[#5c656d] font-body leading-relaxed">
-          <span className="text-[#cfe5fa] tabular-nums">{total}</span> transacciones en{' '}
-          <span className="tabular-nums">{activeDays}</span>{' '}
+          {isMoney ? (
+            <>
+              <span className="text-[#cfe5fa] tabular-nums">{fmtCop(totalCop)}</span> en{' '}
+              <span className="tabular-nums">{totalTx}</span> transacciones
+            </>
+          ) : (
+            <>
+              <span className="text-[#cfe5fa] tabular-nums">{totalTx}</span> transacciones
+            </>
+          )}{' '}
+          en <span className="tabular-nums">{activeDays}</span>{' '}
           {activeDays === 1 ? 'día con ventas' : 'días con ventas'}
-          {best && best.transactions > 0 ? (
+          {best && valueOf(best) > 0 ? (
             <>
               {' · '}mejor día:{' '}
               <span className="text-[#cfe5fa]">
-                {dayLabel(best.day)} ({best.transactions})
+                {dayLabel(best.day)} ({fmtValue(valueOf(best))})
               </span>
             </>
           ) : null}
@@ -658,7 +733,7 @@ function DailyTransactionsChart({
           viewBox={`0 0 ${W} ${H}`}
           className="w-full min-w-[520px] h-auto"
           role="img"
-          aria-label={`Transacciones por día en el período ${periodLabel(selected, cycleStartDay)}. Pasa el mouse o toca una barra para ver el detalle.`}
+          aria-label={`${isMoney ? 'Ventas en pesos' : 'Transacciones'} por día en ${windowLabel}. Pasa el mouse o toca una barra para ver el detalle.`}
         >
           {[1, 2, 3, 4].map(i => {
             const v = step * i
@@ -673,7 +748,7 @@ function DailyTransactionsChart({
                   strokeOpacity="0.35"
                 />
                 <text x={4} y={y(v) + 4} fill="#5c656d" fontSize="10">
-                  {v}
+                  {fmtAxis(v)}
                 </text>
               </g>
             )
@@ -688,18 +763,19 @@ function DailyTransactionsChart({
           />
 
           {bars.map((b, i) => {
+            const v = valueOf(b)
             const isActive = active === i
-            const isBest = best !== null && b.day === best.day && b.transactions > 0
-            const h = b.transactions > 0 ? H - padBottom - y(b.transactions) : 0
+            const isBest = best !== null && b.day === best.day && v > 0
+            const h = v > 0 ? H - padBottom - y(v) : 0
             return (
               <g key={b.day}>
                 {h > 0 ? (
                   <rect
                     x={cx(i) - barW / 2}
-                    y={y(b.transactions)}
+                    y={y(v)}
                     width={barW}
                     height={h}
-                    fill={isActive ? '#cfe5fa' : isBest ? '#a5cce6' : '#a5cce6'}
+                    fill={isActive ? '#cfe5fa' : '#a5cce6'}
                     fillOpacity={isActive ? 1 : isBest ? 0.85 : 0.45}
                   />
                 ) : (
@@ -734,7 +810,7 @@ function DailyTransactionsChart({
                     }
                   }}
                 />
-                {i % labelEvery === 0 || i === bars.length - 1 ? (
+                {showDayLabels && (i % labelEvery === 0 || i === bars.length - 1) ? (
                   <text
                     x={cx(i)}
                     y={H - 26}
@@ -749,22 +825,18 @@ function DailyTransactionsChart({
             )
           })}
 
-          {bars.map((b, i) => {
-            const prev = i === 0 ? null : bars[i - 1]
-            if (prev && prev.month === b.month) return null
-            return (
-              <text
-                key={`month-${b.month}`}
-                x={cx(i)}
-                y={H - 10}
-                fill="#5c656d"
-                fontSize="10"
-                textAnchor="middle"
-              >
-                {MONTH_SHORT.format(parseDay(b.day)).replace('.', '')}
-              </text>
-            )
-          })}
+          {monthLabels.map(m => (
+            <text
+              key={`month-${m.i}`}
+              x={cx(m.i)}
+              y={showDayLabels ? H - 10 : H - 22}
+              fill="#5c656d"
+              fontSize="10"
+              textAnchor="middle"
+            >
+              {m.text}
+            </text>
+          ))}
 
           {activeBar ? (
             <g pointerEvents="none">
@@ -782,11 +854,14 @@ function DailyTransactionsChart({
                 {capitalize(weekdayLabel(activeBar.day))} · {dayLabel(activeBar.day)}
               </text>
               <text x={tooltipX + 12} y={tooltipY + 35} fill="#cfe5fa" fontSize="13" fontWeight="600">
-                {activeBar.transactions}{' '}
-                {activeBar.transactions === 1 ? 'transacción' : 'transacciones'}
+                {isMoney
+                  ? fmtCop(activeBar.grossCop)
+                  : `${activeBar.transactions} ${activeBar.transactions === 1 ? 'transacción' : 'transacciones'}`}
               </text>
               <text x={tooltipX + 12} y={tooltipY + 50} fill="#8a9299" fontSize="11">
-                {fmtCop(activeBar.grossCop)}
+                {isMoney
+                  ? `${activeBar.transactions} ${activeBar.transactions === 1 ? 'transacción' : 'transacciones'}`
+                  : fmtCop(activeBar.grossCop)}
               </text>
             </g>
           ) : null}
@@ -1578,9 +1653,9 @@ export default function BoldDashboardPage() {
         {data && data.daily.length > 0 ? (
           <DailyTransactionsChart
             daily={data.daily}
-            currentMonth={data.currentMonth}
             today={data.today}
-            cycleStartDay={data.cycleStartDay}
+            rangeStart={data.rangeStart}
+            rangeEnd={data.rangeEnd}
           />
         ) : (
           <p className="py-10 text-center text-[#8a9299] font-body text-sm">
