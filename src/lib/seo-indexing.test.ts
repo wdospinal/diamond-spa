@@ -127,6 +127,39 @@ test('sitemap: pages marked noindex are not listed', () => {
   assert.deepEqual(listed, [])
 })
 
+/** Static (non-dynamic) routes under [lang], e.g. "/depilacion-hombres". */
+function staticRoutes(dir = LANG_DIR): string[] {
+  const found: string[] = []
+  for (const name of readdirSync(dir)) {
+    const full = join(dir, name)
+    if (statSync(full).isDirectory()) {
+      if (!name.startsWith('[')) found.push(...staticRoutes(full))
+    } else if (name === 'page.tsx') {
+      const route = relative(LANG_DIR, dir).split(sep).filter(Boolean).join('/')
+      found.push(route ? `/${route}` : '')
+    }
+  }
+  return found
+}
+
+test('sitemap: every indexable static page is listed (new pages included)', () => {
+  // /depilacion-hombres and /depilacion-mujeres were linked from the main nav
+  // but missing from the sitemap, and never got indexed. Any new page that is
+  // indexable must be added to STATIC_PATHS in app/sitemap.ts — or marked
+  // noindex on purpose.
+  const noindex = noindexRoutes()
+  const missing: string[] = []
+  for (const route of staticRoutes()) {
+    if (noindex.some(r => route === r || route.startsWith(`${r}/`))) continue
+    for (const locale of LOCALES) {
+      const path = `/${locale}${route}`
+      if (redirectFor(path)) continue // e.g. /es/massage-medellin → /es/masajes
+      if (!sitemapSet.has(`${BASE_URL}${path}`)) missing.push(path)
+    }
+  }
+  assert.deepEqual(missing, [])
+})
+
 test('sitemap: hreflang alternates are self-referencing, reciprocal and listed', () => {
   const byUrl = new Map(entries.map(e => [e.url, e]))
   const problems: string[] = []

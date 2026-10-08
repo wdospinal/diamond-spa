@@ -1,5 +1,12 @@
+import type { Metadata } from 'next'
 import { readBookings } from '@/lib/bookings-store'
 import CheckinClient from './CheckinClient'
+
+// Per-booking page that shows the client's name: never let a shared link end
+// up in Google.
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+}
 
 export default async function CheckinPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params

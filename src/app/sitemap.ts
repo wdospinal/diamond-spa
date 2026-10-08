@@ -35,6 +35,8 @@ const STATIC_PATHS: {
   { path: '/masajes-para-hombres',     priority: 0.9, changeFrequency: 'monthly' },
   { path: '/masajes-para-mujeres',     priority: 0.9, changeFrequency: 'monthly' },
   { path: '/depilacion-medellin',      priority: 0.9, changeFrequency: 'monthly' },
+  { path: '/depilacion-hombres',       priority: 0.85, changeFrequency: 'monthly' },
+  { path: '/depilacion-mujeres',       priority: 0.85, changeFrequency: 'monthly' },
   { path: '/hydrafacial-medellin',     priority: 0.85, changeFrequency: 'monthly' },
   { path: '/dia-de-spa',               priority: 0.9, changeFrequency: 'weekly'  },
   { path: '/spa-el-poblado',           priority: 0.9, changeFrequency: 'weekly'  },
