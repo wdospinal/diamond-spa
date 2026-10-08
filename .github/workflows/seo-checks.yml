@@ -1,0 +1,41 @@
+# Fails the branch (and main) when a change would hurt indexing in Google.
+#
+# `yarn test` runs src/lib/*.test.ts, including seo-indexing.test.ts, which
+# checks the real sitemap, robots and next.config redirects:
+#   - every indexable page under app/[lang] is in the sitemap (new pages too)
+#   - no sitemap URL redirects, 404s or is noindex
+#   - no internal link or redirect goes through another redirect
+#   - hreflang alternates are reciprocal; robots.txt doesn't block /_next
+name: SEO & tests
+
+on:
+  push:
+    branches: ['**']   # every branch, main included
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: seo-checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      # The test runner needs Node >= 22.15 (module.registerHooks + strip-types).
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Type check
+        run: npx tsc --noEmit -p .
+
+      - name: Tests (includes SEO / sitemap checks)
+        run: yarn test
