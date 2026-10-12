@@ -18,6 +18,11 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     title,
     description,
     alternates: buildAlternates('/press', locale),
+    // A thin page (~360 words, no press coverage yet) that sat in "Crawled -
+    // currently not indexed" since April. Keep it crawlable (follow) but out of
+    // the index and the sitemap so it doesn't drag down the site's quality
+    // signal. Drop this once it has real press mentions.
+    robots: { index: false, follow: true },
     openGraph: buildOpenGraph({ title, description, path: '/press', locale }),
   }
 }

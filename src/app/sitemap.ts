@@ -48,8 +48,7 @@ const STATIC_PATHS: {
   { path: '/about',                    priority: 0.7, changeFrequency: 'monthly' },
   { path: '/location',                 priority: 0.8, changeFrequency: 'monthly' },
   { path: '/history',                  priority: 0.6, changeFrequency: 'monthly' },
-  // /privacy and /terms are noindex — see their generateMetadata
-  { path: '/press',                    priority: 0.4, changeFrequency: 'monthly' },
+  // /privacy, /terms and /press are noindex — see their generateMetadata
 ]
 
 /**

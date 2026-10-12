@@ -148,6 +148,25 @@ export default async function ServiceDetailPage({
     ],
   }
 
+  const waxVsMachine = service.pricingModel === 'wax-machine' && (
+    <section className="py-16 px-6 md:px-12 bg-surface">
+      <div className="max-w-3xl mx-auto">
+        <h2 className="font-headline text-2xl md:text-3xl text-on-surface tracking-tighter mb-10">
+          {locale === 'en' ? 'Wax or machine: which to choose?' : 'Cera o máquina: ¿cuál elegir?'}
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {HAIR_REMOVAL_METHODS[locale].map(m => (
+            <div key={m.title} className="bg-surface-container p-8">
+              <span className="material-symbols-outlined text-primary text-3xl mb-4 block" aria-hidden="true">{m.icon}</span>
+              <h3 className="font-headline text-xl text-on-surface tracking-tighter mb-3">{m.title}</h3>
+              <p className="text-zinc-400 font-body text-sm leading-relaxed">{m.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+
   return (
     <>
       <JsonLd data={serviceJsonLd} />
@@ -279,34 +298,19 @@ export default async function ServiceDetailPage({
       </section>
 
       {/* Wax vs machine — the waxing pages were near-identical templates;
-          this gives each one the method comparison its search intent expects. */}
-      {!content && service.pricingModel === 'wax-machine' && (
-        <section className="py-16 px-6 md:px-12 bg-surface">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="font-headline text-2xl md:text-3xl text-on-surface tracking-tighter mb-10">
-              {locale === 'en' ? 'Wax or machine: which to choose?' : 'Cera o máquina: ¿cuál elegir?'}
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {HAIR_REMOVAL_METHODS[locale].map(m => (
-                <div key={m.title} className="bg-surface-container p-8">
-                  <span className="material-symbols-outlined text-primary text-3xl mb-4 block" aria-hidden="true">{m.icon}</span>
-                  <h3 className="font-headline text-xl text-on-surface tracking-tighter mb-3">{m.title}</h3>
-                  <p className="text-zinc-400 font-body text-sm leading-relaxed">{m.body}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+          this gives each one the method comparison its search intent expects.
+          With hand-written content it follows the "what is it" section. */}
+      {!content && waxVsMachine}
 
       {content && (
         <>
           <ServiceWhatIs content={content.whatIs} locale={locale} />
+          {waxVsMachine}
           <ServiceBenefits content={content.benefits} locale={locale} />
           <ServiceProtocol content={content.protocol} locale={locale} />
           <ServiceSuitability content={content.suitability} locale={locale} />
           <ServiceAftercare content={content.aftercare} locale={locale} />
-          <ServiceComparison content={content.compare} currentId={service.id} locale={locale} />
+          {content.compare && <ServiceComparison content={content.compare} currentId={service.id} locale={locale} />}
         </>
       )}
 
