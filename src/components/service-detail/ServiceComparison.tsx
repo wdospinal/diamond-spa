@@ -15,7 +15,7 @@ export function ServiceComparison({
   currentId,
   locale,
 }: {
-  content: ServiceContent['compare']
+  content: NonNullable<ServiceContent['compare']>
   currentId: string
   locale: Locale
 }) {

@@ -13,6 +13,8 @@
  * claim consistent with the facial FAQs in `faqs.ts` and the booking data.
  */
 
+import { WAXING_CONTENT } from './service-content-waxing'
+
 type Locale = 'en' | 'es'
 type L<T = string> = Record<Locale, T>
 
@@ -45,8 +47,12 @@ export type ServiceContent = {
     afterTitle: L
     after: L<string[]>
   }
-  /** Other services to compare against, in display order (this service first). */
-  compare: {
+  /**
+   * Other services to compare against, in display order (this service first).
+   * Waxing pages leave it out: their comparison is wax vs machine, which the
+   * detail page renders from HAIR_REMOVAL_METHODS.
+   */
+  compare?: {
     title: L
     intro: L
     rows: { serviceId: string; durationMin: number; bestFor: L; extraction: L; downtime: L }[]
@@ -384,6 +390,7 @@ const DEEP_FACIAL: ServiceContent = {
 
 export const SERVICE_CONTENT: Partial<Record<string, ServiceContent>> = {
   'limpieza-facial-profunda': DEEP_FACIAL,
+  ...WAXING_CONTENT,
 }
 
 export function getServiceContent(serviceId: string): ServiceContent | undefined {
