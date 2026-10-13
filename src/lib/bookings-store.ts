@@ -29,7 +29,7 @@ const MIGRATED_KEY = 'bookings:migrated'
 
 async function readFileBookings(): Promise<BookingRecord[]> {
   try {
-    const data = JSON.parse(await readFile(FILE, 'utf8')) as unknown
+    const data = JSON.parse(await readFile(/*turbopackIgnore: true*/ FILE, 'utf8')) as unknown
     return Array.isArray(data) ? (data as BookingRecord[]) : []
   } catch (e: unknown) {
     if ((e as { code?: string }).code === 'ENOENT') return []

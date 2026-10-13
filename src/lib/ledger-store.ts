@@ -32,7 +32,7 @@ const HASH_KEY = 'ledger:entries'
 
 async function readFileMap(): Promise<Record<string, LedgerEntry>> {
   try {
-    const data = JSON.parse(await readFile(FILE, 'utf8')) as unknown
+    const data = JSON.parse(await readFile(/*turbopackIgnore: true*/ FILE, 'utf8')) as unknown
     return data && typeof data === 'object' && !Array.isArray(data)
       ? (data as Record<string, LedgerEntry>)
       : {}
