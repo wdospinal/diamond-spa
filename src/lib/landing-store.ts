@@ -132,7 +132,7 @@ const KV_KEY = 'landings:pages'
 
 async function readFileLandings(): Promise<LandingPage[]> {
   try {
-    const data = JSON.parse(await readFile(FILE, 'utf8')) as unknown
+    const data = JSON.parse(await readFile(/*turbopackIgnore: true*/ FILE, 'utf8')) as unknown
     return Array.isArray(data) ? (data as LandingPage[]) : []
   } catch (e: unknown) {
     if ((e as { code?: string }).code === 'ENOENT') return []

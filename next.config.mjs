@@ -8,6 +8,11 @@ const nextConfig = {
         destination: 'https://diamondspa.com.co/:path*',
         permanent: true,
       },
+      // `/` has no content of its own — the site lives under /es and /en. This was
+      // an app/page.tsx calling permanentRedirect(), but Next 16.4 requires every
+      // page to sit under a root layout and the only layouts are [lang] and admin.
+      // Keep the destination in sync with DEFAULT_LOCALE (src/lib/constants/locale.ts).
+      { source: '/', destination: '/es', permanent: true },
       { source: '/en/services/hidrafacial', destination: '/en/services/hydrafacial', permanent: true },
       { source: '/en/services/limpieza-facial-profunda', destination: '/en/services/deep-facial-cleanse', permanent: true },
       { source: '/en/services/limpieza-facial-basica', destination: '/en/services/basic-facial-cleanse', permanent: true },

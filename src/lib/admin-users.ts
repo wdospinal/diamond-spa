@@ -194,7 +194,7 @@ function toRow(user: AdminUser): Row & { updated_at: string } {
 
 async function readFileUsers(): Promise<Record<string, AdminUser>> {
   try {
-    const data = JSON.parse(await readFile(FILE, 'utf8')) as unknown
+    const data = JSON.parse(await readFile(/*turbopackIgnore: true*/ FILE, 'utf8')) as unknown
     if (!data || typeof data !== 'object' || Array.isArray(data)) return {}
     const users = data as Record<string, AdminUser>
     return Object.fromEntries(

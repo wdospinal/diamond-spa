@@ -56,7 +56,7 @@ type JsonShape = Record<string, Partial<Record<FunnelStageKey, string[]>>>
 
 async function readJson(): Promise<JsonShape> {
   try {
-    const data = JSON.parse(await readFile(FILE, 'utf8')) as unknown
+    const data = JSON.parse(await readFile(/*turbopackIgnore: true*/ FILE, 'utf8')) as unknown
     return data && typeof data === 'object' ? (data as JsonShape) : {}
   } catch (e: unknown) {
     if ((e as { code?: string }).code === 'ENOENT') return {}
