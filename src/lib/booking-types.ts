@@ -1,3 +1,5 @@
+import { parseTimeSlot } from '@/lib/parse-time-slot'
+
 export type BookingRecord = {
   id: string
   createdAt: string
@@ -45,15 +47,26 @@ export function bookingDisplayName(b: BookingRecord | undefined | null): string 
   return [b.firstName, b.lastName].filter(Boolean).join(' ').trim() || 'Desconocido'
 }
 
+/** Minutos desde medianoche de «2:00 PM»; sin hora («Por confirmar») va antes que cualquiera del día. */
+function slotRank(slot: string | undefined): number {
+  const t = parseTimeSlot(slot ?? '')
+  return t ? t.h * 60 + t.m : Infinity
+}
+
 /**
  * Orden del panel: día más reciente primero y, dentro del día, la hora más
  * tardía primero. Lo comparten `GET /api/bookings` y el stream SSE para que
  * una actualización en vivo no reordene las tarjetas respecto a la carga inicial.
+ *
+ * Las horas se comparan como horas, no como texto: «9:00 AM» > «2:00 PM» en
+ * orden alfabético, y así salía la agenda de la mañana encima de la tarde.
  */
 export function sortBookingsForAdmin(bookings: BookingRecord[]): BookingRecord[] {
   return [...bookings].sort((a, b) => {
     const byDay = a.dateKey.localeCompare(b.dateKey)
     if (byDay !== 0) return -byDay
-    return (b.timeSlot || '').localeCompare(a.timeSlot || '')
+    const ra = slotRank(a.timeSlot)
+    const rb = slotRank(b.timeSlot)
+    return ra === rb ? 0 : ra < rb ? 1 : -1
   })
 }

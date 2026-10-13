@@ -36,6 +36,9 @@ registerHooks({
       const hit = firstExisting(join(dirname(fileURLToPath(context.parentURL)), specifier))
       if (hit) return hit
     }
+    // `next/server`, `next/navigation`…: Next no publica un mapa `exports`, así
+    // que el resolvedor ESM de Node exige la extensión que el bundler infiere.
+    if (/^next\/[\w-]+$/.test(specifier)) return nextResolve(`${specifier}.js`, context)
     return nextResolve(specifier, context)
   },
 })

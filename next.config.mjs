@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // No anunciar el framework en cada respuesta (X-Powered-By: Next.js).
+  poweredByHeader: false,
   async redirects() {
     return [
       {

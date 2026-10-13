@@ -39,3 +39,12 @@ jobs:
 
       - name: Tests (includes SEO / sitemap checks)
         run: yarn test
+
+      # Builds without any secrets (stores fall back to JSON files) and checks
+      # every sitemap page, the shared layout, the booking page and that the
+      # panel/API stay closed. See scripts/smoke-test.mjs.
+      - name: Build
+        run: yarn build
+
+      - name: Smoke test (built app)
+        run: yarn test:smoke
