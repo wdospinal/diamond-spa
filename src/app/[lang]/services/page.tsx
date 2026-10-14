@@ -7,7 +7,10 @@ import { IMG_HERO_SERVICES, IMG_HERO_SERVICES_H } from '@/lib/images'
 import { SERVICES, formatCop, type DurationMinutes, type ServiceDef } from '@/lib/services'
 import { serviceHref } from '@/lib/routes'
 import { DURATION_MINUTES } from '@/lib/constants'
-import { buildAlternates, buildOpenGraph } from '@/lib/seo'
+import { BASE_URL, buildAlternates, buildOpenGraph, faqJsonLd } from '@/lib/seo'
+import { servicesPageFaqs, servicesPriceSummary } from '@/lib/services-page-seo'
+import { JsonLd } from '@/components/JsonLd'
+import { FaqSection } from '@/components/FaqSection'
 import { SPA_WHATSAPP_GREETING, randomWhatsAppUrl } from '@/lib/spa'
 import SemTracker from '@/components/SemTracker'
 
@@ -43,9 +46,22 @@ export default async function ServicesPage({ params }: { params: Promise<{ lang:
   const massages = allServices.filter(s => s.categoryId === 'massages')
   const facials = allServices.filter(s => s.categoryId === 'facials')
   const hairRemoval = allServices.filter(s => s.categoryId === 'hair-removal')
+  const summary = servicesPriceSummary(locale)
+  const faqs = servicesPageFaqs(locale)
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: locale === 'en' ? 'Home' : 'Inicio', item: `${BASE_URL}/${locale}` },
+      { '@type': 'ListItem', position: 2, name: t.title, item: `${BASE_URL}/${locale}/services` },
+    ],
+  }
 
   return (
     <>
+      <JsonLd data={breadcrumbJsonLd} />
+      <JsonLd data={faqJsonLd(faqs)} />
       <SemTracker />
       {/* HERO */}
       <header className="relative pt-40 pb-24 px-6 md:px-12 overflow-hidden">
@@ -88,6 +104,25 @@ export default async function ServicesPage({ params }: { params: Promise<{ lang:
 
       <section className="py-12 px-6 md:px-12 bg-surface pb-24">
         <div className="max-w-screen-2xl mx-auto">
+          {/* "From" price per category: answers "cuánto cuesta…" before the full list,
+              and jumps to each section. */}
+          <ul className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-outline-variant/20 mb-6">
+            {summary.map(card => (
+              <li key={card.anchor} className="bg-surface-container-low">
+                <a href={`#${card.anchor}`} className="group flex flex-col gap-2 p-6 md:p-8 h-full hover:bg-surface-container-high transition-colors">
+                  <span className="flex items-center gap-2 font-label text-outline text-[10px] uppercase tracking-widest">
+                    <span className="material-symbols-outlined text-primary text-base" aria-hidden="true">{card.icon}</span>
+                    {card.title}
+                  </span>
+                  <span className="font-body text-secondary text-sm">{locale === 'en' ? 'from' : 'desde'}</span>
+                  <span className="font-headline text-on-surface text-2xl lg:text-3xl tabular-nums whitespace-nowrap -mt-1 group-hover:text-primary transition-colors">
+                    {card.from}
+                  </span>
+                  <span className="font-body text-secondary text-sm">{card.detail}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
           <p className="text-on-surface-variant text-xs font-label uppercase tracking-widest mb-16">{t.pricingNote}</p>
 
           {/* ── MEN'S CALLOUT ───────────────────────────────────────────── */}
@@ -104,7 +139,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ lang:
           </div>
 
           {/* ── SECTION 1: EXCLUSIVE MASSAGES ─────────────────────────────── */}
-          <div className="mb-20">
+          <div id="masajes" className="mb-20 scroll-mt-28">
             <h2 className="font-headline text-3xl md:text-4xl text-on-surface font-light mb-2">{t.sectionMassages}</h2>
             {/* Each price section links to its category guide: /services is the price list, the guides own the "X en Medellín" searches. */}
             <Link href={locale === 'en' ? '/en/massage-medellin' : '/es/masajes'} className="inline-flex items-center gap-1 mb-6 font-label text-primary text-xs tracking-widest uppercase hover:gap-2 transition-all">
@@ -169,7 +204,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ lang:
           </div>
 
           {/* ── SECTION 2: FACIALS & SKIN CARE ────────────────────────────── */}
-          <div className="mb-20">
+          <div id="faciales" className="mb-20 scroll-mt-28">
             <h2 className="font-headline text-3xl md:text-4xl text-on-surface font-light mb-2">{t.sectionFacials}</h2>
             <Link href={`/${locale}/limpieza-facial-medellin`} className="inline-flex items-center gap-1 mb-6 font-label text-primary text-xs tracking-widest uppercase hover:gap-2 transition-all">
               {locale === 'en' ? 'Guide: facials in Medellín' : 'Guía: limpieza facial en Medellín'} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
@@ -231,7 +266,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ lang:
           </div>
 
           {/* ── SECTION 3: HAIR REMOVAL ────────────────────────────────────── */}
-          <div className="mb-20">
+          <div id="depilacion" className="mb-20 scroll-mt-28">
             <h2 className="font-headline text-3xl md:text-4xl text-on-surface font-light mb-2">{t.sectionHairRemoval}</h2>
             <Link href={`/${locale}/depilacion-medellin`} className="inline-flex items-center gap-1 mb-6 font-label text-primary text-xs tracking-widest uppercase hover:gap-2 transition-all">
               {locale === 'en' ? 'Guide: hair removal in Medellín' : 'Guía: depilación en Medellín'} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
@@ -301,6 +336,12 @@ export default async function ServicesPage({ params }: { params: Promise<{ lang:
           </div>
         </div>
       </section>
+
+      <FaqSection
+        categories={[{ id: 'payments', icon: 'payments', label: locale === 'en' ? 'Prices' : 'Precios', items: faqs }]}
+        title={locale === 'en' ? 'Spa prices: common questions' : 'Precios del spa: preguntas frecuentes'}
+        className="py-20 px-6 md:px-12 bg-surface"
+      />
 
       {/* CTA */}
       <section className="py-40 bg-surface-container-lowest text-center">
