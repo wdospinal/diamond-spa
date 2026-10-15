@@ -8,6 +8,7 @@ import { getPlaceDetailsLive, getPlaceRating, type LivePlaceDetails } from '@/li
 import { LandingTeam } from '@/components/landing-blocks/LandingTeam'
 import { LandingFacilities } from '@/components/landing-blocks/LandingFacilities'
 import { FaqSection } from '@/components/FaqSection'
+import { HomeCategories } from '@/components/home/HomeCategories'
 import { HomeReviewsReal } from '@/components/home/HomeReviewsReal'
 import {
   HomeCta,
@@ -87,6 +88,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       <JsonLd data={faqJsonLd(faqItems)} />
       <HomeHero locale={locale} rating={rating} content={content} />
       <HomeFacts content={content} />
+      {/* The three original category cards (with photos), kept as they were. */}
+      <HomeCategories locale={locale} />
       <HomeServices content={content} />
       <HomeVideosSection content={content} />
       {/* Same facilities gallery used by the paid landing pages, fed with
