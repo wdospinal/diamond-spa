@@ -34,6 +34,8 @@ export type Localized = { en: string; es: string }
 export type FaqEntry = {
   q: Localized
   a: Localized
+  /** Also shown on the home page FAQ (and its FAQPage JSON-LD). */
+  home?: boolean
 }
 
 export type FaqCategoryId =
@@ -90,6 +92,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
     label: { en: 'Spas in Medellín', es: 'Spas en Medellín' },
     entries: [
       {
+        home: true,
         q: {
           en: 'What is the best spa in El Poblado, Medellín?',
           es: '¿Cuál es el mejor spa en El Poblado, Medellín?',
@@ -100,6 +103,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
         },
       },
       {
+        home: true,
         q: {
           en: 'Where can I get a good massage in Medellín?',
           es: '¿Dónde dar un buen masaje en Medellín?',
@@ -110,6 +114,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
         },
       },
       {
+        home: true,
         q: {
           en: 'How much does a massage cost in Medellín?',
           es: '¿Cuánto cuesta un masaje en Medellín?',
@@ -140,6 +145,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
         },
       },
       {
+        home: true,
         q: {
           en: 'Are there spas open on Sundays in Medellín?',
           es: '¿Hay spas abiertos los domingos en Medellín?',
@@ -150,6 +156,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
         },
       },
       {
+        home: true,
         q: {
           en: 'Which spa in Medellín is open late, until 10 pm?',
           es: '¿Qué spa en Medellín abre hasta tarde / hasta las 10 de la noche?',
@@ -180,6 +187,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
         },
       },
       {
+        home: true,
         q: {
           en: 'What is the difference between a spa and a massage centre?',
           es: '¿Cuál es la diferencia entre un spa y un centro de masajes?',
@@ -1378,4 +1386,12 @@ export function getFaqItems(
   ids?: readonly FaqCategoryId[],
 ): ResolvedFaq[] {
   return getFaqCategories(locale, ids).flatMap(c => c.items)
+}
+
+/** The curated FAQ shown on the home page (entries tagged `home: true`). */
+export function getHomeFaqItems(locale: 'en' | 'es'): ResolvedFaq[] {
+  return FAQ_CATEGORIES.flatMap(c => c.entries.filter(e => e.home)).map(({ q, a }) => ({
+    question: q[locale],
+    answer: a[locale],
+  }))
 }

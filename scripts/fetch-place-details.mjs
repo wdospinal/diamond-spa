@@ -3,8 +3,11 @@
 // (or just `node scripts/fetch-place-details.mjs` — it reads .env.local)
 import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const root = new URL('..', import.meta.url).pathname
+// fileURLToPath (not URL.pathname): on Windows pathname is "/C:/...", which
+// path.resolve turns into "C:\C:\..." and .env.local is never found.
+const root = fileURLToPath(new URL('..', import.meta.url))
 const PLACE_ID = 'ChIJKzwytpApRI4RjIhtXLsMvK8'
 const OUT_FILE = resolve(root, 'src/lib/place-details.json')
 

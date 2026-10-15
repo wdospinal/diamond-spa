@@ -4,7 +4,16 @@ import Image from 'next/image'
 import { useState } from 'react'
 import type { Locale } from '@/lib/i18n'
 
-const IMAGES = [
+type Localized = { es: string; en: string }
+
+export type FacilityImage = {
+  src: string
+  title: Localized
+  /** Descriptive alt text. Falls back to the title when omitted. */
+  alt?: Localized
+}
+
+const DEFAULT_IMAGES: FacilityImage[] = [
   {
     src: '/images-ads/galeria/galeria1.png',
     title: { es: 'Sala de Bienvenida', en: 'Welcome Lounge' }
@@ -26,12 +35,31 @@ const IMAGES = [
 const GALLERY_GRID_CLASS =
   'flex md:grid md:grid-cols-4 gap-4 md:gap-6 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-6 md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
 
-export function LandingFacilities({ locale }: { locale: Locale }) {
-  const label = locale === 'es' ? 'Nuestras Instalaciones' : 'Our Facilities'
-  const title = locale === 'es' ? 'Un espacio diseñado para ti' : 'A space designed for you'
-  const subtitle = locale === 'es'
+/**
+ * Photo gallery of the spa's rooms. Used as-is by the paid landing pages
+ * (defaults below) and, with its own copy and optimized photos, by the home.
+ */
+export function LandingFacilities({
+  locale,
+  images = DEFAULT_IMAGES,
+  label: labelProp,
+  title: titleProp,
+  subtitle: subtitleProp,
+  unoptimized = true,
+}: {
+  locale: Locale
+  images?: FacilityImage[]
+  label?: string
+  title?: string
+  subtitle?: string
+  /** The landing PNGs are served as-is; pass false for already-optimized photos. */
+  unoptimized?: boolean
+}) {
+  const label = labelProp ?? (locale === 'es' ? 'Nuestras Instalaciones' : 'Our Facilities')
+  const title = titleProp ?? (locale === 'es' ? 'Un espacio diseñado para ti' : 'A space designed for you')
+  const subtitle = subtitleProp ?? (locale === 'es'
     ? 'Privacidad, confort y lujo en el corazón de El Poblado.'
-    : 'Privacy, comfort, and luxury in the heart of El Poblado.'
+    : 'Privacy, comfort, and luxury in the heart of El Poblado.')
 
   const [activeIdx, setActiveIdx] = useState(0)
 
@@ -57,13 +85,14 @@ export function LandingFacilities({ locale }: { locale: Locale }) {
           onScroll={(e) => {
             if (window.innerWidth < 768) {
               const el = e.currentTarget
-              const idx = Math.round(el.scrollLeft / (el.scrollWidth / IMAGES.length))
+              const idx = Math.round(el.scrollLeft / (el.scrollWidth / images.length))
               setActiveIdx(idx)
             }
           }}
         >
-          {IMAGES.map((img, i) => {
+          {images.map((img, i) => {
             const imgTitle = locale === 'es' ? img.title.es : img.title.en
+            const imgAlt = img.alt ? (locale === 'es' ? img.alt.es : img.alt.en) : imgTitle
 
             return (
               <div
@@ -73,11 +102,11 @@ export function LandingFacilities({ locale }: { locale: Locale }) {
                 <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-surface-container/50 ring-1 ring-outline/10 shadow-sm">
                   <Image
                     src={img.src}
-                    alt={imgTitle}
+                    alt={imgAlt}
                     fill
                     sizes="(max-width: 768px) 80vw, 25vw"
                     className="object-cover opacity-90 group-hover:opacity-100 transition-all duration-700 md:group-hover:scale-105"
-                    unoptimized
+                    unoptimized={unoptimized}
                   />
                   
                   {/* Subtle gradient overlay for better text readability if we decide to put text inside */}
@@ -95,7 +124,7 @@ export function LandingFacilities({ locale }: { locale: Locale }) {
         </div>
 
         <div className="flex md:hidden justify-center gap-2 mt-2">
-          {IMAGES.map((_, i) => (
+          {images.map((_, i) => (
             <span
               key={i}
               className={`block rounded-full transition-all duration-300 ${

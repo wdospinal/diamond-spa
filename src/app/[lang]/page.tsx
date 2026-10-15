@@ -1,24 +1,28 @@
 import { notFound } from 'next/navigation'
-import Image from 'next/image'
-import Link from 'next/link'
 import type { Metadata } from 'next'
-import { getDict, isLocale, type Locale } from '@/lib/i18n'
-import { buildAlternates, buildOpenGraph, localBusinessJsonLd } from '@/lib/seo'
-import { IMG_HERO_HOME, IMG_DEEP_TISSUE, IMG_FACIAL, IMG_RELAXATION, IMG_BOUTIQUE } from '@/lib/images'
-import { getServiceById } from '@/lib/services'
-import { serviceHref } from '@/lib/routes'
-import { SERVICE_DETAIL_FROM_HOME } from '@/lib/service-detail-nav'
-import { ServiceCardLink } from '@/components/ServiceCardLink'
+import { isLocale, type Locale } from '@/lib/i18n'
+import { buildAlternates, buildOpenGraph, faqJsonLd, localBusinessJsonLd } from '@/lib/seo'
+import { getHomeFaqItems, type ResolvedFaqCategory } from '@/lib/faqs'
+import { getHomeContent } from '@/lib/home-content'
+import { getPlaceDetailsLive, getPlaceRating, type LivePlaceDetails } from '@/lib/google-places'
 import { LandingTeam } from '@/components/landing-blocks/LandingTeam'
+import { LandingFacilities } from '@/components/landing-blocks/LandingFacilities'
+import { FaqSection } from '@/components/FaqSection'
+import { HomeReviewsReal } from '@/components/home/HomeReviewsReal'
 import {
-  SPA_ADDRESS,
-  SPA_GOOGLE_MAPS_URL,
-  SPA_GOOGLE_REVIEW_URL,
-} from '@/lib/spa'
-import { getPlaceRating } from '@/lib/google-places'
-import { STATIC_REVIEWS } from '@/lib/reviews'
+  HomeCta,
+  HomeFacts,
+  HomeGuide,
+  HomeHero,
+  HomeHub,
+  HomeLocation,
+  HomeServices,
+  HomeVideosSection,
+} from '@/components/home/HomeSections'
 import { JsonLd } from '@/components/JsonLd'
 
+// Same as every other content page: prerender (ISR) instead of rendering on each request.
+export const dynamic = 'force-static'
 export const revalidate = 36000
 
 // Prerender both locales at build time — without this the homepage is the only
@@ -27,421 +31,88 @@ export function generateStaticParams() {
   return [{ lang: 'es' }, { lang: 'en' }]
 }
 
-const FEATURED_SERVICES = {
-  deepTissue: getServiceById('depilacion-cuerpo-completo')!,
-  facial: getServiceById('hidrafacial')!,
-  sensitive: getServiceById('sensitive')!,
+/**
+ * One rating for the whole page — visible stars, metadata and JSON-LD all read
+ * it. Live from Google Places when GOOGLE_PLACES_API_KEY is set (cached by
+ * Next for a day), otherwise the committed snapshot.
+ */
+function ratingOf(place: LivePlaceDetails): { value: string; count: number } {
+  if (place.rating && place.userRatingCount) {
+    return { value: place.rating.toFixed(1), count: place.userRatingCount }
+  }
+  return getPlaceRating()
 }
-
-const FEATURED_REVIEWS = STATIC_REVIEWS.slice(0, 3)
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params
-  const locale = isLocale(lang) ? lang : 'es'
-  const rating = getPlaceRating()
-  // The homepage owns the brand and the broad "spa medellín / el poblado"
-  // queries. It deliberately does NOT target "para hombres" or "massage":
-  // Search Console showed the homepage ranking (at 5-9) for those while the
-  // pages built for them — /masajes-para-hombres and /en/massage-medellin —
-  // got almost no impressions. One page per query group.
-  const title = locale === 'en'
-    ? `Diamond Spa Medellín — Spa in El Poblado: Massages, Facials & Hair Removal ⭐ ${rating.value}`
-    : `Diamond Spa Medellín — Spa en El Poblado: Masajes, Faciales y Depilación ⭐ ${rating.value}`
-  const description = locale === 'en'
-    ? `Spa in El Poblado, Medellín. Massages, facials & hair removal in private rooms. ⭐ ${rating.value} · ${rating.count} Google reviews. From $120,000 COP — book now.`
-    : `Spa en El Poblado, Medellín. Masajes, faciales y depilación en cabinas privadas. ⭐ ${rating.value} · ${rating.count} reseñas. Desde $120.000 COP — reserva ahora.`
+  const locale: Locale = isLocale(lang) ? lang : 'es'
+  const rating = ratingOf(await getPlaceDetailsLive())
+  // The homepage owns "spa medellín" and the brand "Diamond Spa". It
+  // deliberately does NOT target "para hombres" or "massage": Search Console
+  // showed the homepage ranking (at 5-9) for those while the pages built for
+  // them — /masajes-para-hombres and /en/massage-medellin — got almost no
+  // impressions. One page per query group; the home links out to them instead.
+  const { meta } = getHomeContent(locale, rating)
   return {
-    title,
-    description,
+    title: meta.title,
+    description: meta.description,
     alternates: buildAlternates('', locale),
-    openGraph: buildOpenGraph({ title, description, path: '', locale, imageAlt: 'Diamond Spa — El Poblado, Medellín' }),
+    openGraph: buildOpenGraph({
+      title: meta.title,
+      description: meta.description,
+      path: '',
+      locale,
+      imageAlt: meta.imageAlt,
+    }),
   }
 }
-
-// ─── Section components ───────────────────────────────────────────────────────
-
-function HomeHero({ locale, rating }: { locale: Locale; rating: { value: string; count: number } }) {
-  const h = getDict(locale).home
-
-  return (
-    <section className="relative min-h-dvh flex items-center overflow-hidden">
-      <div className="absolute inset-0 z-0">
-        {/* priority={true} emits <link rel="preload" fetchpriority="high"> in <head>
-            so the browser discovers the image at HTML-parse time, not after JS. */}
-        <Image
-          src={IMG_HERO_HOME}
-          alt={locale === 'es'
-            ? 'Interior boutique de Diamond Spa en El Poblado, Medellín, con iluminación cálida y ambiente relajante'
-            : 'Boutique interior of Diamond Spa in El Poblado, Medellín, with warm lighting and a relaxing atmosphere'}
-          fill
-          priority
-          fetchPriority="high"
-          quality={65}
-          sizes="(max-width: 640px) 100vw, (max-width: 1280px) 100vw, 1536px"
-          className="object-cover opacity-60"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-surface via-surface/50 to-transparent" />
-      </div>
-      <div className="relative z-10 max-w-screen-2xl mx-auto w-full px-6 md:px-12 pt-10 md:pt-14 pb-24">
-        <div className="lg:w-2/3 flex flex-col">
-          <div className="flex items-center gap-4 mb-6">
-            <span className="font-label text-primary tracking-[0.3em] uppercase text-xs">{h.tagline}</span>
-            <span className="w-px h-3 bg-outline-variant/40" />
-            <span className="inline-flex items-center gap-1 font-label text-outline text-xs uppercase tracking-widest">
-              <span className="material-symbols-outlined shrink-0 overflow-visible" style={{ fontSize: '16px', lineHeight: '1' }} aria-hidden="true">location_on</span>
-              Medellín, El Poblado
-            </span>
-          </div>
-          <h1 className="font-headline text-5xl md:text-7xl lg:text-8xl text-on-surface leading-tight mb-8 w-full">
-            {h.h1[0]}<br />{h.h1[1]}
-          </h1>
-          <p className="font-body text-secondary text-lg max-w-xl leading-relaxed font-light mb-12">{h.body}</p>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Link href={`/${locale}/book`} className="inline-flex items-center gap-3 bg-primary text-on-primary px-10 py-5 font-label font-bold tracking-[0.2em] text-sm uppercase hover:bg-white transition-all duration-300">
-              {h.bookSession}
-              <span className="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
-            </Link>
-            <Link href={`/${locale}/services`} className="inline-flex items-center gap-2 border border-outline-variant/30 text-on-surface px-10 py-5 font-label font-bold tracking-[0.2em] text-sm uppercase hover:bg-surface-container-high transition-all duration-300">
-              {h.exploreServices}
-            </Link>
-          </div>
-
-          {/* Trust signals strip */}
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mt-12 pt-10 border-t border-outline-variant/20">
-            <a
-              href={SPA_GOOGLE_REVIEW_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 group"
-            >
-              <div
-                className="flex gap-0.5"
-                role="img"
-                aria-label={locale === 'es' ? '5 estrellas de 5' : '5 out of 5 stars'}
-              >
-                {[1, 2, 3, 4, 5].map(star => (
-                  <span key={star} className="material-symbols-outlined text-primary" style={{ fontSize: '14px', fontVariationSettings: "'FILL' 1" }} aria-hidden="true">star</span>
-                ))}
-              </div>
-              <span className="font-label text-on-surface text-xs tracking-wider group-hover:text-primary transition-colors">
-                {rating.value} · {rating.count} {locale === 'es' ? 'reseñas de Google' : 'Google reviews'}
-              </span>
-            </a>
-            <span className="w-px h-3 bg-outline-variant/30 hidden sm:block" aria-hidden="true" />
-            <div className="flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-outline" style={{ fontSize: '14px' }} aria-hidden="true">schedule</span>
-              <span className="font-label text-outline text-xs tracking-wider">
-                {locale === 'es' ? 'Lun–Sáb 10:00–22:00 · Dom 10:00–19:00' : 'Mon–Sat 10:00–10pm · Sun 10:00–7pm'}
-              </span>
-            </div>
-            <span className="w-px h-3 bg-outline-variant/30 hidden md:block" aria-hidden="true" />
-            <div className="hidden md:flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-outline" style={{ fontSize: '14px' }} aria-hidden="true">location_on</span>
-              <span className="font-label text-outline text-xs tracking-wider">{SPA_ADDRESS.street}, {SPA_ADDRESS.neighborhood}</span>
-            </div>
-            <span className="w-px h-3 bg-outline-variant/30 hidden md:block" aria-hidden="true" />
-            <a
-              href={SPA_GOOGLE_MAPS_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden md:flex items-center gap-1.5 font-label text-outline text-xs tracking-wider hover:text-primary transition-colors"
-            >
-              <span className="material-symbols-outlined text-outline" style={{ fontSize: '14px' }} aria-hidden="true">map</span>
-              {locale === 'es' ? 'Ver en mapa' : 'View on map'}
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function HomeServices({ locale }: { locale: Locale }) {
-  const h = getDict(locale).home
-  const deepTissueDesc = locale === 'en' ? FEATURED_SERVICES.deepTissue.shortDesc.en : FEATURED_SERVICES.deepTissue.shortDesc.es
-  const facialDesc = locale === 'en' ? FEATURED_SERVICES.facial.shortDesc.en : FEATURED_SERVICES.facial.shortDesc.es
-  const sensitiveDesc = locale === 'en' ? FEATURED_SERVICES.sensitive.shortDesc.en : FEATURED_SERVICES.sensitive.shortDesc.es
-  return (
-    <section className="py-28 px-6 md:px-12 bg-surface-container-low">
-      <div className="max-w-screen-2xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-          <div>
-            <h2 className="font-headline text-4xl md:text-5xl text-on-surface">{h.section2Title}</h2>
-            <p className="mt-4 font-body text-secondary max-w-lg leading-relaxed font-light">{h.section2Body}</p>
-            <Link href={`/${locale}/masajes-para-hombres`} className="mt-4 inline-flex items-center gap-1 font-label text-primary text-xs tracking-widest uppercase hover:gap-2 transition-all">
-              {locale === 'es' ? 'Masajes para hombres en Medellín' : 'Massages for men in Medellín'} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
-            </Link>
-          </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-          <div className="md:col-span-6 relative group min-h-[480px] overflow-hidden rounded-sm bg-surface-container ring-1 ring-outline-variant/10">
-            <Image
-              src={IMG_DEEP_TISSUE}
-              alt={locale === 'es'
-                ? 'Sesión de depilación profesional de cuerpo completo en cabina privada de Diamond Spa'
-                : 'Professional full-body hair removal session in a private cabin at Diamond Spa'}
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-cover img-hover-color"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface/40 to-transparent" />
-            <div className="absolute bottom-0 left-0 p-8 z-10">
-              <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-3 block">{h.care}</span>
-              <h3 className="font-headline text-3xl text-on-surface mb-3">{h.hairRemovalTitle}</h3>
-              <p className="font-body text-secondary text-sm max-w-md leading-relaxed mb-5">{deepTissueDesc}</p>
-              <ServiceCardLink href={serviceHref(FEATURED_SERVICES.deepTissue, locale)} from={SERVICE_DETAIL_FROM_HOME} aria-label={locale === 'es' ? `Ver detalles: ${h.hairRemovalTitle}` : `View details: ${h.hairRemovalTitle}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
-                {h.viewDetails} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
-              </ServiceCardLink>
-            </div>
-          </div>
-          <div className="md:col-span-6 relative group min-h-[480px] overflow-hidden rounded-sm bg-surface-container ring-1 ring-outline-variant/10">
-            <Image
-              src={IMG_FACIAL}
-              alt={locale === 'es'
-                ? 'Mujer recibiendo un tratamiento facial Hidrafacial para una piel limpia, hidratada y radiante'
-                : 'Woman receiving a Hidrafacial treatment for clean, hydrated and radiant skin'}
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-cover object-top img-hover-color"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface/40 to-transparent" />
-            <div className="absolute bottom-0 left-0 p-8 z-10">
-              <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-3 block">{h.treatments}</span>
-              <h3 className="font-headline text-3xl text-on-surface mb-3">{h.facialTitle}</h3>
-              <p className="font-body text-secondary text-sm max-w-md leading-relaxed mb-5">{facialDesc}</p>
-              <ServiceCardLink href={serviceHref(FEATURED_SERVICES.facial, locale)} from={SERVICE_DETAIL_FROM_HOME} aria-label={locale === 'es' ? `Ver detalles: ${h.facialTitle}` : `View details: ${h.facialTitle}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
-                {h.viewDetails} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
-              </ServiceCardLink>
-            </div>
-          </div>
-          <div className="md:col-span-12 relative flex min-h-[480px] items-center overflow-hidden rounded-sm bg-surface-container ring-1 ring-outline-variant/10 group">
-            <Image
-              src={IMG_RELAXATION}
-              alt={locale === 'es'
-                ? 'Persona disfrutando de un masaje relajante de aceites esenciales en una camilla de Diamond Spa'
-                : 'Person enjoying a relaxing essential-oil massage on a treatment table at Diamond Spa'}
-              fill
-              quality={65}
-          sizes="(max-width: 640px) 100vw, (max-width: 1280px) 100vw, 1536px"
-              className="object-cover img-hover-color"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-surface-container-lowest/95 via-surface-container/70 to-transparent" />
-            <div className="relative z-10 p-10 max-w-2xl">
-              <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-3 block">{h.relaxLabel}</span>
-              <h3 className="font-headline text-3xl text-on-surface mb-3">{h.relaxTitle}</h3>
-              <p className="font-body text-secondary text-sm leading-relaxed mb-5">{sensitiveDesc}</p>
-              <ServiceCardLink href={serviceHref(FEATURED_SERVICES.sensitive, locale)} from={SERVICE_DETAIL_FROM_HOME} aria-label={locale === 'es' ? `Ver detalles: ${h.relaxTitle}` : `View details: ${h.relaxTitle}`} className="inline-flex items-center gap-2 font-label text-primary text-xs tracking-widest uppercase hover:gap-3 transition-all">
-                {h.viewDetails} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
-              </ServiceCardLink>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function HomeReviews({ locale, rating }: { locale: Locale; rating: { value: string; count: number } }) {
-  const { home: h, location: loc } = getDict(locale)
-  return (
-    <section className="py-28 px-6 md:px-12 bg-surface">
-      <div className="max-w-screen-2xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-8">
-          <div>
-            <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-4 block">{h.reviewsLabel}</span>
-            <h2 className="font-headline text-4xl md:text-5xl text-on-surface">{h.reviewsTitle}</h2>
-          </div>
-          <div className="flex items-end gap-4 shrink-0">
-            <div className="text-right">
-              <div className="font-headline text-5xl text-on-surface leading-none">{rating.value}</div>
-              <div
-                className="flex gap-0.5 justify-end mt-2"
-                role="img"
-                aria-label={locale === 'es' ? `${rating.value} estrellas de 5` : `${rating.value} out of 5 stars`}
-              >
-                {[1, 2, 3, 4, 5].map(star => (
-                  <span key={star} className="material-symbols-outlined text-primary" style={{ fontSize: '16px', fontVariationSettings: "'FILL' 1" }} aria-hidden="true">star</span>
-                ))}
-              </div>
-              <div className="font-label text-outline text-xs mt-1.5 tracking-wider">
-              {rating.count} {loc.googleReviews}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          {FEATURED_REVIEWS.map((review) => (
-            <div
-              key={review.authorAttribution.displayName}
-              className="bg-surface-container ring-1 ring-outline-variant/10 p-8 rounded-sm flex flex-col gap-6"
-            >
-              <div
-                className="flex gap-0.5"
-                role="img"
-                aria-label={locale === 'es' ? '5 estrellas de 5' : '5 out of 5 stars'}
-              >
-                {[1, 2, 3, 4, 5].map(star => (
-                  <span key={star} className="material-symbols-outlined text-primary" style={{ fontSize: '14px', fontVariationSettings: "'FILL' 1" }} aria-hidden="true">star</span>
-                ))}
-              </div>
-              <p className="font-body text-secondary text-sm leading-relaxed italic line-clamp-5 flex-1">
-                &ldquo;{review.text?.text}&rdquo;
-              </p>
-              <div className="flex items-center gap-3 pt-2 border-t border-outline-variant/10">
-                <Image
-                  src={review.authorAttribution.photoUri}
-                  alt=""
-                  aria-hidden="true"
-                  width={40}
-                  height={40}
-                  className="size-10 rounded-full object-cover"
-                />
-                <div>
-                  <div className="font-label font-bold text-on-surface text-xs tracking-wider">
-                    {review.authorAttribution.displayName}
-                  </div>
-                  <div className="font-label text-outline text-xs mt-0.5">
-                    {review.relativePublishTimeDescription}
-                  </div>
-                </div>
-                <div className="ml-auto">
-                  <svg viewBox="0 0 24 24" className="size-5 opacity-40" aria-hidden="true">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="text-center">
-          <a
-            href={SPA_GOOGLE_REVIEW_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 border border-outline-variant/30 text-on-surface px-10 py-4 font-label font-bold tracking-[0.2em] text-xs uppercase hover:bg-surface-container-high transition-all duration-300"
-          >
-            {h.viewAllReviews}
-            <span className="material-symbols-outlined text-sm" aria-hidden="true">open_in_new</span>
-          </a>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function HomeLocation({ locale }: { locale: Locale }) {
-  const { home: h, location: loc } = getDict(locale)
-  return (
-    <section className="py-20 px-6 md:px-12 bg-surface-container-low">
-      <div className="max-w-screen-2xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
-          <div>
-            <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-6 block">{h.locationLabel}</span>
-            <div className="flex items-start gap-4">
-              <span className="material-symbols-outlined text-primary text-2xl mt-0.5 shrink-0" aria-hidden="true">location_on</span>
-              <div>
-                <p className="font-label font-bold text-on-surface text-sm tracking-wide mb-1">{SPA_ADDRESS.street}</p>
-                <p className="font-body text-secondary text-sm">{SPA_ADDRESS.neighborhood}, {SPA_ADDRESS.city}</p>
-                <p className="font-body text-secondary text-sm">{SPA_ADDRESS.region}, {SPA_ADDRESS.country}</p>
-                <a
-                  href={SPA_GOOGLE_MAPS_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 mt-4 font-label text-primary text-xs tracking-widest uppercase hover:gap-2 transition-all"
-                >
-                  {loc.viewOnMaps} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-6 block">{loc.hoursLabel}</span>
-            <div className="flex flex-col gap-4">
-              {loc.hours.map(({ day, time }) => (
-                <div key={day} className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-primary text-base shrink-0" aria-hidden="true">schedule</span>
-                  <div className="flex-1 flex items-center justify-between gap-4">
-                    <span className="font-label text-on-surface text-xs tracking-wide">{day}</span>
-                    <span className="font-label text-outline text-xs">{time}</span>
-                  </div>
-                </div>
-              ))}
-              <p className="font-body text-outline text-xs leading-relaxed mt-2">{loc.hoursNote}</p>
-            </div>
-          </div>
-
-          <div className="flex flex-col justify-between gap-8">
-            <div>
-              <span className="font-label text-tertiary tracking-[0.3em] uppercase text-xs mb-6 block">{h.openToday}</span>
-              <p className="font-body text-secondary text-sm leading-relaxed">{loc.privateBody1}</p>
-            </div>
-            <div className="flex flex-col gap-4">
-              <Link
-                href={`/${locale}/book`}
-                className="inline-flex items-center gap-3 bg-primary text-on-primary px-8 py-4 font-label font-bold tracking-[0.2em] text-xs uppercase hover:bg-white transition-all duration-300 w-fit"
-              >
-                {h.bookSession}
-                <span className="material-symbols-outlined text-sm" aria-hidden="true">arrow_forward</span>
-              </Link>
-              <Link
-                href={`/${locale}/location`}
-                className="inline-flex items-center gap-1.5 font-label text-outline text-xs tracking-widest uppercase hover:text-on-surface transition-colors"
-              >
-                <span className="material-symbols-outlined text-sm" aria-hidden="true">map</span>
-                {loc.getDirections}
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function HomeCta({ locale }: { locale: Locale }) {
-  const h = getDict(locale).home
-  return (
-    <section className="py-40 px-6 md:px-12 bg-surface-container-lowest text-center">
-      <div className="max-w-3xl mx-auto">
-        <h2 className="font-headline text-4xl md:text-6xl text-on-surface mb-12">
-          {h.ctaTitle[0]} <span className="italic text-primary">{h.ctaTitle[1]}</span>
-        </h2>
-        <div className="flex flex-col sm:flex-row gap-6 justify-center">
-          <Link href={`/${locale}/book`} className="bg-primary text-on-primary px-12 py-5 font-label font-bold tracking-[0.2em] text-xs uppercase hover:bg-white transition-all duration-300">
-            {h.reserveSession}
-          </Link>
-          <Link href={`/${locale}/services`} className="border border-outline-variant/30 text-on-surface px-12 py-5 font-label font-bold tracking-[0.2em] text-xs uppercase hover:bg-surface-container-high transition-all duration-300">
-            {h.exploreServices}
-          </Link>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params
   if (!isLocale(lang)) notFound()
   const locale = lang as Locale
-  const rating = getPlaceRating()
+
+  const place = await getPlaceDetailsLive()
+  const rating = ratingOf(place)
+  const content = getHomeContent(locale, rating)
+
+  const faqItems = getHomeFaqItems(locale)
+  const faqCategories: ResolvedFaqCategory[] = [
+    { id: 'discovery', icon: 'manage_search', label: content.faq.categoryLabel, items: faqItems },
+  ]
+
   return (
     <>
-      <JsonLd data={localBusinessJsonLd(locale)} />
-      <HomeHero locale={locale} rating={rating} />
-      <HomeServices locale={locale} />
-      {/* Same "Talento Diamond" block used by the landing pages — the team is the
-          strongest trust signal we have, so it runs right before the reviews. */}
+      <JsonLd data={localBusinessJsonLd(locale, { rating })} />
+      <JsonLd data={faqJsonLd(faqItems)} />
+      <HomeHero locale={locale} rating={rating} content={content} />
+      <HomeFacts content={content} />
+      <HomeServices content={content} />
+      <HomeVideosSection content={content} />
+      {/* Same facilities gallery used by the paid landing pages, fed with
+          real, optimized photos of our rooms. */}
+      <LandingFacilities
+        locale={locale}
+        images={content.facilities.images}
+        label={content.facilities.label}
+        title={content.facilities.title}
+        subtitle={content.facilities.subtitle}
+        unoptimized={false}
+      />
+      {/* Same "Talento Diamond" block used by the landing pages — the team is
+          the strongest trust signal we have, so it runs before the reviews. */}
       <LandingTeam locale={locale} />
-      <HomeReviews locale={locale} rating={rating} />
-      <HomeLocation locale={locale} />
+      <HomeGuide content={content} />
+      <HomeReviewsReal locale={locale} place={place} rating={rating} copy={content.reviews} />
+      <FaqSection
+        categories={faqCategories}
+        title={content.faq.title}
+        label={content.faq.label}
+        intro={content.faq.intro}
+        className="py-28 px-6 md:px-12 bg-surface-container-low"
+      />
+      <HomeLocation locale={locale} content={content} />
+      <HomeHub content={content} />
       <HomeCta locale={locale} />
     </>
   )

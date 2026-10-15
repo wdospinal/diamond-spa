@@ -63,14 +63,14 @@ export const THERAPISTS: BilingualTherapist[] = [
   {
     id: 'ana-maria',
     name: 'Ana Maria',
-    en: { role: 'Cosmetologist & Massage Therapist', years: '4+ years experience', specialty: 'Committed to your physical and mental wellness, certified experience' },
+    en: { role: 'Cosmetologist & Massage Therapist', years: '3+ years experience', specialty: 'Committed to your physical and mental wellness, certified experience' },
     es: { role: 'Cosmetóloga & Masajista', years: '3+ años de experiencia', specialty: 'Comprometida con tu bienestar físico y mental, experiencia certificada' },
   },
   {
     id: 'sheyla-tinoco',
     name: 'Sheyla',
     en: { role: 'Cosmetologist & Massage Therapist', years: '3+ years experience', specialty: 'Focused on real recovery and body care, certified training' },
-    es: { role: 'Cosmetóloga & Masajista', years: '4+ años de experiencia', specialty: 'Enfocada en la recuperación real y el cuidado corporal, formación certificada' },
+    es: { role: 'Cosmetóloga & Masajista', years: '3+ años de experiencia', specialty: 'Enfocada en la recuperación real y el cuidado corporal, formación certificada' },
   },
   {
     id: 'saira-bedoya',

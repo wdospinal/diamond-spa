@@ -12,8 +12,12 @@ import {
   SPA_ADDRESS,
   SPA_GEO,
   SPA_HOURS,
-  SPA_RATING,
+  SPA_GOOGLE_MAPS_URL,
+  SPA_GOOGLE_REVIEW_URL,
+  SPA_INSTAGRAM,
+  SPA_TIKTOK,
 } from './spa'
+import { getPlaceDetails, getPlaceRating } from './google-places'
 
 export const BASE_URL = SPA_BASE_URL
 const DEFAULT_OG_IMAGE = SPA_OG_IMAGE
@@ -134,13 +138,30 @@ export const BUSINESS = {
 
 // ─── JSON-LD helpers ──────────────────────────────────────────────────────────
 
-export function localBusinessJsonLd(locale: 'es' | 'en' = 'es') {
+/** Stable entity id: every page's DaySpa node resolves to the same business. */
+export const BUSINESS_ID = `${BASE_URL}/#business`
+
+interface LocalBusinessOptions {
+  /** Live rating (Google Places). Defaults to the committed snapshot. */
+  rating?: { value: string; count: number }
+}
+
+export function localBusinessJsonLd(
+  locale: 'es' | 'en' = 'es',
+  options: LocalBusinessOptions = {},
+) {
+  const place = getPlaceDetails()
+  const rating = options.rating ?? getPlaceRating()
+
+  // sameAs ties the entity to the Google Business Profile, which is what lets
+  // Google reconcile this site with the Maps listing and its reviews.
   const sameAs = [
-    BUSINESS.url,
-    'https://www.instagram.com/diamondmassagesmed/',
-    'https://www.tiktok.com/@diamond.spa95',
-    'https://www.google.com/maps/search/?api=1&query=Google&query_place_id=ChIJKzwytpApRI4RjIhtXLsMvK8'
-  ]
+    SPA_GOOGLE_MAPS_URL,
+    place.googleMapsUri,
+    SPA_GOOGLE_REVIEW_URL,
+    SPA_INSTAGRAM,
+    SPA_TIKTOK,
+  ].filter((u): u is string => Boolean(u))
 
   const massages = SERVICES.filter(s => s.categoryId === 'massages')
   const facials = SERVICES.filter(s => s.categoryId === 'facials')
@@ -196,9 +217,16 @@ export function localBusinessJsonLd(locale: 'es' | 'en' = 'es') {
   return {
     '@context': 'https://schema.org',
     '@type': 'DaySpa',
+    '@id': BUSINESS_ID,
     name: BUSINESS.name,
+    alternateName: [
+      SITE_NAME,
+      ...(place.displayName?.text ? [place.displayName.text] : []),
+    ],
     url: `${BUSINESS.url}/${locale}`,
-    telephone: BUSINESS.telephone,
+    // Same number the Google Business Profile publishes (NAP consistency).
+    telephone: place.internationalPhoneNumber ?? BUSINESS.telephone,
+    hasMap: SPA_GOOGLE_MAPS_URL,
     email: BUSINESS.email,
     logo: BUSINESS.logo,
     image: BUSINESS.image,
@@ -223,10 +251,10 @@ export function localBusinessJsonLd(locale: 'es' | 'en' = 'es') {
     })),
     aggregateRating: {
       '@type': 'AggregateRating',
-      ratingValue: SPA_RATING.value,
+      ratingValue: rating.value,
       bestRating: '5',
       worstRating: '1',
-      reviewCount: String(SPA_RATING.count),
+      reviewCount: String(rating.count),
     },
     priceRange: 'COP 120.000 - COP 500.000',
     sameAs,
