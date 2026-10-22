@@ -72,7 +72,8 @@ export type LandingContent = {
   gallery: {
     title?: string
     subtitle?: string
-    images: { url: string; title?: string }[] | string[]
+    /** `alt` describes the photo for screen readers and image search; `title` is the visible caption. */
+    images: { url: string; title?: string; alt?: string }[] | string[]
   }
   testimonials: {
     title: string

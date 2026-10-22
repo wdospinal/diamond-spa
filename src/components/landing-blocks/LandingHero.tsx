@@ -82,7 +82,9 @@ function HeroContent({
       <div className="absolute inset-0 z-0 opacity-40">
         <Image
           src={bgImage}
-          alt={h1}
+          // Decorative backdrop behind the H1 (40% opacity): an alt repeating
+          // the heading made screen readers announce it twice.
+          alt=""
           fill
           priority
           fetchPriority="high"
@@ -175,7 +177,7 @@ export function LandingHero(props: {
         <div className="absolute inset-0 z-0 opacity-40">
           <Image
             src={props.bgImage}
-            alt={props.h1}
+            alt=""
             fill
             priority
             fetchPriority="high"

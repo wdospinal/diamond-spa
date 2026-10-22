@@ -47,8 +47,8 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
           <Image
             src={HERO_IMG}
             alt={locale === 'es'
-              ? 'Masaje relajante en Diamond Spa, El Poblado, Medellín'
-              : 'Relaxing massage at Diamond Spa in El Poblado, Medellín'}
+              ? 'Cabina privada de Diamond Spa en El Poblado, Medellín, con camilla, cojín negro y velas encendidas'
+              : 'Private room at Diamond Spa in El Poblado, Medellín, with a massage table, black bolster and lit candles'}
             fill
             priority
             fetchPriority="high"
@@ -78,8 +78,8 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
                 <Image
                   src={STONE_IMG}
                   alt={locale === 'es'
-                    ? 'Equipo profesional de Diamond Spa utilizado en tratamientos corporales y estéticos avanzados'
-                    : 'Professional Diamond Spa equipment used in advanced body and aesthetic treatments'}
+                    ? 'Terapeuta usando una pistola de masaje sobre la espalda de un cliente en Diamond Spa'
+                    : 'Therapist using a massage gun on a client’s back at Diamond Spa'}
                   fill
                   sizes="(max-width: 768px) 50vw, 25vw"
                   className="object-cover opacity-60 transition-opacity duration-700 hover:opacity-90"
@@ -89,8 +89,8 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
                 <Image
                   src={LOUNGE_IMG}
                   alt={locale === 'es'
-                    ? 'Cabina privada de masajes en Diamond Spa con camilla preparada y ambiente acogedor'
-                    : 'Private massage cabin at Diamond Spa with a prepared treatment table and a welcoming atmosphere'}
+                    ? 'Terapeuta dando un masaje de espalda a un hombre en una cabina de Diamond Spa iluminada con velas'
+                    : 'Therapist giving a man a back massage in a candlelit room at Diamond Spa'}
                   fill
                   sizes="(max-width: 768px) 50vw, 25vw"
                   className="object-cover opacity-60 transition-opacity duration-700 hover:opacity-90"
@@ -145,7 +145,7 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
                 avifSrc={IMG_THERAPISTS[i]}
                 webpSrc={IMG_THERAPISTS_WEBP[i]}
                 alt={locale === 'es'
-                  ? `Retrato de ${name}, ${role.toLowerCase()} certificada del equipo de Diamond Spa`
+                  ? `Retrato de ${name}, ${role.toLowerCase().replace(" & ", " y ")} certificada del equipo de Diamond Spa`
                   : `Portrait of ${name}, certified ${role.toLowerCase()} from the Diamond Spa team`}
                 name={name}
                 role={role}

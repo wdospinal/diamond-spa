@@ -5,7 +5,7 @@ export function LandingGallery({
 }: {
   title?: string
   subtitle?: string
-  images: { url: string; title?: string }[] | string[]
+  images: { url: string; title?: string; alt?: string }[] | string[]
 }) {
   if (!images || images.length === 0) return null
 
@@ -32,14 +32,18 @@ export function LandingGallery({
           {images.map((img, idx) => {
             const src = typeof img === 'string' ? img : img.url
             const title = typeof img === 'string' ? undefined : img.title
+            // A made-up "Instalaciones Spa 1" told screen readers nothing; with no
+            // description the caption (or nothing) is more honest.
+            const alt = typeof img === 'string' ? '' : (img.alt ?? title ?? '')
             
             return (
               <div key={idx} className="relative aspect-[4/5] bg-surface-container rounded-sm overflow-hidden group">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={src}
-                  alt={title || `Instalaciones Spa ${idx + 1}`}
+                  alt={alt}
                   loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 {title && (

@@ -90,8 +90,8 @@ export default async function HistoryPage({ params }: { params: Promise<{ lang: 
               <Image
                 src={INTERIOR_IMG}
                 alt={locale === 'es'
-                  ? 'Interior original de Diamond Spa en El Poblado, Medellín, donde comenzó la historia del spa'
-                  : 'Original interior of Diamond Spa in El Poblado, Medellín, where the spa\'s story began'}
+                  ? 'Sala de espera de Diamond Spa en El Poblado, Medellín, con chimenea, nichos iluminados y piso de piedra'
+                  : 'Waiting lounge at Diamond Spa in El Poblado, Medellín, with a fireplace, lit niches and a stone floor'}
                 fill
                 sizes="(max-width: 1024px) 100vw, 45vw"
                 className="object-cover opacity-70"

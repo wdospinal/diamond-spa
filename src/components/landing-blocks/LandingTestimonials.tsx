@@ -119,10 +119,15 @@ export function LandingTestimonials({
                 </p>
                 <div className="pt-6 border-t border-white/10 flex items-center gap-4">
                   {review.authorAttribution?.photoUri ? (
-                    <img 
-                      src={review.authorAttribution.photoUri} 
-                      alt="" 
-                      className="w-10 h-10 rounded-full object-cover" 
+                    <img
+                      src={review.authorAttribution.photoUri}
+                      alt=""
+                      width={40}
+                      height={40}
+                      loading="lazy"
+                      decoding="async"
+                      referrerPolicy="no-referrer"
+                      className="w-10 h-10 rounded-full object-cover"
                     />
                   ) : (
                     <div className="w-10 h-10 rounded-full bg-[#C9A876]/20 flex items-center justify-center">
