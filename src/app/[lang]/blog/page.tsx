@@ -140,6 +140,8 @@ export default async function BlogIndexPage({
                       <img
                         src={post.coverUrl}
                         alt={title}
+                        loading={i < 3 ? 'eager' : 'lazy'}
+                        decoding="async"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                       />
                     </Link>

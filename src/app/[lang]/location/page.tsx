@@ -50,8 +50,8 @@ export default async function LocationPage({ params }: { params: Promise<{ lang:
           <Image
             src={IMG_HERO_LOCATION}
             alt={locale === 'es'
-              ? `Ubicación de Diamond Spa en ${SPA_ADDRESS.full}, El Poblado, Medellín`
-              : `Location of Diamond Spa at ${SPA_ADDRESS.full}, El Poblado, Medellín`}
+              ? `Cabina privada de Diamond Spa en ${SPA_ADDRESS.full}, con camilla y velas`
+              : `Private room at Diamond Spa, ${SPA_ADDRESS.full}, with a massage table and candles`}
             fill
             priority
             fetchPriority="high"

@@ -17,7 +17,8 @@ export function LandingTherapistPeek({ locale = 'en' }: { locale?: 'es' | 'en' }
             <Image
               key={src}
               src={src}
-              alt={THERAPISTS[i]?.name ?? 'Therapist'}
+              // The names are spelled out in the text next to the avatars.
+              alt=""
               width={44}
               height={44}
               sizes="44px"

@@ -28,7 +28,7 @@ export function HomeCategories({ locale }: { locale: Locale }) {
             <h2 className="font-headline text-4xl md:text-5xl text-on-surface">{h.section2Title}</h2>
             <p className="mt-4 font-body text-secondary max-w-lg leading-relaxed font-light">{h.section2Body}</p>
             <Link href={`/${locale}/masajes-para-hombres`} className="mt-4 inline-flex items-center gap-1 font-label text-primary text-xs tracking-widest uppercase hover:gap-2 transition-all">
-              {locale === 'es' ? 'Masajes para hombres en Medell├¡n' : 'Massages for men in Medell├¡n'} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
+              {locale === 'es' ? 'Masajes para hombres en Medellín' : 'Massages for men in Medellín'} <span className="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
             </Link>
           </div>
         </div>
@@ -37,8 +37,8 @@ export function HomeCategories({ locale }: { locale: Locale }) {
             <Image
               src={IMG_DEEP_TISSUE}
               alt={locale === 'es'
-                ? 'Sesi├│n de depilaci├│n profesional de cuerpo completo en cabina privada de Diamond Spa'
-                : 'Professional full-body hair removal session in a private cabin at Diamond Spa'}
+                ? 'Cosmetóloga extendiendo cera caliente con espátula sobre la pierna durante una depilación en Diamond Spa'
+                : 'Cosmetologist spreading warm wax on a leg with a spatula during a waxing session at Diamond Spa'}
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover img-hover-color"
@@ -57,8 +57,8 @@ export function HomeCategories({ locale }: { locale: Locale }) {
             <Image
               src={IMG_FACIAL}
               alt={locale === 'es'
-                ? 'Mujer recibiendo un tratamiento facial Hidrafacial para una piel limpia, hidratada y radiante'
-                : 'Woman receiving a Hidrafacial treatment for clean, hydrated and radiant skin'}
+                ? 'Cosmetóloga aplicando con pincel una mascarilla facial verde a un hombre durante un tratamiento facial'
+                : 'Cosmetologist brushing a green facial mask onto a man during a facial treatment'}
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover object-top img-hover-color"
@@ -77,8 +77,8 @@ export function HomeCategories({ locale }: { locale: Locale }) {
             <Image
               src={IMG_RELAXATION}
               alt={locale === 'es'
-                ? 'Persona disfrutando de un masaje relajante de aceites esenciales en una camilla de Diamond Spa'
-                : 'Person enjoying a relaxing essential-oil massage on a treatment table at Diamond Spa'}
+                ? 'Terapeuta pasando una pluma blanca sobre el pecho de un hombre durante un masaje sensitivo en Diamond Spa'
+                : 'Therapist gliding a white feather over a man’s chest during a sensitive massage at Diamond Spa'}
               fill
               quality={65}
           sizes="(max-width: 640px) 100vw, (max-width: 1280px) 100vw, 1536px"
