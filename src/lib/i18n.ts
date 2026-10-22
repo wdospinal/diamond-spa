@@ -160,8 +160,8 @@ const dict = {
       // Google left it in "Crawled - currently not indexed" as a duplicate.
       metaTitle: 'Spa Prices in Medellín — Massages, Facials & Hair Removal | Diamond Spa',
       metaDesc: `Full price list for Diamond Spa in El Poblado, Medellín: massages by 30, 60 or 90 minutes, facials and wax or machine hair removal. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reviews. Prices in COP.`,
-      label: 'The Selection',
-      title: 'Services & Prices',
+      label: 'Services & prices',
+      title: 'Spa prices in Medellín',
       subtitle: 'Every massage, facial and hair removal service at our El Poblado spa, with its price in COP: by 30, 60 or 90 minutes, or by wax or machine.',
       pricingNote: 'All prices in Colombian pesos (COP).',
       sectionMassages: 'Exclusive Massages',
@@ -478,8 +478,8 @@ const dict = {
     services: {
       metaTitle: 'Precios de Spa en Medellín — Masajes, Faciales y Depilación | Diamond Spa',
       metaDesc: `Lista completa de precios de Diamond Spa en El Poblado, Medellín: masajes por 30, 60 o 90 minutos, faciales y depilación con cera o máquina. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} reseñas. Precios en COP.`,
-      label: 'La Selección',
-      title: 'Servicios y Precios',
+      label: 'Servicios y precios',
+      title: 'Precios de spa en Medellín',
       subtitle: 'Todos los masajes, faciales y servicios de depilación de nuestro spa en El Poblado, con su precio en COP: por 30, 60 o 90 minutos, o con cera o máquina.',
       pricingNote: 'Todos los precios en pesos colombianos (COP).',
       sectionMassages: 'Masajes Exclusivos',
