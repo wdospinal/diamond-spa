@@ -1,7 +1,8 @@
 import type { MetadataRoute } from 'next'
-import { BASE_URL, X_DEFAULT_LOCALE } from '@/lib/seo'
+import { BASE_URL, X_DEFAULT_LOCALE, specialDatesLanguages } from '@/lib/seo'
 import { SERVICES, getServiceById } from '@/lib/services'
 import { MASAJES_TYPE_SEO, slugForMasajeType } from '@/lib/masajes-category'
+import { SPECIAL_DATES, specialDatePath, specialDatesPath } from '@/lib/special-dates'
 import { LOCALES_DISPLAY_ORDER } from '@/lib/constants'
 import { readPublishedPosts, blogPostUrl, blogPostLanguages } from '@/lib/blog-store'
 import type { Locale } from '@/lib/constants/locale'
@@ -156,6 +157,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             'x-default': `${BASE_URL}/${X_DEFAULT_LOCALE}/masajes/${X_DEFAULT_LOCALE === 'en' ? svc.slugEn : entry.slugEs}`,
           },
         },
+      })
+    }
+
+    // Special dates — translated section and slugs (/es/fechas-especiales ↔ /en/special-dates).
+    entries.push({
+      url: `${BASE_URL}/${locale}${specialDatesPath(locale as Locale)}`,
+      lastModified: DEPLOYED_AT,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+      alternates: { languages: specialDatesLanguages() },
+    })
+    for (const d of SPECIAL_DATES) {
+      entries.push({
+        url: `${BASE_URL}/${locale}${specialDatePath(d, locale as Locale)}`,
+        lastModified: DEPLOYED_AT,
+        changeFrequency: 'monthly',
+        priority: 0.7,
+        alternates: { languages: specialDatesLanguages(d) },
       })
     }
 

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { getDict, type Locale } from '@/lib/i18n'
 import { PHONES } from '@/lib/phones'
+import { specialDatesPath } from '@/lib/special-dates'
 import { SPA_EMAIL, SPA_INSTAGRAM, SPA_TIKTOK, SPA_WHATSAPP_GREETING } from '@/lib/spa'
 import WhatsAppLink from '@/components/WhatsAppLink'
 import HideWomenOnLanding from '@/components/HideWomenOnLanding'
@@ -50,6 +51,7 @@ export default function Footer({ locale }: { locale: Locale }) {
           */}
           <Link href={`/${locale}/hydrafacial-medellin`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.hydrafacial}</Link>
           <Link href={`/${locale}/dia-de-spa`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.spaDay}</Link>
+          <Link href={`/${locale}${specialDatesPath(locale)}`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.specialDates}</Link>
           <Link href={`/${locale}/spa-el-poblado`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.spaElPoblado}</Link>
           <Link href={`/${locale}/spa-near-me`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.spaNearMe}</Link>
           <Link href={`/${locale}/blog`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.blog}</Link>

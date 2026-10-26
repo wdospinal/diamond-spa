@@ -1,6 +1,7 @@
 import { SERVICES, getServiceById, getServiceBySlug, type ServiceDef } from '@/lib/services'
 import { MASAJES_TYPE_SEO, getMasajeTypeBySlug, slugForMasajeType } from '@/lib/masajes-category'
 import { type Locale } from '@/lib/i18n'
+import { getSpecialDate, specialDatePath, specialDatesPath, specialDatesSectionLocale } from '@/lib/special-dates'
 
 /**
  * Canonical, locale-prefixed URL of a service's detail page.
@@ -92,6 +93,14 @@ export function getLocalizedPath(pathname: string | null, targetLocale: Locale):
         return `/${targetLocale}/masajes/${targetSlug}${rest ? `/${rest}` : ''}`
       }
     }
+  }
+
+  // Special dates translate both the section and the slug:
+  // /es/fechas-especiales/navidad ↔ /en/special-dates/christmas.
+  const sectionLocale = specialDatesSectionLocale(baseRoute)
+  if (sectionLocale) {
+    const d = segments[2] ? getSpecialDate(segments[2], sectionLocale) : undefined
+    return `/${targetLocale}${d ? specialDatePath(d, targetLocale) : specialDatesPath(targetLocale)}`
   }
 
   // /en/massage-medellin has no Spanish twin: /es/massage-medellin 308s to the
