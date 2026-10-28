@@ -15,7 +15,9 @@ import {
   planPrice,
   specialDatePath,
   specialDatesByUpcoming,
+  specialDateImage,
   specialDatesPath,
+  SPECIAL_DATE_IMAGE_SIZE,
 } from '@/lib/special-dates'
 import { JsonLd } from '@/components/JsonLd'
 import { FaqSection } from '@/components/FaqSection'
@@ -87,7 +89,15 @@ export function specialDateMetadata(d: SpecialDate, locale: Locale): Promise<Met
     { title, description },
     {
       alternates: specialDatesAlternates(locale, d),
-      openGraph: buildOpenGraph({ title, description, path, locale }),
+      openGraph: buildOpenGraph({
+        title,
+        description,
+        path,
+        locale,
+        image: { url: specialDateImage(d).og, width: 1200, height: 630 },
+        imageAlt: d.imageAlt[locale],
+      }),
+      twitter: { card: 'summary_large_image', images: [specialDateImage(d).og] },
     },
   )
 }
@@ -98,6 +108,7 @@ export function SpecialDatePage({ d, locale }: { d: SpecialDate; locale: Locale 
   const hub = specialDatesPath(locale)
   const path = specialDatePath(d, locale)
   const faqs = d.faqs[locale]
+  const img = specialDateImage(d)
   const others = specialDatesByUpcoming().filter(o => o !== d)
   const dateFmt = new Intl.DateTimeFormat(locale === 'es' ? 'es-CO' : 'en-US', {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
@@ -108,6 +119,13 @@ export function SpecialDatePage({ d, locale }: { d: SpecialDate; locale: Locale 
     '@type': 'OfferCatalog',
     name: `${name} — ${BUSINESS.name}`,
     url: `${BASE_URL}/${locale}${path}`,
+    image: {
+      '@type': 'ImageObject',
+      url: `${BASE_URL}${img.webp}`,
+      width: SPECIAL_DATE_IMAGE_SIZE.width,
+      height: SPECIAL_DATE_IMAGE_SIZE.height,
+      caption: d.imageAlt[locale],
+    },
     itemListElement: d.plans.map(plan => ({
       '@type': 'Offer',
       name: plan.title[locale],
@@ -161,6 +179,20 @@ export function SpecialDatePage({ d, locale }: { d: SpecialDate; locale: Locale 
             </div>
           </aside>
         </section>
+
+        {/* LCP image: eager + high priority, with explicit size to avoid layout shift. */}
+        <picture className="block mb-16 aspect-[16/9] md:aspect-[21/9] overflow-hidden bg-surface-container">
+          <source srcSet={img.avif} type="image/avif" />
+          <img
+            src={img.webp}
+            alt={d.imageAlt[locale]}
+            width={SPECIAL_DATE_IMAGE_SIZE.width}
+            height={SPECIAL_DATE_IMAGE_SIZE.height}
+            fetchPriority="high"
+            decoding="async"
+            className="w-full h-full object-cover"
+          />
+        </picture>
 
         {/* Plans */}
         <section className="mb-20">

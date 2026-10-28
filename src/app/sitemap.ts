@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next'
 import { BASE_URL, X_DEFAULT_LOCALE, specialDatesLanguages } from '@/lib/seo'
 import { SERVICES, getServiceById } from '@/lib/services'
 import { MASAJES_TYPE_SEO, slugForMasajeType } from '@/lib/masajes-category'
-import { SPECIAL_DATES, specialDatePath, specialDatesPath } from '@/lib/special-dates'
+import { SPECIAL_DATES, specialDateImage, specialDatePath, specialDatesPath } from '@/lib/special-dates'
 import { LOCALES_DISPLAY_ORDER } from '@/lib/constants'
 import { readPublishedPosts, blogPostUrl, blogPostLanguages } from '@/lib/blog-store'
 import type { Locale } from '@/lib/constants/locale'
@@ -175,6 +175,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: 'monthly',
         priority: 0.7,
         alternates: { languages: specialDatesLanguages(d) },
+        images: [`${BASE_URL}${specialDateImage(d).webp}`],
       })
     }
 

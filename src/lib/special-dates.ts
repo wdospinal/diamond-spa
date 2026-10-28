@@ -62,6 +62,8 @@ type DateRule =
 export type SpecialDate = {
   /** Each locale has its own section and slug: /es/fechas-especiales/navidad ↔ /en/special-dates/christmas. */
   slug: L
+  /** Describes the photo itself (see specialDateImage); not a keyword list. */
+  imageAlt: L
   icon: string
   name: L
   when: L
@@ -84,6 +86,18 @@ export function specialDatesPath(locale: Locale): string {
 /** Occasion path for a locale, without the /<lang> prefix. */
 export function specialDatePath(d: SpecialDate, locale: Locale): string {
   return `${SECTION[locale]}/${d.slug[locale]}`
+}
+
+/** Photo size as generated (16:9-ish); the -og.jpg is a 1200×630 crop. */
+export const SPECIAL_DATE_IMAGE_SIZE = { width: 1376, height: 768 } as const
+
+/**
+ * Image files under /public/fechas-especiales, named after the Spanish slug
+ * ("regalo-spa-navidad-medellin") so the filename itself is descriptive.
+ */
+export function specialDateImage(d: SpecialDate) {
+  const base = `/fechas-especiales/regalo-spa-${d.slug.es}-medellin`
+  return { avif: `${base}.avif`, webp: `${base}.webp`, og: `${base}-og.jpg` }
 }
 
 /** Which locale a top-level section segment ("fechas-especiales" / "special-dates") belongs to. */
@@ -193,6 +207,10 @@ const sharedFaqs: Record<Locale, { question: string; answer: string }[]> = {
 export const SPECIAL_DATES: SpecialDate[] = [
   {
     slug: { es: 'dia-del-hombre', en: 'mens-day' },
+    imageAlt: {
+      es: 'Hombre recibiendo un masaje de tejido profundo en la espalda en una cabina de spa privada',
+      en: 'Man receiving a deep tissue back massage in a private spa room',
+    },
     icon: 'person',
     name: { es: 'Día del Hombre', en: "Men's Day" },
     when: { es: '19 de noviembre', en: 'November 19' },
@@ -243,6 +261,10 @@ export const SPECIAL_DATES: SpecialDate[] = [
   },
   {
     slug: { es: 'navidad', en: 'christmas' },
+    imageAlt: {
+      es: 'Cabina de spa decorada para Navidad con una caja de regalo sobre toallas blancas y velas encendidas',
+      en: 'Spa room decorated for Christmas with a gift box on white towels and lit candles',
+    },
     icon: 'star',
     name: { es: 'Navidad y fin de año', en: 'Christmas & New Year' },
     when: { es: 'Diciembre', en: 'December' },
@@ -292,6 +314,10 @@ export const SPECIAL_DATES: SpecialDate[] = [
   },
   {
     slug: { es: 'san-valentin', en: 'valentines-day' },
+    imageAlt: {
+      es: 'Cabina para parejas con dos camillas, pétalos de rosa, velas y dos copas de vino para San Valentín',
+      en: 'Couples spa room with two massage tables, rose petals, candles and two glasses of wine for Valentine\'s Day',
+    },
     icon: 'filter_vintage',
     name: { es: 'San Valentín', en: "Valentine's Day" },
     when: { es: '14 de febrero', en: 'February 14' },
@@ -330,6 +356,10 @@ export const SPECIAL_DATES: SpecialDate[] = [
   },
   {
     slug: { es: 'dia-de-la-mujer', en: 'womens-day' },
+    imageAlt: {
+      es: 'Mujer relajada recibiendo un tratamiento facial hidratante en una cabina de spa',
+      en: 'Relaxed woman receiving a hydrating facial treatment in a spa room',
+    },
     icon: 'face_3',
     name: { es: 'Día de la Mujer', en: "Women's Day" },
     when: { es: '8 de marzo', en: 'March 8' },
@@ -368,6 +398,10 @@ export const SPECIAL_DATES: SpecialDate[] = [
   },
   {
     slug: { es: 'dia-de-la-madre', en: 'mothers-day' },
+    imageAlt: {
+      es: 'Madre e hija en batas blancas compartiendo un té en la sala de descanso de un spa',
+      en: 'Mother and daughter in white robes sharing tea in a spa lounge',
+    },
     icon: 'self_care',
     name: { es: 'Día de la Madre', en: "Mother's Day" },
     when: { es: 'Segundo domingo de mayo', en: 'Second Sunday of May' },
@@ -426,6 +460,10 @@ export const SPECIAL_DATES: SpecialDate[] = [
   },
   {
     slug: { es: 'dia-del-padre', en: 'fathers-day' },
+    imageAlt: {
+      es: 'Hombre recibiendo un masaje con piedras volcánicas calientes sobre la espalda',
+      en: 'Man receiving a hot volcanic stone massage on his back',
+    },
     icon: 'self_improvement',
     name: { es: 'Día del Padre', en: "Father's Day" },
     when: { es: 'Tercer domingo de junio', en: 'Third Sunday of June' },
@@ -476,6 +514,10 @@ export const SPECIAL_DATES: SpecialDate[] = [
   },
   {
     slug: { es: 'amor-y-amistad', en: 'love-and-friendship' },
+    imageAlt: {
+      es: 'Dos amigas en batas de spa brindando juntas para celebrar Amor y Amistad',
+      en: 'Two friends in spa robes toasting together to celebrate Love and Friendship Day',
+    },
     icon: 'local_cafe',
     name: { es: 'Amor y Amistad', en: 'Love & Friendship Day' },
     when: { es: 'Tercer sábado de septiembre', en: 'Third Saturday of September' },

@@ -88,10 +88,12 @@ interface OGOptions {
   path: string
   locale: 'en' | 'es'
   imageAlt?: string
+  /** Page-specific share image (absolute or root-relative); defaults to the site OG image. */
+  image?: { url: string; width: number; height: number }
 }
 
 export function buildOpenGraph(opts: OGOptions): Metadata['openGraph'] {
-  const { title, description, path, locale, imageAlt } = opts
+  const { title, description, path, locale, imageAlt, image } = opts
   return {
     type: 'website',
     siteName: SITE_NAME,
@@ -101,9 +103,9 @@ export function buildOpenGraph(opts: OGOptions): Metadata['openGraph'] {
     locale: locale === 'en' ? 'en_US' : 'es_CO',
     images: [
       {
-        url: DEFAULT_OG_IMAGE,
-        width: 1200,
-        height: 630,
+        url: image ? new URL(image.url, BASE_URL).toString() : DEFAULT_OG_IMAGE,
+        width: image?.width ?? 1200,
+        height: image?.height ?? 630,
         alt: imageAlt ?? SITE_NAME,
       },
     ],

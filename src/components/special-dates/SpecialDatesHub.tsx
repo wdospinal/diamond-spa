@@ -8,7 +8,9 @@ import {
   planPrice,
   specialDatePath,
   specialDatesByUpcoming,
+  specialDateImage,
   specialDatesPath,
+  SPECIAL_DATE_IMAGE_SIZE,
 } from '@/lib/special-dates'
 import { JsonLd } from '@/components/JsonLd'
 import LandingHead from '@/components/LandingHead'
@@ -71,13 +73,23 @@ const content = {
 export function specialDatesHubMetadata(locale: Locale): Promise<Metadata> {
   const c = content[locale]
   const path = specialDatesPath(locale)
+  const next = specialDatesByUpcoming()[0]
   return mergeLandingMetadata(
     path,
     locale,
     { title: c.metaTitle, description: c.metaDesc },
     {
       alternates: specialDatesAlternates(locale),
-      openGraph: buildOpenGraph({ title: c.metaTitle, description: c.metaDesc, path, locale }),
+      // Share image follows the next date coming up, like the catalog order.
+      openGraph: buildOpenGraph({
+        title: c.metaTitle,
+        description: c.metaDesc,
+        path,
+        locale,
+        image: { url: specialDateImage(next).og, width: 1200, height: 630 },
+        imageAlt: next.imageAlt[locale],
+      }),
+      twitter: { card: 'summary_large_image', images: [specialDateImage(next).og] },
     },
   )
 }
@@ -96,6 +108,7 @@ export function SpecialDatesHub({ locale }: { locale: Locale }) {
       '@type': 'ListItem',
       position: i + 1,
       name: d.name[locale],
+      image: `${BASE_URL}${specialDateImage(d).webp}`,
       url: `${BASE_URL}/${locale}${specialDatePath(d, locale)}`,
     })),
   }
@@ -142,8 +155,21 @@ export function SpecialDatesHub({ locale }: { locale: Locale }) {
                 <li key={d.slug.es}>
                   <Link
                     href={`/${locale}${specialDatePath(d, locale)}`}
-                    className="group bg-surface-container p-8 flex flex-col gap-4 h-full hover:bg-surface-container-high transition-colors"
+                    className="group bg-surface-container flex flex-col h-full hover:bg-surface-container-high transition-colors"
                   >
+                    <picture className="block aspect-[16/9] overflow-hidden">
+                      <source srcSet={specialDateImage(d).avif} type="image/avif" />
+                      <img
+                        src={specialDateImage(d).webp}
+                        alt={d.imageAlt[locale]}
+                        width={SPECIAL_DATE_IMAGE_SIZE.width}
+                        height={SPECIAL_DATE_IMAGE_SIZE.height}
+                        loading={i < 3 ? 'eager' : 'lazy'}
+                        decoding="async"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </picture>
+                    <div className="p-8 flex flex-col gap-4 flex-1">
                     <div className="flex items-center justify-between gap-4">
                       <span className="material-symbols-outlined text-primary text-3xl" aria-hidden="true">{d.icon}</span>
                       {i === 0 && (
@@ -165,6 +191,7 @@ export function SpecialDatesHub({ locale }: { locale: Locale }) {
                     <div className="border-t border-outline-variant/20 pt-4 flex justify-between items-center">
                       <span className="font-label text-primary text-xs tracking-widest">{c.from} {formatCop(from)}</span>
                       <span className="font-label text-on-surface text-xs tracking-widest uppercase">{c.seePlans} →</span>
+                    </div>
                     </div>
                   </Link>
                 </li>
