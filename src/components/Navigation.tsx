@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { getDict, type Locale } from '@/lib/i18n'
+import { specialDatesPath } from '@/lib/special-dates'
 import { SPA_WHATSAPP_GREETING } from '@/lib/spa'
 import { IMG_LOGOTIPO, IMG_LOGOTIPO_WEBP } from '@/lib/images'
 import MobileMenuClient from '@/components/MobileMenuClient'
@@ -56,10 +57,11 @@ export default function Navigation({ locale }: { locale: Locale }) {
     {
       label: locale === 'en' ? 'More' : 'Más',
       href: null,
-      desc: locale === 'en' ? 'Full catalog, about us, location, blog' : 'Catálogo completo, nosotros, ubicación, blog',
+      desc: locale === 'en' ? 'Full catalog, special dates, about us, location, blog' : 'Catálogo completo, fechas especiales, nosotros, ubicación, blog',
       icon: 'more_horiz',
       children: [
         { label: t.services, href: `/${locale}/services` },
+        { label: locale === 'en' ? 'Special dates' : 'Fechas especiales', href: `/${locale}${specialDatesPath(locale)}` },
         { label: t.aboutUs,  href: `/${locale}/about`    },
         { label: t.location, href: `/${locale}/location` },
         { label: t.blog,     href: `/${locale}/blog`     },

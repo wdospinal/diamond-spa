@@ -53,7 +53,7 @@ const ui = {
     label: 'Fechas especiales · Medellín',
     metaTitle: (name: string) => `${name}: Regalos de Spa en Medellín | Diamond Spa`,
     metaDesc: (name: string, from: string) =>
-      `Planes de spa para ${name} en Medellín desde ${from}. Masajes y faciales en cabina privada en El Poblado: reserva una fecha o regálalo con fecha abierta.`,
+      `${name}: planes de spa en Medellín desde ${from}. Cabina privada en El Poblado; reserva una fecha o regálalo con fecha abierta.`,
     nextDate: 'Próxima fecha',
     tipLabel: 'Nuestra recomendación',
     plansTitle: 'Planes recomendados',

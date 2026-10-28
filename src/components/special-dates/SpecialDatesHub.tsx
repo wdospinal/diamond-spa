@@ -17,9 +17,9 @@ import { mergeLandingMetadata } from '@/lib/landing-meta'
 
 const content = {
   en: {
-    metaTitle: 'Spa Gifts for Special Dates in Medellín | Diamond Spa El Poblado',
+    metaTitle: 'Special Dates: Spa Gifts in Medellín | Diamond Spa',
     metaDesc:
-      "Spa gift ideas for Valentine's, Mother's Day, Father's Day, Love & Friendship and more in Medellín. Massages and facials in private rooms in El Poblado, with open dates.",
+      "Spa gifts for Valentine's, Mother's Day, Father's Day and more in Medellín. Massages and facials in private rooms in El Poblado, with open dates.",
     heroLabel: 'Special dates · Medellín',
     h1: 'Spa gifts for every special date in Medellín',
     heroBody:
@@ -40,9 +40,9 @@ const content = {
     seePlans: 'See plans',
   },
   es: {
-    metaTitle: 'Regalos de Spa para Fechas Especiales en Medellín | Diamond Spa',
+    metaTitle: 'Fechas Especiales: Regalos de Spa en Medellín | Diamond Spa',
     metaDesc:
-      'Ideas de regalo de spa para San Valentín, Día de la Madre, Día del Padre, Amor y Amistad y más en Medellín. Masajes y faciales en cabina privada en El Poblado, con fecha abierta.',
+      'Regalos de spa para San Valentín, Día de la Madre, Día del Padre y más en Medellín. Masajes y faciales en cabina privada en El Poblado, con fecha abierta.',
     heroLabel: 'Fechas especiales · Medellín',
     h1: 'Regalos de spa para cada fecha especial en Medellín',
     heroBody:
