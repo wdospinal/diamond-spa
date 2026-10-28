@@ -20,6 +20,7 @@ import {
   SPECIAL_DATE_IMAGE_SIZE,
 } from '@/lib/special-dates'
 import { JsonLd } from '@/components/JsonLd'
+import { LocationSection } from '@/components/LocationSection'
 import { FaqSection } from '@/components/FaqSection'
 import WhatsAppLink from '@/components/WhatsAppLink'
 import { mergeLandingMetadata } from '@/lib/landing-meta'
@@ -290,6 +291,9 @@ export function SpecialDatePage({ d, locale }: { d: SpecialDate; locale: Locale 
           </ul>
         </section>
       </main>
+
+      {/* ADDRESS + MAP */}
+      <LocationSection locale={locale} />
     </>
   )
 }
