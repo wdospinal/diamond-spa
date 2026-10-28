@@ -18,6 +18,7 @@ import {
   SPA_TIKTOK,
 } from './spa'
 import { getPlaceDetails, getPlaceRating } from './google-places'
+import { specialDatePath, specialDatesPath, type SpecialDate } from './special-dates'
 
 export const BASE_URL = SPA_BASE_URL
 const DEFAULT_OG_IMAGE = SPA_OG_IMAGE
@@ -283,4 +284,18 @@ export function faqJsonLd(faqs: { question: string; answer: string }[]) {
       acceptedAnswer: { '@type': 'Answer', text: answer },
     })),
   }
+}
+
+/**
+ * hreflang for a page whose path differs per locale. `d` omitted = the hub.
+ * buildAlternates() can't be used: it assumes the same path in both locales.
+ */
+export function specialDatesLanguages(d?: SpecialDate): Record<'es' | 'en' | 'x-default', string> {
+  const url = (l: 'es' | 'en') => `${BASE_URL}/${l}${d ? specialDatePath(d, l) : specialDatesPath(l)}`
+  return { es: url('es'), en: url('en'), 'x-default': url(X_DEFAULT_LOCALE) }
+}
+
+export function specialDatesAlternates(locale: 'es' | 'en', d?: SpecialDate): Metadata['alternates'] {
+  const languages = specialDatesLanguages(d)
+  return { canonical: languages[locale], languages }
 }

@@ -33,6 +33,7 @@ const { default: nextConfig } = await import('../../next.config.mjs')
 const { BASE_URL, X_DEFAULT_LOCALE } = await import('@/lib/seo')
 const { SERVICES, getServiceBySlug } = await import('@/lib/services')
 const { getMasajeTypeBySlug } = await import('@/lib/masajes-category')
+const { getSpecialDate } = await import('@/lib/special-dates')
 const { serviceHref, getLocalizedPath, canonicalizeServiceLinks } = await import('@/lib/routes')
 const { readPublishedPosts, slugForLocale } = await import('@/lib/blog-store')
 
@@ -93,6 +94,7 @@ test('sitemap: every URL maps to a page that exists ("Not found (404)")', () => 
     if (rest.length === 0) ok = existsSync(join(LANG_DIR, 'page.tsx'))
     else if (section === 'services' && slug) ok = !!getServiceBySlug(slug, lang)
     else if (section === 'masajes' && slug) ok = !!getMasajeTypeBySlug(slug, lang)
+    else if ((section === 'fechas-especiales' || section === 'special-dates') && slug) ok = !!getSpecialDate(slug, lang)
     else if (section === 'blog' && slug) {
       ok = posts.some(p => p.locales.includes(lang) && slugForLocale(p, lang) === slug)
     } else ok = existsSync(join(LANG_DIR, ...rest, 'page.tsx'))

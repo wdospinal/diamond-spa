@@ -28,6 +28,7 @@ import {
   serviceDisplayName,
 } from './services'
 import { serviceHref } from './routes'
+import { specialDatesPath } from './special-dates'
 import { LANDING_SERVICE_VIDEOS } from './landing-service-videos'
 
 export type HomeLink = { href: string; label: string }
@@ -406,6 +407,7 @@ export function getHomeContent(locale: Locale, rating: { value: string; count: n
         links: [
           { href: L('spa-el-poblado'), label: es ? 'Spa en El Poblado' : 'Spa in El Poblado' },
           { href: L('dia-de-spa'), label: es ? 'Día de spa en Medellín' : 'Spa day in Medellín' },
+          { href: `/${locale}${specialDatesPath(locale)}`, label: es ? 'Regalos para fechas especiales' : 'Spa gifts for special dates' },
           ...(es ? [] : [{ href: L('spa-near-me'), label: 'Spa near me' }]),
         ] as HomeLink[],
       },

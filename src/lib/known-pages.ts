@@ -32,6 +32,8 @@ export const KNOWN_PAGES: KnownPage[] = [
   { path: '/depilacion-hombres',     label: 'Depilación para Hombres',       category: 'landing' },
   { path: '/depilacion-mujeres',     label: 'Depilación para Mujeres',       category: 'landing' },
   { path: '/dia-de-spa',             label: 'Día de Spa',                     category: 'landing' },
+  { path: '/fechas-especiales',      label: 'Fechas Especiales (ES)',         category: 'landing' },
+  { path: '/special-dates',          label: 'Special Dates (EN)',             category: 'landing' },
 
   // ─── Service / section pages ──────────────────────────────────────────────────
   { path: '/services',               label: 'Todos los Servicios',            category: 'service' },
