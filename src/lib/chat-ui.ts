@@ -74,6 +74,10 @@ export type ChatUI = {
   changeSame: string
   changeDistinct1: string
   reserveDone: (name: string) => string
+  /** Cuando el chat no logra guardar la reserva: se pide enviarla por WhatsApp. */
+  reserveFailed: string
+  /** Mensaje de WhatsApp de quien ya reservó y tiene una pregunta o un inconveniente. */
+  afterReserveMsg: (name: string, detail: string) => string
 
   // Resumen de la reserva y mensaje a WhatsApp
   twoPeople: string
@@ -132,7 +136,7 @@ const es: ChatUI = {
   planHelp: 'No sé, ayúdame',
   otherCategory: 'Otra categoría',
   changeDay: 'Cambiar día',
-  openWhatsApp: 'Abrir WhatsApp',
+  openWhatsApp: 'Escribir por WhatsApp',
   sameAsPerson1: 'La misma que la persona 1',
   preferNotToSay: 'Prefiero no decir',
   change: 'Cambiar',
@@ -163,7 +167,9 @@ const es: ChatUI = {
   changeDuo1: 'Claro. Empecemos por la persona 1: ¿qué técnica prefiere?',
   changeSame: 'Claro. Elijan de nuevo el servicio y la duración; vale para los dos.',
   changeDistinct1: 'Claro. Empecemos de nuevo por la persona 1: ¿qué servicio y cuánto tiempo?',
-  reserveDone: name => `¡Listo${name ? `, ${name}` : ''}! Tu reserva quedó enviada con éxito.`,
+  reserveDone: name => `¡Listo${name ? `, ${name}` : ''}! Tu cita ya está reservada y te guardamos el puesto.`,
+  reserveFailed: 'No pudimos guardar tu reserva de forma automática. Toca el botón y envíanos tus datos por WhatsApp para que recepción te la confirme.',
+  afterReserveMsg: (name, detail) => `Hola Diamond Spa, ya reservé mi cita${name ? ` (soy ${name})` : ''} y tengo una pregunta. Mi reserva: ${detail}`,
 
   twoPeople: '2 personas',
   duoPartsTbc: (name, label) => `Me interesa: ${name} (${label}). Técnicas distintas: el precio lo confirma recepción.`,
@@ -224,7 +230,7 @@ const en: ChatUI = {
   planHelp: "I'm not sure, help me",
   otherCategory: 'Another category',
   changeDay: 'Change day',
-  openWhatsApp: 'Open WhatsApp',
+  openWhatsApp: 'Message us on WhatsApp',
   sameAsPerson1: 'Same as person 1',
   preferNotToSay: "I'd rather not say",
   change: 'Change',
@@ -255,7 +261,9 @@ const en: ChatUI = {
   changeDuo1: "Sure. Let's start with person 1: which technique would they prefer?",
   changeSame: 'Sure. Pick the service and the duration again; it applies to both of you.',
   changeDistinct1: "Sure. Let's start over with person 1: which service and for how long?",
-  reserveDone: name => `All set${name ? `, ${name}` : ''}! Your booking was sent successfully.`,
+  reserveDone: name => `All set${name ? `, ${name}` : ''}! Your appointment is booked and we saved your spot.`,
+  reserveFailed: "We couldn't save your booking automatically. Tap the button and send us your details on WhatsApp so reception can confirm it.",
+  afterReserveMsg: (name, detail) => `Hi Diamond Spa, I already booked my appointment${name ? ` (I'm ${name})` : ''} and I have a question. My booking: ${detail}`,
 
   twoPeople: '2 people',
   duoPartsTbc: (name, label) => `I'm interested in: ${name} (${label}). Different techniques: reception confirms the price.`,

@@ -26,6 +26,8 @@ import type { Doubt, Follow, IconName } from '@/lib/chat-flow-es'
 import { flowFor } from '@/lib/chat-flow'
 import { uiFor, type ChatUI } from '@/lib/chat-ui'
 import { availableSlots, bogotaNow, dayBlocked, monthCells } from '@/lib/chat-slots'
+import { setChatMeta, trackChat } from '@/lib/chat-track'
+import { esLabelAt, optKey, slotTo24h, type ChatEv, type ChatNode, type ChatScope } from '@/lib/chat-events'
 
 const BASE_COUNTRY_CODES = [
   { code: '+57', flag: '🇨🇴' },
@@ -179,6 +181,34 @@ function postLead(body: Record<string, unknown>) {
   } catch { /* silent */ }
 }
 
+/**
+ * Igual que postLead, pero espera la respuesta: la reserva ya no abre WhatsApp
+ * con los datos escritos, así que solo se dice "te guardamos el puesto" si el
+ * servidor de verdad la guardó. `deduped` significa que el mismo teléfono ya tenía
+ * un registro de hace menos de 5 minutos y el servidor NO guardó esta fecha y hora:
+ * se trata como no guardada para que la persona la envíe por WhatsApp.
+ */
+async function postLeadChecked(body: Record<string, unknown>): Promise<boolean> {
+  const ctrl = new AbortController()
+  const timer = setTimeout(() => ctrl.abort(), 10000)
+  try {
+    const r = await fetch('/api/whatsapp-lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      keepalive: true,
+      signal: ctrl.signal,
+    })
+    if (!r.ok) return false
+    const data = await r.json().catch(() => null)
+    return !(data && data.deduped)
+  } catch {
+    return false
+  } finally {
+    clearTimeout(timer)
+  }
+}
+
 function priceLine(s: Svc) {
   if (s.cat === 'depilacion') return `${s.durMin} min · ` + s.prices.map(p => `${p.label} ${money(p.value)}`).join(' · ')
   if (s.prices.length === 1) return `${s.prices[0].label} · ${money(s.prices[0].value)}`
@@ -261,8 +291,37 @@ export default function PautaChatWidget({
   const lockRef = useRef(false)
   const lastOpenRef = useRef(0)
   const waUrlRef = useRef('')
+  /** Resultado de guardar la reserva (solo en el flujo de reservar). */
+  const savedRef = useRef<Promise<boolean> | null>(null)
+  /** true cuando ya se registró el evento de clic a WhatsApp de esta salida. */
+  const waFiredRef = useRef(false)
+  /** Mensajes de WhatsApp de una reserva: pedirla (si no se guardó) o preguntar (si ya está guardada). */
+  const bookingMsgRef = useRef('')
+  const questionMsgRef = useRef('')
   const leadRef = useRef({ any: false, withPhone: false })
   const topicRef = useRef({ topic: T.topicAdvisor, note: '' })
+
+  // ── Registro anónimo de clics (lib/chat-track.ts) ─────────────────────────────────────────────
+  // Solo viajan etiquetas que ya existen en el chat (la duda tocada, el servicio, la
+  // fecha), siempre en español aunque el chat esté en inglés. Nunca lo que la persona
+  // escribe (nombre, celular). `node` es la pantalla donde estaba al tocar.
+  const ESF = flowFor('es')
+  const track = (ev: ChatEv, k?: string, c?: Cat | ChatScope | null) =>
+    trackChat(ev, { k, cat: c, node: node === 'intro' || node === 'sending' ? undefined : (node as ChatNode) })
+  const trackDoubt = (d: Doubt, sc: Cat | 'general') =>
+    track(
+      'doubt',
+      sc === 'general' ? esLabelAt(GENERAL, d, ESF.GENERAL) : esLabelAt(BRANCHES[sc].doubts, d, ESF.BRANCHES[sc].doubts),
+      sc,
+    )
+  const trackHelp = (o: { label: string }, c: Cat) =>
+    track('help_option', esLabelAt(BRANCHES[c].help ?? [], o, ESF.BRANCHES[c].help ?? []), c)
+  const trackGroup = (g: { label: string }, c: Cat) =>
+    track('help_group', esLabelAt(BRANCHES[c].helpGroups ?? [], g, ESF.BRANCHES[c].helpGroups ?? []), c)
+  const closeChat = () => {
+    track('close')
+    onClose()
+  }
 
   const today = bogotaNow()
   const duoSvc = svcById('duo')
@@ -319,6 +378,19 @@ export default function PautaChatWidget({
   }, [])
 
   useEffect(() => {
+    const a = readAttribution()
+    setChatMeta({ lang: locale, ads: a.isAds, adg: a.adgroup })
+    trackChat('open')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Cada pantalla que ve la persona: de ahí salen el recorrido y el punto donde se va.
+  useEffect(() => {
+    if (node === 'intro' || node === 'sending') return
+    trackChat('view', { k: node })
+  }, [node])
+
+  useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
   }, [messages, typing, node, busy])
 
@@ -336,6 +408,7 @@ export default function PautaChatWidget({
   }
 
   function openBranch(c: Cat) {
+    track('menu_cat', c, c)
     setCat(c)
     setSens(false)
     go(catLabel(c, locale), [BRANCHES[c].intro], () => setNode('branch'))
@@ -350,10 +423,12 @@ export default function PautaChatWidget({
   }
 
   function showDoubt(d: Doubt, sc: Cat | 'general') {
+    trackDoubt(d, sc)
     showAnswer(d.label, d.answer, d.follow, sc, d.bare)
   }
 
   function onFollow(f: Follow) {
+    track('follow', f.k, scope)
     switch (f.k) {
       case 'reserve': {
         const svc = f.svc ? svcById(f.svc) : null
@@ -375,7 +450,7 @@ export default function PautaChatWidget({
         window.open(SPA_GOOGLE_MAPS_URL, '_blank', 'noopener,noreferrer')
         return
       case 'advisor': return startContact(followLabel(f, T, locale))
-      case 'direct': return openWhatsApp('direct')
+      case 'direct': return openWhatsApp('direct', undefined, 'answer')
       case 'change': return openWhatsApp('change', followLabel(f, T, locale))
       case 'people': return pickPeople(f.n === 2 ? 2 : 3)
     }
@@ -396,6 +471,7 @@ export default function PautaChatWidget({
   }
 
   function startReserve(svc: Svc | null, c: Cat | null, label: string) {
+    track('reserve_start', svc?.id, c ?? svc?.cat)
     resetReservation()
     setPreSvc(svc)
     setPreCat(c)
@@ -408,6 +484,7 @@ export default function PautaChatWidget({
   }
 
   function pickPeople(n: 1 | 2 | 3) {
+    track('people', String(n))
     if (n === 1) {
       setPlan('solo')
       return selectFor(T.justMe, [RES.askCat], 0, true, 'solo')
@@ -417,6 +494,7 @@ export default function PautaChatWidget({
   }
 
   function pickPlan(kind: Plan | 'help') {
+    track('plan', kind)
     if (kind === 'help') return startContact(T.planHelp, T.topicHelp2, T.noteHelp2)
     setPlan(kind)
     if (kind === 'duo') return go(T.planDuo, RES.duoIntro, () => setNode('tech'))
@@ -436,6 +514,7 @@ export default function PautaChatWidget({
 
   /** Al tocar un masaje en la lista: se cuenta en qué consiste y se pregunta si seguir con él o ver otros. */
   function showSvcInfo(svc: Svc) {
+    track('svc_info', svc.id, svc.cat)
     setInfoSvc(svc)
     go(svc.name, [...MASSAGE_ABOUT[svc.id], RES.askContinue], () => setNode('svcInfo'))
   }
@@ -462,6 +541,7 @@ export default function PautaChatWidget({
 
   function finishLine(svc: Svc, idx: number, userText: string | null, prefix: string[], p: Plan) {
     const opt = svc.prices[idx]
+    track('opt_pick', optKey(svc.id, baseSvcById(svc.id, 'es').prices[idx]?.label ?? opt.label), svc.cat)
     const line: Line = { svcId: svc.id, name: svc.name, opt: opt.label, price: opt.value, mins: optionMinutes(svc, idx) }
     const ack = T.noted(line.name, line.opt, moneyFull(line.price))
     if (p === 'duo') {
@@ -506,11 +586,18 @@ export default function PautaChatWidget({
   }
 
   function pickDay(d: number) {
+    const dateKey = `${cal.y}-${pad(cal.mo + 1)}-${pad(d)}`
+    track('day_pick', dateKey)
+    // Eligió un día que se ve libre pero ya no tiene horas: demanda que se pierde.
+    if (availableSlots(cal.y, cal.mo, d, durMinutes).length === 0) track('no_slots', dateKey)
     setDay(d)
     go(cap(dayLabel(cal.y, cal.mo, d, T.dateLocale)), [RES.askTime], () => setNode('time'))
   }
 
   function pickTime(slot: string) {
+    const t24 = slotTo24h(slot)
+    if (t24) track('time_pick', t24)
+    track('name_step', 'reserve')
     setTime(slot)
     setContactFor('reserve')
     go(slot, [RES.askNameReserve], () => setNode('name'))
@@ -535,6 +622,7 @@ export default function PautaChatWidget({
 
   // ── Contacto: nombre y celular, solo al decidir ───────────────────────────
   function startContact(userText: string, topic = T.topicAdvisor, note = '') {
+    track('advisor_start', 'advisor')
     topicRef.current = { topic, note }
     setContactFor('advisor')
     go(userText, [RES.askNameAdvisor], () => setNode('name'))
@@ -542,6 +630,7 @@ export default function PautaChatWidget({
 
   function submitName(skip = false) {
     if (busy) return
+    track('phone_step', contactFor)
     const v = skip ? '' : nameIn.trim()
     setName(v)
     setNameIn('')
@@ -551,6 +640,7 @@ export default function PautaChatWidget({
   function submitPhone() {
     if (busy || lockRef.current) return
     if (!validChatPhone(code, phoneIn)) {
+      track('phone_invalid')
       setPhoneErr(true)
       return
     }
@@ -566,21 +656,35 @@ export default function PautaChatWidget({
     if (contactFor === 'reserve') {
       const res = finalize('reserve', full, name)
       if (!res) return
-      say([T.reserveDone(name)], () => {
-        setMessages(p => [
-          ...p,
-          {
-            from: 'bot',
-            kind: 'summary',
-            rows: [...res.rows, `${cap(res.dateText)} · ${res.time}`, `${name ? `${name} · ` : ''}${full}`],
-            total: res.priceTbc ? RES.duoPriceTbc : moneyFull(res.total),
-          },
-        ])
-        say([RES.doneHelp], () => setNode('done'))
+      // La reserva ya no abre WhatsApp: se espera a que el servidor la guarde y
+      // solo entonces se confirma. Si no se pudo guardar, el botón de WhatsApp
+      // lleva los datos escritos para que recepción la reciba igual.
+      setTyping(true)
+      const saved = savedRef.current ?? Promise.resolve(false)
+      saved.then(ok => {
+        track(ok ? 'reserve_saved' : 'reserve_failed')
+        waUrlRef.current = randomWhatsAppUrl(ok ? questionMsgRef.current : bookingMsgRef.current)
+        if (!ok) {
+          say([T.reserveFailed], () => setNode('done'))
+          return
+        }
+        say([T.reserveDone(name)], () => {
+          setMessages(p => [
+            ...p,
+            {
+              from: 'bot',
+              kind: 'summary',
+              rows: [...res.rows, `${cap(res.dateText)} · ${res.time}`, `${name ? `${name} · ` : ''}${full}`],
+              total: res.priceTbc ? RES.duoPriceTbc : moneyFull(res.total),
+            },
+          ])
+          say([RES.doneHelp], () => setNode('done'))
+        })
       })
       return
     }
     finalize('advisor', full, name)
+    track('advisor_sent', 'advisor')
     say([RES.advisorDone(name)], () => setNode('done'))
   }
 
@@ -671,22 +775,8 @@ export default function PautaChatWidget({
     }
     const button = BUTTON[kind]
 
-    trackEvent(EVENTS.WHATSAPP_CLICKED, {
-      platform: 'whatsapp',
-      source: kind === 'advisor' ? 'landing_chat_advisor' : 'landing_chat_widget',
-    })
-    pushEvent('whatsapp_click', { source: 'landing_chat_widget', button, locale, ...attr })
-    if (!skipLead && a.isAds) {
-      pushEvent('whatsapp_lead_ads', {
-        source: 'landing_chat_widget',
-        button,
-        locale,
-        ...(a.gclid ? { gclid: a.gclid } : {}),
-        ...(a.adgroup ? { adgroup: a.adgroup } : {}),
-        ...userDataFor(phoneFull),
-      })
-    }
     // booking_submit solo cuando hay servicio, día y hora: es la conversión principal.
+    // Va PRIMERO, antes de cualquier otra cosa, para que nada pueda cortarla.
     if (res && res.serviceId && res.dateKey && res.time) {
       pushEvent('booking_submit', {
         source: a.isAds ? 'ads' : 'organic',
@@ -702,6 +792,28 @@ export default function PautaChatWidget({
         price_cop: res.total,
         locale,
       })
+    }
+
+    // Una reserva ya no abre WhatsApp: los eventos de WhatsApp se registran cuando
+    // la persona toca el botón (reopenWhatsApp). El resto de salidas abre ya.
+    const opensNow = kind !== 'reserve'
+    waFiredRef.current = opensNow
+    if (opensNow) {
+      trackEvent(EVENTS.WHATSAPP_CLICKED, {
+        platform: 'whatsapp',
+        source: kind === 'advisor' ? 'landing_chat_advisor' : 'landing_chat_widget',
+      })
+      pushEvent('whatsapp_click', { source: 'landing_chat_widget', button, locale, ...attr })
+      if (!skipLead && a.isAds) {
+        pushEvent('whatsapp_lead_ads', {
+          source: 'landing_chat_widget',
+          button,
+          locale,
+          ...(a.gclid ? { gclid: a.gclid } : {}),
+          ...(a.adgroup ? { adgroup: a.adgroup } : {}),
+          ...userDataFor(phoneFull),
+        })
+      }
     }
 
     const interest = cart.length
@@ -732,7 +844,8 @@ export default function PautaChatWidget({
           : interest ? T.leadDirect(interest)
           : undefined
       }
-      postLead(body)
+      if (kind === 'reserve') savedRef.current = postLeadChecked(body)
+      else postLead(body)
       leadRef.current.any = true
       if (phoneFull) leadRef.current.withPhone = true
     }
@@ -759,21 +872,53 @@ export default function PautaChatWidget({
 
     const url = randomWhatsAppUrl(message)
     waUrlRef.current = url
-    window.open(url, '_blank', 'noopener,noreferrer')
+    if (opensNow) {
+      window.open(url, '_blank', 'noopener,noreferrer')
+    } else {
+      // Reserva: no se abre WhatsApp. Si se guardó, el botón lleva una pregunta sobre
+      // la reserva; si no, lleva la reserva escrita (se elige en submitPhone).
+      bookingMsgRef.current = message
+      questionMsgRef.current = T.afterReserveMsg(nm, res?.detail ?? '')
+    }
     return res
   }
 
   /** Salida directa a WhatsApp: el enlace fijo del pie y los botones de "3 o más" y "cambiar mi cita". */
-  function openWhatsApp(kind: 'direct' | 'group' | 'change', label?: string) {
+  function openWhatsApp(kind: 'direct' | 'group' | 'change', label?: string, where?: 'footer' | 'answer') {
     const nowMs = Date.now()
     if (nowMs - lastOpenRef.current < 1200) return
     lastOpenRef.current = nowMs
+    track('wa_direct', kind === 'direct' ? (where ?? 'footer') : kind)
     finalize(kind, fullPhone, name)
     if (label) go(label, [T.openingWhatsApp], () => {})
   }
 
   function reopenWhatsApp() {
-    if (waUrlRef.current) window.open(waUrlRef.current, '_blank', 'noopener,noreferrer')
+    if (!waUrlRef.current) return
+    // Tras una reserva, el primer toque al botón es el clic real a WhatsApp.
+    if (!waFiredRef.current) {
+      waFiredRef.current = true
+      track('wa_after_reserve')
+      const a = readAttribution()
+      const attr = {
+        ...(a.gclid ? { gclid: a.gclid } : {}),
+        ...(a.adgroup ? { adgroup: a.adgroup } : {}),
+        ...(a.campaign ? { campaign: a.campaign } : {}),
+      }
+      trackEvent(EVENTS.WHATSAPP_CLICKED, { platform: 'whatsapp', source: 'landing_chat_widget' })
+      pushEvent('whatsapp_click', { source: 'landing_chat_widget', button: BUTTON.reserve, locale, ...attr })
+      if (a.isAds) {
+        pushEvent('whatsapp_lead_ads', {
+          source: 'landing_chat_widget',
+          button: BUTTON.reserve,
+          locale,
+          ...(a.gclid ? { gclid: a.gclid } : {}),
+          ...(a.adgroup ? { adgroup: a.adgroup } : {}),
+          ...userDataFor(fullPhone),
+        })
+      }
+    }
+    window.open(waUrlRef.current, '_blank', 'noopener,noreferrer')
   }
 
 
@@ -811,9 +956,9 @@ export default function PautaChatWidget({
   function renderActions() {
     if (busy || typing) return null
     const back = (label = T.back, to: Node = 'branch', ask = ASK_BACK) => (
-      <Chip ghost icon="back" onClick={() => go(label, [ask], () => setNode(to))}>{label}</Chip>
+      <Chip ghost icon="back" onClick={() => { track('back'); go(label, [ask], () => setNode(to)) }}>{label}</Chip>
     )
-    const menuGhost = <Chip ghost icon="back" onClick={() => toMenu(T.backToMenu)}>{T.backToMenu}</Chip>
+    const menuGhost = <Chip ghost icon="back" onClick={() => { track('to_menu'); toMenu(T.backToMenu) }}>{T.backToMenu}</Chip>
 
     switch (node) {
       case 'menu':
@@ -822,7 +967,7 @@ export default function PautaChatWidget({
             {catsFor(locale).map(c => (
               <Chip key={c.id} icon={catIcon(c.id)} onClick={() => openBranch(c.id)}>{c.label}</Chip>
             ))}
-            <Chip icon="help" onClick={() => go(T.generalDoubts, [ASK_GENERAL], () => setNode('general'))}>{T.generalDoubts}</Chip>
+            <Chip icon="help" onClick={() => { track('menu_general', undefined, 'general'); go(T.generalDoubts, [ASK_GENERAL], () => setNode('general')) }}>{T.generalDoubts}</Chip>
           </div>
         )
 
@@ -834,16 +979,17 @@ export default function PautaChatWidget({
               block
               icon="sparkles"
               onClick={() => {
+                track('branch_help', undefined, cat)
                 if (branch.help && branch.helpAsk) go(branch.helpLabel, [branch.helpAsk], () => setNode('help'))
                 else if (branch.direct) showAnswer(branch.helpLabel, branch.direct.reply, branch.direct.follow, cat)
               }}
             >
               {branch.helpLabel}
             </Chip>
-            <Chip block icon="tag" onClick={() => go(branch.catalogLabel, [branch.catalogIntro], () => setNode('catalog'))}>
+            <Chip block icon="tag" onClick={() => { track('branch_catalog', undefined, cat); go(branch.catalogLabel, [branch.catalogIntro], () => setNode('catalog')) }}>
               {branch.catalogLabel}
             </Chip>
-            <Chip block icon="help" onClick={() => { setSens(false); go(T.iHaveDoubt, [ASK_DOUBT], () => setNode('doubts')) }}>{T.iHaveDoubt}</Chip>
+            <Chip block icon="help" onClick={() => { track('branch_doubts', undefined, cat); setSens(false); go(T.iHaveDoubt, [ASK_DOUBT], () => setNode('doubts')) }}>{T.iHaveDoubt}</Chip>
             {menuGhost}
           </div>
         )
@@ -859,13 +1005,13 @@ export default function PautaChatWidget({
                     key={g.id}
                     block
                     icon={g.icon}
-                    onClick={() => { setHelpGroup(g.id); go(g.label, [g.ask], () => setNode('helpGroup')) }}
+                    onClick={() => { trackGroup(g, cat); setHelpGroup(g.id); go(g.label, [g.ask], () => setNode('helpGroup')) }}
                   >
                     {g.label}
                   </Chip>
                 ))
               : branch.help.map(o => (
-                  <Chip key={o.label} block onClick={() => showAnswer(o.label, o.reply, o.follow, cat, false, true)}>{o.label}</Chip>
+                  <Chip key={o.label} block onClick={() => { trackHelp(o, cat); showAnswer(o.label, o.reply, o.follow, cat, false, true) }}>{o.label}</Chip>
                 ))}
             {back()}
           </div>
@@ -877,9 +1023,9 @@ export default function PautaChatWidget({
         return (
           <div className="flex flex-col items-start gap-1.5">
             {branch.help.filter(o => o.group === helpGroup).map(o => (
-              <Chip key={o.label} block onClick={() => showAnswer(o.label, o.reply, o.follow, cat, false, true)}>{o.label}</Chip>
+              <Chip key={o.label} block onClick={() => { trackHelp(o, cat); showAnswer(o.label, o.reply, o.follow, cat, false, true) }}>{o.label}</Chip>
             ))}
-            <Chip ghost icon="back" onClick={() => go(T.back, [branch.helpAsk ?? ASK_BACK], () => setNode('help'))}>{T.back}</Chip>
+            <Chip ghost icon="back" onClick={() => { track('back'); go(T.back, [branch.helpAsk ?? ASK_BACK], () => setNode('help')) }}>{T.back}</Chip>
           </div>
         )
       }
@@ -893,12 +1039,12 @@ export default function PautaChatWidget({
               <Chip key={d.label} block onClick={() => showDoubt(d, cat)}>{d.label}</Chip>
             ))}
             {!sens && hasDelicate && (
-              <Chip block icon="chat" onClick={() => { setSens(true); go(DELICATE_LABEL, [ASK_DELICATE], () => setNode('doubts')) }}>
+              <Chip block icon="chat" onClick={() => { track('sens_open', undefined, cat); setSens(true); go(DELICATE_LABEL, [ASK_DELICATE], () => setNode('doubts')) }}>
                 {DELICATE_LABEL}
               </Chip>
             )}
             {sens
-              ? <Chip ghost icon="back" onClick={() => { setSens(false); go(T.back, [ASK_DOUBT], () => setNode('doubts')) }}>{T.back}</Chip>
+              ? <Chip ghost icon="back" onClick={() => { track('back'); setSens(false); go(T.back, [ASK_DOUBT], () => setNode('doubts')) }}>{T.back}</Chip>
               : back()}
           </div>
         )
@@ -949,7 +1095,7 @@ export default function PautaChatWidget({
                   <Chip
                     ghost
                     icon="back"
-                    onClick={() => go(T.seeOtherOptions, [BRANCHES[cat].helpAsk ?? ASK_BACK], () => setNode('help'))}
+                    onClick={() => { track('back'); go(T.seeOtherOptions, [BRANCHES[cat].helpAsk ?? ASK_BACK], () => setNode('help')) }}
                   >
                     {T.seeOtherOptions}
                   </Chip>
@@ -1196,7 +1342,7 @@ export default function PautaChatWidget({
           <div className="flex items-center gap-0.5">
             <button
               type="button"
-              onClick={onClose}
+              onClick={closeChat}
               aria-label={T.minimize}
               title={T.minimize}
               className="rounded-lg p-1.5 text-lg leading-none text-on-surface/50 transition-colors hover:bg-white/10 hover:text-on-surface"
@@ -1205,7 +1351,7 @@ export default function PautaChatWidget({
             </button>
             <button
               type="button"
-              onClick={onClose}
+              onClick={closeChat}
               aria-label={T.closeChat}
               title={T.closeChat}
               className="rounded-lg p-1.5 text-base leading-none text-on-surface/50 transition-colors hover:bg-white/10 hover:text-on-surface"

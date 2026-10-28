@@ -9,9 +9,11 @@ import { type AdminRole, type AdminSection, canAccessSection } from '@/lib/admin
 const NAV_ITEMS: { href: AdminSection; icon: string; label: string }[] = [
   { href: '/admin',          icon: 'dashboard',      label: 'Inicio'      },
   { href: '/admin/bookings', icon: 'calendar_month', label: 'Reservas'    },
+  { href: '/admin/clientes', icon: 'person',         label: 'Clientes'    },
   { href: '/admin/blog',     icon: 'article',        label: 'Blog'        },
   { href: '/admin/landings', icon: 'rocket_launch',  label: 'Landings'    },
   { href: '/admin/funnel',   icon: 'filter_alt',     label: 'Embudo'      },
+  { href: '/admin/chatbot',  icon: 'chat_bubble',    label: 'Chatbot'     },
   { href: '/admin/bold',     icon: 'payments',       label: 'Ventas Bold' },
   { href: '/admin/caja',     icon: 'account_balance_wallet', label: 'Caja' },
 ]

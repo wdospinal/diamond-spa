@@ -858,6 +858,6 @@ export const RES = {
   distinctIntro: 'Empecemos por la persona 1: ¿qué servicio y cuánto tiempo?',
   distinctSecond: 'Ahora la persona 2: ¿qué servicio y cuánto tiempo?',
   togetherNote: 'Queremos que estén juntos: recepción revisa que haya dos terapeutas libres a esa hora y te confirma.',
-  doneHelp: 'Te abrimos WhatsApp con tus datos ya escritos; si quieres, envíalos y recepción te confirma la disponibilidad.',
+  doneHelp: 'Por favor llega unos 5 minutos antes de tu cita. Si vas a cancelar o no puedes asistir, avísanos con anticipación.\n\nSi tienes alguna pregunta o algún inconveniente, escríbenos por WhatsApp.',
   advisorDone: (name: string) => `${name ? `Listo, ${name}. ` : 'Listo. '}Te abrimos WhatsApp para que hables con recepción.`,
 }

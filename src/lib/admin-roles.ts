@@ -63,9 +63,11 @@ export function usesCompactHeader(role: AdminRole): boolean {
 export const SECTION_ROLES = {
   '/admin': null,
   '/admin/bookings': null,
+  '/admin/clientes': null,
   '/admin/blog': ['ads_manager', 'superadmin'],
   '/admin/landings': ['ads_manager', 'superadmin'],
   '/admin/funnel': ['ads_manager', 'superadmin'],
+  '/admin/chatbot': ['ads_manager', 'superadmin'],
   '/admin/bold': ['superadmin'],
   '/admin/caja': ['superadmin'],
 } as const satisfies Record<string, readonly AdminRole[] | null>

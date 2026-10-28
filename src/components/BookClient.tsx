@@ -36,6 +36,37 @@ function Icon({ name, size = 22, style = {} }: { name: string; size?: number; st
   )
 }
 
+// Iconos en SVG para la pantalla de confirmación: la fuente de iconos del sitio
+// es un subconjunto y no incluye estos glifos (se verían como texto).
+function LineIcon({ kind, size = 20, style = {} }: { kind: 'clock' | 'cancel'; size?: number; style?: React.CSSProperties }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.6}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      style={style}
+    >
+      {kind === 'clock'
+        ? <><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></>
+        : <><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18M10 14l4 4M14 14l-4 4" /></>}
+    </svg>
+  )
+}
+
+function WhatsAppGlyph({ size = 20 }: { size?: number }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-hidden="true">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.888-.788-1.489-1.761-1.663-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
+    </svg>
+  )
+}
+
 // ─── Palette ──────────────────────────────────────────────────────────────────
 const C = {
   bg: '#0a1628',
@@ -268,6 +299,11 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
   const [submitting, setSubmitting] = useState(false)
   const submittingRef = useRef(false)
   const [confirmed, setConfirmed] = useState(false)
+  // Si la reserva no se pudo guardar, la pantalla final pide enviarla por WhatsApp.
+  const [saveFailed, setSaveFailed] = useState(false)
+  const [waHref, setWaHref] = useState('')
+  const waEventsFiredRef = useRef(false)
+  const attrRef = useRef({ bookingSource: 'organic', campaignName: '', adgroup: '' })
   // Se hace scroll aquí apenas se elige un día, para que las horas disponibles
   // no queden ocultas fuera de la pantalla en móvil.
   const timeSlotsRef = useRef<HTMLDivElement>(null)
@@ -386,6 +422,24 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
     return { bookingSource, campaignName, adgroup, gclid }
   }
 
+  // Eventos de WhatsApp: se registran solo cuando WhatsApp de verdad se abre
+  // (el botón de la pantalla de confirmación o la opción "coordinar por WhatsApp").
+  function fireWhatsAppEvents() {
+    if (waEventsFiredRef.current) return
+    waEventsFiredRef.current = true
+    const { bookingSource, campaignName, adgroup } = attrRef.current
+    trackEvent(EVENTS.WHATSAPP_CLICKED, { platform: 'whatsapp', source: 'booking' })
+    const waTrackPayload: Record<string, string> = { source: 'booking_wizard', button: 'confirm' }
+    if (bookingSource === 'ads' && campaignName) waTrackPayload.campaign = campaignName
+    if (adgroup) waTrackPayload.adgroup = adgroup
+    pushEvent('whatsapp_click', waTrackPayload)
+    let semTrigger = false
+    try { semTrigger = !!sessionStorage.getItem('sem_trigger_key') } catch { /* ignore */ }
+    if (bookingSource === 'ads' || adgroup || semTrigger) {
+      pushEvent('whatsapp_lead_ads', { ...waTrackPayload, ...userDataFor(form.phone) })
+    }
+  }
+
   // ── Phase 1: create a minimal lead as soon as name+phone are known ────────
   // Fired from the 'details' step's Continue button, before date/time exist.
   // Best-effort: if it fails, finalizeBooking() below falls back to creating
@@ -460,8 +514,42 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
       `\n💰 Total: ${fmtCop(price)}`
 
     trackEvent(EVENTS.BOOKING_SUBMITTED, { service_id: service.id, service_name: service.name, category: service.category, duration_minutes: service.durationMin, price_cop: price, locale: lang })
-    trackEvent(EVENTS.WHATSAPP_CLICKED, { platform: 'whatsapp', source: 'booking' })
-    window.open(randomWhatsAppUrl(waText), '_blank')
+
+    // booking_submit es la conversión principal de Google Ads: va ANTES de abrir
+    // WhatsApp o de esperar al servidor. En el celular, abrir WhatsApp o esperar
+    // la red congelaba la página y el evento nunca salía, aunque la reserva sí
+    // quedaba en el CRM.
+    const { bookingSource, campaignName, adgroup, gclid } = getAttribution()
+    attrRef.current = { bookingSource, campaignName, adgroup }
+    const submitPayload: Record<string, string | number> = {
+      service_id: service.id,
+      service_name: service.name,
+      category: service.category,
+      price_cop: price,
+      source: bookingSource,
+    }
+    if (bookingSource === 'ads' && campaignName) submitPayload.campaign = campaignName
+    if (adgroup) submitPayload.adgroup = adgroup
+    // user_data (teléfono en E.164) lo lee la etiqueta de conversiones mejoradas
+    // de Google Ads en GTM; si el teléfono no es válido, el evento sale sin él.
+    pushEvent('booking_submit', { ...submitPayload, ...userDataFor(form.phone) })
+
+    const questionText =
+      `Hola Diamond Spa! Ya reservé mi cita y tengo una pregunta:\n\n` +
+      `📋 Servicio: ${svcLabel}\n` +
+      `📅 Fecha: ${dateStr}\n⏰ Hora: ${time}\n` +
+      `👤 Nombre: ${form.name}\n` +
+      `📱 Tel: ${form.phone}`
+
+    // Solo si la persona eligió coordinar la hora por WhatsApp se abre ya.
+    // Con fecha y hora elegidas, la reserva queda confirmada en pantalla y
+    // WhatsApp es un botón opcional para dudas o inconvenientes.
+    if (isTbd) {
+      const tbdUrl = randomWhatsAppUrl(waText)
+      setWaHref(tbdUrl)
+      fireWhatsAppEvents()
+      window.open(tbdUrl, '_blank')
+    }
 
     // El SMS a la recepción lo dispara /api/bookings tras validar la reserva.
     let payloadDuration: number | null = null
@@ -476,16 +564,15 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
       hairMethod = selectedPrice?.label === 'Cera' ? 'wax' : 'machine'
     }
 
-    const { bookingSource, campaignName, adgroup, gclid } = getAttribution()
-
+    let saved = true
     try {
       // If phase-1 already created a lead but the visitor hit the "TBD"
       // shortcut, there's nothing new to persist — that row already has
       // everything. Only call the API again when we're setting a real
       // date/time, or when phase 1 never ran (leadId is null).
       if (!leadId || !isTbd) {
-        await fetch('/api/bookings', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
+        const r = await fetch('/api/bookings', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true,
           body: JSON.stringify({
             ...(leadId ? { id: leadId } : {}),
             serviceId: service.id, durationMinutes: payloadDuration, hairMethod: hairMethod,
@@ -494,35 +581,15 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
             ...(gclid ? { gclid } : {}), ...(adgroup ? { adgroup } : {}),
           }),
         })
+        saved = r.ok
       }
-    } catch { }
+    } catch { saved = false }
 
-    const submitPayload: Record<string, string | number> = {
-      service_id: service.id,
-      service_name: service.name,
-      category: service.category,
-      price_cop: price,
-      source: bookingSource
-    }
-    if (bookingSource === 'ads' && campaignName) {
-      submitPayload.campaign = campaignName
-    }
-    if (adgroup) {
-      submitPayload.adgroup = adgroup
-    }
-
-    // user_data (teléfono en E.164) lo lee la etiqueta de conversiones mejoradas
-    // de Google Ads en GTM; si el teléfono no es válido, el evento sale sin él.
-    pushEvent('booking_submit', { ...submitPayload, ...userDataFor(form.phone) })
-
-    // WhatsApp tracking — mismo patrón que WhatsAppLink.tsx, para que GTM
-    // capture esta reserva (la ruta principal del wizard) como evento real.
-    const waTrackPayload: Record<string, string> = { source: 'booking_wizard', button: 'confirm' }
-    if (bookingSource === 'ads' && campaignName) waTrackPayload.campaign = campaignName
-    if (adgroup) waTrackPayload.adgroup = adgroup
-    pushEvent('whatsapp_click', waTrackPayload)
-    if (bookingSource === 'ads' || adgroup || sessionStorage.getItem('sem_trigger_key')) {
-      pushEvent('whatsapp_lead_ads', { ...waTrackPayload, ...userDataFor(form.phone) })
+    // Reserva con fecha y hora: no se abre WhatsApp. El botón de la pantalla de
+    // confirmación lleva una pregunta (si se guardó) o la reserva escrita (si no).
+    if (!isTbd) {
+      setSaveFailed(!saved)
+      setWaHref(randomWhatsAppUrl(saved ? questionText : waText))
     }
 
     submittingRef.current = false
@@ -532,13 +599,18 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
 
   // ── Confirmed screen ──────────────────────────────────────────────────────
   if (confirmed) {
+    const tbdConfirm = selDay === null || selTime === null
     return (
       <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', paddingTop: '96px' }}>
         <div style={{ maxWidth: 440, width: '100%', textAlign: 'center' }}>
           <div style={{ marginBottom: 20 }}><Icon name="check_circle" size={56} style={{ color: C.success }} /></div>
-          <p style={{ color: C.accent, fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', marginBottom: 12 }}>{lang === 'en' ? 'Booking confirmed' : 'Reserva confirmada'}</p>
-          <h1 style={{ color: C.text, fontSize: 'clamp(28px,6vw,40px)', fontWeight: 300, marginBottom: 16 }}>{lang === 'en' ? 'Your appointment is booked' : 'Tu cita está reservada'}</h1>
-          <p style={{ color: C.sec, lineHeight: 1.7, marginBottom: 32 }}>{lang === 'en' ? 'Welcome' : 'Bienvenido/a'}, <strong style={{ color: C.text }}>{form.name}</strong>. {lang === 'en' ? 'We look forward to seeing you at Diamond Spa.' : 'Te esperamos en Diamond Spa.'}</p>
+          <p style={{ color: C.accent, fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', marginBottom: 12 }}>{saveFailed ? (lang === 'en' ? 'Almost done' : 'Casi listo') : (lang === 'en' ? 'Booking confirmed' : 'Reserva confirmada')}</p>
+          <h1 style={{ color: C.text, fontSize: 'clamp(28px,6vw,40px)', fontWeight: 300, marginBottom: 16 }}>{saveFailed ? (lang === 'en' ? 'One last step' : 'Falta un último paso') : (lang === 'en' ? 'Your appointment is booked' : 'Tu cita está reservada')}</h1>
+          <p style={{ color: C.sec, lineHeight: 1.7, marginBottom: 32 }}>{saveFailed
+            ? (lang === 'en' ? "We couldn't save your booking automatically. Send us your details on WhatsApp and reception will confirm it." : 'No pudimos guardar tu reserva de forma automática. Envíanos tus datos por WhatsApp y recepción te la confirma.')
+            : tbdConfirm
+              ? <>{lang === 'en' ? 'Welcome' : 'Bienvenido/a'}, <strong style={{ color: C.text }}>{form.name}</strong>. {lang === 'en' ? 'We look forward to seeing you at Diamond Spa.' : 'Te esperamos en Diamond Spa.'}</>
+              : <><strong style={{ color: C.text }}>{form.name}</strong>, {lang === 'en' ? "we've saved your spot. We look forward to seeing you at Diamond Spa." : 'ya te guardamos tu puesto. Te esperamos en Diamond Spa.'}</>}</p>
           <div style={{ background: C.card, border: `1px solid ${C.cardBrd}`, borderRadius: 6, padding: 24, marginBottom: 32, textAlign: 'left' }}>
             {[
               [lang === 'en' ? 'Service' : 'Servicio', service?.name ?? ''],
@@ -552,7 +624,39 @@ export default function BookClient({ locale, t, allowedServiceIds, initialServic
               </div>
             ))}
           </div>
-          <button onClick={() => { setConfirmed(false); setStep('category'); setCategory(null); setService(null); setSelDay(null); setSelTime(null); setForm({ name: '', phone: '', notes: '' }) }}
+          {!tbdConfirm && !saveFailed && (
+            <div style={{ background: C.card, border: `1px solid ${C.cardBrd}`, borderRadius: 6, padding: '12px 20px', marginBottom: 24, textAlign: 'left' }}>
+              {([
+                ['clock', lang === 'en' ? 'Please arrive about 5 minutes before your appointment.' : 'Llega unos 5 minutos antes de tu cita.'],
+                ['cancel', lang === 'en' ? "If you need to cancel or can't make it, let us know in advance so we can free up your spot." : 'Si vas a cancelar o no puedes asistir, avísanos con anticipación para liberar el espacio.'],
+              ] as const).map(([kind, text]) => (
+                <div key={kind} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', padding: '8px 0' }}>
+                  <LineIcon kind={kind} size={20} style={{ color: C.accent, flexShrink: 0, marginTop: 1 }} />
+                  <span style={{ color: C.text, fontSize: 13, lineHeight: 1.6 }}>{text}</span>
+                </div>
+              ))}
+            </div>
+          )}
+          <p style={{ color: C.sec, fontSize: 13, lineHeight: 1.6, marginBottom: 12 }}>
+            {saveFailed
+              ? (lang === 'en' ? 'Tap the button to send your booking by WhatsApp.' : 'Toca el botón para enviar tu reserva por WhatsApp.')
+              : tbdConfirm
+                ? (lang === 'en' ? "If WhatsApp didn't open, tap the button to arrange your time." : 'Si WhatsApp no se abrió, toca el botón para coordinar tu hora.')
+                : (lang === 'en' ? 'Any question or issue? Message us on WhatsApp.' : '¿Tienes alguna pregunta o algún inconveniente? Escríbenos por WhatsApp.')}
+          </p>
+          {waHref && (
+            <a
+              href={waHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => fireWhatsAppEvents()}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#25D366', color: '#031f0f', fontWeight: 600, fontSize: 14, padding: '14px 28px', borderRadius: 4, textDecoration: 'none', marginBottom: 24, boxSizing: 'border-box', width: '100%' }}
+            >
+              <WhatsAppGlyph size={20} />
+              {lang === 'en' ? 'Message us on WhatsApp' : 'Escribir por WhatsApp'}
+            </a>
+          )}
+          <button onClick={() => { setConfirmed(false); setSaveFailed(false); setWaHref(''); waEventsFiredRef.current = false; setStep('category'); setCategory(null); setService(null); setSelDay(null); setSelTime(null); setForm({ name: '', phone: '', notes: '' }) }}
             style={{ background: 'transparent', border: `1px solid ${C.cardBrd}`, color: C.sec, padding: '12px 28px', cursor: 'pointer', fontSize: 13, borderRadius: 4 }}>
             {lang === 'en' ? 'Make another booking' : 'Hacer otra reserva'}
           </button>

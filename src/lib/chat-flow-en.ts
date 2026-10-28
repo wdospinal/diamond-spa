@@ -817,6 +817,6 @@ export const RES = {
   distinctIntro: "Let's start with person 1: which service and for how long?",
   distinctSecond: 'Now person 2: which service and for how long?',
   togetherNote: 'We want you to be together: reception checks that two therapists are free at that time and confirms with you.',
-  doneHelp: 'We opened WhatsApp with your details already written; send them and reception will confirm availability.',
+  doneHelp: "Please arrive about 5 minutes before your appointment. If you need to cancel or can't make it, let us know in advance.\n\nIf you have any questions or run into any issue, message us on WhatsApp.",
   advisorDone: (name: string) => `${name ? `Done, ${name}. ` : 'Done. '}We opened WhatsApp so you can talk to reception.`,
 }

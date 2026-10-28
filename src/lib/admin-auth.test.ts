@@ -110,12 +110,13 @@ test('legacy rows map is_superadmin to superadmin and everything else to recepci
   assert.equal(roleFromLegacy('ads_manager', true), 'ads_manager')
 })
 
-test('superadmin can open every section; reception only sees the agenda', () => {
+test('superadmin can open every section; reception only sees the agenda and the client list', () => {
   const sections = Object.keys(SECTION_ROLES) as AdminSection[]
   for (const s of sections) assert.equal(canAccessSection('superadmin', s), true, s)
 
   const reception = sections.filter(s => canAccessSection('recepcionista', s))
-  assert.deepEqual(reception.sort(), ['/admin', '/admin/bookings'])
+  // Reception completes the client data (phone, visits) so LTV can be measured; amounts stay hidden from that role.
+  assert.deepEqual(reception.sort(), ['/admin', '/admin/bookings', '/admin/clientes'])
 })
 
 test('cash and Bold reports stay superadmin-only', () => {
