@@ -78,6 +78,12 @@ export const THERAPISTS: BilingualTherapist[] = [
     en: { role: 'Cosmetologist & Massage Therapist', years: '3+ years experience', specialty: 'Dedicated to genuine wellness in every session, professional training' },
     es: { role: 'Cosmetóloga & Masajista', years: '3+ años de experiencia', specialty: 'Dedicada al bienestar real en cada sesión, formación profesional' },
   },
+  {
+    id: 'vanesa-rodriguez',
+    name: 'Vanesa',
+    en: { role: 'Cosmetologist & Massage Therapist', years: 'Certified', specialty: 'Focused on your overall wellbeing, with certified professional training' },
+    es: { role: 'Cosmetóloga & Masajista', years: 'Certificada', specialty: 'Enfocada en tu bienestar integral, con formación profesional certificada' },
+  },
 ]
 
 /** Trust highlights on the Home page ("The International Standard" section). */

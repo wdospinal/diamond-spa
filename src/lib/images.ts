@@ -81,6 +81,7 @@ export const IMG_THERAPISTS = [
   '/therapists/ana-maria.avif',  // Ana Maria
   '/therapists/sheyla-tinoco.avif',  // Sheyla Tinoco
   '/therapists/saira-bedoya.avif',  // Saira Bedoya
+  '/therapists/vanesa-rodriguez.avif',  // Vanesa Rodríguez Restrepo
 ]
 
 // WebP fallbacks for therapist <picture> elements
@@ -90,4 +91,5 @@ export const IMG_THERAPISTS_WEBP = [
   '/therapists/ana-maria.webp',
   '/therapists/sheyla-tinoco.webp',
   '/therapists/saira-bedoya.webp',
+  '/therapists/vanesa-rodriguez.webp',
 ]
