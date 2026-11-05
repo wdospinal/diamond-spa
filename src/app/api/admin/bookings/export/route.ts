@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import { createHash } from 'crypto'
 import { readBookings } from '@/lib/bookings-store'
 import { adminCookieName, verifySessionToken } from '@/lib/admin-session'
+import { feedConversionTimes } from '@/lib/ads-feed-time'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -13,7 +14,6 @@ export const dynamic = 'force-dynamic'
 // ?conv_name_qualified=...&conv_name_converted=... only if you rename them.
 const DEFAULT_CONV_QUALIFIED = 'Lead Cualificado'
 const DEFAULT_CONV_CONVERTED = 'Reserva Confirmada Offline'
-const BOGOTA_OFFSET = '-0500' // America/Bogota is UTC-5 year-round
 
 // ─── Enhanced Conversions for Leads: normalize + SHA-256 hash ──────────────────
 // Google requires email/phone to be hashed (hex SHA-256) before upload, never
@@ -52,16 +52,6 @@ function csvEscape(value: string): string {
     return `"${value.replace(/"/g, '""')}"`
   }
   return value
-}
-
-function formatConversionTime(isoDate: string): string {
-  const d = new Date(isoDate)
-  if (isNaN(d.getTime())) return ''
-  const pad = (n: number) => String(n).padStart(2, '0')
-  return (
-    `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ` +
-    `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())} ${BOGOTA_OFFSET}`
-  )
 }
 
 function normalizeE164(phone: string): string {
@@ -155,6 +145,9 @@ export async function handleExport(req: NextRequest, explicitType?: string) {
   }
 
   const exportRows: ExportRow[] = []
+  // Una sola referencia de "ahora" para todo el archivo: así ninguna fila con
+  // hora futura se recorta distinto a otra dentro del mismo feed.
+  const feedNow = new Date()
 
   for (const b of allBookings) {
     const hasGclid = Boolean(b.gclid && b.gclid.trim())
@@ -165,7 +158,10 @@ export async function handleExport(req: NextRequest, explicitType?: string) {
     }
 
     const phoneE164 = b.phone ? normalizeE164(b.phone) : ''
-    const convTime = formatConversionTime(b.scheduledAt || b.createdAt)
+    // Reservas nuevas: hora de Bogotá, calificado = creación (señal temprana),
+    // confirmada = cita. Reservas creadas antes del corte conservan EXACTAMENTE
+    // el formato anterior (Google ya las importó; ver ads-feed-time.ts).
+    const { qualified: qualifiedTime, converted: convertedTime } = feedConversionTimes(b, feedNow)
     const emailRaw = b.email ? b.email.trim().toLowerCase() : ''
     const gclid = b.gclid?.trim() || ''
 
@@ -196,7 +192,7 @@ export async function handleExport(req: NextRequest, explicitType?: string) {
       exportRows.push({
         gclid,
         conversionName: convNameQualified,
-        conversionTime: convTime,
+        conversionTime: qualifiedTime,
         conversionValue: '0',
         conversionCurrency: 'COP',
         phoneNumber: phoneHashed,
@@ -212,7 +208,7 @@ export async function handleExport(req: NextRequest, explicitType?: string) {
       exportRows.push({
         gclid,
         conversionName: convNameConverted,
-        conversionTime: convTime,
+        conversionTime: convertedTime,
         conversionValue: String(b.priceCop || 0),
         conversionCurrency: 'COP',
         phoneNumber: phoneHashed,
