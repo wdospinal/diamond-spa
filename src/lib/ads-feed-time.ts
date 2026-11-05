@@ -75,8 +75,9 @@ export function convertedConversionTime(b: BookingTimes, now: Date = new Date())
 
 // ─── Congelar lo que Google ya recibió ──────────────────────────────────────
 //
-// Data Manager relee el archivo completo cada día (10:44 hora de Bogotá) y
-// evita duplicados por Transaction ID. Lo que NO está garantizado es qué hace
+// Data Manager relee el archivo completo cada día (converted.csv a las 10:44
+// hora de Bogotá, qualified.csv de madrugada, ~03:29) y evita duplicados por
+// Transaction ID. Lo que NO está garantizado es qué hace
 // Google si una fila con un Transaction ID ya importado llega con OTRA hora.
 // Para no averiguarlo en producción, las reservas creadas antes del arreglo
 // siguen saliendo EXACTAMENTE igual que antes (hora UTC con etiqueta -0500,
@@ -87,9 +88,16 @@ export function convertedConversionTime(b: BookingTimes, now: Date = new Date())
  * Reservas creadas ANTES de este instante conservan el formato anterior.
  *
  * Debe ser mayor o igual a la hora de la última corrida de Data Manager que
- * ocurra antes de desplegar este cambio (corre a diario a las 10:44 de
- * Bogotá = 15:44 UTC). Si el despliegue se atrasa más allá de esa corrida,
- * hay que subir este valor a la hora de esa corrida (+1 minuto).
+ * ocurra antes de desplegar este cambio, de CUALQUIERA de las dos conexiones.
+ * Si el despliegue se atrasa más allá de una corrida, hay que subir este valor
+ * a la hora de esa corrida (+1 minuto).
+ *
+ * Verificado en Data Manager el 5-nov-2026 antes del despliegue:
+ *  - converted.csv: corre a las 10:44 de Bogotá; la última fue el 5-nov a las
+ *    10:44 (= 15:44 UTC).
+ *  - qualified.csv: corre entre las 03:00 y las 04:00 de Bogotá; la última fue
+ *    el 5-nov a las 04:20 (= 09:20 UTC).
+ * El corte de abajo (15:45 UTC) es mayor que las dos.
  */
 export const ADS_FEED_TIME_FIX_FROM = '2026-11-05T15:45:00.000Z'
 
