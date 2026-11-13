@@ -5,7 +5,7 @@ import { ServiceDetailTracker } from '@/components/ServiceDetailTracker'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { formatCop, getServiceById, serviceShortDesc, type DurationMinutes, type ServiceDef } from '@/lib/services'
 import { DURATION_MINUTES } from '@/lib/constants'
-import { BASE_URL, X_DEFAULT_LOCALE, buildOpenGraph, BUSINESS, faqJsonLd } from '@/lib/seo'
+import { BASE_URL, X_DEFAULT_LOCALE, buildOpenGraph, businessRef, faqJsonLd } from '@/lib/seo'
 import { serviceFaqs } from '@/lib/service-seo'
 import { MASAJES_TYPE_SEO, getMasajeTypeBySlug, slugForMasajeType } from '@/lib/masajes-category'
 import { JsonLd } from '@/components/JsonLd'
@@ -101,7 +101,7 @@ export default async function MasajeTipoPage({
     '@type': 'Service',
     name,
     description,
-    provider: { '@type': 'HealthAndBeautyBusiness', name: BUSINESS.name, url: BUSINESS.url },
+    provider: businessRef(),
     areaServed: { '@type': 'City', name: 'Medellín', addressCountry: 'CO' },
     offers: { '@type': 'Offer', priceCurrency: 'COP', price: servicePrice, availability: 'https://schema.org/InStock' },
   }

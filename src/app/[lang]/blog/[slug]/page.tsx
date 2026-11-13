@@ -3,9 +3,9 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { readPublishedPosts, getPostBySlugForLocale, blogPostUrl, blogPostLanguages } from '@/lib/blog-store'
-import { BASE_URL, withBrand } from '@/lib/seo'
+import { BASE_URL, businessRef, withBrand } from '@/lib/seo'
 import { canonicalizeServiceLinks } from '@/lib/routes'
-import { SPA_NAME_FULL, SPA_LOGO } from '@/lib/spa'
+import { SPA_NAME_FULL } from '@/lib/spa'
 
 export const dynamic = 'force-dynamic'
 
@@ -104,11 +104,7 @@ export default async function BlogPostPage({
     dateModified: post.publishedAt,
     image: { '@type': 'ImageObject', url: image, width: 1200, height: 630 },
     author: { '@type': 'Person', name: post.authorName },
-    publisher: {
-      '@type': 'Organization',
-      name: SPA_NAME_FULL,
-      logo: { '@type': 'ImageObject', url: SPA_LOGO },
-    },
+    publisher: businessRef({ logo: true }),
     mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
   }
 

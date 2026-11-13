@@ -144,6 +144,22 @@ export const BUSINESS = {
 /** Stable entity id: every page's DaySpa node resolves to the same business. */
 export const BUSINESS_ID = `${BASE_URL}/#business`
 
+/**
+ * Reference to the business from another node (an article's publisher, a
+ * service's provider). The `@id` ties it to the DaySpa node the home and
+ * landing pages declare, so Google reads one entity instead of an anonymous
+ * Organization per page.
+ */
+export function businessRef(opts: { logo?: boolean } = {}) {
+  return {
+    '@type': 'DaySpa',
+    '@id': BUSINESS_ID,
+    name: BUSINESS.name,
+    url: BUSINESS.url,
+    ...(opts.logo ? { logo: { '@type': 'ImageObject', url: `${BASE_URL}/logo.webp` } } : {}),
+  }
+}
+
 interface LocalBusinessOptions {
   /** Live rating (Google Places). Defaults to the committed snapshot. */
   rating?: { value: string; count: number }

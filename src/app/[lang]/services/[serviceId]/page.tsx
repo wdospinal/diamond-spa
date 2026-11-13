@@ -7,7 +7,7 @@ import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { SERVICES, formatCop, getServiceBySlug, getServiceByForeignSlug, getServiceSlug, type DurationMinutes, type ServiceDef } from '@/lib/services'
 import { serviceHref } from '@/lib/routes'
 import { DURATION_MINUTES } from '@/lib/constants'
-import { buildServiceAlternates, buildOpenGraph, BASE_URL, BUSINESS, faqJsonLd } from '@/lib/seo'
+import { buildServiceAlternates, buildOpenGraph, BASE_URL, businessRef, faqJsonLd } from '@/lib/seo'
 import { HAIR_REMOVAL_METHODS, serviceCategoryHub, serviceFaqs, serviceH1, serviceSeoDescription, serviceSeoTitle } from '@/lib/service-seo'
 import { JsonLd } from '@/components/JsonLd'
 import { FaqSection } from '@/components/FaqSection'
@@ -120,11 +120,7 @@ export default async function ServiceDetailPage({
     description,
     url: `${BASE_URL}/${locale}/services/${slug}`,
     serviceType: locale === 'en' ? service.category.en : service.category.es,
-    provider: {
-      '@type': 'HealthAndBeautyBusiness',
-      name: BUSINESS.name,
-      url: BUSINESS.url,
-    },
+    provider: businessRef(),
     areaServed: {
       '@type': 'City',
       name: 'Medellín',
