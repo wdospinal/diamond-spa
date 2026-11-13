@@ -5,7 +5,9 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { IMG_HERO_LOCATION } from '@/lib/images'
-import { buildAlternates, buildOpenGraph, localBusinessJsonLd } from '@/lib/seo'
+import { buildAlternates, buildOpenGraph, faqJsonLd, localBusinessJsonLd } from '@/lib/seo'
+import { getFaqCategories, getFaqItems } from '@/lib/faqs'
+import { FaqSection } from '@/components/FaqSection'
 import { ReviewsSection } from '@/components/ReviewsSection'
 import { JsonLd } from '@/components/JsonLd'
 import { LocationSection } from '@/components/LocationSection'
@@ -41,6 +43,7 @@ export default async function LocationPage({ params }: { params: Promise<{ lang:
   return (
     <>
       <JsonLd data={localBusinessJsonLd(locale)} />
+      <JsonLd data={faqJsonLd(getFaqItems(locale, ['location']))} />
       <SemTracker />
       {/* HERO */}
       <header className="relative pt-12 md:pt-16 pb-20 px-6 md:px-12 overflow-hidden">
@@ -133,6 +136,15 @@ export default async function LocationPage({ params }: { params: Promise<{ lang:
           </div>
         </div>
       </section>
+
+      {/* LOCATION FAQ — parking, airport taxi, walking from Parque Lleras, hotels.
+          The page was ~150 words of address and hours; these answers already
+          lived in faqs.ts but weren't shown here. */}
+      <FaqSection
+        categories={getFaqCategories(locale, ['location'])}
+        title={locale === 'en' ? 'Getting to Diamond Spa: common questions' : 'Cómo llegar a Diamond Spa: preguntas frecuentes'}
+        className="py-24 px-6 md:px-12 bg-surface-container-low"
+      />
 
       {/* CTA */}
       <section className="py-40 px-6 md:px-12 bg-surface-container-lowest text-center">
