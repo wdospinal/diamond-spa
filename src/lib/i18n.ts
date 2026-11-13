@@ -86,7 +86,7 @@ export const THERAPISTS: BilingualTherapist[] = [
   },
 ]
 
-/** Trust highlights on the Home page ("The International Standard" section). */
+/** Trust highlights on the Home and About pages ("How we work" section). */
 const FEATURES: BilingualPillar[] = [
   {
     icon: 'language',
@@ -100,8 +100,10 @@ const FEATURES: BilingualPillar[] = [
   },
   {
     icon: 'verified_user',
-    en: { title: 'Professional Rigor', body: 'Each therapist is trained in high-end hospitality and precision bodywork protocols.' },
-    es: { title: 'Rigor Profesional', body: 'En Diamond, tu bienestar está en manos de cosmetólogas certificadas y masoterapeutas expertas. Disfruta de una atención de alto nivel y resultados garantizados en el mejor sector de El Poblado."' },
+    // No outcome guarantees: a massage or facial can't promise results, and an
+    // unbacked "resultados garantizados" is the kind of claim that costs trust.
+    en: { title: 'Professional Rigor', body: 'At Diamond you are cared for by certified cosmetologists and massage therapists, in a private room, with fresh linen and a biosafety protocol between every guest.' },
+    es: { title: 'Rigor Profesional', body: 'En Diamond te atienden cosmetólogas y masajistas certificadas, en cabina privada, con lencería limpia y protocolo de bioseguridad entre cada cliente.' },
   },
 ]
 
@@ -147,7 +149,7 @@ const dict = {
       facialBody: 'High-performance skin rejuvenation. Addressing irritation from shaving, urban pollutants, and fatigue through medical-grade formulas.',
       relaxTitle: 'Sensitive Massage',
       relaxBody: 'A mental reset designed to lower cortisol levels and induce profound relaxation. Perfect for decompressing after high-stakes environments.',
-      standardTitle: 'The International Standard',
+      standardTitle: 'How we work',
       features: mapPillars(FEATURES, 'en'),
       quote: 'Regular therapeutic care is one of the most powerful things you can do for your body and mind.',
       quoteSource: 'Diamond Spa Guests',
@@ -202,11 +204,11 @@ const dict = {
       heroBody: 'Our philosophy is precision in wellness. We design an environment of silence and exclusivity to restore the mind and body of those who demand the best in every detail.',
       quietTitle: 'Quiet Confidence',
       quietBody: 'A space defined not by what it adds, but by what it removes: distraction, urgency, and noise.',
-      heritageLabel: 'Established Heritage',
-      heritageTitle: ['Diamond: The Standard of Renewal for the', 'Modern Lifestyle'],
-      heritageBody1: 'High-level recovery arrives in El Poblado. At Diamond, wellness is a science and exclusivity our promise. An impeccable oasis of relaxation for those who seek real results and wholly dedicated attention.',
+      heritageLabel: 'Our space',
+      heritageTitle: ['Diamond: a boutique spa in', 'El Poblado, Medellín'],
+      heritageBody1: 'We opened in El Poblado in 2026 with a simple idea: massages, facials and waxing done by specialists, in private rooms and without rushing.',
       heritageBody2: 'Designed with care to welcome you: that is every space at Diamond. More than a spa, we are your return to balance and calm through dedicated attention and an environment of total exclusivity.',
-      standardTitle: 'The International Standard',
+      standardTitle: 'How we work',
       pillars: mapPillars(FEATURES, 'en'),
       teamLabel: 'Our Specialists',
       teamTitle: ['Talent ', 'Diamond.'],
@@ -469,7 +471,7 @@ const dict = {
       facialBody: 'Rejuvenecimiento de piel de alto rendimiento. Trata la irritación, contaminantes urbanos y fatiga mediante fórmulas de grado médico.',
       relaxTitle: 'Masaje Sensitivo',
       relaxBody: 'Masaje de cuerpo completo con movimientos suaves y lentos para soltar la tensión. Ideal para liberar el estrés, promover la calma y disfrutar de un momento de bienestar en un ambiente tranquilo y privado.',
-      standardTitle: 'El Estándar Internacional',
+      standardTitle: 'Cómo trabajamos',
       features: mapPillars(FEATURES, 'es'),
       quote: 'El cuidado terapéutico regular es una de las mejores cosas que puedes hacer por tu cuerpo y mente.',
       quoteSource: 'Huésped Diamond Spa',
@@ -521,11 +523,11 @@ const dict = {
       heroBody: 'Nuestra filosofía es la precisión en el bienestar. Diseñamos un entorno de silencio y exclusividad para restaurar la mente y el cuerpo de quienes exigen lo mejor en cada detalle.',
       quietTitle: 'Confianza Serena',
       quietBody: 'Un espacio definido no por lo que agrega, sino por lo que elimina: distracciones, urgencia y ruido.',
-      heritageLabel: 'Herencia Establecida',
-      heritageTitle: ['Diamond: El Estándar de Renovación para el Estilo de', 'Vida Moderno'],
-      heritageBody1: 'La recuperación de alto nivel llega a El Poblado. En Diamond, el bienestar es una ciencia y la exclusividad nuestra promesa. Un oasis de relajación impecable para quienes buscan resultados reales y una atención totalmente dedicada.',
+      heritageLabel: 'Nuestro espacio',
+      heritageTitle: ['Diamond: un spa boutique en', 'El Poblado, Medellín'],
+      heritageBody1: 'Abrimos en El Poblado en 2026 con una idea simple: masajes, faciales y depilación hechos por especialistas, en cabinas privadas y sin prisa.',
       heritageBody2: 'Pensado desde el amor para recibirte: así es cada espacio en Diamond. Más que un spa, somos tu regreso al equilibrio y la calma a través de una atención dedicada y un entorno de exclusividad total.',
-      standardTitle: 'El Estándar Internacional',
+      standardTitle: 'Cómo trabajamos',
       pillars: mapPillars(FEATURES, 'es'),
       teamLabel: 'Nuestros Especialistas',
       teamTitle: ['Talento ', 'Diamond.'],
