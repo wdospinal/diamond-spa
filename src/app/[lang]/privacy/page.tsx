@@ -26,5 +26,5 @@ export default async function PrivacyPage({ params }: { params: Promise<{ lang: 
   if (!isLocale(lang)) notFound()
   const locale = lang as Locale
   const t = getDict(locale).legal.privacy
-  return <LegalArticle title={t.title} paragraphs={t.body} />
+  return <LegalArticle title={t.title} paragraphs={t.body} updated={t.updated} />
 }

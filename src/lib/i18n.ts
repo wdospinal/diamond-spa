@@ -7,6 +7,7 @@ import {
   SPA_ADDRESS,
   SPA_PHONES,
   SPA_RATING,
+  SPA_EMAIL,
 } from './spa'
 
 import type { Locale } from './constants/locale'
@@ -296,15 +297,34 @@ const dict = {
     legal: {
       privacy: {
         metaTitle: 'Privacy Policy — Diamond Spa Medellín',
-        metaDesc: 'How Diamond Spa collects, uses, and protects your personal information.',
-        title: 'Privacy Policy',
+        metaDesc: 'How Diamond Spa collects, uses and protects your personal data under Colombian Law 1581 of 2012.',
+        title: 'Privacy and Personal Data Policy',
+        updated: 'Last updated: November 12, 2026',
+        // Structure follows Law 1581 of 2012 and Decree 1377 of 2013 (art. 13):
+        // controller, purposes, rights, procedure and effective date.
         body: [
-          'Diamond Spa ("we", "us") respects your privacy. This policy describes how we handle information when you visit our website, make a reservation, or contact us.',
-          'We may collect information you provide directly, such as name, email, phone number, and booking preferences, solely to confirm appointments, communicate about your visit, and improve our service.',
-          'We do not sell your personal data. We may share limited information with service providers who assist us (for example, hosting or messaging) under strict confidentiality obligations.',
-          'You may request access, correction, or deletion of your personal data where applicable by contacting us at the email shown in the footer.',
-          'We may update this policy from time to time. Continued use of our services after changes constitutes acceptance of the revised policy.',
-          'We retain your personal data for up to 24 months after your last interaction with us, after which it is securely deleted unless a longer retention period is required by applicable law.',
+          `This policy explains how Diamond Spa handles the personal data of the people who visit our website, book an appointment or contact us, in line with Colombian Law 1581 of 2012 and Decree 1377 of 2013.`,
+          '## Data controller',
+          `Diamond Spa, ${SPA_ADDRESS.full}, Colombia. Email: ${SPA_EMAIL}. Phone and WhatsApp: ${SPA_PHONES[1].display}.`,
+          '## What data we collect',
+          'When you book: your name, phone number, email (optional), the service, date and time you choose, and any notes you add. When you write to us on WhatsApp or by email: the contents of the conversation. When you browse the site: technical data such as pages visited, device, approximate location and cookies (see below).',
+          'We do not ask for sensitive data. If you choose to tell us about a health condition, pregnancy or allergy so we can adapt your session, we use it only for that purpose, with your express consent, and you are never required to share it.',
+          '## What we use it for',
+          'To confirm, remind you of and manage your appointments; to answer your questions; to take payments; to improve our website and services; to measure our advertising campaigns; and, only if you agree, to send you offers. We do not sell your data.',
+          '## Who we share it with',
+          'Providers that help us run the service, under confidentiality and only for the purposes above: Vercel (website hosting and visit statistics), Supabase (booking database), Google (Tag Manager, Analytics and Google Ads; for ad measurement we send your email and phone only as an irreversible SHA-256 hash), Microsoft Clarity (recordings of how the site is used, with what you type in forms hidden), Resend (booking emails), Twilio (internal booking notifications), Meta (WhatsApp) and Bold (card payments). Some of these providers store data outside Colombia, mainly in the United States; we only work with providers that offer adequate protection.',
+          '## Cookies',
+          'We use cookies and similar technologies to measure visits, understand how the site is used and measure our ads. You can block or delete them in your browser settings; the site will keep working, though some measurements may not.',
+          '## Your rights',
+          'As the data subject you can: know, update and correct your data; request proof of the authorization you gave us; be told how we have used your data; revoke the authorization or ask us to delete your data when there is no legal or contractual duty to keep it; access your data free of charge; and file a complaint with the Superintendencia de Industria y Comercio (SIC) once you have contacted us first.',
+          '## How to exercise them',
+          `Write to ${SPA_EMAIL} with your name, the phone or email you used with us, and your request. We answer queries within 10 business days (extendable by 5) and claims within 15 business days (extendable by 8), as set out in articles 14 and 15 of Law 1581 of 2012.`,
+          '## How long we keep it',
+          'We keep your data for up to 24 months after your last interaction with us and then delete it securely, unless the law requires us to keep it longer (for example, payment and invoicing records).',
+          '## Minors',
+          'Our services are for adults. We do not knowingly collect data from children under 18; if a guardian books on their behalf, the guardian provides and authorizes the data.',
+          '## Changes',
+          'If this policy changes in a substantial way, we will publish the new version here with its date. This version is effective from November 12, 2026.',
         ],
       },
       terms: {
@@ -615,15 +635,34 @@ const dict = {
     legal: {
       privacy: {
         metaTitle: 'Política de Privacidad — Diamond Spa Medellín',
-        metaDesc: 'Cómo Diamond Spa recopila, usa y protege tu información personal.',
-        title: 'Política de Privacidad',
+        metaDesc: 'Cómo Diamond Spa recopila, usa y protege tus datos personales según la Ley 1581 de 2012.',
+        title: 'Política de Privacidad y Tratamiento de Datos Personales',
+        updated: 'Última actualización: 12 de noviembre de 2026',
+        // Estructura según la Ley 1581 de 2012 y el Decreto 1377 de 2013 (art. 13):
+        // responsable, finalidades, derechos, procedimiento y vigencia.
         body: [
-          'Diamond Spa («nosotros») respeta tu privacidad. Esta política describe cómo tratamos la información cuando visitas nuestro sitio, reservas o nos contactas.',
-          'Podemos recopilar datos que nos proporcionas directamente, como nombre, correo, teléfono y preferencias de reserva, únicamente para confirmar citas, comunicarnos sobre tu visita y mejorar el servicio.',
-          'No vendemos tus datos personales. Podemos compartir información limitada con proveedores que nos apoyan (por ejemplo, alojamiento o mensajería) bajo obligaciones estrictas de confidencialidad.',
-          'Puedes solicitar acceso, rectificación o eliminación de tus datos cuando corresponda, escribiéndonos al correo indicado en el pie de página.',
-          'Podemos actualizar esta política ocasionalmente. El uso continuado de nuestros servicios tras los cambios implica la aceptación de la política revisada.',
-          'Conservamos tus datos personales por hasta 24 meses desde tu última interacción, tras lo cual son eliminados de forma segura, salvo que la ley aplicable exija un período mayor.',
+          `Esta política explica cómo Diamond Spa trata los datos personales de quienes visitan nuestro sitio web, reservan una cita o nos contactan, de acuerdo con la Ley 1581 de 2012 y el Decreto 1377 de 2013.`,
+          '## Responsable del tratamiento',
+          `Diamond Spa, ${SPA_ADDRESS.full}, Colombia. Correo: ${SPA_EMAIL}. Teléfono y WhatsApp: ${SPA_PHONES[1].display}.`,
+          '## Qué datos recopilamos',
+          'Al reservar: tu nombre, teléfono, correo (opcional), el servicio, la fecha y la hora que eliges y las notas que agregues. Al escribirnos por WhatsApp o correo: el contenido de la conversación. Al navegar el sitio: datos técnicos como páginas visitadas, dispositivo, ubicación aproximada y cookies (ver más abajo).',
+          'No te pedimos datos sensibles. Si decides contarnos sobre una condición de salud, un embarazo o una alergia para adaptar tu sesión, usamos esa información solo con ese fin, con tu autorización expresa, y nunca es obligatorio darla.',
+          '## Para qué los usamos',
+          'Para confirmar, recordarte y gestionar tus citas; responder tus preguntas; procesar pagos; mejorar nuestro sitio y servicios; medir nuestras campañas de publicidad; y, solo si lo autorizas, enviarte promociones. No vendemos tus datos.',
+          '## Con quién los compartimos',
+          'Con proveedores que nos ayudan a prestar el servicio, bajo confidencialidad y solo para las finalidades anteriores: Vercel (alojamiento del sitio y estadísticas de visitas), Supabase (base de datos de reservas), Google (Tag Manager, Analytics y Google Ads; para medir anuncios enviamos tu correo y teléfono solo cifrados con un hash SHA-256 irreversible), Microsoft Clarity (grabaciones de cómo se usa el sitio, que ocultan lo que escribes en los formularios), Resend (correos de reserva), Twilio (avisos internos de reservas), Meta (WhatsApp) y Bold (pagos con tarjeta). Algunos de estos proveedores guardan datos fuera de Colombia, principalmente en Estados Unidos; solo trabajamos con proveedores que ofrecen niveles adecuados de protección.',
+          '## Cookies',
+          'Usamos cookies y tecnologías similares para medir visitas, entender cómo se usa el sitio y medir nuestros anuncios. Puedes bloquearlas o borrarlas desde la configuración de tu navegador; el sitio seguirá funcionando, aunque algunas mediciones no.',
+          '## Tus derechos',
+          'Como titular puedes: conocer, actualizar y rectificar tus datos; pedir prueba de la autorización que nos diste; ser informado sobre el uso que les hemos dado; revocar la autorización o pedir que los eliminemos cuando no exista un deber legal o contractual de conservarlos; acceder a ellos gratis; y presentar quejas ante la Superintendencia de Industria y Comercio (SIC) después de haberte comunicado primero con nosotros.',
+          '## Cómo ejercerlos',
+          `Escríbenos a ${SPA_EMAIL} con tu nombre, el teléfono o correo con el que te comunicaste con nosotros y tu solicitud. Respondemos las consultas en un máximo de 10 días hábiles (prorrogables 5) y los reclamos en un máximo de 15 días hábiles (prorrogables 8), según los artículos 14 y 15 de la Ley 1581 de 2012.`,
+          '## Cuánto tiempo los conservamos',
+          'Conservamos tus datos hasta 24 meses después de tu última interacción con nosotros y luego los eliminamos de forma segura, salvo que la ley nos exija guardarlos más tiempo (por ejemplo, registros de pagos y facturación).',
+          '## Menores de edad',
+          'Nuestros servicios son para adultos. No recopilamos a sabiendas datos de menores de 18 años; si un acudiente reserva por un menor, es el acudiente quien entrega y autoriza los datos.',
+          '## Cambios',
+          'Si esta política cambia de forma sustancial, publicaremos aquí la nueva versión con su fecha. Esta versión rige desde el 12 de noviembre de 2026.',
         ],
       },
       terms: {
