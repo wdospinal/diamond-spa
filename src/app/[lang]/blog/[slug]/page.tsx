@@ -103,7 +103,12 @@ export default async function BlogPostPage({
     datePublished: post.publishedAt,
     dateModified: post.publishedAt,
     image: { '@type': 'ImageObject', url: image, width: 1200, height: 630 },
-    author: { '@type': 'Person', name: post.authorName },
+    // "Equipo Diamond Spa" / "Diamond Spa" is the business, not a person: marking
+    // it as a Person gave Google an author it can't resolve. A named author
+    // stays a Person who works for the business.
+    author: /diamond spa|^equipo\b/i.test(post.authorName)
+      ? businessRef()
+      : { '@type': 'Person', name: post.authorName, worksFor: businessRef() },
     publisher: businessRef({ logo: true }),
     mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
   }
