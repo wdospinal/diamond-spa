@@ -82,9 +82,13 @@ export const SPA_DIRECTIONS = {
     en: 'Parking is available in front of the premises and in the same block',
     es: 'Zona de parqueo disponible frente al local y en la misma cuadra parqueadero',
   },
+  // Road distance and time by car from Cra 43C #10-42. Olaya Herrera (EOH) is
+  // the domestic airport inside the city; José María Córdova (MDE) is the
+  // international one in Rionegro, via Las Palmas or the Túnel de Oriente.
+  // The old copy said "25 min from Olaya Herrera", which overstated a 4 km trip.
   airport: {
-    en: '25 min from Olaya Herrera Airport',
-    es: '25 min desde el Aeropuerto Olaya Herrera',
+    en: 'Olaya Herrera Airport (EOH): 4 km, 10–15 min · José María Córdova International (MDE): 35 km, 45–60 min',
+    es: 'Aeropuerto Olaya Herrera (EOH): 4 km, 10–15 min · Aeropuerto Internacional José María Córdova (MDE): 35 km, 45–60 min',
   },
 } as const
 

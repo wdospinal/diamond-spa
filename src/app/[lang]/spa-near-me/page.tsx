@@ -5,6 +5,7 @@ import { getDict, isLocale, type Locale } from '@/lib/i18n'
 import { buildAlternates, buildOpenGraph, BASE_URL, BUSINESS, localBusinessJsonLd, faqJsonLd } from '@/lib/seo'
 import {
   SPA_ADDRESS,
+  SPA_DIRECTIONS,
   SPA_HOURS,
   SPA_PHONES,
   SPA_RATING,
@@ -95,7 +96,7 @@ const FAQ_EN = [
   },
   {
     q: 'How far are you from the airport?',
-    a: 'We are approximately 25 minutes from Olaya Herrera Airport (EOH) and about 40 minutes from José María Córdova International Airport (MDE) depending on traffic.',
+    a: 'Olaya Herrera Airport (EOH) is about 4 km away, 10–15 minutes by car. José María Córdova International Airport (MDE) in Rionegro is about 35 km away, 45 minutes to an hour depending on traffic.',
   },
   {
     q: 'What is included in the four-hands massage?',
@@ -134,7 +135,7 @@ const FAQ_ES = [
   },
   {
     q: '¿A cuánto queda del aeropuerto?',
-    a: 'Estamos a aproximadamente 25 minutos del Aeropuerto Olaya Herrera (EOH) y a unos 40 minutos del Aeropuerto Internacional José María Córdova (MDE) según el tráfico.',
+    a: 'El Aeropuerto Olaya Herrera (EOH) queda a unos 4 km, entre 10 y 15 minutos en carro. El Aeropuerto Internacional José María Córdova (MDE), en Rionegro, queda a unos 35 km, entre 45 minutos y una hora según el tráfico.',
   },
   {
     q: '¿Qué incluye el masaje de cuatro manos?',
@@ -259,7 +260,7 @@ export default async function SpaNearMePage({ params }: { params: Promise<{ lang
                   <div>
                     <p className="font-label text-[10px] uppercase tracking-widest text-outline mb-1">{isEn ? 'From airport' : 'Desde el aeropuerto'}</p>
                     <p className="font-body text-on-surface text-sm">
-                      {isEn ? '25 min from Olaya Herrera Airport' : '25 min desde el Aeropuerto Olaya Herrera'}
+                      {SPA_DIRECTIONS.airport[isEn ? 'en' : 'es']}
                     </p>
                   </div>
                 </div>
