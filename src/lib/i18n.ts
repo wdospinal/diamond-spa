@@ -331,13 +331,14 @@ const dict = {
         metaTitle: 'Terms of Service — Diamond Spa Medellín',
         metaDesc: 'Terms and conditions for using Diamond Spa services and website.',
         title: 'Terms of Service',
+        updated: 'Last updated: November 12, 2026',
         body: [
           'By booking a session or using our website, you agree to these terms. Services are offered subject to availability and our confirmation.',
           'Our services are intended for adults aged 18 and over. Clients under 18 may only receive services with a parent or legal guardian present and their prior written consent.',
           'Arrival and cancellation policies apply as communicated at booking. Late arrivals may shorten session length so the next guest is not delayed.',
           'Payment terms, pricing, and any deposits are confirmed when you reserve. We reserve the right to refuse service where necessary for safety or conduct.',
           'Our website and materials are provided for information. We are not liable for indirect damages arising from use of the site except where prohibited by law.',
-          'These terms are governed by applicable law in Colombia. For questions, contact us using the details in the footer.',
+          'These terms are governed by applicable law in Colombia. For questions, contact us using the details in the footer. How we handle your personal data is described in our Privacy and Personal Data Policy.',
         ],
       },
       press: {
@@ -669,13 +670,14 @@ const dict = {
         metaTitle: 'Términos de Servicio — Diamond Spa Medellín',
         metaDesc: 'Términos y condiciones del uso de los servicios y el sitio web de Diamond Spa.',
         title: 'Términos de Servicio',
+        updated: 'Última actualización: 12 de noviembre de 2026',
         body: [
           'Al reservar una sesión o usar nuestro sitio aceptas estos términos. Los servicios se ofrecen sujeto a disponibilidad y a nuestra confirmación.',
           'Nuestros servicios están destinados a mayores de 18 años. Los menores de 18 años solo podrán recibir servicios con la presencia de un padre, madre o tutor legal y su consentimiento previo por escrito.',
           'Aplican políticas de llegada y cancelación según se indique al reservar. Las llegadas tardías pueden reducir la duración de la sesión para no afectar al siguiente cliente.',
           'Formas de pago, precios y depósitos se confirman al reservar. Nos reservamos el derecho de negar el servicio cuando sea necesario por seguridad o conducta.',
           'El sitio y los materiales se ofrecen con fines informativos. No nos hacemos responsables por daños indirectos derivados del uso del sitio salvo donde la ley lo prohíba.',
-          'Estos términos se rigen por la ley aplicable en Colombia. Para consultas, contáctanos con los datos del pie de página.',
+          'Estos términos se rigen por la ley aplicable en Colombia. Para consultas, contáctanos con los datos del pie de página. El tratamiento de tus datos personales se describe en nuestra Política de Privacidad y Tratamiento de Datos Personales.',
         ],
       },
       press: {

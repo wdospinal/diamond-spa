@@ -26,5 +26,5 @@ export default async function TermsPage({ params }: { params: Promise<{ lang: st
   if (!isLocale(lang)) notFound()
   const locale = lang as Locale
   const t = getDict(locale).legal.terms
-  return <LegalArticle title={t.title} paragraphs={t.body} />
+  return <LegalArticle title={t.title} paragraphs={t.body} updated={t.updated} />
 }
