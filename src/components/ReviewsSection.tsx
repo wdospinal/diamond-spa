@@ -8,7 +8,6 @@ import {
   SPA_PHONES,
 } from '@/lib/spa'
 import { getPlaceDetails } from '@/lib/google-places'
-import { STATIC_REVIEWS } from '@/lib/reviews'
 import { ReviewsGrid } from './ReviewsGrid'
 
 function GoogleLogo({ className = 'h-4 w-4' }: { className?: string }) {
@@ -68,12 +67,10 @@ export function ReviewsSection({ locale }: { locale: Locale }) {
   const place = getPlaceDetails()
   const t = getDict(locale).location
 
-  const apiReviews = place.reviews ?? []
-  const apiNames = new Set(apiReviews.map(r => r.authorAttribution.displayName.toLowerCase()))
-  const supplemental = STATIC_REVIEWS.filter(
-    r => !apiNames.has(r.authorAttribution.displayName.toLowerCase())
-  )
-  const allReviews = [...apiReviews, ...supplemental]
+  // Only real Google reviews. Hard-coded "supplemental" reviews with made-up
+  // names and generated avatars used to fill the grid; they couldn't be traced
+  // to a customer, which breaks Google's review policies and consumer law.
+  const allReviews = (place.reviews ?? [])
     .filter(r => r.text?.text && r.text.text.length > 50)
     .sort((a, b) => (b.text?.text?.length ?? 0) - (a.text?.text?.length ?? 0))
   const hasReviews = allReviews.length > 0

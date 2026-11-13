@@ -1,7 +1,6 @@
 'use client'
 
 import { getPlaceDetails } from '@/lib/google-places'
-import { STATIC_REVIEWS } from '@/lib/reviews'
 import { SPA_GOOGLE_REVIEW_URL } from '@/lib/spa'
 import Image from 'next/image'
 
@@ -40,8 +39,8 @@ export function LandingTestimonials({
   const place = getPlaceDetails()
   const apiReviews = place.reviews ?? []
   
-  // Combine API and static reviews, filter for good ones with text
-  const allReviews = [...apiReviews, ...STATIC_REVIEWS]
+  // Real Google reviews only (no hard-coded ones), filtered for good ones with text
+  const allReviews = apiReviews
     .filter(r => r.text?.text && r.text.text.length > 30 && r.rating >= 4)
     .sort((a, b) => (b.text?.text?.length ?? 0) - (a.text?.text?.length ?? 0))
     .slice(0, 3) // Take top 3 for the landing

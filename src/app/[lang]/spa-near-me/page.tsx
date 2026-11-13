@@ -17,7 +17,7 @@ import {
 } from '@/lib/spa'
 import { SERVICES, formatCop, type ServiceDef, type DurationMinutes } from '@/lib/services'
 import { serviceHref } from '@/lib/routes'
-import { STATIC_REVIEWS } from '@/lib/reviews'
+import { getPlaceDetails } from '@/lib/google-places'
 import { ReviewsGrid } from '@/components/ReviewsGrid'
 import MapEmbed from '@/components/MapEmbed'
 import { JsonLd } from '@/components/JsonLd'
@@ -394,7 +394,7 @@ export default async function SpaNearMePage({ params }: { params: Promise<{ lang
             </div>
           </div>
           <ReviewsGrid
-            reviews={STATIC_REVIEWS}
+            reviews={getPlaceDetails().reviews ?? []}
             reviewUrl={SPA_GOOGLE_REVIEW_URL}
             leaveReviewLabel={isEn ? 'Leave a review' : 'Dejar una reseña'}
             locale={locale}
