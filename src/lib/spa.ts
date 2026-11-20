@@ -115,7 +115,7 @@ export const SPA_HOURS = [
 
 // ─── SEO / URLs ───────────────────────────────────────────────────────────────
 
-export const SPA_RATING = { value: '4.9', count: 135 } as const
+export const SPA_RATING = { value: '4.9', count: 147 } as const
 
 export const SPA_BASE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ?? 'https://diamondspa.com.co'
