@@ -19,7 +19,7 @@ export type PlanItem = { serviceId: string; minutes?: 30 | 60 | 90 }
 /** Extras the spa confirmed it includes (Oct 2026). Don't add one we don't offer. */
 export type PlanExtra = 'welcome-drink' | 'aromatherapy' | 'music-therapy' | 'craniofacial' | 'reflexology' | 'wine'
 
-const EXTRA_LABELS: Record<PlanExtra, L> = {
+export const EXTRA_LABELS: Record<PlanExtra, L> = {
   'welcome-drink': { es: 'Bebida de bienvenida', en: 'Welcome drink' },
   aromatherapy: { es: 'Aromaterapia', en: 'Aromatherapy' },
   'music-therapy': { es: 'Musicoterapia', en: 'Music therapy' },
@@ -29,7 +29,7 @@ const EXTRA_LABELS: Record<PlanExtra, L> = {
 }
 
 /** Every special-date plan comes with these. */
-const BASE_EXTRAS: PlanExtra[] = ['welcome-drink', 'aromatherapy', 'music-therapy']
+export const BASE_EXTRAS: PlanExtra[] = ['welcome-drink', 'aromatherapy', 'music-therapy']
 
 export type SpecialDatePlan = {
   title: L
@@ -48,7 +48,7 @@ export type SpecialDatePlan = {
  * Session length of flat-priced services, as listed in service-content.ts.
  * A plan containing a service missing here shows no total time.
  */
-const FLAT_MINUTES: Partial<Record<string, number>> = {
+export const FLAT_MINUTES: Partial<Record<string, number>> = {
   hidrafacial: 90,
   'limpieza-facial-profunda': 60,
   'limpieza-facial-basica': 45,

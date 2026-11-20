@@ -1,3 +1,4 @@
+import { PLANS, planPath } from '@/lib/planes'
 import type { MetadataRoute } from 'next'
 import { BASE_URL, X_DEFAULT_LOCALE, specialDatesLanguages } from '@/lib/seo'
 import { SERVICES, getServiceById } from '@/lib/services'
@@ -36,6 +37,7 @@ const STATIC_PATHS: {
   { path: '/masajes-para-hombres',     priority: 0.9, changeFrequency: 'monthly' },
   { path: '/masajes-para-mujeres',     priority: 0.9, changeFrequency: 'monthly' },
   { path: '/masajes-a-domicilio',      priority: 0.9, changeFrequency: 'monthly' },
+  { path: '/planes',                   priority: 0.9, changeFrequency: 'monthly' },
   { path: '/depilacion-medellin',      priority: 0.9, changeFrequency: 'monthly' },
   { path: '/depilacion-hombres',       priority: 0.85, changeFrequency: 'monthly' },
   { path: '/depilacion-mujeres',       priority: 0.85, changeFrequency: 'monthly' },
@@ -177,6 +179,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
         alternates: { languages: specialDatesLanguages(d) },
         images: [`${BASE_URL}${specialDateImage(d).webp}`],
+      })
+    }
+
+    // Named plans (/planes/<slug>): same slug in both locales.
+    for (const plan of PLANS) {
+      const path = planPath(plan)
+      entries.push({
+        url: `${BASE_URL}/${locale}${path}`,
+        lastModified: DEPLOYED_AT,
+        changeFrequency: 'monthly',
+        priority: 0.8,
+        alternates: langAlternates(path),
       })
     }
 

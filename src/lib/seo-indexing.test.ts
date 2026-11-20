@@ -34,6 +34,7 @@ const { BASE_URL, X_DEFAULT_LOCALE } = await import('@/lib/seo')
 const { SERVICES, getServiceBySlug } = await import('@/lib/services')
 const { getMasajeTypeBySlug } = await import('@/lib/masajes-category')
 const { getSpecialDate } = await import('@/lib/special-dates')
+const { getPlan } = await import('@/lib/planes')
 const { serviceHref, getLocalizedPath, canonicalizeServiceLinks } = await import('@/lib/routes')
 const { readPublishedPosts, slugForLocale } = await import('@/lib/blog-store')
 
@@ -95,6 +96,7 @@ test('sitemap: every URL maps to a page that exists ("Not found (404)")', () => 
     else if (section === 'services' && slug) ok = !!getServiceBySlug(slug, lang)
     else if (section === 'masajes' && slug) ok = !!getMasajeTypeBySlug(slug, lang)
     else if ((section === 'fechas-especiales' || section === 'special-dates') && slug) ok = !!getSpecialDate(slug, lang)
+    else if (section === 'planes' && slug) ok = !!getPlan(slug)
     else if (section === 'blog' && slug) {
       ok = posts.some(p => p.locales.includes(lang) && slugForLocale(p, lang) === slug)
     } else ok = existsSync(join(LANG_DIR, ...rest, 'page.tsx'))

@@ -30,6 +30,7 @@ export const KNOWN_PAGES: KnownPage[] = [
   { path: '/masajes-para-hombres',   label: 'Masajes para Hombres',           category: 'landing' },
   { path: '/masajes-para-mujeres',   label: 'Masajes para Mujeres',           category: 'landing' },
   { path: '/masajes-a-domicilio',    label: 'Masajes a Domicilio',            category: 'landing' },
+  { path: '/planes',                 label: 'Planes de Spa',                  category: 'landing' },
   { path: '/depilacion-hombres',     label: 'Depilación para Hombres',       category: 'landing' },
   { path: '/depilacion-mujeres',     label: 'Depilación para Mujeres',       category: 'landing' },
   { path: '/dia-de-spa',             label: 'Día de Spa',                     category: 'landing' },
