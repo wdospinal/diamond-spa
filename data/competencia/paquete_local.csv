@@ -1,0 +1,42 @@
+keyword,posicion,negocio,anuncio,calificacion,resenas
+spa para hombres medellin,1,Eclat massage,True,4.9,117
+spa para hombres medellin,2,Diamond Spa For Men,False,4.9,147
+spa para hombres medellin,3,Spa For Men Prestige,False,4.9,229
+spa para hombres medellin,4,Des Spa (Provenza),False,5.0,108
+spa para hombres medellin,5,Black Spa,False,4.9,329
+spa para hombres medellin,6,Des Spa,False,4.9,102
+spa para hombres medellin,7,Enigma Spa By EM,False,4.8,366
+spa para hombres medellin,8,Om Spa For Men,False,4.3,138
+spa para hombres medellin,9,Sixth Sense Spa For Men,False,4.9,70
+spa para hombres medellin,10,DM Spa Medellin,False,4.6,55
+spa para hombres medellin,11,Blue Rose Spa,False,5.0,45
+spa medellin,1,Eclat massage,True,4.9,117
+spa medellin,2,Landmark Hotel,False,,
+spa medellin,3,Celestino Spa,False,4.9,522
+spa medellin,4,Aqualuna Spa Provenza,False,5.0,556
+spa medellin,5,Le Spa Noir,False,4.9,569
+spa medellin,6,Landmark Spa,False,5.0,190
+spa medellin,7,Joya Spa,False,4.8,307
+spa medellin,8,Aqualuna Spa Laureles,False,4.9,774
+spa medellin,9,Massage poblado S&H,False,5.0,359
+spa medellin,10,The Spa By Wellcomm,False,4.9,372
+masajes el poblado,1,Celestino Spa,False,4.9,522
+masajes el poblado,2,Eclat massage,True,4.9,117
+masajes el poblado,3,Massage poblado S&H,False,5.0,359
+masajes el poblado,4,Blue Rose Spa (El Poblado),False,4.7,118
+masajes el poblado,5,Blue Rose Spa,False,5.0,45
+masajes el poblado,6,Spa For Men Prestige,False,4.9,229
+masajes el poblado,7,Soul Spa,False,4.7,122
+masajes el poblado,8,Okuma Massage,False,4.9,459
+masajes el poblado,9,Enigma Spa By EM,False,4.8,366
+masajes el poblado,10,Viva Spa Poblado,False,4.6,379
+massage medellin,1,Massage poblado S&H,False,5.0,359
+massage medellin,2,Eclat massage,True,4.9,117
+massage medellin,3,Blue Rose Spa,False,5.0,45
+massage medellin,4,Spa For Men Prestige,False,4.9,229
+massage medellin,5,Haruka Massage Spa,False,,
+massage medellin,6,Blue Rose Spa (El Poblado),False,4.7,118
+massage medellin,7,Mobile Massage Medellin,False,,
+massage medellin,8,Bendito Masaje,False,,
+massage medellin,9,Enigma Spa By EM,False,4.8,366
+massage medellin,10,Okuma Massage,False,4.9,459

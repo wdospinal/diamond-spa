@@ -1,0 +1,26 @@
+{
+ "fecha": "2026-11-19",
+ "fuentes": "Social Blade (seguidores, tasa de interacción, likes y comentarios promedio) y perfiles públicos de Instagram y TikTok (vistas de los últimos 12 reels o videos).",
+ "instagram": [
+  {"marca": "Diamond Spa", "handle": "diamondmassagesmed", "seguidores": 2290, "posts": 101, "er_pct": 2.78, "likes_prom": 61.75, "coment_prom": 2, "sb_grade": "B+", "vistas_ult_reels": [2784, 180000, 633, 3352, 2711, 11000, 1869, 1063, 894, 2057, 14800, 1320]},
+  {"marca": "Aqualuna Spa", "handle": "aqualuna_spa", "seguidores": 28100, "posts": 483, "er_pct": 0.07, "likes_prom": 16.75, "coment_prom": 3.25, "vistas_ult_reels": [1023, 1677, 3998, 541, 576, 1164, 6826, 36500, 5814, 1754, 9342, 3392]},
+  {"marca": "Le Spa Noir", "handle": "lespanoircolombia", "seguidores": 17500, "posts": 401, "er_pct": 0.12, "likes_prom": 19.71, "coment_prom": 0.57, "vistas_ult_reels": [840, 1266, 4701, 2832, 1348, 780, 1338, 146000, 1756, 1551, 2145, 1855]},
+  {"marca": "Celestino Spa", "handle": "celestinohotelandspa", "seguidores": 16700, "posts": 468, "er_pct": 0.15, "likes_prom": 24.13, "coment_prom": 0.56, "sb_grade": "B+", "vistas_ult_reels": [251, 491, 632, 848, 803, 1115, 1377, 3920, 1008, 1099, 1043, 1178]},
+  {"marca": "Spa 5 Elementos", "handle": "5elementospa", "seguidores": 11400, "posts": 13, "er_pct": 0.12, "likes_prom": 13, "coment_prom": 0.4, "vistas_ult_reels": [856, 1904, 7876, 7565, 5115, 5752, 2373, 6724, 6975, 7875]},
+  {"marca": "Amatsu Spa", "handle": "amatsu_spa", "seguidores": 7973, "posts": 1582, "er_pct": 0.03, "likes_prom": 2.75, "coment_prom": 0, "vistas_ult_reels": [326, 811, 151, 151, 249, 447, 494, 157, 373, 232, 478, 252]},
+  {"marca": "Viva Spa", "handle": "vivaspamedellin", "seguidores": 5419, "posts": 193, "er_pct": 0.04, "likes_prom": 2.25, "coment_prom": 0.13, "vistas_ult_reels": [486, 635, 617, 708, 777, 490, 972, 624, 2633, 622, 1161, 706]},
+  {"marca": "Akzara Spa", "handle": "akzarawellnesscenter", "seguidores": 4071, "posts": 163, "er_pct": 0.23, "likes_prom": 9, "coment_prom": 0.33, "sb_grade": "B+", "vistas_ult_reels": [226, 271, 148, 454000, 31400, 109000, 4152, 221000, 1700000, 2483, 586, 630]},
+  {"marca": "DoSpa (para hombres)", "handle": "dospa_formen", "seguidores": 957, "posts": 26, "er_pct": 2.64, "likes_prom": 24.81, "coment_prom": 0.5, "vistas_ult_reels": [4608, 2398, 711, 2259, 1645, 1051, 2402, 915, 744, 1003, 2995, 4602]},
+  {"marca": "Des Spa (para hombres)", "handle": "desspa.masajes", "seguidores": 402, "posts": 32, "vistas_ult_reels": [22500, 4687, 4236, 3818, 4188, 4866]},
+  {"marca": "Urban Men Spa", "handle": "urbanmenspa", "seguidores": 307, "posts": 19, "vistas_ult_reels": [1619, 1210, 1343, 965, 2134, 1053, 2240, 663, 1652, 563, 1391]},
+  {"marca": "DM Spa (posible)", "handle": "dmmcol", "seguidores": 266, "posts": 10, "nota": "La web enlaza a instagram.com/publicidad.display (una agencia), no a su propia cuenta."},
+  {"marca": "Prestige (posible)", "handle": "prestige_spa_massage", "seguidores": 1213, "posts": 3, "vistas_ult_reels": [10400, 13000], "nota": "No se pudo confirmar que sea el mismo negocio."},
+  {"marca": "Om Spa For Men", "handle": "omspaformen", "seguidores": null, "nota": "La cuenta que enlaza su web ya no existe; no se encontró la actual."}
+ ],
+ "tiktok": [
+  {"marca": "Diamond Spa", "handle": "diamond.spa95", "seguidores": 233, "likes_totales": 2660, "vistas_ult_videos": [221400, 2755, 1617, 2809, 1411, 1407, 1274, 1318, 2038, 1287, 1113, 1135]},
+  {"marca": "Enigma Spa By EM", "handle": "enigmaspabyem", "seguidores": 26700, "likes_totales": 71200, "vistas_ult_videos": [527, 537, 250, 881, 3092, 469, 1681, 773, 2284, 656, 1914, 258]},
+  {"marca": "DoSpa (para hombres)", "handle": "dospaexclusivemen", "seguidores": 797, "likes_totales": 1476, "vistas_ult_videos": [859, 1041, 746, 1023, 676, 470, 3349, 472, 543, 417, 37900, 1736]},
+  {"marca": "Om Spa For Men", "handle": "masajesenmedellin", "seguidores": 239, "likes_totales": 534, "vistas_ult_videos": [184, 149, 708, 697, 660, 707, 662, 740, 542, 359, 452, 778]}
+ ]
+}
