@@ -311,3 +311,69 @@ Para cada keyword: la **mejor página** de cada sitio, **dónde** aparece la key
 5. **Reseñas** en Maps (meta: 300 o más) y **enlaces externos**.
 6. **Constancia en redes** (reels) aprovechando que ya tenemos la mejor interacción.
 7. **Membresías, despedidas y empresas**, si el negocio quiere esas líneas.
+
+---
+
+## 11. Sitemaps: qué publica cada competidor frente a nosotros
+
+**Captura:** 20 de noviembre de 2026. Sitemaps completos (índice + subsitemaps) de 13 sitios, 1.267 URLs.
+**Datos:** `sitemaps_competencia.csv` (cada URL con su fecha de actualización) y `sitemaps_clasificados.json` (URLs por tipo).
+**Sin sitemap o caídos:** Aqualuna (error 502), Le Spa Noir (no responde) y Cima Spa (sitemap vacío).
+
+### 11.1 Tamaño y tipo de páginas
+Las URLs se clasificaron por palabras de la dirección. Una URL puede caer en varios tipos, e «inglés» cuenta las versiones /en/.
+
+| Sitio | URLs | En inglés | Masajes | Días de spa / rituales | Hombres | Mujeres | Parejas | Ocasiones | Regalos | Membresías | Promos | Blog | Tienda |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Spa 5 Elementos | **312** | 156 | 64 | **84** | **30** | 48 | **56** | **38** | 16 | 3 | 4 | 0 | — |
+| Amatsu | 235 | 74 | 55 | 33 | 6 | 4 | 7 | 9 | 1 | 2 | 2 | **95 posts** | — |
+| Akzara | 192 | 96 | 40 | **86** | 2 | 4 | 10 | **24** | 0 | **8** | **8** | 8 | — |
+| **Diamond Spa** | **105** | 53 | 32 | 2 | 5 | 6 | 2 | 16 | 0 | 0 | 0 | 14 | — |
+| Viva Spa | 86 | 0 | 15 | 3 | 1 | 1 | 4 | 5 | 2 | 0 | 0 | 28 posts | — |
+| Ivy Wellness | 84 | 0 | 33 | 0 | 0 | 3 | 2 | 0 | 0 | 0 | 0 | **35** | — |
+| Spazio di Vita | 78 | 0 | 7 | 11 | 0 | 1 | 9 | **19** | 6 | 1 | 2 | 17 posts | 26 productos |
+| Genesis Massage | 57 | 0 | 11 | 6 | 2 | 0 | 1 | 1 | 0 | 0 | 0 | 14 posts | — |
+| Om Spa For Men | 49 | 0 | 16 | 4 | 4 | 0 | 0 | 2 | 3 | 0 | 2 | 6 posts | **26 productos** |
+| Celestino | 31 | ~15 | 8 | 2 | 0 | 0 | 2 | 0 | 2 | 2 | 1 | 0 | — |
+| DM Spa | 22 | 0 | 18 | 0 | 16 en títulos | 0 | 5 | 0 | 0 | 0 | 0 | 0 | 16 productos |
+| DoSpa | 13 | 0 | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | — |
+| Prestige | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | — |
+
+**En español tenemos unas 52 URLs:** 14 de servicios, 8 tipos de masaje, 8 fechas especiales, 7 artículos y unas 15 landings. Spa 5 Elementos tiene ~156 en español, Amatsu ~160 y Akzara ~96.
+
+### 11.2 Qué hace cada uno (según su sitemap)
+- **Spa 5 Elementos: un catálogo de planes.** Cada plan es una URL propia (`/medellin/5-dias-de-spa-para-parejas/52-always-together.htm`), separada por público: 30 URLs de hombres, 48 de mujeres y 56 de parejas. Tiene planes para amigas y grupos («spa super amigas», «brunch glow squad», «birthday besties ritual»), 6 fechas especiales, bonos de regalo, membresía y política de puntos.
+- **Akzara: rituales, ocasiones y promociones.** 86 URLs de rituales y paquetes; cumpleaños en 3 versiones (2 h, 3 h, luxury), despedida de soltera, bienestar corporativo, spa de amigas, mamá y papá. Además, 8 promociones (2x1, Cyber Week) y 8 membresías (Aqua 1 mes, Plata 3 meses). **Es el más activo:** actualizó 22 URLs en octubre.
+- **Amatsu: el blog como motor.** 95 artículos desde 2021, con varios nuevos cada mes. También cubre ocasiones desde el blog: «ideas de spa para despedida de soltera», «spa para amigas Medellín», «promociones del Día del Padre», «spa para hombres Medellín».
+- **Ivy Wellness: blog y bienestar.** 35 artículos, incluido «¿Buscas los 10 mejores spa de Medellín?». Amplía con sauna infrarrojo, baño de hielo, fisioterapia y quiropraxia. Actualizó 59 URLs en noviembre.
+- **Spazio di Vita: tienda por ocasión.** Productos como «spa para parejas Medellín», «spa para amigas», «spa familiar», «spa niños», «spa de cumpleaños», «despedida de soltera», «ritual navideño» y «bono regalo Día de la Madre».
+- **Om Spa For Men: tienda WooCommerce estática.** 26 productos (cada servicio y cada zona de depilación es un producto) y 6 artículos. Solo 3 URLs actualizadas en 2026: gana por antigüedad y por la marca, no por publicar.
+- **DM Spa: sitio nuevo, pero rankea.** Sus 22 URLs se publicaron el 1 de julio de 2026 y ya está #2–6 en hombres. **Esto confirma que la fórmula «[masaje] para Hombres en Medellín», junto con un dominio con la keyword, posiciona rápido aunque el sitio sea nuevo.**
+- **Celestino:** 31 URLs, todas actualizadas el 13 de noviembre (relanzamiento reciente). Cada página tiene su par en inglés.
+- **Viva Spa:** 28 artículos y un sitio desde 2016; su última tanda grande fue en mayo de 2026.
+- **Genesis Massage:** contenido tántrico y erótico, con páginas de plantilla olvidadas en el sitemap («sample-page», «portfolio»).
+
+### 11.3 Nuestro sitemap
+- Incluye todas nuestras páginas públicas, incluida `/masajes-a-domicilio`. Solo quedan fuera `/book`, `/press`, `/privacy` y `/terms`; de esas, `/press` podría entrar.
+- **Problema:** 93 de las 105 URLs llevan como `lastmod` la fecha del último deploy (`DEPLOYED_AT` en `src/app/sitemap.ts`). En cada despliegue le decimos a Google que todas las páginas cambiaron, y cuando eso pasa siempre, Google deja de confiar en la fecha. Lo correcto es poner la fecha real del último cambio del contenido de cada página. Solo los artículos lo hacen bien (usan `publishedAt`).
+
+### 11.4 Qué nos falta según los sitemaps
+| Tipo de página | Ellos | Nosotros |
+|---|---|---|
+| Planes o paquetes con URL propia | Spa 5 Elementos 84, Akzara 86, Spazio 11 | 1 (`/dia-de-spa`) |
+| Planes de parejas | Spa 5 Elementos 56, Akzara 10, Spazio 9 | 1 (`/masajes/duo`) |
+| Amigas, cumpleaños, despedidas, familia, empresas | Akzara, Spa 5 Elementos, Spazio, Amatsu (blog) | 0 |
+| Fechas especiales | Spa 5 Elementos, Akzara, Spazio | ✅ 8 (estamos bien) |
+| Membresías y puntos | Akzara 8, Spa 5 Elementos 3, Celestino | 0 |
+| Página de bonos o tarjetas de regalo | Spa 5 Elementos, Viva, Celestino, Spazio | 0 (solo por fecha) |
+| Promociones con URL (2x1, Cyber Week) | Akzara 8, Spazio | 0 |
+| Volumen de blog | Amatsu 95, Ivy 35, Viva 28 | 14 (7 en español) |
+| «[masaje] para hombres» | DM Spa 16, Spa 5 Elementos 30 | 5 |
+| Ritmo de publicación | Akzara y Ivy publican cada mes | Por tandas |
+
+### 11.5 Acciones que salen de los sitemaps
+1. **Corregir el `lastmod`** del sitemap para usar la fecha real de cada página. Es barato y le devuelve a Google una señal fiable.
+2. **Un catálogo de planes con URL propia** (parejas, amigas, cumpleaños, hombres), cada uno con su precio. Así compiten Spa 5 Elementos y Akzara, con 84–86 URLs.
+3. **Ocasiones permanentes** (no solo fechas del calendario): despedida de soltera, cumpleaños, spa con amigas y empresas.
+4. **Bonos de regalo y membresías** con página propia.
+5. **Ritmo de blog:** 2–4 artículos al mes (Amatsu lleva 5 años así), empezando por los temas que ya les funcionan a ellos: «spa para hombres en Medellín», «¿cuál es el mejor spa de Medellín?», «ideas de spa para despedida de soltera» y «spa para amigas en Medellín».
