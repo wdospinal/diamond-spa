@@ -36,15 +36,20 @@ export type MasajeTypeSeo = {
   benefits: { es: string[]; en: string[] }
   /** The "is this for you?" differentiator block — answers the visitor's real question. */
   idealFor: { es: string; en: string }
+  /**
+   * Optional block for a search intent this massage answers (e.g. "masaje de
+   * cuello y espalda" on Deep Tissue). Rendered after the benefits.
+   */
+  focus?: { title: { es: string; en: string }; body: { es: string; en: string }; points: { es: string[]; en: string[] } }
 }
 
 export const MASAJES_HUB_SEO = {
   metaTitle: {
-    es: 'Masajes en Medellín — Relajante, Deep Tissue, Deportivo y más | Diamond Spa El Poblado',
+    es: 'Masajes en Medellín: Precios y Tipos | Diamond Spa El Poblado',
     en: 'Therapeutic Massages in Medellín | Diamond Spa',
   },
   metaDescription: {
-    es: 'Descubre los 7 tipos de masaje terapéutico de Diamond Spa en El Poblado: relajante, deep tissue, deportivo, piedras volcánicas y más. Reserva en línea.',
+    es: 'Precios y tipos de masaje en Diamond Spa, El Poblado: relajante desde $120.000, deep tissue, deportivo, piedras volcánicas y más. Reserva en línea.',
     en: 'Discover Diamond Spa\u2019s 7 therapeutic massage types in El Poblado: relaxing, deep tissue, sports, hot stones and more. Book online.',
   },
   h1: {
@@ -59,7 +64,7 @@ export const MASAJES_TYPE_SEO: MasajeTypeSeo[] = [
     serviceId: 'relaxing',
     slugEs: 'relajante',
     metaTitle: {
-      es: 'Masaje Relajante en Medellín | Diamond Spa El Poblado',
+      es: 'Masaje Relajante en Medellín: Precios | Diamond Spa El Poblado',
       en: 'Relaxing Massage in Medellín | Diamond Spa El Poblado',
     },
     metaDescription: {
@@ -67,7 +72,7 @@ export const MASAJES_TYPE_SEO: MasajeTypeSeo[] = [
       en: 'The most comforting relaxing massage in El Poblado. Gentle strokes to release tension and restore calm in a private setting. Book now.',
     },
     h1: { es: 'Masaje Relajante en Medellín', en: 'Relaxing Massage in Medellín' },
-    keywords: 'masajes relajantes, masaje relaxante, masaje corporal relajante, masajes relajantes cerca de mí, spa masajes relajantes',
+    keywords: 'masajes relajantes, masaje relaxante, masaje corporal relajante, masajes antiestrés, masaje antiestrés, masajes relajantes cerca de mí, spa masajes relajantes',
     kwPrincipal: 'masajes relajantes (390, Medio)',
     kwSecundarias: ['masaje relaxante', 'masaje corporal relajante', 'masajes relajantes cerca de mí', 'spa masajes relajantes'],
     intro: {
@@ -82,12 +87,23 @@ export const MASAJES_TYPE_SEO: MasajeTypeSeo[] = [
       es: 'Ideal si llevas semanas sin desconectar, duermes mal o simplemente necesitas un espacio sin pantallas ni pendientes.',
       en: 'Ideal if you\u2019ve gone weeks without truly disconnecting, sleep poorly, or just need a screen-free space.',
     },
+    focus: {
+      title: { es: 'Masaje antiestrés en Medellín', en: 'Anti-stress massage in Medellín' },
+      body: {
+        es: 'Cuando la semana pesa más en la cabeza que en los músculos, el masaje relajante funciona como masaje antiestrés: el ritmo lento, la presión suave y una cabina privada en silencio ayudan a bajar las revoluciones y a dormir mejor esa misma noche.',
+        en: 'When the week weighs more on your mind than on your muscles, the relaxing massage works as an anti-stress massage: slow rhythm, gentle pressure and a quiet private room help you slow down and sleep better that same night.',
+      },
+      points: {
+        es: ['Para el estrés del trabajo y la falta de sueño', 'Presión suave: no duele ni deja el cuerpo adolorido', 'Con aromaterapia y música para desconectar', 'Puedes agendarlo después del trabajo (hasta las 10 p. m. de lunes a sábado)'],
+        en: ['For work stress and poor sleep', 'Gentle pressure: no pain, no soreness afterwards', 'With aromatherapy and music to switch off', 'Book it after work (until 10 p.m. Monday to Saturday)'],
+      },
+    },
   },
   {
     serviceId: 'deep-tissue',
     slugEs: 'deep-tissue',
     metaTitle: {
-      es: 'Masaje Descontracturante (Deep Tissue) en Medellín',
+      es: 'Masaje Descontracturante (Deep Tissue) en Medellín: Precios',
       en: 'Deep Tissue Massage in Medellín | Diamond Spa',
     },
     metaDescription: {
@@ -95,7 +111,7 @@ export const MASAJES_TYPE_SEO: MasajeTypeSeo[] = [
       en: 'Real relief for muscle knots and chronic tension. Deep Tissue massage in El Poblado, with results from your first session.',
     },
     h1: { es: 'Masaje Descontracturante (Deep Tissue)', en: 'Deep Tissue Massage' },
-    keywords: 'masajes descontracturante, masaje de tejido profundo, deep tissue medellín, masaje descontracturante cervical',
+    keywords: 'masajes descontracturante, masaje de tejido profundo, deep tissue medellín, masaje descontracturante cervical, masaje de cuello, masajes de espalda y cuello, masaje descontracturante espalda',
     kwPrincipal: 'masajes descontracturante (140, Medio)',
     kwSecundarias: ['masaje de tejido profundo', 'deep tissue medellín', 'descontracturante', 'masaje descontracturante cervical'],
     intro: {
@@ -110,12 +126,23 @@ export const MASAJES_TYPE_SEO: MasajeTypeSeo[] = [
       es: 'Ideal si pasas muchas horas sentado, cargas tensión en cuello y espalda, o entrenas con intensidad.',
       en: 'Ideal if you sit for long hours, carry tension in your neck and back, or train intensely.',
     },
+    focus: {
+      title: { es: 'Masaje de cuello y espalda', en: 'Neck and back massage' },
+      body: {
+        es: 'La mayoría de quienes reservan un Deep Tissue llegan por el cuello y la espalda: horas frente al computador, el celular, el carro o el gimnasio. Al reservar, cuéntanos dónde sientes la carga y la terapeuta dedica más tiempo a cuello, hombros, espalda alta y zona lumbar.',
+        en: 'Most people who book deep tissue come for their neck and back: hours at the computer, on the phone, driving or at the gym. When you book, tell us where you feel the load and your therapist spends more time on the neck, shoulders, upper back and lower back.',
+      },
+      points: {
+        es: ['Cuello y trapecios cargados por el computador', 'Hombros y espalda alta tensos', 'Zona lumbar después de muchas horas sentado', 'Con 60 o 90 minutos hay tiempo para trabajar cuello y espalda con calma'],
+        en: ['Neck and traps loaded from computer work', 'Tight shoulders and upper back', 'Lower back after long hours sitting', 'With 60 or 90 minutes there is time to work the neck and back properly'],
+      },
+    },
   },
   {
     serviceId: 'four-hands',
     slugEs: '4-manos',
     metaTitle: {
-      es: 'Masaje a 4 Manos en Medellín | Diamond Spa',
+      es: 'Masaje a 4 Manos en Medellín: Precios | Diamond Spa',
       en: 'Four Hands Massage in Medellín | Diamond Spa',
     },
     metaDescription: {
@@ -144,7 +171,7 @@ export const MASAJES_TYPE_SEO: MasajeTypeSeo[] = [
     serviceId: 'duo',
     slugEs: 'duo',
     metaTitle: {
-      es: 'Masaje en Pareja en Medellín | Diamond Spa',
+      es: 'Masaje en Pareja en Medellín: Precios | Diamond Spa',
       en: 'Duo Massage in Medellín | Diamond Spa',
     },
     metaDescription: {
@@ -172,7 +199,7 @@ export const MASAJES_TYPE_SEO: MasajeTypeSeo[] = [
     serviceId: 'hot-stones',
     slugEs: 'piedras-volcanicas',
     metaTitle: {
-      es: 'Masaje con Piedras Volcánicas en Medellín',
+      es: 'Masaje con Piedras Volcánicas en Medellín: Precios',
       en: 'Volcanic Stone Massage in Medellín | Diamond Spa',
     },
     metaDescription: {
@@ -200,7 +227,7 @@ export const MASAJES_TYPE_SEO: MasajeTypeSeo[] = [
     serviceId: 'sports',
     slugEs: 'deportivo',
     metaTitle: {
-      es: 'Masaje Deportivo en Medellín | Diamond Spa',
+      es: 'Masaje Deportivo en Medellín: Precios | Diamond Spa',
       en: 'Sports Massage in Medellín | Diamond Spa',
     },
     metaDescription: {
@@ -228,7 +255,7 @@ export const MASAJES_TYPE_SEO: MasajeTypeSeo[] = [
     serviceId: 'sensitive',
     slugEs: 'sensitivo',
     metaTitle: {
-      es: 'Masaje Sensitivo en Medellín | Diamond Spa',
+      es: 'Masaje Sensitivo en Medellín: Precios | Diamond Spa',
       en: 'Sensitive Massage in Medellín | Diamond Spa',
     },
     metaDescription: {

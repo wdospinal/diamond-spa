@@ -126,9 +126,9 @@ const content = {
           'Los paquetes de día de spa en Diamond Spa comienzan desde $330.000 COP para el Día Esencial (1.5 horas). Nuestro paquete más completo, el Día Diamond, comienza desde $540.000 COP por 2.5 horas de tratamientos.',
       },
       {
-        question: '¿Ofrecen días de spa para parejas?',
+        question: '¿Tienen día de spa en pareja?',
         answer:
-          'Sí. Podemos coordinar tratamientos simultáneos o consecutivos para parejas. Contáctanos por WhatsApp para organizar una reserva en pareja.',
+          'Sí. Para un día de spa en pareja tenemos dos planes: Escape en Pareja (masaje Duo de 90 minutos) y Pausa en Pareja (Duo de 60 minutos), los dos en la misma cabina privada. Los encuentras en la sección Planes, o escríbenos por WhatsApp.',
       },
       {
         question: '¿Dónde está ubicado Diamond Spa?',
@@ -156,7 +156,7 @@ const FAQS_SCHEMA_EN = [
 const FAQS_SCHEMA_ES = [
   { question: '¿Qué incluye el día de spa en Diamond Spa?', answer: 'Cada paquete combina al menos un masaje y un tratamiento facial en cabina privada. Todos los paquetes incluyen atención personalizada y un entorno tranquilo y exclusivo.' },
   { question: '¿Cuánto cuesta un día de spa en Medellín?', answer: 'Los paquetes de día de spa en Diamond Spa comienzan desde $330.000 COP para el Día Esencial (1.5 horas). Nuestro paquete más completo, el Día Diamond, comienza desde $540.000 COP por 2.5 horas de tratamientos.' },
-  { question: '¿Ofrecen días de spa para parejas?', answer: 'Sí. Podemos coordinar tratamientos simultáneos o consecutivos para parejas. Contáctanos por WhatsApp para organizar una reserva en pareja.' },
+  { question: '¿Tienen día de spa en pareja?', answer: 'Sí. Para un día de spa en pareja tenemos dos planes: Escape en Pareja (masaje Duo de 90 minutos) y Pausa en Pareja (Duo de 60 minutos), los dos en la misma cabina privada. Los encuentras en la sección Planes, o escríbenos por WhatsApp.' },
   { question: '¿Dónde está ubicado Diamond Spa?', answer: `Estamos en ${SPA_ADDRESS.full} — a minutos del Parque El Poblado. Parqueadero disponible frente al local.` },
   { question: '¿Puedo reservar un día de spa como regalo?', answer: 'Por supuesto. Escríbenos por WhatsApp y organizamos una reserva de regalo. Puedes especificar la fecha o dejarla abierta para que el destinatario elija.' },
 ]
@@ -230,6 +230,14 @@ export default async function DiaDeSpaPage({ params }: { params: Promise<{ lang:
             ))}
           </div>
         </section>
+
+        {/* Couples: point the "día de spa en pareja" intent at the couples plans */}
+        <p className="-mt-12 mb-20 font-body text-secondary text-sm">
+          {locale === 'en' ? 'Coming as a couple? ' : '¿Vienen en pareja? '}
+          <Link href={`/${locale}/planes/escape-en-pareja`} className="text-primary hover:opacity-80 transition-opacity">
+            {locale === 'en' ? 'See the couples spa day plans →' : 'Mira los planes de día de spa en pareja →'}
+          </Link>
+        </p>
 
         {/* What to Expect */}
         <section className="mb-20">

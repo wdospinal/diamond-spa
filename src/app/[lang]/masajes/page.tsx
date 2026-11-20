@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { isLocale, type Locale } from '@/lib/i18n'
-import { serviceShortDesc, getServiceById } from '@/lib/services'
+import { serviceShortDesc, getServiceById, formatCop } from '@/lib/services'
 import { MASAJES_HUB_SEO, MASAJES_TYPE_SEO, slugForMasajeType } from '@/lib/masajes-category'
 import { buildAlternates, buildOpenGraph } from '@/lib/seo'
 import { mergeLandingMetadata } from '@/lib/landing-meta'
@@ -95,6 +95,14 @@ export default async function MasajesHubPage({
                   <p className="text-on-surface/50 text-sm leading-relaxed flex-1">
                     {serviceShortDesc(service, locale)}
                   </p>
+                  {service.pricingModel === 'duration' && (
+                    <p className="mt-5 font-headline text-primary text-lg tabular-nums">
+                      {isEn ? 'From' : 'Desde'} {formatCop(service.prices[30])}
+                      <span className="font-label text-outline text-[10px] uppercase tracking-widest ml-2">
+                        30 min{service.id === 'duo' ? (isEn ? ' · per couple' : ' · por pareja') : ''}
+                      </span>
+                    </p>
+                  )}
                   <span className="mt-6 inline-flex items-center gap-2 font-label text-[10px] tracking-[0.2em] uppercase text-primary/60 group-hover:text-primary transition-colors">
                     {isEn ? 'View details' : 'Ver detalles'}
                     <span className="material-symbols-outlined text-sm" aria-hidden="true">arrow_forward</span>

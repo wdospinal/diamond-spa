@@ -179,6 +179,24 @@ export default async function MasajeTipoPage({
         </div>
       </section>
 
+      {/* Focus — one extra search intent this massage answers (neck and back, anti-stress…) */}
+      {entry.focus && (
+        <section className="py-16 px-6 md:px-12 bg-surface">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="font-headline text-3xl md:text-4xl text-on-surface tracking-tighter mb-6">{entry.focus.title[locale]}</h2>
+            <p className="font-body text-secondary text-lg leading-relaxed mb-8">{entry.focus.body[locale]}</p>
+            <ul className="grid sm:grid-cols-2 gap-4">
+              {entry.focus.points[locale].map(pt => (
+                <li key={pt} className="flex items-start gap-3">
+                  <span className="material-symbols-outlined text-primary text-lg mt-0.5" aria-hidden="true">check_circle</span>
+                  <span className="font-body text-secondary leading-relaxed">{pt}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
       {/* Pricing — all 7 massage types use duration-based pricing */}
       <section className="py-16 px-6 md:px-12 bg-surface-container-low">
         <div className="max-w-3xl mx-auto">

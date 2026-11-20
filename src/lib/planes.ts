@@ -371,7 +371,7 @@ export const PLANS: Plan[] = [
       en: 'A 90-minute Duo massage in the same room, with a glass of wine.',
     },
     intro: {
-      es: 'Noventa minutos para desconectarse juntos: los dos en la misma cabina privada, cada uno con su terapeuta, con masaje cráneo facial, reflexología y una copa de vino. Para un aniversario, una cita o simplemente porque sí.',
+      es: 'Un día de spa en pareja en El Poblado: noventa minutos para desconectarse juntos, los dos en la misma cabina privada, cada uno con su terapeuta, con masaje cráneo facial, reflexología y una copa de vino. Para un aniversario, una cita o simplemente porque sí.',
       en: 'Ninety minutes to switch off together: both of you in the same private room, each with your own therapist, with a craniofacial massage, reflexology and a glass of wine. For an anniversary, a date or just because.',
     },
     idealFor: [
@@ -387,12 +387,57 @@ export const PLANS: Plan[] = [
           question: '¿El precio es por persona o por pareja?',
           answer: 'Por pareja: el masaje Duo es una sola reserva para dos personas, cada una con su terapeuta.',
         },
+        {
+          question: '¿Cómo es un día de spa en pareja en Diamond Spa?',
+          answer:
+            'Llegan juntos, reciben la bebida de bienvenida y pasan a la misma cabina privada, cada uno con su terapeuta. Si buscan algo más corto, el plan Pausa en Pareja es la versión de 60 minutos.',
+        },
         ...sharedFaqs.es,
       ],
       en: [
         {
           question: 'Is the price per person or per couple?',
           answer: 'Per couple: the Duo massage is one booking for two people, each with their own therapist.',
+        },
+        ...sharedFaqs.en,
+      ],
+    },
+  },
+
+  {
+    slug: 'pausa-en-pareja',
+    audience: 'pareja',
+    icon: 'self_care',
+    name: { es: 'Pausa en Pareja', en: 'Couples Pause' },
+    headline: { es: 'Pausa en Pareja: spa para parejas a buen precio en Medellín', en: 'Couples Pause: an affordable couples spa in Medellín' },
+    occasion: { es: 'En pareja · 60 minutos', en: 'Couples · 60 minutes' },
+    tagline: {
+      es: 'Masaje Duo de 60 minutos en la misma cabina, con copa de vino. La opción más económica para dos.',
+      en: 'A 60-minute Duo massage in the same room, with a glass of wine. The most affordable option for two.',
+    },
+    intro: {
+      es: 'El plan de spa para parejas más económico de Diamond Spa: una hora de masaje Duo, los dos en la misma cabina privada en El Poblado, cada uno con su terapeuta, con aromaterapia, musicoterapia y una copa de vino.',
+      en: 'Diamond Spa’s most affordable couples plan: one hour of Duo massage, both of you in the same private room in El Poblado, each with your own therapist, with aromatherapy, music therapy and a glass of wine.',
+    },
+    idealFor: [
+      { es: 'Una cita entre semana', en: 'A weekday date' },
+      { es: 'Primera vez en pareja', en: 'A first couples visit' },
+      { es: 'Presupuesto ajustado', en: 'A tighter budget' },
+    ],
+    items: [{ serviceId: 'duo', minutes: 60 }],
+    extras: ['wine'],
+    faqs: {
+      es: [
+        {
+          question: '¿Cuál es el plan de spa para parejas más económico?',
+          answer: 'Pausa en Pareja: un masaje Duo de 60 minutos para dos personas, con copa de vino. El precio es por pareja.',
+        },
+        ...sharedFaqs.es,
+      ],
+      en: [
+        {
+          question: 'What is the most affordable couples plan?',
+          answer: 'Couples Pause: a 60-minute Duo massage for two, with a glass of wine. The price is per couple.',
         },
         ...sharedFaqs.en,
       ],
