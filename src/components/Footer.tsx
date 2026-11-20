@@ -40,6 +40,7 @@ export default function Footer({ locale }: { locale: Locale }) {
           <HideWomenOnLanding>
             <Link href={`/${locale}/masajes-para-mujeres`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.massagesForWomen}</Link>
           </HideWomenOnLanding>
+          <Link href={`/${locale}/masajes-a-domicilio`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.homeMassage}</Link>
           <Link href={`/${locale}/depilacion-medellin`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.hairRemoval}</Link>
           <Link href={`/${locale}/limpieza-facial-medellin`} className="text-secondary hover:text-primary font-body text-sm transition-colors duration-200">{t.facials}</Link>
           {/*

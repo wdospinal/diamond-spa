@@ -32,6 +32,7 @@ export default function Navigation({ locale }: { locale: Locale }) {
         { label: locale === 'en' ? 'All massages' : 'Ver todos', href: `/${locale}/masajes` },
         { label: locale === 'en' ? 'For men' : 'Para Hombres', href: `/${locale}/masajes-para-hombres` },
         { label: locale === 'en' ? 'For women' : 'Para Mujeres', href: `/${locale}/masajes-para-mujeres` },
+        { label: locale === 'en' ? 'At home / hotel' : 'A domicilio', href: `/${locale}/masajes-a-domicilio` },
       ],
     },
     {

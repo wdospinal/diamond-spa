@@ -1086,11 +1086,10 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
         q: {
           en: 'Do you offer massages at home or at my hotel?',
           es: '¿Hacen masajes a domicilio o en el hotel?',
-          // @needs-confirmation — home/hotel service
         },
         a: {
-          en: `Our services are performed at our El Poblado location, in equipped private cabins — that is what lets us guarantee the hygiene and comfort standards. For any special arrangement, ask us on WhatsApp (${WA_1}).`,
-          es: `Nuestros servicios se realizan en nuestra sede de El Poblado, en cabinas privadas equipadas: es lo que nos permite garantizar los estándares de higiene y comodidad. Para cualquier caso especial, consúltanos por WhatsApp (${WA_1}).`,
+          en: `Yes, in El Poblado and Laureles: relaxing, deep tissue, sports and couples massage at your home, apartment or hotel. The therapist brings the table, oils and towels. Message us on WhatsApp (${WA_1}) with your area and time and we will send you the price. Hot stones and four-hands massage are only available at our spa.`,
+          es: `Sí, en El Poblado y Laureles: masaje relajante, deep tissue, deportivo y dúo en tu casa, apartamento u hotel. La terapeuta lleva camilla, aceites y toallas. Escríbenos por WhatsApp (${WA_1}) con tu zona y la hora, y te enviamos el valor. Las piedras volcánicas y el masaje a 4 manos se hacen solo en nuestra sede.`,
         },
       },
     ],

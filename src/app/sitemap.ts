@@ -35,6 +35,7 @@ const STATIC_PATHS: {
   { path: '/masajes',                  priority: 0.9, changeFrequency: 'weekly'  },
   { path: '/masajes-para-hombres',     priority: 0.9, changeFrequency: 'monthly' },
   { path: '/masajes-para-mujeres',     priority: 0.9, changeFrequency: 'monthly' },
+  { path: '/masajes-a-domicilio',      priority: 0.9, changeFrequency: 'monthly' },
   { path: '/depilacion-medellin',      priority: 0.9, changeFrequency: 'monthly' },
   { path: '/depilacion-hombres',       priority: 0.85, changeFrequency: 'monthly' },
   { path: '/depilacion-mujeres',       priority: 0.85, changeFrequency: 'monthly' },
