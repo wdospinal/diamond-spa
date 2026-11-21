@@ -729,7 +729,7 @@ const dict = {
       heroLabel: 'El Poblado, Medellín',
       heroTitle: 'Masajes para Hombres en Medellín',
       heroBody:
-        'El bienestar masculino encuentra su oasis de relajación en Diamond. Profesionales capacitadas y un entorno privado en El Poblado, pensado para que te sientas bien atendido de principio a fin. ',
+        'Masajes terapéuticos y de relajación para hombres, hechos por masajistas certificadas en cabina privada en El Poblado. Un spa profesional, pensado para que te sientas bien atendido de principio a fin.',
       bookMassage: 'Reservar Masaje',
       featuredTitle: 'Nuestros Masajes para Hombres',
       viewDetails: 'Ver detalles',

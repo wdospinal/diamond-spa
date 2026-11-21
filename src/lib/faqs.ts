@@ -226,6 +226,19 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
           es: 'Sí. En Diamond Spa buena parte de nuestros clientes son hombres que reservan solos. Es una cita normal y profesional: llegas, te pasan a una cabina privada y comienza la sesión.',
         },
       },
+      // Search Console shows off-target searches reaching the men's pages. This
+      // states the service plainly so those visitors self-select out. Wording
+      // avoids the terms Google Ads reads as adult content (see chat-flow tests).
+      {
+        q: {
+          en: 'Is Diamond Spa a professional spa?',
+          es: '¿Diamond Spa es un spa profesional?',
+        },
+        a: {
+          en: 'Yes. We offer therapeutic and relaxing massage, facials and waxing, done by certified cosmetologists and massage therapists. The body stays draped with towels throughout the session and we only provide the services on our menu; requests outside them are not taken.',
+          es: 'Sí. Ofrecemos masajes terapéuticos y de relajación, faciales y depilación, hechos por cosmetólogas y masajistas certificadas. El cuerpo permanece cubierto con toallas durante toda la sesión y solo prestamos los servicios de nuestra carta; no atendemos solicitudes por fuera de ellos.',
+        },
+      },
       {
         q: {
           en: 'Which massage is best for back pain from sitting at a desk?',
