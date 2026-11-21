@@ -381,7 +381,8 @@ const dict = {
     },
 
     masajesParaHombres: {
-      metaTitle: `Massages & Spa for Men in Medellín ⭐ ${SPA_RATING.value} — From $120,000 COP | Diamond Spa`,
+      // ≤ 60 characters: the old 80-character title was cut off in results.
+      metaTitle: `Massages for Men in Medellín ⭐ ${SPA_RATING.value} · From $120,000 COP`,
       metaDesc:
         `Top-rated spa for men in El Poblado, Medellín. Relaxing, Deep Tissue, Sports & 4-Hands. Private rooms · ${SPA_RATING.count} five-star reviews. Book online in 60 seconds.`,
       ogImageAlt: 'Massages for Men in Medellín — Diamond Spa',
@@ -722,7 +723,8 @@ const dict = {
     },
 
     masajesParaHombres: {
-      metaTitle: `Masajes y Spa para Hombres en Medellín ⭐ ${SPA_RATING.value} — Desde $120.000 COP | Diamond Spa`,
+      // ≤ 60 characters: the old 79-character title was cut off in results.
+      metaTitle: `Masajes para Hombres en Medellín ⭐ ${SPA_RATING.value} · Desde $120.000`,
       metaDesc:
         `Spa para hombres en El Poblado, Medellín. Relajante, Deep Tissue, Deportivo y 4 Manos. Cabinas privadas · ${SPA_RATING.count} reseñas ⭐ ${SPA_RATING.value}. Reserva ahora.`,
       ogImageAlt: 'Masajes para Hombres en Medellín — Diamond Spa',

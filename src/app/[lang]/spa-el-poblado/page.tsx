@@ -74,7 +74,8 @@ function getPageContent(locale: Locale, rating: { value: string; count: number }
 
   const meta = es
     ? {
-        title: 'Spa en El Poblado, Medellín: Masajes y Faciales | Diamond Spa',
+        // ≤ 60 characters so Google shows it whole; the rating stands out in results.
+        title: `Spa en El Poblado: Masajes y Faciales ⭐ ${r} | Diamond Spa`,
         description: `Spa en El Poblado: masajes, limpieza facial y depilación en cabinas privadas, a 10 min a pie de Parque Lleras. ${r} en Google (${rating.count} reseñas). Reserva en línea.`,
         imageAlt: 'Cabina privada de Diamond Spa en El Poblado, Medellín',
       }

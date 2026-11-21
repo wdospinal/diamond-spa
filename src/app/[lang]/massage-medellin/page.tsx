@@ -15,7 +15,8 @@ export const revalidate = 3600
 
 const content = {
   en: {
-    metaTitle: `Best Massage in Medellín Near You ⭐ ${SPA_RATING.value} — El Poblado | Diamond Spa`,
+    // ≤ 60 characters (was 66 and cut off); 1,000+ impressions at 0.4% CTR.
+    metaTitle: `Massage in Medellín ⭐ ${SPA_RATING.value} · El Poblado, from $120,000`,
     metaDesc:
       `Massage in El Poblado, Medellín. ⭐ ${SPA_RATING.value} · ${SPA_RATING.count} Google reviews. Relaxing, deep tissue, sports & 4-hands. Private rooms, bilingual staff. From $120,000 COP.`,
     heroLabel: 'Massage · El Poblado, Medellín',
